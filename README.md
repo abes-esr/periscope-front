@@ -1,7 +1,7 @@
 # periscope-poc-vue-js-latest
 
 Le package node_module ne doit jamais être présent avant le premier pull du projet. En cas
-de présence du package, le supprimer, puis faire
+de présence du package, le supprimer, puis faire :
 ```bash
 npm install
 ```
