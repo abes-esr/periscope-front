@@ -1,0 +1,20 @@
+#To use this configuration, please install first cosmiconfig (npm install cosmiconfig)
+#Then, in webstorm, change properties of this file, and in file you want reformat, tap ctrl + shift + alt + p
+#Options to configure : https://prettier.io/docs/en/options.html (API override)
+#https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Virgules_finales
+#final commas in arrays, objects, functions
+trailingComma: 'es5'
+#tabulation space
+tabWidth: 3
+#max width of one line, if over, all elements of line will be break into multiple lines
+printWidth: 300
+#Print semicolons at the ends of statements.
+semi: true
+#Use single quotes instead of double quotes (variables)
+singleQuote: true
+#Print spaces between brackets in object literals.
+bracketSpacing: false
+#Whether or not to indent the code inside <script> and <style> tags in Vue files. Some people (like the creator of Vue)
+#don’t indent to save an indentation level, but this might break code folding in your editor
+#For vue project, put false.
+vueIndentScriptAndStyle: false
