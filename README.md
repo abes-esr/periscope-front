@@ -35,7 +35,7 @@ Le projet à été crée en plusieurs étapes.
 
 ## Architecture
 
-![Architecture de Base](./ArchitectureDeBase.png)
+![Architecture de Base](./documentation/ArchitectureDeBase.png)
 
 ## Project initialization
 ```
