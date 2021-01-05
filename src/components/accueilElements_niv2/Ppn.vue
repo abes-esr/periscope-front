@@ -1,6 +1,6 @@
 <template>
    <v-container>
-      <v-select :items="optionsPpn" v-on:click="disableDefaultSlotValue0 = false" label="Par defaut, et" outlined v-model="optionsPpnSelected" dense>
+      <v-select :items="optionsPpn" v-on:click="disableDefaultSlotValue0 = false" label="Par defaut, et" class="style1" outlined v-model="optionsPpnSelected" dense>
          <template v-if="disableDefaultSlotValue0" slot="selection">
             <span style="color: grey">Et/ou/sauf</span>
          </template>
@@ -10,12 +10,12 @@
 
       <v-row>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" style="background-color: white; max-height: 2.5em" v-model="ppnTypedInStringType"> </v-text-field>
+            <v-text-field dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnTypedInStringType"> </v-text-field>
             <span>{{ ppnTypedInStringType }}</span>
             <span>{{ typeof ppnTypedInStringType }}</span>
          </v-col>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" style="background-color: white; max-height: 2.5em" v-model="issnTypedInStringType"></v-text-field>
+            <v-text-field dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnTypedInStringType"></v-text-field>
             <span>{{ issnTypedInStringType }}</span>
             <span>{{ typeof issnTypedInStringType }}</span>
          </v-col>
@@ -24,41 +24,41 @@
          <v-expansion-panel>
             <v-expansion-panel-header> Rechercher par d'autres critères </v-expansion-panel-header>
             <v-expansion-panel-content>
-               <v-text-field clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" style="background-color: white; max-height: 3.5em" v-model="titleWordsTyped"></v-text-field>
+               <v-text-field clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titleWordsTyped"></v-text-field>
                <span>{{ titleWordsTyped }}</span>
                <span>{{ typeof titleWordsTyped }}</span>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="optionsEditor" label="et/ou/sauf" outlined v-model="optionsEditorSelected" style="background-color: white; max-height: 3.5em"></v-select>
+                     <v-select :items="optionsEditor" label="et/ou/sauf" outlined v-model="optionsEditorSelected" class="style2"></v-select>
                      <span>{{ optionsEditorSelected }}</span>
                      <span>{{ typeof optionsEditorSelected }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-text-field outlined label="Editeur" placeholder="tapez un editeur (optionnel)" style="background-color: white; max-height: 3.5em" v-model="editorTyped"></v-text-field>
+                     <v-text-field outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editorTyped"></v-text-field>
                      <span>{{ editorTyped }}</span>
                      <span>{{ typeof editorTyped }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="optionsLanguage" label="et/ou/sauf" outlined v-model="optionsLanguageSelected" style="background-color: white; max-height: 3.5em"></v-select>
+                     <v-select :items="optionsLanguage" label="et/ou/sauf" outlined v-model="optionsLanguageSelected" class="style2"></v-select>
                      <span>{{ optionsLanguageSelected }}</span>
                      <span>{{ typeof optionsLanguageSelected }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-text-field outlined label="Langue du document" placeholder="tapez la langue (optionnel)" style="background-color: white; max-height: 3.5em" v-model="languageTyped"></v-text-field>
+                     <v-text-field outlined label="Langue du document" placeholder="tapez la langue (optionnel)" class="style2" v-model="languageTyped"></v-text-field>
                      <span>{{ languageTyped }}</span>
                      <span>{{ typeof languageTyped }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="optionsCountry" label="et/ou/sauf" outlined style="background-color: white; max-height: 3.5em" v-model="optionsCountrySelected"></v-select>
+                     <v-select :items="optionsCountry" label="et/ou/sauf" outlined class="style2" v-model="optionsCountrySelected"></v-select>
                      <span>{{ optionsCountrySelected }}</span>
                      <span>{{ typeof optionsCountrySelected }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-text-field outlined label="Pays de publication" placeholder="tapez un pays (optionnel)" style="background-color: white; max-height: 3.5em" v-model="countryTyped"></v-text-field>
+                     <v-text-field outlined label="Pays de publication" placeholder="tapez un pays (optionnel)" class="style2" v-model="countryTyped"></v-text-field>
                      <span>{{ countryTyped }}</span>
                      <span>{{ typeof countryTyped }}</span>
                   </v-col>

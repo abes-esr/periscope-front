@@ -1,15 +1,15 @@
 <template>
    <v-container>
-      <v-select dense label="Par defaut, ou" v-on:click="disableDefaultSlotValue0 = false" :items="optionsRcr" outlined v-model="optionsRcrSelected">
+      <v-select dense label="Par defaut, ou" v-on:click="disableDefaultSlotValue0 = false" :items="optionsRcr" class="style1" outlined v-model="optionsRcrSelected">
          <template v-if="disableDefaultSlotValue0" slot="selection">
             <span style="color: grey">Et/ou/sauf</span>
          </template>
       </v-select>
       <span>{{ optionsRcrSelected }}</span>
       <span>{{ typeof optionsRcrSelected }}</span>
-      <v-combobox clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" style="background-color: white; max-height: 3.5em" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
+      <v-combobox clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
       <span>{{ typeof rcrHandler }}</span> -> <span>{{ rcrHandler }}</span>
-      <v-select dense label="Pour ce lot de rcr (par defaut, ou)" v-on:click="disableDefaultSlotValue1 = false" :items="optionsLotRcr" outlined v-model="optionsLotRcrSelected">
+      <v-select dense label="Pour ce lot de rcr (par defaut, ou)" v-on:click="disableDefaultSlotValue1 = false" :items="optionsLotRcr" class="style1" outlined v-model="optionsLotRcrSelected">
          <template v-if="disableDefaultSlotValue1" slot="selection">
             <span style="color: grey">Ou/Et</span>
          </template>
