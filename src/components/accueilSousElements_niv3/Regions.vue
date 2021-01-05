@@ -13,9 +13,6 @@
          <v-col xs="6" sm="3" class="margin-v-col-accueil">
             <v-checkbox v-on:click="changeValueOneCheckboxElement(prop_regions[m + 15])" v-for="m in 6" :key="m" :value="prop_regions[m + 15].value" :label="prop_regions[m + 15].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
          </v-col>
-         <v-col>
-            <p>{{ globalRegionsState }}</p>
-         </v-col>
       </v-row>
    </v-container>
 </template>

@@ -5,17 +5,16 @@
             <span style="color: grey">Et/ou/sauf</span>
          </template>
       </v-select>
-      <span>{{ optionsRcrSelected }}</span>
-      <span>{{ typeof optionsRcrSelected }}</span>
-      <v-combobox clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
-      <span>{{ typeof rcrHandler }}</span> -> <span>{{ rcrHandler }}</span>
+      <v-row>
+         <v-col>
+            <v-combobox clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
+         </v-col>
+      </v-row>
       <v-select dense label="Pour ce lot de rcr (par defaut, ou)" v-on:click="disableDefaultSlotValue1 = false" :items="optionsLotRcr" class="style1" outlined v-model="optionsLotRcrSelected">
          <template v-if="disableDefaultSlotValue1" slot="selection">
             <span style="color: grey">Ou/Et</span>
          </template>
       </v-select>
-      <span>{{ optionsLotRcrSelected }}</span>
-      <span>{{ typeof optionsLotRcrSelected }}</span>
    </v-container>
 </template>
 
