@@ -94,6 +94,9 @@ class RequeteDeRecherche extends VuexModule {
    private globalOptionsCountrySelected: Ensemble = Ensemble.Union; // et / ou / sauf pour le pays
    private globalCountryTyped = ''; // pays saisi
 
+   /*Attributs Solr*/
+   private globalRegionsSolr = '';
+
    /*Setters*/
 
    //Setters du plan de conservation
@@ -101,9 +104,40 @@ class RequeteDeRecherche extends VuexModule {
    public setGlobalRegions(arraySent: Array<Provider>): void {
       this.globalRegions = arraySent;
    }
+   @Mutation
+   public setGlobalRegionsSolr(arraySent: Array<Provider>): void {
+      this.globalRegionsSolr = '';
+      let numberOfTrueValuesInArray = 0;
+      arraySent.forEach((element) => {
+         if (element.value) {
+            numberOfTrueValuesInArray += 1;
+         }
+      });
+      if (numberOfTrueValuesInArray === 1) {
+         arraySent.forEach((element) => {
+            if (element.value) {
+               this.globalRegionsSolr = '930-z_s:' + element.key;
+            }
+         });
+      } else {
+         this.globalRegionsSolr += '(';
+         arraySent.forEach((element) => {
+            if (element.value) {
+               this.globalRegionsSolr += '930-z_s:' + element.key + ' OR ';
+            }
+         });
+         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
+         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
+         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
+         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
+         //TODO un substring pour supprimer le dernier ' OR '
+         this.globalRegionsSolr += ')';
+      }
+   }
    @Action
    public updateGlobalRegions(arraySent: Array<Provider>): void {
       this.context.commit('setGlobalRegions', arraySent);
+      this.context.commit('setGlobalRegionsSolr', arraySent);
    }
 
    @Mutation

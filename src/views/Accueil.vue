@@ -1,8 +1,9 @@
 <template>
    <v-container>
-      <v-btn v-on:click="clickVisualisation">TEST - Chaîne globale</v-btn> <v-btn>Requête Solr</v-btn>
+      <v-btn v-on:click="clickVisualisation">TEST - Affichage Membres classe Requête recherche globale</v-btn>
      <v-btn v-on:click="consommationApi">TEST - Consommation API</v-btn>
-     <v-btn v-on:click="affichageMembre">TEST - Affichage membre classe</v-btn>
+     <v-btn v-on:click="affichageMembre">TEST - Affichage membres Solr</v-btn>
+      <v-btn v-on:click="affichageMembre">TEST - Affichage membres JSON</v-btn>
       <component-header></component-header>
       <component-recherche></component-recherche>
       <component-footer></component-footer>
@@ -57,7 +58,7 @@ export default class Accueil extends Vue {
    }
 
    private affichageMembre(){
-     window.alert(JSON.stringify(this.$store.state.RequeteDeRecherche.tutorials));
+     window.alert(JSON.stringify(this.$store.state.RequeteDeRecherche.globalRegionsSolr));
    }
 
 }
