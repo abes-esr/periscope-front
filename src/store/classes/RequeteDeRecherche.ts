@@ -97,6 +97,9 @@ class RequeteDeRecherche extends VuexModule {
    /*Attributs Solr*/
    private globalRegionsSolr = '';
 
+   /*Objet en JSON*/
+   private globalSearchRequestInJson = '';
+
    /*Setters*/
 
    //Setters du plan de conservation
@@ -126,11 +129,9 @@ class RequeteDeRecherche extends VuexModule {
                this.globalRegionsSolr += '930-z_s:' + element.key + ' OR ';
             }
          });
-         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
-         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
-         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
-         this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
-         //TODO un substring pour supprimer le dernier ' OR '
+         for (let i = 0; i < 4; i++) {
+            this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
+         }
          this.globalRegionsSolr += ')';
       }
    }
@@ -138,6 +139,8 @@ class RequeteDeRecherche extends VuexModule {
    public updateGlobalRegions(arraySent: Array<Provider>): void {
       this.context.commit('setGlobalRegions', arraySent);
       this.context.commit('setGlobalRegionsSolr', arraySent);
+      this.context.commit('setJsonGlobalString');
+      console.log(this.globalSearchRequestInJson);
    }
 
    @Mutation
@@ -266,6 +269,11 @@ class RequeteDeRecherche extends VuexModule {
    @Action
    public updateGlobalCountryTyped(elementSent: string): void {
       this.context.commit('setGlobalCountryTyped', elementSent);
+   }
+
+   @Mutation
+   public setJsonGlobalString(): void {
+      this.globalSearchRequestInJson = JSON.stringify(this);
    }
 
    /*Getters*/
