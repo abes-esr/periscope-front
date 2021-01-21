@@ -1,5 +1,8 @@
-import {VuexModule, Module, Mutation, Action} from 'vuex-module-decorators';
+import {Action, Module, Mutation, VuexModule} from 'vuex-module-decorators';
 import TutorialDataService from '@/axios/services/TutorialDataService';
+import CriterionPcp from "@/store/classes/CriterionPcp";
+import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
+import Notice from '@/store/classes/Notice';
 
 interface Provider {
    id: number;
@@ -20,7 +23,7 @@ interface RcrProvider {
    value: number;
 }
 
-enum Ensemble {
+export enum Ensemble {
    Union,
    Intersection,
    Difference,
@@ -29,7 +32,7 @@ enum Ensemble {
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {
    private globalRegions: Array<Provider> = [
-      {id: 0, key: 'Aq', text: 'Aquitaine', value: false},
+      {id: 0, key: 'PCAq', text: 'Aquitaine', value: false},
       {id: 1, key: 'Au', text: 'Auvergne', value: false},
       {id: 2, key: 'Bo', text: 'Bourgogne', value: false},
       {id: 3, key: 'Br', text: 'Bretagne', value: false},
@@ -38,7 +41,7 @@ class RequeteDeRecherche extends VuexModule {
       {id: 6, key: 'Co', text: 'Corse', value: false},
       {id: 7, key: 'Fc', text: 'Franche-Comté', value: false},
       {id: 8, key: 'Lr', text: 'Languedoc-Roussillon', value: false},
-      {id: 9, key: 'Li', text: 'Limousin', value: false},
+      {id: 9, key: 'PCLim', text: 'Limousin', value: false},
       {id: 10, key: 'Lo', text: 'Lorraine', value: false},
       {id: 11, key: 'Mp', text: 'Midi-Pyrénées', value: false},
       {id: 12, key: 'Npc', text: 'Nord-Pas-de-Calais', value: false},
@@ -99,6 +102,9 @@ class RequeteDeRecherche extends VuexModule {
 
    /*Objet en JSON*/
    private globalSearchRequestInJson = '';
+
+   /* Résultats de la recherche */
+   private notices: Array<Notice> = [];
 
    /*Setters*/
 
@@ -374,6 +380,50 @@ class RequeteDeRecherche extends VuexModule {
             JSON.stringify(this.globalCountryTyped) +
             '\n\n'
       );
+   }
+
+   @Action({ rawError: true })
+   public findNoticesByPcp(): void {
+
+      const criterion = new CriterionPcp();
+
+      // On remplit les critères avec les choix de l'utilisateur
+      this.globalRegions.forEach(function (pcp) {
+         if (pcp.value) {
+            criterion.addPcp(pcp.key);
+         }
+      })
+      criterion.addPpn(String(this.getGlobalPpnTypedInNumber),this.globalOptionsPpnSelected);
+      criterion.addIssn(String(this.getGlobalIssnTypedInNumber),this.globalOptionsPpnSelected);
+      const myOption = this.getGlobalOptionsLotRcrSelected
+      this.getRcrHandler.forEach(function (rcr) {
+         criterion.addRcr(String(rcr.value),myOption);
+      });
+      criterion.addTitleWords(this.getGlobalTitleWordsTyped,Ensemble.Union);
+      criterion.addEditor(this.getGlobalEditorTyped,this.globalOptionsEditorSelected);
+      criterion.addLanguage(this.getGlobalLanguageTyped,this.globalOptionsLanguageSelected);
+      criterion.addCountry(this.getGlobalCountryTyped,this.globalOptionsCountrySelected);
+
+      // On appelle l'API Periscope
+      // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
+      Promise.all([PeriscopeDataService.findNoticesByPcp(0,25,JSON.stringify(criterion))]).then((response) => {
+         if (response[0].status == 200) {
+            this.context.commit('setNotices', response[0].data);
+            window.alert(JSON.stringify(this.notices));
+         } else {
+            window.alert("Erreur avec l'API Periscope : status "+response[0].status);
+         }
+      }).catch(err => {
+         console.log("Axios err: ", err);
+         window.alert("Erreur avec l'API Periscope :" + err);
+      });
+   }
+
+   @Mutation
+   public setNotices(results: any[]): void {
+      this.notices = []; // On vide le tableau des notices
+      // On cast les objets générique en Notice
+      results.forEach(obj => this.notices.push(new Notice(obj)));
    }
 
    //Test API
