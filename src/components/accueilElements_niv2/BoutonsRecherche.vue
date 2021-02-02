@@ -29,10 +29,10 @@ interface Provider {
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
 
   @RequeteDeRecherche.Action
-  private findNoticesByPcp!: () => void;
+  private findNoticesByCriteria!: () => void;
 
   private clickSearch() {
-    this.findNoticesByPcp();
+    this.findNoticesByCriteria();
   }
 }
 </script>

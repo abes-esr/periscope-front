@@ -1,6 +1,7 @@
 import {Action, Module, Mutation, VuexModule} from 'vuex-module-decorators';
 import TutorialDataService from '@/axios/services/TutorialDataService';
 import CriterionPcp from "@/store/classes/CriterionPcp";
+import CriterionRcr from "@/store/classes/CriterionRcr";
 import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 
@@ -383,30 +384,31 @@ class RequeteDeRecherche extends VuexModule {
    }
 
    @Action({ rawError: true })
-   public findNoticesByPcp(): void {
+   public findNoticesByCriteria(): void {
 
-      const criterion = new CriterionPcp();
+      const criteria: Array<any> = [];
 
-      // On remplit les critères avec les choix de l'utilisateur
+      // Critère PCP
+      const criterionPcp = new CriterionPcp();
       this.globalRegions.forEach(function (pcp) {
          if (pcp.value) {
-            criterion.addPcp(pcp.key);
+            criterionPcp.addPcp(pcp.key);
          }
       })
-      criterion.addPpn(String(this.getGlobalPpnTypedInNumber),this.globalOptionsPpnSelected);
-      criterion.addIssn(String(this.getGlobalIssnTypedInNumber),this.globalOptionsPpnSelected);
+      criteria.push(criterionPcp);
+
+      // Critère RCR
+      const criterionRcr = new CriterionRcr(this.getGlobalOptionsRcrSelectedValue);
       const myOption = this.getGlobalOptionsLotRcrSelected
       this.getRcrHandler.forEach(function (rcr) {
-         criterion.addRcr(String(rcr.value),myOption);
+         console.log(rcr.value);
+         criterionRcr.addRcr(String(rcr.value),myOption);
       });
-      criterion.addTitleWords(this.getGlobalTitleWordsTyped,Ensemble.Union);
-      criterion.addEditor(this.getGlobalEditorTyped,this.globalOptionsEditorSelected);
-      criterion.addLanguage(this.getGlobalLanguageTyped,this.globalOptionsLanguageSelected);
-      criterion.addCountry(this.getGlobalCountryTyped,this.globalOptionsCountrySelected);
+      criteria.push(criterionRcr);
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
-      Promise.all([PeriscopeDataService.findNoticesByPcp(0,25,JSON.stringify(criterion))]).then((response) => {
+      Promise.all([PeriscopeDataService.findNoticesByCriteria(0,25,JSON.stringify(criteria))]).then((response) => {
          if (response[0].status == 200) {
             this.context.commit('setNotices', response[0].data);
             window.alert(JSON.stringify(this.notices));

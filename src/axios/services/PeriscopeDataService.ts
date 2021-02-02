@@ -7,14 +7,14 @@ import {AxiosResponse} from "axios";
 class PeriscopeDataService {
 
    /**
-    * Récupère les notices à partir d'un ou plusieurs codes PCP et des combinaisons avec les autres critères
+    * Récupère les notices à partir des critères multiple de recherche
     * @param page Numéro de la page à récupérer
     * @param size Nombre de notices par page
-    * @param data JSON contenant les critères de sélection
+    * @param data JSON contenant les critères de recherche
     * @return Promise<AxiosResponse> Réponse Axios
     */
-   findNoticesByPcp(page: number, size: number, data: any): Promise<AxiosResponse> {
-      return http.post(`/notice/findByRcr?page=${page}&size=${size}`, data);
+   findNoticesByCriteria(page: number, size: number, data: any): Promise<AxiosResponse> {
+      return http.post(`/notice/findByCriteria?page=${page}&size=${size}`, data);
    }
 }
 export default new PeriscopeDataService();
