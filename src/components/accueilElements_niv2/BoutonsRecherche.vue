@@ -5,7 +5,7 @@
             <v-btn color="#E53935" dark large>Réinitialiser<v-icon dark right> mdi-cancel </v-icon></v-btn>
          </v-col>
          <v-col xs="6" sm="3">
-            <v-btn color="#4CAF50" dark large>Recherche<v-icon dark right> mdi-checkbox-marked-circle</v-icon></v-btn>
+            <v-btn v-on:click="clickSearch" color="#4CAF50" dark large>Recherche<v-icon dark right> mdi-checkbox-marked-circle</v-icon></v-btn>
          </v-col>
       </v-row>
    </v-container>
@@ -14,6 +14,10 @@
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {namespace} from "vuex-class";
+
+//Classe importée
+const RequeteDeRecherche = namespace('RequeteDeRecherche');
 
 interface Provider {
    id: number;
@@ -22,5 +26,13 @@ interface Provider {
 }
 
 @Component
-export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {}
+export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
+
+  @RequeteDeRecherche.Action
+  private findNoticesByCriteria!: () => void;
+
+  private clickSearch() {
+    this.findNoticesByCriteria();
+  }
+}
 </script>

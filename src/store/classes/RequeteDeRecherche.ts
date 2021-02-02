@@ -1,5 +1,9 @@
-import {VuexModule, Module, Mutation, Action} from 'vuex-module-decorators';
+import {Action, Module, Mutation, VuexModule} from 'vuex-module-decorators';
 import TutorialDataService from '@/axios/services/TutorialDataService';
+import CriterionPcp from "@/store/classes/CriterionPcp";
+import CriterionRcr from "@/store/classes/CriterionRcr";
+import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
+import Notice from '@/store/classes/Notice';
 
 interface Provider {
    id: number;
@@ -20,7 +24,7 @@ interface RcrProvider {
    value: number;
 }
 
-enum Ensemble {
+export enum Ensemble {
    Union,
    Intersection,
    Difference,
@@ -29,7 +33,7 @@ enum Ensemble {
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {
    private globalRegions: Array<Provider> = [
-      {id: 0, key: 'Aq', text: 'Aquitaine', value: false},
+      {id: 0, key: 'PCAq', text: 'Aquitaine', value: false},
       {id: 1, key: 'Au', text: 'Auvergne', value: false},
       {id: 2, key: 'Bo', text: 'Bourgogne', value: false},
       {id: 3, key: 'Br', text: 'Bretagne', value: false},
@@ -38,7 +42,7 @@ class RequeteDeRecherche extends VuexModule {
       {id: 6, key: 'Co', text: 'Corse', value: false},
       {id: 7, key: 'Fc', text: 'Franche-Comté', value: false},
       {id: 8, key: 'Lr', text: 'Languedoc-Roussillon', value: false},
-      {id: 9, key: 'Li', text: 'Limousin', value: false},
+      {id: 9, key: 'PCLim', text: 'Limousin', value: false},
       {id: 10, key: 'Lo', text: 'Lorraine', value: false},
       {id: 11, key: 'Mp', text: 'Midi-Pyrénées', value: false},
       {id: 12, key: 'Npc', text: 'Nord-Pas-de-Calais', value: false},
@@ -94,6 +98,15 @@ class RequeteDeRecherche extends VuexModule {
    private globalOptionsCountrySelected: Ensemble = Ensemble.Union; // et / ou / sauf pour le pays
    private globalCountryTyped = ''; // pays saisi
 
+   /*Attributs Solr*/
+   private globalRegionsSolr = '';
+
+   /*Objet en JSON*/
+   private globalSearchRequestInJson = '';
+
+   /* Résultats de la recherche */
+   private notices: Array<Notice> = [];
+
    /*Setters*/
 
    //Setters du plan de conservation
@@ -101,9 +114,40 @@ class RequeteDeRecherche extends VuexModule {
    public setGlobalRegions(arraySent: Array<Provider>): void {
       this.globalRegions = arraySent;
    }
+   @Mutation
+   public setGlobalRegionsSolr(arraySent: Array<Provider>): void {
+      this.globalRegionsSolr = '';
+      let numberOfTrueValuesInArray = 0;
+      arraySent.forEach((element) => {
+         if (element.value) {
+            numberOfTrueValuesInArray += 1;
+         }
+      });
+      if (numberOfTrueValuesInArray === 1) {
+         arraySent.forEach((element) => {
+            if (element.value) {
+               this.globalRegionsSolr = '930-z_s:' + element.key;
+            }
+         });
+      } else {
+         this.globalRegionsSolr += '(';
+         arraySent.forEach((element) => {
+            if (element.value) {
+               this.globalRegionsSolr += '930-z_s:' + element.key + ' OR ';
+            }
+         });
+         for (let i = 0; i < 4; i++) {
+            this.globalRegionsSolr = this.globalRegionsSolr.slice(0, -1);
+         }
+         this.globalRegionsSolr += ')';
+      }
+   }
    @Action
    public updateGlobalRegions(arraySent: Array<Provider>): void {
       this.context.commit('setGlobalRegions', arraySent);
+      this.context.commit('setGlobalRegionsSolr', arraySent);
+      this.context.commit('setJsonGlobalString');
+      console.log(this.globalSearchRequestInJson);
    }
 
    @Mutation
@@ -234,6 +278,11 @@ class RequeteDeRecherche extends VuexModule {
       this.context.commit('setGlobalCountryTyped', elementSent);
    }
 
+   @Mutation
+   public setJsonGlobalString(): void {
+      this.globalSearchRequestInJson = JSON.stringify(this);
+   }
+
    /*Getters*/
 
    /*
@@ -332,6 +381,51 @@ class RequeteDeRecherche extends VuexModule {
             JSON.stringify(this.globalCountryTyped) +
             '\n\n'
       );
+   }
+
+   @Action({ rawError: true })
+   public findNoticesByCriteria(): void {
+
+      const criteria: Array<any> = [];
+
+      // Critère PCP
+      const criterionPcp = new CriterionPcp();
+      this.globalRegions.forEach(function (pcp) {
+         if (pcp.value) {
+            criterionPcp.addPcp(pcp.key);
+         }
+      })
+      criteria.push(criterionPcp);
+
+      // Critère RCR
+      const criterionRcr = new CriterionRcr(this.getGlobalOptionsRcrSelectedValue);
+      const myOption = this.getGlobalOptionsLotRcrSelected
+      this.getRcrHandler.forEach(function (rcr) {
+         console.log(rcr.value);
+         criterionRcr.addRcr(String(rcr.value),myOption);
+      });
+      criteria.push(criterionRcr);
+
+      // On appelle l'API Periscope
+      // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
+      Promise.all([PeriscopeDataService.findNoticesByCriteria(0,25,JSON.stringify(criteria))]).then((response) => {
+         if (response[0].status == 200) {
+            this.context.commit('setNotices', response[0].data);
+            window.alert(JSON.stringify(this.notices));
+         } else {
+            window.alert("Erreur avec l'API Periscope : status "+response[0].status);
+         }
+      }).catch(err => {
+         console.log("Axios err: ", err);
+         window.alert("Erreur avec l'API Periscope :" + err);
+      });
+   }
+
+   @Mutation
+   public setNotices(results: any[]): void {
+      this.notices = []; // On vide le tableau des notices
+      // On cast les objets générique en Notice
+      results.forEach(obj => this.notices.push(new Notice(obj)));
    }
 
    //Test API

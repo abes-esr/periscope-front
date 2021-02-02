@@ -1,0 +1,101 @@
+Algorithme de création de la requête solr -> periscope v1
+(periscope v1) pcp.js -> 1728
+
+URL DE LANCEMENT DE LA REQUETE
+https://periscope.sudoc.fr/SolrProxy/[g_solRQuery]
+[g_solRQuery] = la chaine constituant la requete solr
+
+
+---PARTIE GAUCHE DE LA REQUETE---
+ppnsearched = PPN
+motstitre = Mots du titre
+issn = ISSN
+editeur
+codelangue = lg du doc
+codepays = pays de pub
+checkedPCPs = plan de conservations cochés en tableau -> attention rajouter les clés voir GM 930$z
+conditionPCP = 930-z_s:[CLEPCP] si = 1
+(930-z_s:[CLEPCP] OR 930-z_s:[CLEPCP]) si > 1
+ORANDRCR = Pour ce lot de RCR : OuEt
+multipleRCR = liste des RCR en tableau
+conditionRCR = 930-b_t:[NUMERORCR] si = 1
+(930-b_t:[NUMERORCR] + ORANDRCR + 930-b_t:[NUMERORCR]) si > 1
+conditionPCPRCR = ' pcprcr_t:'+multipleRCR[i]+checkedPCPs[j]+' OR pcprcr_t:'+multipleRCR[i]+checkedPCPs[j]
+a chaque RCR, on parcours l'ensemble des PCP cochés
+grandOperator1 = liste déroulante ET / OU / SAUF
+si grandOperator1 vaut AND (et)
+queryLeft = (' + conditionPCP + ' ' + grandOperator1.val() + ' ' + conditionRCR + ')
+si grandOperator1 vaut OU ou SAUF
+queryLeft = (' + conditionPCPRCR + ')
+
+si jamais conditionRCR est vide, pas de RCR à combiner
+queryLeft = conditionPCP
+
+si jamais conditionPCP est vide, controle des RCR éventuellement saisis dans la combobox (la liste des RCR)
+si conditionRCR pas vide
+queryLeft = conditionRCR
+si conditionRCR vide
+queryLeft = ''
+
+---PARTIE DROITE DE LA REQUETE---
+queryRight = ''
+si un PPN est renseigné partie de droite en bas
+ppnsearched = n de PPN saisi
+queryRight = '001_s:'+ppnsearched ===> LANCEMENT REQUETE (queryLeft, queryRight)
+si un iSSN renseigné partie de droit en bas
+queryRight = '011-a_t:'+issn ===> LANCEMENT REQUETE (queryLeft, queryRight)
+si motstitre n'est pas vide
+motstitre = mots saisis, suppression des accents, forcage en minuscules, application de la regex replace(/([&!])/g, '');
+-> la queryRight sera systematiquement entre parenthèses
+queryRight = '(' + '530-a_t:"' + value + '"~5 OR 531-a_t:"' + value + '"~5 OR 200-a_t:"' + value + '"~5 OR 200-c_t:"' + value + '"~5 OR 200-d_t:"' + value + '"~5 OR 200-e_t:"' + value + '"~5 OR 200-i_t:"' + value + '"~5)'
+
+si editeur n'est pas vide
+operator = ET / OU / SAUF (valeur à gauche de editeur)
+value = editeur saisi dans le champ, suppression des accents, forcage en minuscules
+si la queryRight n'est pas vide
+queryRight = queryRight + ' ' + operator + ' ' + '210-c_t:"' + value + '"';
+si la queryRight est vide
+queryRight = '210-c_t:"' + value + '"'
+
+si codelangue n'est pas vide
+operator = ET / OU / SAUF (valeur à gauche de langue du document)
+si queryRight n'est pas vide
+queryRight = queryRight + ' ' + operator.val() + ' ' + '101-a_t:' + codelangue.value + ' AND 530-a_t:[* TO *]'
+si queryRight est vide ET
+si queryLeft n'est pas vide (on ne peut pas retourner du sudoc une recherche solr avec seulement le code langue, trop de résultats)
+queryRight = '101-a_t:' + codelangue.value + ' AND 530-a_t:[* TO *]'
+si queryLeft vide => Lancement message alerte erreur vuejs
+
+si codePays n'est pas vide
+operator = ET / OU / SAUF (valeur à gauche de pays de publication)
+si queryRight n'est pas vide
+queryRight = queryRight + ' ' + operator.val() + ' ' + '102-a_t:' + codepays.value + ' AND 530-a_t:[* TO *]'
+si queryRight est vide ET
+si queryLeft n'est pas vide (on ne peut pas retourner du sudoc une recherche solr avec seulement le code pays, trop de résultats)
+queryRight = '102-a_t:' + codepays.value + ' AND 530-a_t:[* TO *]';
+si queryLeft vide => Lancement message alerte erreur vuejs
+
+retour final PARTIE DROITE -> '(' + queryRight + ')'
+
+
+
+---LANCEMENT FINAL DE LA REQUETE---
+si queryLeft non vide ET queryLeft non vide
+grandOperator2 = ET / OU / SAUF situé dans le bloc Saisir un numéro PPN ou ISSN
+g_solRQuery = queryLeft + ' ' + grandOperator2.val() + ' ' + queryRight;
+
+si queryLeft non vide ET queryLeft vide
+g_solRQuery = queryLeft;
+
+si queryLeft vide ET queryLeft non vide
+g_solRQuery = queryRight;
+
+
+RequeteDeRecherche.ts
+créer la méthode getSolrRequest() dans RequeteDeRecherche.ts s'appuyant sur la valeur en cours des attributs (états persistés)
+ou MIEUX
+utiliser les mecanismes des setters pour générer la partie de code solr correspondant a chaque MAJ de champ
+cette requête pourra être regénéré à chaque modification du cycle de vie des composants, avec persistance des états situés dans la classe.
+
+Exemple
+https://periscope.sudoc.fr/SolrProxy/?q=930-z_s:PCAq&sEcho=2&iColumns=10&sColumns=,,,,,,,,,&iDisplayStart=0&iDisplayLength=25&mDataProp_0=001_s&bSortable_0=true&mDataProp_1=lblType&bSortable_1=true&mDataProp_2=011-a_t&bSortable_2=true&mDataProp_3=myTitle&bSortable_3=true&mDataProp_4=210-c_z&bSortable_4=true&mDataProp_5=publicationstart&bSortable_5=false&mDataProp_6=publicationend&bSortable_6=false&mDataProp_7=flatPCP&bSortable_7=false&mDataProp_8=countLoc&bSortable_8=false&mDataProp_9=001_s&bSortable_9=false&iSortingCols=0&solrService=Pcp&wt=json&version=2.2&rows=25&indent=on&fl=001_s,011-a_t,930-z_t,930-b_t,210-c_z,100-a_t,210-c_z,530-a_z,011-a_z,531-a_z,200-a_z,200-c_z,200-d_z,200-e_z,200-i_z,530-b_z,110-a_z&start=0
