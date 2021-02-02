@@ -410,7 +410,7 @@ class RequeteDeRecherche extends VuexModule {
       // Critère PPN
       const criterionPpn = new CriterionPpn(this.globalOptionsPpnSelected);
       const optionPpn = this.getGlobalOptionsPpnSelected
-      criterionPpn.addPpn(String(this.globalPpnTypedInNumber), optionPpn);
+      criterionPpn.addPpn(String(this.globalPpnTypedInNumber), Ensemble.Union);
       criteria.push(criterionPpn);
 
       // On appelle l'API Periscope
