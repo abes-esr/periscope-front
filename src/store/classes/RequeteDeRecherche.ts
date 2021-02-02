@@ -408,7 +408,7 @@ class RequeteDeRecherche extends VuexModule {
       criteria.push(criterionRcr);
 
       // Critère PPN
-      const criterionPpn = new CriterionPpn(this.globalPpnTypedInNumber);
+      const criterionPpn = new CriterionPpn(this.globalOptionsPpnSelected);
       const optionPpn = this.getGlobalOptionsPpnSelected
       criterionPpn.addPpn(String(this.globalPpnTypedInNumber), optionPpn);
       criteria.push(criterionPpn);
