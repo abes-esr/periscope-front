@@ -4,6 +4,7 @@ import CriterionPcp from "@/store/classes/CriterionPcp";
 import CriterionRcr from "@/store/classes/CriterionRcr";
 import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
+import CriterionPpn from "@/store/classes/CriterionPpn";
 
 interface Provider {
    id: number;
@@ -405,6 +406,12 @@ class RequeteDeRecherche extends VuexModule {
          criterionRcr.addRcr(String(rcr.value),myOption);
       });
       criteria.push(criterionRcr);
+
+      // Critère PPN
+      const criterionPpn = new CriterionPpn(this.globalOptionsPpnSelected);
+      const optionPpn = this.getGlobalOptionsPpnSelected
+      criterionPpn.addPpn(String(this.globalPpnTypedInNumber), Ensemble.Union);
+      criteria.push(criterionPpn);
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
