@@ -416,9 +416,11 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       // Critère Mots du titre
-      const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
-      criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
-      criteria.push(criterionTitleWords);
+      if (this.globalTitleWordsTyped) {
+         const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
+         criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
+         criteria.push(criterionTitleWords);
+      }
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
