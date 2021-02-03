@@ -396,8 +396,17 @@ class RequeteDeRecherche extends VuexModule {
          if (pcp.value) {
             criterionPcp.addPcp(pcp.key);
          }
-      })
-      criteria.push(criterionPcp);
+      });
+      this.globalMetiers.forEach(function (pcp) {
+         if (pcp.value) {
+            criterionPcp.addPcp(pcp.key);
+         }
+      });
+
+      if(criterionPcp.getPcp.length > 0) {
+         criteria.push(criterionPcp);
+      }
+
 
       // Critère RCR
       const criterionRcr = new CriterionRcr(this.getGlobalOptionsRcrSelectedValue);
@@ -406,12 +415,14 @@ class RequeteDeRecherche extends VuexModule {
          console.log(rcr.value);
          criterionRcr.addRcr(String(rcr.value), myOption);
       });
-      criteria.push(criterionRcr);
+      if(criterionRcr.getRcr.length > 0) {
+         criteria.push(criterionRcr);
+      }    
 
       // Critère PPN
       if (this.globalPpnTypedInNumber) {
          const criterionPpn = new CriterionPpn(this.globalOptionsPpnSelected);
-         criterionPpn.addPpn(String(this.globalPpnTypedInNumber), Ensemble.Union);
+         criterionPpn.addPpn(String(this.globalPpnTypedInNumber));
          criteria.push(criterionPpn);
       }
 
@@ -421,6 +432,8 @@ class RequeteDeRecherche extends VuexModule {
          criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
          criteria.push(criterionTitleWords);
       }
+
+      console.log(JSON.stringify(criteria))
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
