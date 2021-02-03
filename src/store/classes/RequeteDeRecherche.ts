@@ -6,6 +6,7 @@ import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
+import CriterionIssn from "@/store/classes/CriterionIssn";
 
 interface Provider {
    id: number;
@@ -431,6 +432,13 @@ class RequeteDeRecherche extends VuexModule {
          const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
          criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
          criteria.push(criterionTitleWords);
+      }
+
+      // Critère ISSN
+      if (this.globalIssnTypedInNumber) {
+         const criterionIssn = new CriterionIssn(this.globalOptionsPpnSelected);
+         criterionIssn.addIssn(String(this.globalIssnTypedInNumber));
+         criteria.push(criterionIssn);
       }
 
       console.log(JSON.stringify(criteria))
