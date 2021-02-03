@@ -10,6 +10,7 @@ class CriterionPcp {
    private type = 'CriterionPcp'; //Valeur fixe définie par l'API
    private bloc_operator: string;
    private pcp: Array<string> = [];
+   private pcp_operator: Array<string> = [];
 
    /**
     * Construit un objet CriterionPcp à partir d'un connecteur logique
@@ -49,8 +50,19 @@ class CriterionPcp {
     * @param value Code PCP
     */
    @Mutation
-   public addPcp(value: string): void {
+   public addPcp(value: string,operator?: Ensemble): void {
       this.pcp.push(value);
+      if(operator) {
+         if (operator == 0) {
+            this.pcp_operator.push('ET');
+         } else if (operator == 1) {
+            this.pcp_operator.push('OU');
+         } else if (operator == 2) {
+            this.pcp_operator.push('SAUF');
+         }
+      }else {
+         this.pcp_operator.push('OU'); //Par défaut
+      }
    }
 
    /**
@@ -58,6 +70,13 @@ class CriterionPcp {
     */
    public get getPcp(): Array<string> {
       return this.pcp;
+   }
+
+   /**
+    * Recupère les connecteurs logiques entre les codes PCP
+    */
+   public get getPcpOperator(): Array<string> {
+      return this.pcp_operator;
    }
 }
 export default CriterionPcp;

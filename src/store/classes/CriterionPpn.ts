@@ -10,7 +10,6 @@ class CriterionPpn {
     private type = 'CriterionPpn'; //Valeur fixe définie par l'API
     private bloc_operator: string;
     private ppn: Array<string> = [];
-    private ppn_operator: Array<string> = [];
 
     /**
      * Construit un objet CriterionPcp à partir d'un connecteur logique
@@ -50,15 +49,8 @@ class CriterionPpn {
      * @param value Code PCP
      */
     @Mutation
-    public addPpn(value: string,operator: Ensemble): void {
+    public addPpn(value: string): void {
         this.ppn.push(value);
-        if (operator == 0) {
-            this.ppn_operator.push('ET');
-        } else if (operator == 1) {
-            this.ppn_operator.push('OU');
-        } else if (operator == 2) {
-            this.ppn_operator.push('SAUF');
-        }
     }
 
     /**
