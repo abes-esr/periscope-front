@@ -6,6 +6,7 @@ import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
+import CriterionEditor from "@/store/classes/CriterionEditor";
 
 interface Provider {
    id: number;
@@ -433,7 +434,12 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionTitleWords);
       }
 
-      console.log(JSON.stringify(criteria))
+      // Critère éditeur
+      if (this.globalEditorTyped) {
+         const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
+         criterionEditor.addEditor(String(this.globalEditorTyped), Ensemble.Union);
+         criteria.push(criterionEditor);
+      }
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
