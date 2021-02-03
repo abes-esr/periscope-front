@@ -5,6 +5,7 @@ import CriterionRcr from "@/store/classes/CriterionRcr";
 import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
+import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
 
 interface Provider {
    id: number;
@@ -403,15 +404,21 @@ class RequeteDeRecherche extends VuexModule {
       const myOption = this.getGlobalOptionsLotRcrSelected
       this.getRcrHandler.forEach(function (rcr) {
          console.log(rcr.value);
-         criterionRcr.addRcr(String(rcr.value),myOption);
+         criterionRcr.addRcr(String(rcr.value), myOption);
       });
       criteria.push(criterionRcr);
 
       // Critère PPN
-      const criterionPpn = new CriterionPpn(this.globalOptionsPpnSelected);
-      const optionPpn = this.getGlobalOptionsPpnSelected
-      criterionPpn.addPpn(String(this.globalPpnTypedInNumber), Ensemble.Union);
-      criteria.push(criterionPpn);
+      if (this.globalPpnTypedInNumber) {
+         const criterionPpn = new CriterionPpn(this.globalOptionsPpnSelected);
+         criterionPpn.addPpn(String(this.globalPpnTypedInNumber), Ensemble.Union);
+         criteria.push(criterionPpn);
+      }
+
+      // Critère Mots du titre
+      const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
+      criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
+      criteria.push(criterionTitleWords);
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
