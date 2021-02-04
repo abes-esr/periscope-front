@@ -7,6 +7,9 @@ import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
 import CriterionLangue from "@/store/classes/CriterionLangue";
+import CriterionIssn from "@/store/classes/CriterionIssn";
+import CriterionEditor from "@/store/classes/CriterionEditor";
+import CriterionCountry from "@/store/classes/CriterionCountry";
 
 interface Provider {
    id: number;
@@ -441,6 +444,26 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionLanguage);
       }
 
+      // Critère ISSN
+      if (this.globalIssnTypedInNumber) {
+         const criterionIssn = new CriterionIssn(this.globalOptionsPpnSelected);
+         criterionIssn.addIssn(String(this.globalIssnTypedInNumber));
+         criteria.push(criterionIssn);
+      }
+
+      // Critère éditeur
+      if (this.globalEditorTyped) {
+         const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
+         criterionEditor.addEditor(String(this.globalEditorTyped), Ensemble.Union);
+         criteria.push(criterionEditor);
+      }
+
+      // Critère pays
+      if (this.globalCountryTyped) {
+         const criterionCountry = new CriterionCountry(this.globalOptionsCountrySelected);
+         criterionCountry.addCountry(String(this.globalCountryTyped), Ensemble.Union);
+         criteria.push(criterionCountry);
+      }
       console.log(JSON.stringify(criteria))
 
       // On appelle l'API Periscope

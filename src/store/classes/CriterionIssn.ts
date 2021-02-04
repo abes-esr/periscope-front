@@ -2,17 +2,17 @@ import {Mutation} from 'vuex-module-decorators';
 import {Ensemble} from '@/store/classes/RequeteDeRecherche';
 
 /**
- * {@link CriterionPcp} représente le JSON à envoyer à l'API Periscope pour rechercher
- * les notices à partir d'un ou plusieurs codes PCP.
+ * {@link CriterionIssn} représente le JSON à envoyer à l'API Periscope pour rechercher
+ * les notices à partir d'un ou plusieurs ISSN.
  */
 
-class CriterionPpn {
-    private type = 'CriterionPpn'; //Valeur fixe définie par l'API
+class CriterionIssn {
+    private type = 'CriterionIssn'; //Valeur fixe définie par l'API
     private bloc_operator: string;
-    private ppn: Array<string> = [];
+    private issn: Array<string> = [];
 
     /**
-     * Construit un objet CriterionPcp à partir d'un connecteur logique
+     * Construit un objet CriterionIssn à partir d'un connecteur logique
      * @param operator Ensemble : connecteur logique du bloc
      */
     constructor(operator?: Ensemble) {
@@ -45,19 +45,19 @@ class CriterionPpn {
     }
 
     /**
-     * Ajoute un code PPN
-     * @param value Code PPN
+     * Ajoute un code ISSN
+     * @param value Code ISSN
      */
     @Mutation
-    public addPpn(value: string): void {
-        this.ppn.push(value);
+    public addIssn(value: string): void {
+        this.issn.push(value);
     }
 
     /**
-     * Recupère les codes PPN
+     * Recupère les codes PCP
      */
-    public get getPpn(): Array<string> {
-        return this.ppn;
+    public get getIssn(): Array<string> {
+        return this.issn;
     }
 }
-export default CriterionPpn;
+export default CriterionIssn;
