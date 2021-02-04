@@ -6,6 +6,7 @@ import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
+import CriterionLangue from "@/store/classes/CriterionLangue";
 
 interface Provider {
    id: number;
@@ -431,6 +432,13 @@ class RequeteDeRecherche extends VuexModule {
          const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
          criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
          criteria.push(criterionTitleWords);
+      }
+
+      // Critère Langue de publication
+      if (this.globalLanguageTyped) {
+         const criterionLanguage = new CriterionLangue(this.globalOptionsLanguageSelected);
+         criterionLanguage.addLangue(String(this.globalLanguageTyped), Ensemble.Union);
+         criteria.push(criterionLanguage);
       }
 
       console.log(JSON.stringify(criteria))
