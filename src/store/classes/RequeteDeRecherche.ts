@@ -7,6 +7,8 @@ import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
 import CriterionIssn from "@/store/classes/CriterionIssn";
+import CriterionEditor from "@/store/classes/CriterionEditor";
+import CriterionCountry from "@/store/classes/CriterionCountry";
 
 interface Provider {
    id: number;
@@ -442,6 +444,19 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       console.log(JSON.stringify(criteria))
+      // Critère éditeur
+      if (this.globalEditorTyped) {
+         const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
+         criterionEditor.addEditor(String(this.globalEditorTyped), Ensemble.Union);
+         criteria.push(criterionEditor);
+      }
+
+      // Critère pays
+      if (this.globalCountryTyped) {
+         const criterionCountry = new CriterionCountry(this.globalOptionsCountrySelected);
+         criterionCountry.addCountry(String(this.globalCountryTyped), Ensemble.Union);
+         criteria.push(criterionCountry);
+      }
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
