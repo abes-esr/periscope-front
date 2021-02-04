@@ -6,14 +6,14 @@ import {Ensemble} from '@/store/classes/RequeteDeRecherche';
  * les notices à partir d'un ou plusieurs codes RCR.
  */
 
-class CriterionLangue {
-    private type = 'CriterionLangue'; //Valeur fixe définie par l'API
+class CriterionLanguage {
+    private type = 'CriterionLanguage'; //Valeur fixe définie par l'API
     private bloc_operator: string;
-    private langue: Array<string> = [];
-    private langue_operator: Array<string> = [];
+    private language: Array<string> = [];
+    private language_operator: Array<string> = [];
 
     /**
-     * Construit un objet CriterionLangue à partir d'un connecteur logique
+     * Construit un objet CriterionLanguage à partir d'un connecteur logique
      * @param operator Ensemble : connecteur logique du bloc
      */
     constructor(operator?: Ensemble) {
@@ -51,34 +51,34 @@ class CriterionLangue {
      * @param operator Connecteur logique
      */
     @Mutation
-    public addLangue(value: string,operator: Ensemble): void {
-        this.langue.push(value);
+    public addLanguage(value: string,operator: Ensemble): void {
+        this.language.push(value);
         if (operator) {
             if (operator == 0) {
-                this.langue_operator.push('ET');
+                this.language_operator.push('ET');
             } else if (operator == 1) {
-                this.langue_operator.push('OU');
+                this.language_operator.push('OU');
             } else if (operator == 2) {
-                this.langue_operator.push('SAUF');
+                this.language_operator.push('SAUF');
             }
         }
         else {
-            this.langue_operator.push("OU")
+            this.language_operator.push("OU")
         }
     }
 
     /**
      * Recupère les codes RCR
      */
-    public get getLangue(): Array<string> {
-        return this.langue;
+    public get getLanguage(): Array<string> {
+        return this.language;
     }
 
     /**
      * Recupère les connecteurs logiques entre les codes RCR
      */
-    public get getLangueOperator(): Array<string> {
-        return this.langue_operator;
+    public get getLanguageOperator(): Array<string> {
+        return this.language_operator;
     }
 }
-export default CriterionLangue;
+export default CriterionLanguage;

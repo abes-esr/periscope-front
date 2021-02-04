@@ -6,7 +6,7 @@ import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
-import CriterionLangue from "@/store/classes/CriterionLangue";
+import CriterionLanguage from "@/store/classes/CriterionLanguage";
 import CriterionIssn from "@/store/classes/CriterionIssn";
 import CriterionEditor from "@/store/classes/CriterionEditor";
 import CriterionCountry from "@/store/classes/CriterionCountry";
@@ -411,7 +411,6 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionPcp);
       }
 
-
       // Critère RCR
       const criterionRcr = new CriterionRcr(this.getGlobalOptionsRcrSelectedValue);
       const myOption = this.getGlobalOptionsLotRcrSelected
@@ -430,25 +429,18 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionPpn);
       }
 
-      // Critère Mots du titre
-      if (this.globalTitleWordsTyped) {
-         const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
-         criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
-         criteria.push(criterionTitleWords);
-      }
-
-      // Critère Langue de publication
-      if (this.globalLanguageTyped) {
-         const criterionLanguage = new CriterionLangue(this.globalOptionsLanguageSelected);
-         criterionLanguage.addLangue(String(this.globalLanguageTyped), Ensemble.Union);
-         criteria.push(criterionLanguage);
-      }
-
       // Critère ISSN
       if (this.globalIssnTypedInNumber) {
          const criterionIssn = new CriterionIssn(this.globalOptionsPpnSelected);
          criterionIssn.addIssn(String(this.globalIssnTypedInNumber));
          criteria.push(criterionIssn);
+      }
+
+      // Critère Mots du titre
+      if (this.globalTitleWordsTyped) {
+         const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
+         criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
+         criteria.push(criterionTitleWords);
       }
 
       // Critère éditeur
@@ -458,13 +450,19 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionEditor);
       }
 
+      // Critère Langue de publication
+      if (this.globalLanguageTyped) {
+         const criterionLanguage = new CriterionLanguage(this.globalOptionsLanguageSelected);
+         criterionLanguage.addLanguage(String(this.globalLanguageTyped), Ensemble.Union);
+         criteria.push(criterionLanguage);
+      }
+
       // Critère pays
       if (this.globalCountryTyped) {
          const criterionCountry = new CriterionCountry(this.globalOptionsCountrySelected);
          criterionCountry.addCountry(String(this.globalCountryTyped), Ensemble.Union);
          criteria.push(criterionCountry);
       }
-      console.log(JSON.stringify(criteria))
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
