@@ -6,6 +6,7 @@ import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
+import CriterionEditor from "@/store/classes/CriterionEditor";
 import CriterionCountry from "@/store/classes/CriterionCountry";
 
 interface Provider {
@@ -432,6 +433,13 @@ class RequeteDeRecherche extends VuexModule {
          const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
          criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
          criteria.push(criterionTitleWords);
+      }
+
+      // Critère éditeur
+      if (this.globalEditorTyped) {
+         const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
+         criterionEditor.addEditor(String(this.globalEditorTyped), Ensemble.Union);
+         criteria.push(criterionEditor);
       }
 
       // Critère pays
