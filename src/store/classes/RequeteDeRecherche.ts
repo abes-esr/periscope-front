@@ -6,6 +6,7 @@ import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
+import CriterionLanguage from "@/store/classes/CriterionLanguage";
 import CriterionIssn from "@/store/classes/CriterionIssn";
 import CriterionEditor from "@/store/classes/CriterionEditor";
 import CriterionCountry from "@/store/classes/CriterionCountry";
@@ -410,7 +411,6 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionPcp);
       }
 
-
       // Critère RCR
       const criterionRcr = new CriterionRcr(this.getGlobalOptionsRcrSelectedValue);
       const myOption = this.getGlobalOptionsLotRcrSelected
@@ -429,13 +429,6 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionPpn);
       }
 
-      // Critère Mots du titre
-      if (this.globalTitleWordsTyped) {
-         const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
-         criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
-         criteria.push(criterionTitleWords);
-      }
-
       // Critère ISSN
       if (this.globalIssnTypedInNumber) {
          const criterionIssn = new CriterionIssn(this.globalOptionsPpnSelected);
@@ -443,12 +436,25 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionIssn);
       }
 
-      console.log(JSON.stringify(criteria))
+      // Critère Mots du titre
+      if (this.globalTitleWordsTyped) {
+         const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
+         criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
+         criteria.push(criterionTitleWords);
+      }
+
       // Critère éditeur
       if (this.globalEditorTyped) {
          const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
          criterionEditor.addEditor(String(this.globalEditorTyped), Ensemble.Union);
          criteria.push(criterionEditor);
+      }
+
+      // Critère Langue de publication
+      if (this.globalLanguageTyped) {
+         const criterionLanguage = new CriterionLanguage(this.globalOptionsLanguageSelected);
+         criterionLanguage.addLanguage(String(this.globalLanguageTyped), Ensemble.Union);
+         criteria.push(criterionLanguage);
       }
 
       // Critère pays
