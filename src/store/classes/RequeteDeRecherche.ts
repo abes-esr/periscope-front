@@ -7,6 +7,7 @@ import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
 import CriterionEditor from "@/store/classes/CriterionEditor";
+import CriterionCountry from "@/store/classes/CriterionCountry";
 
 interface Provider {
    id: number;
@@ -439,6 +440,13 @@ class RequeteDeRecherche extends VuexModule {
          const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
          criterionEditor.addEditor(String(this.globalEditorTyped), Ensemble.Union);
          criteria.push(criterionEditor);
+      }
+
+      // Critère pays
+      if (this.globalCountryTyped) {
+         const criterionCountry = new CriterionCountry(this.globalOptionsCountrySelected);
+         criterionCountry.addCountry(String(this.globalCountryTyped), Ensemble.Union);
+         criteria.push(criterionCountry);
       }
 
       // On appelle l'API Periscope
