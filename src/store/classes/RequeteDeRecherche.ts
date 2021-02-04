@@ -6,6 +6,7 @@ import PeriscopeDataService from "@/axios/services/PeriscopeDataService";
 import Notice from '@/store/classes/Notice';
 import CriterionPpn from "@/store/classes/CriterionPpn";
 import CriterionTitleWords from "@/store/classes/CriterionTitleWords";
+import CriterionIssn from "@/store/classes/CriterionIssn";
 import CriterionEditor from "@/store/classes/CriterionEditor";
 import CriterionCountry from "@/store/classes/CriterionCountry";
 
@@ -435,6 +436,14 @@ class RequeteDeRecherche extends VuexModule {
          criteria.push(criterionTitleWords);
       }
 
+      // Critère ISSN
+      if (this.globalIssnTypedInNumber) {
+         const criterionIssn = new CriterionIssn(this.globalOptionsPpnSelected);
+         criterionIssn.addIssn(String(this.globalIssnTypedInNumber));
+         criteria.push(criterionIssn);
+      }
+
+      console.log(JSON.stringify(criteria))
       // Critère éditeur
       if (this.globalEditorTyped) {
          const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
