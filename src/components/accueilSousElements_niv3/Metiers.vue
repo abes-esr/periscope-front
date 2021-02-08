@@ -39,7 +39,7 @@ interface Provider {
 export default class Metiers extends Mixins(GlobalPropertiesMixin) {
    //Setters de classe
    @requeteDeRecherche.Action
-   public updateGlobalMetiers!: (arraySent: Array<Provider>) => void;
+   public updateBlocMetiers!: (arraySent: Array<Provider>) => void;
 
    //Prop passée par le parent
    @Prop({required: true}) prop_metiers: Array<Provider>;
@@ -47,7 +47,7 @@ export default class Metiers extends Mixins(GlobalPropertiesMixin) {
    //Evenements
    private changeValueOneCheckboxElement(element: Provider): void {
       element.value = !element.value;
-      this.updateGlobalMetiers(this.prop_metiers);
+      this.updateBlocMetiers(this.prop_metiers);
    }
 }
 </script>

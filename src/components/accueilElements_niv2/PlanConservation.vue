@@ -39,11 +39,11 @@ interface Provider {
    },
 })
 export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
-   private regions: Array<Provider> = this.$store.state.RequeteDeRecherche.globalRegions;
-   private metiers: Array<Provider> = this.$store.state.RequeteDeRecherche.globalMetiers;
+   private regions: Array<Provider> = this.$store.state.RequeteDeRecherche.blocPcpRegions.arrayRegions;
+   private metiers: Array<Provider> = this.$store.state.RequeteDeRecherche.blocPcpMetiers.arrayMetiers;
    private choixTousOuAucun: Array<Provider> = [
-      {id: 0, key: '', value: false, text: 'Tous'},
-      {id: 1, key: '', value: false, text: 'Aucun'},
+      {id: 0, key: 'all', value: false, text: 'Tous'},
+      {id: 1, key: 'none', value: false, text: 'Aucun'},
    ];
 
    private title = 'Choisir un plan de conservation';

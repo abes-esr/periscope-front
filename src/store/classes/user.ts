@@ -41,7 +41,7 @@ class User extends VuexModule {
    @Mutation
    public setRegions(newName: Array<Provider>): void {
       this.globalRegions = newName;
-      console.log(this.globalRegions);
+      //console.log(this.globalRegions);
    }
    @Action
    public updateRegions(newName: Array<Provider>): void {

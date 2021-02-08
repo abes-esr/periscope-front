@@ -1,65 +1,40 @@
 <template>
    <v-container>
-      <v-select dense label="Par defaut, ou" v-on:click="disableDefaultSlotValue0 = false" :items="optionsRcr" class="style1" outlined v-model="optionsRcrSelected">
-         <template v-if="disableDefaultSlotValue0" slot="selection">
-            <span style="color: grey">Et/ou/sauf</span>
-         </template>
-      </v-select>
-      <span>{{ optionsRcrSelected }}</span>
-      <span>{{ typeof optionsRcrSelected }}</span>
+      <v-select dense label="Par defaut, ou" :items="externalBlocOperatorListToSelect" class="style1" outlined v-model="externalOperatorSelected"></v-select>
+      <span>{{ externalOperatorSelected }}</span>
+      <span>{{ typeof externalOperatorSelected }}</span>
       <v-combobox clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
       <span>{{ typeof rcrHandler }}</span> -> <span>{{ rcrHandler }}</span>
-      <v-select dense label="Pour ce lot de rcr (par defaut, ou)" v-on:click="disableDefaultSlotValue1 = false" :items="optionsLotRcr" class="style1" outlined v-model="optionsLotRcrSelected">
-         <template v-if="disableDefaultSlotValue1" slot="selection">
-            <span style="color: grey">Ou/Et</span>
-         </template>
+      <v-select dense label="Pour ce lot de rcr (par defaut, ou)" :items="internalBlocOperatorListToSelect" class="style1" outlined v-model="internalOperatorSelected">
       </v-select>
-      <span>{{ optionsLotRcrSelected }}</span>
-      <span>{{ typeof optionsLotRcrSelected }}</span>
+      <span>{{ internalOperatorSelected }}</span>
+      <span>{{ typeof internalOperatorSelected }}</span>
    </v-container>
 </template>
 
 <script lang="ts">
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {namespace} from 'vuex-class';
+import {OperatorProvider, RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
+import {Ensemble} from '@/store/classes/RequeteDeRecherche';
 
 const requeteDeRecherche = namespace('RequeteDeRecherche');
-
-interface Provider {
-   id: number;
-   key: string;
-   text: string;
-   value: Ensemble;
-}
-
-interface RcrProvider {
-   id: number;
-   value: number;
-}
-
-enum Ensemble {
-   Union, //0
-   Intersection, //1
-   Difference, //2
-}
 
 @Component
 export default class VueRcr extends Vue {
    //Setter de classe globale
    @requeteDeRecherche.Action
-   private updateGlobalOptionsRcrSelected!: (element: Ensemble) => void;
-
+   private updateBlocRcr!: (arraySent: Array<RcrProvider>) => void;
    @requeteDeRecherche.Action
-   private updateGlobalRcrHandler!: (arraySent: Array<RcrProvider>) => void;
-
+   private updateInternalOperatorSelected!: (operator: number) => void;
    @requeteDeRecherche.Action
-   private updateGlobalOptionsLotRcrSelected!: (element: Ensemble) => void;
+   private updateExternalOperatorSelected!: (operator: number) => void;
 
    //Lancé à chaque MAJ du composant (saisie utilisateur, etc..)
    updated(): void {
-      this.updateGlobalOptionsRcrSelected(this.optionsRcrSelected);
-      this.updateGlobalRcrHandler(this.rcrHandler);
-      this.updateGlobalOptionsLotRcrSelected(this.optionsLotRcrSelected);
+      this.updateBlocRcr(this.rcrArrayTyped);
+      this.updateInternalOperatorSelected(this.internalOperatorSelected);
+      this.updateExternalOperatorSelected(this.externalOperatorSelected);
    }
 
    //Slots permettant d'avoir par defaut une valeur initiale Et/ou/sauf, Ou/Et dans la liste déroulante
@@ -67,16 +42,16 @@ export default class VueRcr extends Vue {
    private disableDefaultSlotValue1 = true;
 
    //Par defaut, ou
-   private optionsRcr: Array<Provider> = this.$store.state.RequeteDeRecherche.optionsEtOuSaufParDefaut;
-   private optionsRcrSelected: Ensemble = this.$store.state.RequeteDeRecherche.globalOptionsRcrSelected;
+   private externalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocRcr.externalBlocOperatorListToSelect;
+   private externalOperatorSelected: number = this.$store.state.RequeteDeRecherche.blocRcr.externalBlocOperator;
 
    //Saisir le rcr d'une bibliothèque
    private rcrArrayTyped = [];
    private rcrHandler: Array<RcrProvider> = this.$store.state.RequeteDeRecherche.globalRcrHandler;
 
    //Pour ce lot de rcr (par defaut, ou)
-   private optionsLotRcr: Array<Provider> = this.$store.state.RequeteDeRecherche.optionsEtOuParDefaut;
-   private optionsLotRcrSelected: Ensemble = this.$store.state.RequeteDeRecherche.globalOptionsLotRcrSelected;
+   private internalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocRcr.internalBlocOperatorListToSelect;
+   private internalOperatorSelected: number = this.$store.state.RequeteDeRecherche.blocRcr.internalBlocOperator;
 
    /**
     * The global array of combobox component watched by this function, after each typed by user, this function
@@ -101,7 +76,7 @@ export default class VueRcr extends Vue {
          //conversion of string input (who contains only digits) in number type
          let newLastValConvertedInNumberType: number = +newArrayVal[newArrayVal.length - 1];
          //push element in rcrHandler array, with id value associated at rcr
-         console.log(this.rcrHandler.length !== newArrayVal.length);
+         //console.log(this.rcrHandler.length !== newArrayVal.length);
          this.rcrHandler.push(
             new (class implements RcrProvider {
                id: number = newArrayVal.length - 1;

@@ -41,8 +41,11 @@ export default class Accueil extends Vue {
    @RequeteDeRecherche.Action
    private getOneTest!: () => void;
 
+  @RequeteDeRecherche.Action
+  private getSpecific!: () => string;
+
    updated(): void {
-      console.log('step');
+      //console.log('step');
    }
    get testReactive(): Array<Provider> {
       //Les getters des parents ne sont actuellement pas reactive
