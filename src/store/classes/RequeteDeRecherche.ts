@@ -10,7 +10,6 @@ import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
 import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-import { Getter } from "vuex-class";
 
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {

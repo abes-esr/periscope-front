@@ -35,6 +35,11 @@ export class BlocEditeur extends BlocAbstract {
       this._editorEntered = value;
    }
 
+   get editorEnteredEnteredInString(): string {
+      let stringBuild = '';
+      this._editorEntered.forEach((element) => (stringBuild += element + ' '));
+      return stringBuild;
+   }
    public editeurStringArrayClean(): void {
       this._editorEntered = [];
    }

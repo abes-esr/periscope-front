@@ -1,21 +1,22 @@
 <template>
    <v-container>
-      <v-select :items="optionsPpnList" label="Par defaut, et" class="style1" outlined v-model="optionsPpnSelected" dense> </v-select>
-      <span>{{ optionsPpnSelected }}</span>
-      <span>{{ typeof optionsPpnSelected }}</span>
+      <v-select :items="ppnExternalBlocOperatorListToSelect" label="Par defaut, et" class="style1" outlined v-model="ppnExternalBlocOperatorSelected" v-on:change="eventUpdateBlocPpnExternalOperator" dense> </v-select>
+      <span>{{ this.blocPpn.externalBlocOperator }}</span>
+      <span>{{ typeof this.blocPpn.externalBlocOperator }}</span>
 
       <v-row>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnEntered"> </v-text-field>
+            <v-text-field v-on:change="regexPpnControl" :rules="ppnAlert" dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnEntered"> </v-text-field>
             <span>{{ ppnEntered }}</span>
             <span>{{ typeof ppnEntered }}</span>
          </v-col>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnEntered"></v-text-field>
+            <v-text-field v-on:change="regexIssnControl" :rules="issnAlert" dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnEntered"></v-text-field>
             <span>{{ issnEntered }}</span>
             <span>{{ typeof issnEntered }}</span>
          </v-col>
       </v-row>
+
       <v-expansion-panels flat class="outlined-app">
          <v-expansion-panel>
             <v-expansion-panel-header> Rechercher par d'autres critères </v-expansion-panel-header>
@@ -25,9 +26,9 @@
                <span>{{ typeof titreEntered }}</span>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" class="style2"></v-select>
-                     <span>{{ editeurExternalOperatorSelected }}</span>
-                     <span>{{ typeof editeurExternalOperatorSelected }}</span>
+                     <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" v-on:change="eventUpdateBlocEditeurExternalOperator" class="style2"></v-select>
+                     <span>{{ this.blocEditeur.externalBlocOperator }}</span>
+                     <span>{{ typeof this.blocEditeur.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
                      <v-text-field outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editeurEntered"></v-text-field>
@@ -37,9 +38,9 @@
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="langueExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="langueExternalOperatorSelected" class="style2"></v-select>
-                     <span>{{ langueExternalOperatorSelected }}</span>
-                     <span>{{ typeof langueExternalOperatorSelected }}</span>
+                     <v-select :items="langueExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="langueExternalOperatorSelected" v-on:change="eventUpdateBlocLangueExternalOperator" class="style2"></v-select>
+                     <span>{{ this.blocLangue.externalBlocOperator }}</span>
+                     <span>{{ typeof this.blocLangue.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
                      <v-combobox v-on:change="updateArrayBlocLangue" v-model="langueEntered" :items="langueItems" multiple outlined label="tapez une langue (optionnel)" class="style2" placeholder="langue à saisir">
@@ -52,15 +53,15 @@
                            </v-chip>
                         </template>
                      </v-combobox>
-                     <span>{{ langueEntered }}</span>
-                     <span>{{ typeof langueEntered }}</span>
+                     <span>{{ this.blocLangue.langueEntered }}</span>
+                     <span>{{ typeof this.blocLangue.langueEntered }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="paysExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="paysExternalOperatorSelected" class="style2"></v-select>
-                     <span>{{ paysExternalOperatorSelected }}</span>
-                     <span>{{ typeof paysExternalOperatorSelected }}</span>
+                     <v-select :items="paysExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="paysExternalOperatorSelected" v-on:change="eventUpdateBlocPaysExternalOperator" class="style2"></v-select>
+                     <span>{{ this.blocPays.externalBlocOperator }}</span>
+                     <span>{{ typeof this.blocPays.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
                      <v-combobox v-on:change="updateArrayBlocPays" v-model="paysEntered" :items="paysItems" multiple outlined label="tapez un pays (optionnel)" class="style2" placeholder="pays à saisir">
@@ -74,7 +75,7 @@
                         </template>
                      </v-combobox>
                      <span>{{ JSON.stringify(this.blocPays.paysEntered) }}</span>
-                     <span>{{ typeof paysEntered }}</span>
+                     <span>{{ typeof this.blocPays.paysEntered }}</span>
                   </v-col>
                </v-row>
             </v-expansion-panel-content>
@@ -85,10 +86,14 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {Getter, namespace} from 'vuex-class';
+import {namespace} from 'vuex-class';
 import {Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
+import {BlocPpn} from '@/store/classes/blocsDeRecherche/BlocPpn';
+import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
+import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
+import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
 
 //Import de classe
 const requeteDeRecherche = namespace('RequeteDeRecherche');
@@ -120,93 +125,83 @@ export default class VuePpn extends Vue {
    private updateBlocPays!: (element: Array<ListProvider>) => void;
 
    @requeteDeRecherche.State
+   private blocPpn!: BlocPpn;
+   @requeteDeRecherche.State
+   private blocIssn!: BlocIssn;
+   @requeteDeRecherche.State
+   private blocMotDuTitre!: BlocMotDuTitre;
+   @requeteDeRecherche.State
+   private blocEditeur!: BlocEditeur;
+   @requeteDeRecherche.State
    private blocLangue!: BlocLangue; //TODO etape1 nouveaux getters
    @requeteDeRecherche.State
    private blocPays!: BlocPays;
 
+   /*Attributs*/
+   private ppnExternalBlocOperatorListToSelect: Array<OperatorProvider>; //Bloc Ppn
+   private ppnExternalBlocOperatorSelected: Ensemble;
+   private ppnEntered = '';
+   private issnEntered = ''; //Bloc Issn
+   private titreEntered = ''; //Bloc Mots du titre
+   private editeurExternalBlocOperatorListToSelect: Array<OperatorProvider>; //Bloc editeur
+   private editeurExternalOperatorSelected: Ensemble;
+   private editeurEntered = '';
+   private langueItems: Array<ListProvider>; //Bloc langue
+   private langueExternalBlocOperatorListToSelect: Array<OperatorProvider>;
+   private langueExternalOperatorSelected: number;
+   private langueEntered: Array<ListProvider>; //TODO etape3 nouveau getters
+   private paysItems: Array<ListProvider>; //Bloc Pays
+   private paysEntered: Array<ListProvider>;
+   private paysExternalBlocOperatorListToSelect: Array<OperatorProvider>;
+   private paysExternalOperatorSelected: Ensemble;
+
    //A chaque creation
    created(): void {
+      this.ppnExternalBlocOperatorListToSelect = this.blocPpn.externalBlocOperatorListToSelect;
+      this.ppnExternalBlocOperatorSelected = this.blocPpn.externalBlocOperator;
+      this.ppnEntered = this.blocPpn.ppnEntered;
+      this.issnEntered = this.blocIssn.issnEntered;
+      this.titreEntered = this.blocMotDuTitre.titleWordsEnteredInString;
+
+      this.editeurExternalBlocOperatorListToSelect = this.blocEditeur.externalBlocOperatorListToSelect;
+      this.editeurExternalOperatorSelected = this.blocEditeur.externalBlocOperator;
+      this.editeurEntered = this.blocEditeur.editorEnteredEnteredInString;
+
+      this.langueItems = this.blocLangue.langueListe;
       this.langueEntered = this.blocLangue.langueEntered; //TODO etape2 nouveaux getters
+      this.langueExternalBlocOperatorListToSelect = this.blocLangue.externalBlocOperatorListToSelect;
+      this.langueExternalOperatorSelected = this.blocLangue.externalBlocOperator;
 
       this.paysEntered = this.blocPays.paysEntered;
       this.paysExternalBlocOperatorListToSelect = this.blocPays.externalBlocOperatorListToSelect;
       this.paysExternalOperatorSelected = this.blocPays.externalBlocOperator;
       this.paysItems = this.blocPays.paysListe;
-
-      if (this.ppnEntered === '') {
-         this.ppnEntered = '';
-      }
-      if (this.issnEntered === '') {
-         this.issnEntered = '';
-      }
    }
 
    private displayTab: Array<ListProvider>;
 
-   //A Chaque modification, setters de classe
+   //A Chaque modification -> updated, setters de classe
+   //Ne fonctionne que sur les champs de saisie libre, pour les autres champs utiliser les events
    updated(): void {
-      /*Setter qui transforme la chaine de caractère en nombre,
-     cette dernière ne devant contenir que des nombres,
-     et reinitialise la valeur du champ si l'utilisateur à saisi des alphanumériques
-     Ne pas mettre d'attribut clearable sur les champs spécifiés
-     */
-      //PPN
-      if (this.ppnEntered.match('\\d{8,9}X?')) {
-         this.ppnEntered = '';
-      } else {
-         this.updateBlocPpn(this.ppnEntered);
-      }
-      this.updateBlocPpnExternalOperatorSelected(this.optionsPpnSelected);
-      //ISSN
-      if (this.issnEntered.match('\\d{4}-\\d{4}')) {
-         this.issnEntered = '';
-      } else {
-         this.updateBlocIssn(this.issnEntered);
-      }
+      console.log('update');
+      this.updateBlocPpnExternalOperatorSelected(this.ppnExternalBlocOperatorSelected);
+
       this.updateBlocIssnExternalOperatorSelected(Ensemble.Ou);
       this.updateBlocTitre(this.titreEntered);
       this.updateBlocEditeurExternalOperatorSelected(this.editeurExternalOperatorSelected);
       this.updateBlocEditeur(this.editeurEntered);
-      this.updateBlocLangueExternalOperatorSelected(this.langueExternalOperatorSelected);
       this.updateBlocPaysExternalOperatorSelected(this.paysExternalOperatorSelected);
    }
-
    computed(): void {
+      console.log('computed');
+      this.updateBlocLangueExternalOperatorSelected(this.langueExternalOperatorSelected);
       this.updateBlocLangue(this.langueEntered);
       this.updateBlocPays(this.paysEntered);
    }
 
-   /*Attributs*/
+   /*EVENTS*/
 
-   //Par defaut, et
-   private optionsPpnList: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocPpn.externalBlocOperatorListToSelect;
-   private optionsPpnSelected: Ensemble = this.$store.state.RequeteDeRecherche.blocPpn.externalBlocOperator;
-   //N° de PPN
-   private ppnEntered = this.$store.state.RequeteDeRecherche.blocPpn.ppnEntered;
-   //N° de ISSN
-   private issnEntered = this.$store.state.RequeteDeRecherche.blocIssn.issnEntered;
-   //Mots du titre
-   private titreEntered = '';
-   //et / ou / sauf pour Editeur
-   private editeurExternalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocEditeur.externalBlocOperatorListToSelect;
-   private editeurExternalOperatorSelected: Ensemble = this.$store.state.RequeteDeRecherche.blocEditeur.externalBlocOperator;
-   //Editeur tapé
-   private editeurEntered = this.$store.state.RequeteDeRecherche.blocEditeur.editorEntered;
-   private langueItems: Array<ListProvider> = this.$store.state.RequeteDeRecherche.blocLangue.langueListe;
-   //Et / ou / sauf de la langue du document
-   private langueExternalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocLangue.externalBlocOperatorListToSelect;
-   private langueExternalOperatorSelected: Ensemble = this.$store.state.RequeteDeRecherche.blocLangue.internalBlocOperator;
-   //Langue du document tapé
-   private langueEntered: Array<ListProvider>; //TODO etape3 nouveau getters
-
-   private paysItems: Array<ListProvider>;
-   //Et / ou / sauf du pays de publication
-   private paysExternalBlocOperatorListToSelect: Array<OperatorProvider>;
-   private paysExternalOperatorSelected: Ensemble;
-   //Pays de publication tapé
-   private paysEntered: Array<ListProvider>;
-
-   //v-combobox méthodes de mise à jour
+   //v-combobox Events de mise à jour
    private removeItem(itemId: ListProvider, arrayTarget: Array<ListProvider>): void {
       const index = arrayTarget.indexOf(itemId, 0);
       if (index > -1) {
@@ -241,8 +236,41 @@ export default class VuePpn extends Vue {
    }
    //v-combobox fin des méthodes de mise a jour
 
-   get display(): Array<ListProvider> {
-      return this.displayTab;
+   //Events de contrôle des champs
+   private ppnAlert: Array<string> = [];
+   private regexPpnControl(): void {
+      if (this.ppnEntered.match('^\\d{1,9}X?$')) {
+         this.updateBlocPpn(this.ppnEntered);
+         this.ppnAlert = [];
+      } else {
+         this.ppnEntered = '';
+         this.ppnAlert.push("Le PPN est constitué de 8 ou 9 chiffres suivis ou pas d'un X");
+      }
+   }
+
+   private issnAlert: Array<string> = [];
+   private regexIssnControl(): void {
+      if (this.issnEntered.match('^\\d{4}-\\d{4}$')) {
+         this.updateBlocIssn(this.issnEntered);
+         this.issnAlert = [];
+      } else {
+         this.issnEntered = '';
+         this.issnAlert.push("L'ISSN est constitué de 4 chiffres suivi d'un tiret suivi de 4 chiffres");
+      }
+   }
+
+   //Events sur les listes déroulante //TODO reprendre ici faire des events pour chaque element
+   eventUpdateBlocPpnExternalOperator(): void {
+      this.updateBlocPpnExternalOperatorSelected(this.ppnExternalBlocOperatorSelected);
+   }
+   eventUpdateBlocLangueExternalOperator(): void {
+      this.updateBlocLangueExternalOperatorSelected(this.langueExternalOperatorSelected);
+   }
+   eventUpdateBlocEditeurExternalOperator(): void {
+      this.updateBlocEditeurExternalOperatorSelected(this.editeurExternalOperatorSelected);
+   }
+   eventUpdateBlocPaysExternalOperator(): void {
+      this.updateBlocPaysExternalOperatorSelected(this.paysExternalOperatorSelected);
    }
 }
 </script>

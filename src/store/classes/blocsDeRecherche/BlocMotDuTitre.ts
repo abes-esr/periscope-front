@@ -43,6 +43,12 @@ export class BlocMotDuTitre extends BlocAbstract {
       this._titleWordsEntered = value;
    }
 
+   get titleWordsEnteredInString(): string {
+      let stringBuild = '';
+      this._titleWordsEntered.forEach((element) => (stringBuild += element + ' '));
+      return stringBuild;
+   }
+
    public titleWordsStringArrayClean(): void {
       this.titleWordsEntered = [];
    }
