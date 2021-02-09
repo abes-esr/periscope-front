@@ -25,27 +25,21 @@
 import {Component, Prop, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {namespace} from 'vuex-class';
+import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 const requeteDeRecherche = namespace('RequeteDeRecherche');
-
-interface Provider {
-   id: number;
-   key: string;
-   text: string;
-   value: boolean;
-}
 
 @Component
 export default class Metiers extends Mixins(GlobalPropertiesMixin) {
    //Setters de classe
    @requeteDeRecherche.Action
-   public updateBlocMetiers!: (arraySent: Array<Provider>) => void;
+   public updateBlocMetiers!: (arraySent: Array<CheckboxesProvider>) => void;
 
    //Prop passée par le parent
-   @Prop({required: true}) prop_metiers: Array<Provider>;
+   @Prop({required: true}) prop_metiers: Array<CheckboxesProvider>;
 
    //Evenements
-   private changeValueOneCheckboxElement(element: Provider): void {
+   private changeValueOneCheckboxElement(element: CheckboxesProvider): void {
       element.value = !element.value;
       this.updateBlocMetiers(this.prop_metiers);
    }

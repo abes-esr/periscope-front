@@ -1,11 +1,43 @@
-export abstract class BlocAbstract{
-  protected _externalBlocOperator: number;
+export interface OperatorProvider {
+   //Operateurs de bloc
+   id: number;
+   key: string;
+   text: string;
+   value: Ensemble;
+}
 
-  get externalBlocOperator(): number {
-    return this._externalBlocOperator;
-  }
+export interface CheckboxesProvider {
+   //Tableaux de cases à cocher
+   id: number;
+   key: string;
+   text: string;
+   value: boolean;
+}
 
-  set externalBlocOperator(value: number) {
-    this._externalBlocOperator = value;
-  }
+export interface ListProvider {
+   //Liste d'éléments à selectionner
+   id: string;
+   text: string;
+}
+
+export enum Ensemble { //Conversion implicite en number
+   Ou,
+   Et,
+   Sauf,
+}
+
+export abstract class BlocAbstract {
+   protected _externalBlocOperator: number;
+
+   protected constructor(externalBlocOperator: number) {
+      this._externalBlocOperator = externalBlocOperator;
+   }
+
+   get externalBlocOperator(): number {
+      return this._externalBlocOperator;
+   }
+
+   set externalBlocOperator(value: number) {
+      this._externalBlocOperator = value;
+   }
 }

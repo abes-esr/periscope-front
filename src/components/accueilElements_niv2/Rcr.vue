@@ -5,8 +5,7 @@
       <span>{{ typeof externalOperatorSelected }}</span>
       <v-combobox clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
       <span>{{ typeof rcrHandler }}</span> -> <span>{{ rcrHandler }}</span>
-      <v-select dense label="Pour ce lot de rcr (par defaut, ou)" :items="internalBlocOperatorListToSelect" class="style1" outlined v-model="internalOperatorSelected">
-      </v-select>
+      <v-select dense label="Pour ce lot de rcr (par defaut, ou)" :items="internalBlocOperatorListToSelect" class="style1" outlined v-model="internalOperatorSelected"> </v-select>
       <span>{{ internalOperatorSelected }}</span>
       <span>{{ typeof internalOperatorSelected }}</span>
    </v-container>
@@ -15,8 +14,8 @@
 <script lang="ts">
 import {Component, Vue, Watch} from 'vue-property-decorator';
 import {namespace} from 'vuex-class';
-import {OperatorProvider, RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
-import {Ensemble} from '@/store/classes/RequeteDeRecherche';
+import {RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
+import {OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 const requeteDeRecherche = namespace('RequeteDeRecherche');
 
@@ -26,20 +25,16 @@ export default class VueRcr extends Vue {
    @requeteDeRecherche.Action
    private updateBlocRcr!: (arraySent: Array<RcrProvider>) => void;
    @requeteDeRecherche.Action
-   private updateInternalOperatorSelected!: (operator: number) => void;
+   private updateBlocRcrInternalOperatorSelected!: (operator: number) => void;
    @requeteDeRecherche.Action
-   private updateExternalOperatorSelected!: (operator: number) => void;
+   private updateBlocRcrExternalOperatorSelected!: (operator: number) => void;
 
    //Lancé à chaque MAJ du composant (saisie utilisateur, etc..)
    updated(): void {
       this.updateBlocRcr(this.rcrArrayTyped);
-      this.updateInternalOperatorSelected(this.internalOperatorSelected);
-      this.updateExternalOperatorSelected(this.externalOperatorSelected);
+      this.updateBlocRcrInternalOperatorSelected(this.internalOperatorSelected);
+      this.updateBlocRcrExternalOperatorSelected(this.externalOperatorSelected);
    }
-
-   //Slots permettant d'avoir par defaut une valeur initiale Et/ou/sauf, Ou/Et dans la liste déroulante
-   private disableDefaultSlotValue0 = true;
-   private disableDefaultSlotValue1 = true;
 
    //Par defaut, ou
    private externalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocRcr.externalBlocOperatorListToSelect;
@@ -47,7 +42,7 @@ export default class VueRcr extends Vue {
 
    //Saisir le rcr d'une bibliothèque
    private rcrArrayTyped = [];
-   private rcrHandler: Array<RcrProvider> = this.$store.state.RequeteDeRecherche.globalRcrHandler;
+   private rcrHandler: Array<RcrProvider> = this.$store.state.RequeteDeRecherche.blocRcr.rcrHandler;
 
    //Pour ce lot de rcr (par defaut, ou)
    private internalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocRcr.internalBlocOperatorListToSelect;

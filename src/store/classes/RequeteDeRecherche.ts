@@ -1,67 +1,29 @@
 import {Action, Module, Mutation, VuexModule} from 'vuex-module-decorators';
-import TutorialDataService from '@/axios/services/TutorialDataService';
 import Notice from '@/store/classes/Notice';
 import {BlocPcpRegions} from '@/store/classes/blocsDeRecherche/BlocPcpRegions';
-import {BlocCountry} from '@/store/classes/blocsDeRecherche/BlocCountry';
+import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
 import {BlocPcpMetiers} from '@/store/classes/blocsDeRecherche/BlocPcpMetiers';
-import {BlocRcr} from '@/store/classes/blocsDeRecherche/BlocRcr';
-
-interface Provider {
-   id: number;
-   key: string;
-   text: string;
-   value: boolean;
-}
-
-interface EtOuSaufProvider {
-   id: number;
-   key: string;
-   text: string;
-   value: Ensemble;
-}
-
-interface RcrProvider {
-   id: number;
-   value: number;
-}
-
-export enum Ensemble {
-   Ou,
-   Et,
-   Sauf,
-}
+import {BlocRcr, RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
+import {BlocPpn} from '@/store/classes/blocsDeRecherche/BlocPpn';
+import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
+import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
+import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
+import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
+import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import { Getter } from "vuex-class";
 
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {
-   //tableau des métiers sélectionnés
-   private globalOptionsRcrSelected: Ensemble = Ensemble.Et; //option et / ou / sauf sur bloc rcr
-   private globalRcrHandler: Array<RcrProvider> = []; //tableau des rcr saisis
-   private globalOptionsLotRcrSelected: Ensemble = Ensemble.Et; //pour le lot de rcr, option ou / et
-   private optionsEtOuSaufParDefaut: Array<EtOuSaufProvider> = [
-      {id: 0, key: 'optionPpnET', text: 'ET', value: Ensemble.Ou},
-      {id: 1, key: 'optionPpnOU', text: 'OU', value: Ensemble.Et},
-      {id: 2, key: 'optionPpnSAUF', text: 'SAUF', value: Ensemble.Sauf},
-   ];
-   private optionsEtOuParDefaut: Array<EtOuSaufProvider> = [
-      {id: 0, key: 'optionLotRcrET', text: 'ET', value: Ensemble.Ou},
-      {id: 1, key: 'optionLotRcrOU', text: 'OU', value: Ensemble.Et},
-   ];
-   private globalOptionsPpnSelected: Ensemble = Ensemble.Ou; //option et / ou / sauf sur bloc ppn
-   private globalPpnTypedInNumber = 0; //ppn saisi dans le bloc ppn
-   private globalIssnTypedInNumber = 0; //issn saisi dans le bloc ppn
-   private globalTitleWordsTyped = ''; //mots du titre saisi dans le bloc ppn
-   private globalOptionsEditorSelected: Ensemble = Ensemble.Ou; //et / ou / sauf pour l'editeur
-   private globalEditorTyped = ''; //editeur saisi
-   private globalOptionsLanguageSelected: Ensemble = Ensemble.Ou; // et/ ou/ sauf pour la langue
-   private globalLanguageTyped = ''; // langue saisie
-   private globalOptionsCountrySelected: Ensemble = Ensemble.Ou; // et / ou / sauf pour le pays
-   private globalCountryTyped = ''; // pays saisi
-
    //Blocs de recherche
-   private blocPcpRegions: BlocPcpRegions = new BlocPcpRegions();
-   private blocPcpMetiers: BlocPcpMetiers = new BlocPcpMetiers();
-   private blocRcr: BlocRcr = new BlocRcr();
-   private blocCountry: BlocCountry = new BlocCountry();
+   private blocPcpRegions: BlocPcpRegions = new BlocPcpRegions(Ensemble.Ou);
+   private blocPcpMetiers: BlocPcpMetiers = new BlocPcpMetiers(Ensemble.Ou);
+   private blocRcr: BlocRcr = new BlocRcr(Ensemble.Ou);
+   private blocPpn: BlocPpn = new BlocPpn(Ensemble.Ou);
+   private blocEditeur: BlocEditeur = new BlocEditeur(Ensemble.Ou);
+   private blocPays: BlocPays = new BlocPays(Ensemble.Ou);
+   private blocLangue: BlocLangue = new BlocLangue(Ensemble.Ou);
+   private blocIssn: BlocIssn = new BlocIssn(Ensemble.Ou);
+   private blocMotDuTitre: BlocMotDuTitre = new BlocMotDuTitre(Ensemble.Ou);
 
    /*Objet en JSON*/
    private globalSearchRequestInJson = '';
@@ -75,11 +37,11 @@ class RequeteDeRecherche extends VuexModule {
 
    //Bloc plan de conservation régions
    @Mutation
-   public setArrayRegions(arraySent: Array<Provider>): void {
+   public setArrayRegions(arraySent: Array<CheckboxesProvider>): void {
       this.blocPcpRegions.arrayRegions = arraySent;
    }
    @Mutation
-   public setBlocPcpRegionsStringList(arraySent: Array<Provider>): void {
+   public setBlocPcpRegionsStringList(arraySent: Array<CheckboxesProvider>): void {
       this.blocPcpRegions.pcpStringArrayClean();
       arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpRegions.pcpStringArray.push(element.key) : ''));
    }
@@ -92,7 +54,7 @@ class RequeteDeRecherche extends VuexModule {
       this.blocPcpRegions.externalBlocOperator = operator;
    }
    @Action({rawError: true})
-   public updateBlocRegions(arraySent: Array<Provider>): void {
+   public updateBlocRegions(arraySent: Array<CheckboxesProvider>): void {
       this.context.commit('setArrayRegions', arraySent);
       this.context.commit('setBlocPcpRegionsStringList', arraySent);
       this.context.commit('setBlocPcpRegionsInternalOperator', Ensemble.Ou);
@@ -101,11 +63,11 @@ class RequeteDeRecherche extends VuexModule {
 
    //Bloc plan de conservation métiers
    @Mutation
-   public setArrayMetiers(arraySent: Array<Provider>): void {
+   public setArrayMetiers(arraySent: Array<CheckboxesProvider>): void {
       this.blocPcpMetiers.arrayMetiers = arraySent;
    }
    @Mutation
-   public setBlocPcpMetiersStringList(arraySent: Array<Provider>): void {
+   public setBlocPcpMetiersStringList(arraySent: Array<CheckboxesProvider>): void {
       this.blocPcpMetiers.pcpStringArrayClean();
       arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpMetiers.pcpStringArray.push(element.key) : ''));
    }
@@ -118,7 +80,7 @@ class RequeteDeRecherche extends VuexModule {
       this.blocPcpMetiers.externalBlocOperator = operator;
    }
    @Action({rawError: true})
-   public updateBlocMetiers(arraySent: Array<Provider>): void {
+   public updateBlocMetiers(arraySent: Array<CheckboxesProvider>): void {
       this.context.commit('setArrayMetiers', arraySent);
       this.context.commit('setBlocPcpMetiersStringList', arraySent);
       this.context.commit('setBlocPcpMetiersInternalOperator', Ensemble.Ou);
@@ -130,10 +92,21 @@ class RequeteDeRecherche extends VuexModule {
    public setBlocRcrInternalOperator(operator: number): void {
       this.blocRcr.internalBlocOperator = operator;
    }
+   @Action
+   public updateBlocRcrInternalOperatorSelected(internalOperator: number): void {
+      this.context.commit('setBlocRcrInternalOperator', internalOperator);
+   }
+
    @Mutation
    public setBlocRcrExternalOperator(operator: number): void {
       this.blocRcr.externalBlocOperator = operator;
    }
+   @Action
+   public updateBlocRcrExternalOperatorSelected(externalOperator: number): void {
+      this.context.commit('setBlocRcrExternalOperator', externalOperator);
+      console.log(JSON.stringify(this.blocRcr));
+   }
+
    @Mutation
    public setBlocRcrRcrHandler(arraySent: Array<RcrProvider>): void {
       this.blocRcr.rcrHandler = arraySent;
@@ -151,110 +124,127 @@ class RequeteDeRecherche extends VuexModule {
       this.context.commit('setBlocRcrRcrHandler', arraySent);
       this.context.commit('setBlocRcrRcrListString', arraySent);
    }
-   @Action
-   public updateInternalOperatorSelected(internalOperator: number): void {
-      this.context.commit('setBlocRcrInternalOperator', internalOperator);
-   }
-   @Action
-   public updateExternalOperatorSelected(externalOperator: number): void {
-      this.context.commit('setBlocRcrExternalOperator', externalOperator);
-      console.log(JSON.stringify(this.blocRcr));
-   }
 
-   //Setters du bloc ppn
+   //Bloc Ppn
    @Mutation
-   public setGlobalOptionsPpnSelected(elementSent: Ensemble): void {
-      this.globalOptionsPpnSelected = elementSent;
+   public setBlocPpnExternalOperator(externalOpertaor: number): void {
+      this.blocPpn.externalBlocOperator = externalOpertaor;
    }
    @Action
-   public updateGlobalOptionsPpnSelected(elementSent: Ensemble): void {
-      this.context.commit('setGlobalOptionsPpnSelected', elementSent);
+   public updateBlocPpnExternalOperatorSelected(externalOperator: number): void {
+      this.context.commit('setBlocPpnExternalOperator', externalOperator);
    }
 
    @Mutation
-   public setGlobalPpnTypedInNumber(elementSent: number): void {
-      this.globalPpnTypedInNumber = elementSent;
+   public setBlocPpn(ppn: string): void {
+      this.blocPpn.ppnEntered = ppn;
    }
    @Action
-   public updateGlobalPpnTypedInNumber(elementSent: number): void {
-      this.context.commit('setGlobalPpnTypedInNumber', elementSent);
+   public updateBlocPpn(ppn: string): void {
+      this.context.commit('setBlocPpn', ppn);
+   }
+
+   //Bloc Issn
+   @Mutation
+   public setBlocIssnExternalOperator(externalOperator: number): void {
+      this.blocIssn.externalBlocOperator = externalOperator;
+   }
+   @Action
+   public updateBlocIssnExternalOperatorSelected(externalOperator: number): void {
+      this.context.commit('setBlocIssnExternalOperator', externalOperator);
    }
 
    @Mutation
-   public setGlobalIssnTypedInNumber(elementSent: number): void {
-      this.globalIssnTypedInNumber = elementSent;
+   public setBlocIssn(issn: string): void {
+      this.blocIssn.issnEntered = issn;
    }
    @Action
-   public updateGlobalIssnTypedInNumber(elementSent: number): void {
-      this.context.commit('setGlobalIssnTypedInNumber', elementSent);
+   public updateBlocIssn(issn: string): void {
+      this.context.commit('setBlocIssn', issn);
+   }
+
+   //Bloc Mots du titre
+   @Mutation
+   public setBlocTitre(totalString: string): void {
+      this.blocMotDuTitre.titleWordsStringArrayClean();
+      totalString.split(' ').forEach((element) => {
+         const elementInString = String(element);
+         this.blocMotDuTitre.titleWordsEntered.push(elementInString);
+      });
+   }
+   @Action
+   public updateBlocTitre(totalString: string): void {
+      this.context.commit('setBlocTitre', totalString);
+   }
+
+   //Bloc editeur
+   @Mutation
+   public setBlocEditeurExternalOperatorSelected(externalOperator: number): void {
+      this.blocEditeur.externalBlocOperator = externalOperator;
+   }
+   @Action
+   public updateBlocEditeurExternalOperatorSelected(externalOperator: number): void {
+      this.context.commit('setBlocEditeurExternalOperatorSelected', externalOperator);
    }
 
    @Mutation
-   public setGlobalTitleWordsTyped(elementSent: string): void {
-      this.globalTitleWordsTyped = elementSent;
+   public setBlocEditeur(totalString: string): void {
+      this.blocEditeur.editeurStringArrayClean();
+      totalString.split(' ').forEach((element) => {
+         const elementInString = String(element);
+         this.blocEditeur.editorEntered.push(elementInString);
+      });
    }
    @Action
-   public updateGlobalTitleWordsTyped(elementSent: string): void {
-      this.context.commit('setGlobalTitleWordsTyped', elementSent);
+   public updateBlocEditeur(totalString: string): void {
+      this.context.commit('setBlocEditeur', totalString);
+   }
+
+   //Bloc langue
+   @Mutation
+   public setBlocLangueExternalOperatorSelected(externalOperator: number): void {
+      this.blocLangue.externalBlocOperator = externalOperator;
+   }
+   @Action
+   public updateBlocLangueExternalOperatorSelected(externalOperator: number): void {
+      this.context.commit('setBlocLangueExternalOperatorSelected', externalOperator);
+   }
+   @Mutation
+   public setBlocLangue(arraySent: Array<ListProvider>): void {
+      this.blocLangue.langueStringArrayClean();
+      arraySent.forEach((element) => {
+         this.blocLangue.langueEntered.push(element);
+      });
+   }
+   @Action
+   public updateBlocLangue(arraySent: Array<ListProvider>): void {
+      this.context.commit('setBlocLangue', arraySent);
+   }
+
+   //Bloc Pays
+   @Mutation
+   public setBlocPaysExternalOperatorSelected(externalOperator: number): void {
+      this.blocPays.externalBlocOperator = externalOperator;
+   }
+   @Action
+   public updateBlocPaysExternalOperatorSelected(externalOperator: number): void {
+      this.context.commit('setBlocPaysExternalOperatorSelected', externalOperator);
    }
 
    @Mutation
-   public setGlobalOptionsEditorSelected(elementSent: Ensemble): void {
-      this.globalOptionsEditorSelected = elementSent;
+   public setBlocPays(arraySent: Array<ListProvider>): void {
+      this.blocPays.paysStringArrayClean();
+      arraySent.forEach((element) => {
+         this.blocPays.paysEntered.push(element);
+      });
    }
    @Action
-   public updateGlobalOptionsEditorSelected(elementSent: Ensemble): void {
-      this.context.commit('setGlobalOptionsEditorSelected', elementSent);
+   public updateBlocPays(arraySent: Array<ListProvider>): void {
+      this.context.commit('setBlocPays', arraySent);
    }
 
-   @Mutation
-   public setGlobalEditorTyped(elementSent: string): void {
-      this.globalEditorTyped = elementSent;
-   }
-   @Action
-   public updateGlobalEditorTyped(elementSent: string): void {
-      this.context.commit('setGlobalEditorTyped', elementSent);
-   }
-
-   @Mutation
-   public setGlobalOptionsLanguageSelected(elementSent: Ensemble): void {
-      this.globalOptionsLanguageSelected = elementSent;
-   }
-   @Action
-   public updateGlobalOptionsLanguageSelected(elementSent: Ensemble): void {
-      this.context.commit('setGlobalOptionsLanguageSelected', elementSent);
-   }
-
-   @Mutation
-   public setGlobalLanguageTyped(elementSent: string): void {
-      this.globalLanguageTyped = elementSent;
-   }
-   @Action
-   public updateGlobalLanguageTyped(elementSent: string): void {
-      this.context.commit('setGlobalLanguageTyped', elementSent);
-   }
-
-   @Mutation
-   public setGlobalOptionsCountrySelected(elementSent: Ensemble): void {
-      this.globalOptionsCountrySelected = elementSent;
-   }
-   @Action
-   public updateGlobalOptionsCountrySelected(elementSent: Ensemble): void {
-      this.context.commit('setGlobalOptionsCountrySelected', elementSent);
-   }
-
-   @Mutation
-   public setGlobalCountryTyped(elementSent: string): void {
-      this.globalCountryTyped = elementSent;
-   }
-   @Action
-   public updateGlobalCountryTyped(elementSent: string): void {
-      this.context.commit('setGlobalCountryTyped', elementSent);
-   }
-
-   @Mutation
-   public setJsonGlobalString(): void {
-      this.globalSearchRequestInJson = JSON.stringify(this);
+   get blocPaysListeEntered(): Array<ListProvider> {
+      return this.blocPays.paysEntered;
    }
 
    /*Getters*/
@@ -280,34 +270,45 @@ class RequeteDeRecherche extends VuexModule {
       window.alert(
          JSON.stringify(this.blocPcpRegions.arrayRegions) +
             '\n\n' +
+            JSON.stringify(this.blocPcpRegions.pcpStringArray) +
+            '\n\n' +
             JSON.stringify(this.blocPcpMetiers.arrayMetiers) +
             '\n\n' +
-            JSON.stringify(this.globalOptionsRcrSelected) +
+            JSON.stringify(this.blocPcpMetiers.pcpStringArray) +
             '\n\n' +
-            JSON.stringify(this.globalRcrHandler) +
+            JSON.stringify(this.blocRcr.externalBlocOperator) +
             '\n\n' +
-            JSON.stringify(this.globalOptionsLotRcrSelected) +
+            JSON.stringify(this.blocRcr.internalBlocOperator) +
             '\n\n' +
-            JSON.stringify(this.globalOptionsPpnSelected) +
+            JSON.stringify(this.blocRcr.rcrListString) +
             '\n\n' +
-            JSON.stringify(this.globalPpnTypedInNumber) +
+            JSON.stringify('ppn ext operator' + this.blocPpn.externalBlocOperator) +
             '\n\n' +
-            JSON.stringify(this.globalIssnTypedInNumber) +
+            JSON.stringify('ppn' + this.blocPpn.ppnEntered) +
             '\n\n' +
-            JSON.stringify(this.globalTitleWordsTyped) +
+            JSON.stringify('issn' + this.blocIssn.issnEntered) +
             '\n\n' +
-            JSON.stringify(this.globalOptionsEditorSelected) +
+            JSON.stringify('issnextop' + this.blocIssn.externalBlocOperator) +
             '\n\n' +
-            JSON.stringify(this.globalEditorTyped) +
+            JSON.stringify('mot du titre internal operator' + this.blocMotDuTitre.internalBlocOperator) +
             '\n\n' +
-            JSON.stringify(this.globalOptionsLanguageSelected) +
+            JSON.stringify('mot titre' + this.blocMotDuTitre.titleWordsEntered) +
             '\n\n' +
-            JSON.stringify(this.globalLanguageTyped) +
+            JSON.stringify('editeurOperator' + this.blocEditeur.externalBlocOperator) +
             '\n\n' +
-            JSON.stringify(this.globalOptionsCountrySelected) +
+            JSON.stringify('editeur internal Operator' + this.blocEditeur.internalBlocOperator) +
             '\n\n' +
-            JSON.stringify(this.globalCountryTyped) +
-            '\n\n'
+            JSON.stringify('editeurs entrés' + this.blocEditeur.editorEntered) +
+            '\n\n' +
+            JSON.stringify('langue ext operator' + this.blocLangue.externalBlocOperator) +
+            '\n\n' +
+            JSON.stringify('langues entrées' + this.blocLangue.langueEntered) +
+            '\n\n' +
+            JSON.stringify('langue ext operator' + this.blocLangue.externalBlocOperator) +
+            '\n\n' +
+            JSON.stringify('pays entrés' + this.blocPays.paysEntered) +
+            '\n\n' +
+            JSON.stringify('pays ext operator' + this.blocPays.externalBlocOperator)
       );
    }
 
@@ -407,7 +408,7 @@ class RequeteDeRecherche extends VuexModule {
    }
     */
 
-   @Mutation
+   /*@Mutation
    public setNotices(results: any[]): void {
       this.notices = []; // On vide le tableau des notices
       // On cast les objets générique en Notice
@@ -420,6 +421,6 @@ class RequeteDeRecherche extends VuexModule {
       this.tutorials = elementSent;
    }
 
-   private tutorials: any[] = [];
+   private tutorials: any[] = [];*/
 }
 export default RequeteDeRecherche;

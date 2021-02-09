@@ -1,11 +1,4 @@
-import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-
-interface Provider {
-   id: number;
-   key: string;
-   text: string;
-   value: boolean;
-}
+import {BlocAbstract, CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 export class BlocPcpRegions extends BlocAbstract {
    private _type = 'CriterionPcp'; //Valeur fixe définie par l'API
@@ -13,7 +6,7 @@ export class BlocPcpRegions extends BlocAbstract {
    private _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
 
    //Tableau des regions, avec leur état coché non coché persistant
-   private _arrayRegions: Array<Provider> = [
+   private _arrayRegions: Array<CheckboxesProvider> = [
       {id: 0, key: 'PCAq', text: 'Aquitaine', value: false},
       {id: 1, key: 'Au', text: 'Auvergne', value: false},
       {id: 2, key: 'Bo', text: 'Bourgogne', value: false},
@@ -37,6 +30,10 @@ export class BlocPcpRegions extends BlocAbstract {
       {id: 20, key: 'Udp', text: 'Université de Poitiers', value: false},
       {id: 21, key: 'Udr', text: 'Université de Rouen', value: false},
    ];
+
+   constructor(externalBlocOperator: number) {
+      super(externalBlocOperator);
+   }
 
    get type(): string {
       return this._type;
@@ -66,11 +63,11 @@ export class BlocPcpRegions extends BlocAbstract {
       this._pcpStringArray = [];
    }
 
-   get arrayRegions(): Array<Provider> {
+   get arrayRegions(): Array<CheckboxesProvider> {
       return this._arrayRegions;
    }
 
-   set arrayRegions(value: Array<Provider>) {
+   set arrayRegions(value: Array<CheckboxesProvider>) {
       this._arrayRegions = value;
    }
 }

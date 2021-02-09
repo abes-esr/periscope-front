@@ -1,66 +1,80 @@
 <template>
    <v-container>
-      <v-select :items="optionsPpn" v-on:click="disableDefaultSlotValue0 = false" label="Par defaut, et" class="style1" outlined v-model="optionsPpnSelected" dense>
-         <template v-if="disableDefaultSlotValue0" slot="selection">
-            <span style="color: grey">Et/ou/sauf</span>
-         </template>
-      </v-select>
+      <v-select :items="optionsPpnList" label="Par defaut, et" class="style1" outlined v-model="optionsPpnSelected" dense> </v-select>
       <span>{{ optionsPpnSelected }}</span>
       <span>{{ typeof optionsPpnSelected }}</span>
 
       <v-row>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnTypedInStringType"> </v-text-field>
-            <span>{{ ppnTypedInStringType }}</span>
-            <span>{{ typeof ppnTypedInStringType }}</span>
+            <v-text-field dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnEntered"> </v-text-field>
+            <span>{{ ppnEntered }}</span>
+            <span>{{ typeof ppnEntered }}</span>
          </v-col>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnTypedInStringType"></v-text-field>
-            <span>{{ issnTypedInStringType }}</span>
-            <span>{{ typeof issnTypedInStringType }}</span>
+            <v-text-field dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnEntered"></v-text-field>
+            <span>{{ issnEntered }}</span>
+            <span>{{ typeof issnEntered }}</span>
          </v-col>
       </v-row>
       <v-expansion-panels flat class="outlined-app">
          <v-expansion-panel>
             <v-expansion-panel-header> Rechercher par d'autres critères </v-expansion-panel-header>
             <v-expansion-panel-content>
-               <v-text-field clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titleWordsTyped"></v-text-field>
-               <span>{{ titleWordsTyped }}</span>
-               <span>{{ typeof titleWordsTyped }}</span>
+               <v-text-field clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titreEntered"></v-text-field>
+               <span>{{ titreEntered }}</span>
+               <span>{{ typeof titreEntered }}</span>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="optionsEditor" label="et/ou/sauf" outlined v-model="optionsEditorSelected" class="style2"></v-select>
-                     <span>{{ optionsEditorSelected }}</span>
-                     <span>{{ typeof optionsEditorSelected }}</span>
+                     <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" class="style2"></v-select>
+                     <span>{{ editeurExternalOperatorSelected }}</span>
+                     <span>{{ typeof editeurExternalOperatorSelected }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-text-field outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editorTyped"></v-text-field>
-                     <span>{{ editorTyped }}</span>
-                     <span>{{ typeof editorTyped }}</span>
+                     <v-text-field outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editeurEntered"></v-text-field>
+                     <span>{{ editeurEntered }}</span>
+                     <span>{{ typeof editeurEntered }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="optionsLanguage" label="et/ou/sauf" outlined v-model="optionsLanguageSelected" class="style2"></v-select>
-                     <span>{{ optionsLanguageSelected }}</span>
-                     <span>{{ typeof optionsLanguageSelected }}</span>
+                     <v-select :items="langueExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="langueExternalOperatorSelected" class="style2"></v-select>
+                     <span>{{ langueExternalOperatorSelected }}</span>
+                     <span>{{ typeof langueExternalOperatorSelected }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-text-field outlined label="Langue du document" placeholder="tapez la langue (optionnel)" class="style2" v-model="languageTyped"></v-text-field>
-                     <span>{{ languageTyped }}</span>
-                     <span>{{ typeof languageTyped }}</span>
+                     <v-combobox v-on:change="updateArrayBlocLangue" v-model="langueEntered" :items="langueItems" multiple outlined label="tapez une langue (optionnel)" class="style2" placeholder="langue à saisir">
+                        <template v-slot:selection="{attrs, item, selected}">
+                           <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
+                              <span class="pr-2">
+                                 {{ item.text }}
+                              </span>
+                              <v-icon small @click="removeItem(item, langueEntered)">x</v-icon>
+                           </v-chip>
+                        </template>
+                     </v-combobox>
+                     <span>{{ langueEntered }}</span>
+                     <span>{{ typeof langueEntered }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="optionsCountry" label="et/ou/sauf" outlined class="style2" v-model="optionsCountrySelected"></v-select>
-                     <span>{{ optionsCountrySelected }}</span>
-                     <span>{{ typeof optionsCountrySelected }}</span>
+                     <v-select :items="paysExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="paysExternalOperatorSelected" class="style2"></v-select>
+                     <span>{{ paysExternalOperatorSelected }}</span>
+                     <span>{{ typeof paysExternalOperatorSelected }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-text-field outlined label="Pays de publication" placeholder="tapez un pays (optionnel)" class="style2" v-model="countryTyped"></v-text-field>
-                     <span>{{ countryTyped }}</span>
-                     <span>{{ typeof countryTyped }}</span>
+                     <v-combobox v-on:change="updateArrayBlocPays" v-model="paysEntered" :items="paysItems" multiple outlined label="tapez un pays (optionnel)" class="style2" placeholder="pays à saisir">
+                        <template v-slot:selection="{attrs, item, selected}">
+                           <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
+                              <span class="pr-2">
+                                 {{ item.text }}
+                              </span>
+                              <v-icon small @click="removeItem(item, paysEntered)">x</v-icon>
+                           </v-chip>
+                        </template>
+                     </v-combobox>
+                     <span>{{ JSON.stringify(this.blocPays.paysEntered) }}</span>
+                     <span>{{ typeof paysEntered }}</span>
                   </v-col>
                </v-row>
             </v-expansion-panel-content>
@@ -70,117 +84,165 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue, Watch} from 'vue-property-decorator';
-import {namespace} from 'vuex-class';
+import {Component, Vue} from 'vue-property-decorator';
+import {Getter, namespace} from 'vuex-class';
+import {Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
+import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
 
 //Import de classe
 const requeteDeRecherche = namespace('RequeteDeRecherche');
-
-interface OptionsProvider {
-   id: number;
-   key: string;
-   text: string;
-   value: Ensemble;
-}
-
-enum Ensemble {
-   Union, //0
-   Intersection, //1
-   Difference, //2
-}
 
 @Component
 export default class VuePpn extends Vue {
    //Setters de classe
    @requeteDeRecherche.Action
-   private updateGlobalOptionsPpnSelected!: (element: Ensemble) => void;
+   private updateBlocPpnExternalOperatorSelected!: (element: Ensemble) => void;
    @requeteDeRecherche.Action
-   private updateGlobalPpnTypedInNumber!: (element: number) => void;
+   private updateBlocPpn!: (element: string) => void;
    @requeteDeRecherche.Action
-   private updateGlobalIssnTypedInNumber!: (element: number) => void;
+   private updateBlocIssnExternalOperatorSelected!: (element: number) => void;
    @requeteDeRecherche.Action
-   private updateGlobalTitleWordsTyped!: (element: string) => void;
+   private updateBlocIssn!: (element: string) => void;
    @requeteDeRecherche.Action
-   private updateGlobalOptionsEditorSelected!: (element: Ensemble) => void;
+   private updateBlocTitre!: (element: string) => void;
    @requeteDeRecherche.Action
-   private updateGlobalEditorTyped!: (element: string) => void;
+   private updateBlocEditeurExternalOperatorSelected!: (element: Ensemble) => void;
    @requeteDeRecherche.Action
-   private updateGlobalOptionsLanguageSelected!: (element: Ensemble) => void;
+   private updateBlocEditeur!: (element: string) => void;
    @requeteDeRecherche.Action
-   private updateGlobalLanguageTyped!: (element: string) => void;
+   private updateBlocLangueExternalOperatorSelected!: (element: Ensemble) => void;
    @requeteDeRecherche.Action
-   private updateGlobalOptionsCountrySelected!: (element: Ensemble) => void;
+   private updateBlocLangue!: (element: Array<ListProvider>) => void;
    @requeteDeRecherche.Action
-   private updateGlobalCountryTyped!: (element: string) => void;
+   private updateBlocPaysExternalOperatorSelected!: (element: Ensemble) => void;
+   @requeteDeRecherche.Action
+   private updateBlocPays!: (element: Array<ListProvider>) => void;
 
-   //Slots
-   private disableDefaultSlotValue0 = true;
+   @requeteDeRecherche.State
+   private blocLangue!: BlocLangue; //TODO etape1 nouveaux getters
+   @requeteDeRecherche.State
+   private blocPays!: BlocPays;
 
    //A chaque creation
-   created() {
-      if (this.ppnTypedInStringType === '0') {
-         this.ppnTypedInStringType = '';
+   created(): void {
+      this.langueEntered = this.blocLangue.langueEntered; //TODO etape2 nouveaux getters
+
+      this.paysEntered = this.blocPays.paysEntered;
+      this.paysExternalBlocOperatorListToSelect = this.blocPays.externalBlocOperatorListToSelect;
+      this.paysExternalOperatorSelected = this.blocPays.externalBlocOperator;
+      this.paysItems = this.blocPays.paysListe;
+
+      if (this.ppnEntered === '') {
+         this.ppnEntered = '';
       }
-      if (this.issnTypedInStringType === '0') {
-         this.issnTypedInStringType = '';
+      if (this.issnEntered === '') {
+         this.issnEntered = '';
       }
    }
 
+   private displayTab: Array<ListProvider>;
+
    //A Chaque modification, setters de classe
-   updated() {
-      this.updateGlobalOptionsPpnSelected(this.optionsPpnSelected);
+   updated(): void {
       /*Setter qui transforme la chaine de caractère en nombre,
      cette dernière ne devant contenir que des nombres,
      et reinitialise la valeur du champ si l'utilisateur à saisi des alphanumériques
      Ne pas mettre d'attribut clearable sur les champs spécifiés
      */
       //PPN
-      if (this.ppnTypedInStringType.match('\\D')) {
-         this.ppnTypedInStringType = '';
+      if (this.ppnEntered.match('\\d{8,9}X?')) {
+         this.ppnEntered = '';
       } else {
-         this.updateGlobalPpnTypedInNumber(+this.ppnTypedInStringType);
+         this.updateBlocPpn(this.ppnEntered);
       }
+      this.updateBlocPpnExternalOperatorSelected(this.optionsPpnSelected);
       //ISSN
-      if (this.issnTypedInStringType.match('\\D')) {
-         this.issnTypedInStringType = '';
+      if (this.issnEntered.match('\\d{4}-\\d{4}')) {
+         this.issnEntered = '';
       } else {
-         this.updateGlobalIssnTypedInNumber(+this.issnTypedInStringType);
+         this.updateBlocIssn(this.issnEntered);
       }
-      this.updateGlobalOptionsPpnSelected(this.optionsPpnSelected);
-      this.updateGlobalTitleWordsTyped(this.titleWordsTyped);
-      this.updateGlobalOptionsEditorSelected(this.optionsEditorSelected);
-      this.updateGlobalEditorTyped(this.editorTyped);
-      this.updateGlobalOptionsLanguageSelected(this.optionsLanguageSelected);
-      this.updateGlobalLanguageTyped(this.languageTyped);
-      this.updateGlobalOptionsCountrySelected(this.optionsCountrySelected);
-      this.updateGlobalCountryTyped(this.countryTyped);
+      this.updateBlocIssnExternalOperatorSelected(Ensemble.Ou);
+      this.updateBlocTitre(this.titreEntered);
+      this.updateBlocEditeurExternalOperatorSelected(this.editeurExternalOperatorSelected);
+      this.updateBlocEditeur(this.editeurEntered);
+      this.updateBlocLangueExternalOperatorSelected(this.langueExternalOperatorSelected);
+      this.updateBlocPaysExternalOperatorSelected(this.paysExternalOperatorSelected);
+   }
+
+   computed(): void {
+      this.updateBlocLangue(this.langueEntered);
+      this.updateBlocPays(this.paysEntered);
    }
 
    /*Attributs*/
 
    //Par defaut, et
-   private optionsPpn: Array<OptionsProvider> = this.$store.state.RequeteDeRecherche.optionsEtOuSaufParDefaut;
-   private optionsPpnSelected: Ensemble = this.$store.state.RequeteDeRecherche.globalOptionsPpnSelected;
+   private optionsPpnList: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocPpn.externalBlocOperatorListToSelect;
+   private optionsPpnSelected: Ensemble = this.$store.state.RequeteDeRecherche.blocPpn.externalBlocOperator;
    //N° de PPN
-   private ppnTypedInStringType = String(this.$store.state.RequeteDeRecherche.globalPpnTypedInNumber);
+   private ppnEntered = this.$store.state.RequeteDeRecherche.blocPpn.ppnEntered;
    //N° de ISSN
-   private issnTypedInStringType = String(this.$store.state.RequeteDeRecherche.globalIssnTypedInNumber);
+   private issnEntered = this.$store.state.RequeteDeRecherche.blocIssn.issnEntered;
    //Mots du titre
-   private titleWordsTyped = String(this.$store.state.RequeteDeRecherche.globalTitleWordsTyped);
+   private titreEntered = '';
    //et / ou / sauf pour Editeur
-   private optionsEditor: Array<OptionsProvider> = this.$store.state.RequeteDeRecherche.optionsEtOuSaufParDefaut;
-   private optionsEditorSelected: Ensemble = this.$store.state.RequeteDeRecherche.globalOptionsEditorSelected;
+   private editeurExternalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocEditeur.externalBlocOperatorListToSelect;
+   private editeurExternalOperatorSelected: Ensemble = this.$store.state.RequeteDeRecherche.blocEditeur.externalBlocOperator;
    //Editeur tapé
-   private editorTyped = String(this.$store.state.RequeteDeRecherche.globalEditorTyped);
+   private editeurEntered = this.$store.state.RequeteDeRecherche.blocEditeur.editorEntered;
+   private langueItems: Array<ListProvider> = this.$store.state.RequeteDeRecherche.blocLangue.langueListe;
    //Et / ou / sauf de la langue du document
-   private optionsLanguage: Array<OptionsProvider> = this.$store.state.RequeteDeRecherche.optionsEtOuSaufParDefaut;
-   private optionsLanguageSelected: Ensemble = this.$store.state.RequeteDeRecherche.globalOptionsLanguageSelected;
+   private langueExternalBlocOperatorListToSelect: Array<OperatorProvider> = this.$store.state.RequeteDeRecherche.blocLangue.externalBlocOperatorListToSelect;
+   private langueExternalOperatorSelected: Ensemble = this.$store.state.RequeteDeRecherche.blocLangue.internalBlocOperator;
    //Langue du document tapé
-   private languageTyped = String(this.$store.state.RequeteDeRecherche.globalLanguageTyped);
+   private langueEntered: Array<ListProvider>; //TODO etape3 nouveau getters
+
+   private paysItems: Array<ListProvider>;
    //Et / ou / sauf du pays de publication
-   private optionsCountry: Array<OptionsProvider> = this.$store.state.RequeteDeRecherche.optionsEtOuSaufParDefaut;
-   private optionsCountrySelected: Ensemble = this.$store.state.RequeteDeRecherche.globalOptionsCountrySelected;
+   private paysExternalBlocOperatorListToSelect: Array<OperatorProvider>;
+   private paysExternalOperatorSelected: Ensemble;
    //Pays de publication tapé
-   private countryTyped = String(this.$store.state.RequeteDeRecherche.globalCountryTyped);
+   private paysEntered: Array<ListProvider>;
+
+   //v-combobox méthodes de mise à jour
+   private removeItem(itemId: ListProvider, arrayTarget: Array<ListProvider>): void {
+      const index = arrayTarget.indexOf(itemId, 0);
+      if (index > -1) {
+         arrayTarget.splice(index, 1);
+      }
+      //Attention sur les slots il faut spécifiquement appeler le mutateur d'état dans la méthode reliée à l'event
+      //Pas dans updated
+      this.updateBlocLangue(this.langueEntered);
+      this.updateBlocPays(this.paysEntered);
+   }
+
+   private updateArrayBlocLangue(): void {
+      this.updateBlocLangue(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.langueEntered, 1));
+   }
+
+   private updateArrayBlocPays(): void {
+      this.updateBlocPays(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.paysEntered, 1));
+   }
+
+   private limitArrayListNumberOfElementAndClearArrayIfEmpty(array: Array<ListProvider>, sizeLimit: number): Array<ListProvider> {
+      if (array.length === 0) {
+         array = [];
+         return array;
+      }
+
+      if (array.length > sizeLimit) {
+         array.pop();
+         return array;
+      }
+
+      return array;
+   }
+   //v-combobox fin des méthodes de mise a jour
+
+   get display(): Array<ListProvider> {
+      return this.displayTab;
+   }
 }
 </script>

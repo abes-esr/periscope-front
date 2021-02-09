@@ -24,9 +24,11 @@
    margin: -1.5em 0 0.5em 0;
 }
 .style1 {
-  background-color: white; max-height: 2.5em
+   background-color: white;
+   max-height: 2.5em;
 }
 .style2 {
-  background-color: white; max-height: 3.5em
+   background-color: white;
+   max-height: 3.5em;
 }
 </style>

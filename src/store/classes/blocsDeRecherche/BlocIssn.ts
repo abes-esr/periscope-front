@@ -1,18 +1,13 @@
 import {BlocAbstract, Ensemble, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
-export interface RcrProvider {
-   id: number;
-   value: number;
-}
-
-export class BlocRcr extends BlocAbstract {
-   private _type = 'CriterionRcr'; //Valeur fixe définie par l'API
+export class BlocIssn extends BlocAbstract {
+   private _type = 'CriterionIssn'; //Valeur fixe définie par l'API
    private _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
-   private _rcrHandler: Array<RcrProvider> = []; //Catcheur des RCR saisis
-   private _rcrListString: Array<string> = []; //Tableau des RCR en chaîne
+   private _issnEntered = '';
    private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
+      {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
    ];
    private _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
@@ -32,40 +27,28 @@ export class BlocRcr extends BlocAbstract {
       this._type = value;
    }
 
-   get internalBlocOperator(): number {
+   get internalBlocOperator(): Ensemble {
       return this._internalBlocOperator;
    }
 
-   set internalBlocOperator(value: number) {
+   set internalBlocOperator(value: Ensemble) {
       this._internalBlocOperator = value;
    }
 
-   get externalBlocOperator(): number {
+   get externalBlocOperator(): Ensemble {
       return this._externalBlocOperator;
    }
 
-   set externalBlocOperator(value: number) {
+   set externalBlocOperator(value: Ensemble) {
       this._externalBlocOperator = value;
    }
 
-   get rcrHandler(): Array<RcrProvider> {
-      return this._rcrHandler;
+   get issnEntered(): string {
+      return this._issnEntered;
    }
 
-   set rcrHandler(value: Array<RcrProvider>) {
-      this._rcrHandler = value;
-   }
-
-   get rcrListString(): Array<string> {
-      return this._rcrListString;
-   }
-
-   set rcrListString(value: Array<string>) {
-      this._rcrListString = value;
-   }
-
-   public rcrStringArrayClean(): void {
-      this._rcrListString = [];
+   set issnEntered(value: string) {
+      this._issnEntered = value;
    }
 
    get internalBlocOperatorListToSelect(): Array<OperatorProvider> {

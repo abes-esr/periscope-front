@@ -1,9 +1,6 @@
 <template>
    <v-container>
-      <v-btn v-on:click="clickVisualisation">TEST - Affichage Membres classe Requête recherche globale</v-btn>
-      <v-btn v-on:click="consommationApi">TEST - Consommation API</v-btn>
-      <v-btn v-on:click="affichageMembre">TEST - Affichage membres Solr</v-btn>
-      <v-btn v-on:click="affichageMembre">TEST - Affichage membres JSON</v-btn>
+      <v-btn v-on:click="clickVisualisation">TEST</v-btn>
       <component-header></component-header>
       <component-recherche></component-recherche>
       <component-footer></component-footer>
@@ -41,8 +38,8 @@ export default class Accueil extends Vue {
    @RequeteDeRecherche.Action
    private getOneTest!: () => void;
 
-  @RequeteDeRecherche.Action
-  private getSpecific!: () => string;
+   @RequeteDeRecherche.Action
+   private getSpecific!: () => string;
 
    updated(): void {
       //console.log('step');
@@ -53,16 +50,6 @@ export default class Accueil extends Vue {
    }
    private clickVisualisation() {
       this.displayFinalRequest();
-   }
-
-   //Utilisation d'un ws, et affectation des membres de classes avec le resultat (Test)
-   private consommationApi() {
-      this.getOneTest();
-   }
-
-   private affichageMembre() {
-      window.alert(JSON.stringify(this.$store.state.RequeteDeRecherche.globalRegionsSolr));
-      window.alert(this.$store.state.RequeteDeRecherche.jsonSearchRequest);
    }
 }
 </script>

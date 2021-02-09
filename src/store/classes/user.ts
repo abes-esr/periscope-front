@@ -6,7 +6,6 @@ interface Provider {
    value: boolean;
 }
 
-
 @Module({namespaced: true})
 class User extends VuexModule {
    private globalRegions: Array<Provider>;
@@ -45,7 +44,7 @@ class User extends VuexModule {
    }
    @Action
    public updateRegions(newName: Array<Provider>): void {
-      this.context.commit('setRegions', newName)
+      this.context.commit('setRegions', newName);
    }
 
    get globalRegionsValue(): Array<Provider> {

@@ -14,25 +14,18 @@
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
-import {namespace} from "vuex-class";
+import {namespace} from 'vuex-class';
 
 //Classe importée
 const RequeteDeRecherche = namespace('RequeteDeRecherche');
 
-interface Provider {
-   id: number;
-   key: string;
-   value: string;
-}
-
 @Component
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
+   @RequeteDeRecherche.Action
+   private findNoticesByCriteria!: () => void;
 
-  @RequeteDeRecherche.Action
-  private findNoticesByCriteria!: () => void;
-
-  private clickSearch() {
-    this.findNoticesByCriteria();
-  }
+   private clickSearch() {
+      this.findNoticesByCriteria();
+   }
 }
 </script>
