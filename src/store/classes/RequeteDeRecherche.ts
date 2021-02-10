@@ -251,12 +251,25 @@ class RequeteDeRecherche extends VuexModule {
    /*
    NOTE: Be careful, getters in vuex are not reactive, (except for primitive types ?).
    Loaded just once when the component is created.
-   To access a data reactively, use this syntax
+   To access a data reactively, use this syntax (OLD SYNTAX)
    syntax:  this.$store.state.{CLASSNAME}.{MEMBER_OF_CLASS}
    example: this.$store.state.RequeteDeRecherche.globalRegions
    to put in the component which you want access at the data.
 
-   Exemple of vue getter (doesn't work actually)
+   To access a data reactively with no problems, use this syntax (NEW SYNTAX)
+   In a component:
+   STEP 1 in component class declare state
+      @requeteDeRecherche.State
+      private blocLangue!: BlocLangue;
+   STEP 2 in component class create locate attribute which receive the data from store
+      private langueEntered: Array<ListProvider>;
+   STEP 3 to initialize the data in class (use this.langueEntered in v-model as example)
+      this.langueEntered = this.blocLangue.langueEntered;
+   STEP 4 to access the data in template
+      <span>{{ this.blocLangue.externalBlocOperator }}</span>
+      <span>{{ typeof this.blocLangue.externalBlocOperator }}</span>
+
+   Exemple of old vue getter version (doesn't work actually)
 
    get getGlobalRegionsValue(): Array<Provider> {
       return this.globalRegions;

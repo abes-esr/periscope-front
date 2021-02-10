@@ -1,19 +1,19 @@
 <template>
    <v-container>
-      <v-select :items="ppnExternalBlocOperatorListToSelect" label="Par defaut, et" class="style1" outlined v-model="ppnExternalBlocOperatorSelected" v-on:change="eventUpdateBlocPpnExternalOperator" dense> </v-select>
+      <v-select :items="ppnExternalBlocOperatorListToSelect" label="Par defaut, et" class="style1" outlined v-model="ppnExternalBlocOperatorSelected" @change="eventUpdateBlocPpnExternalOperator" dense> </v-select>
       <span>{{ this.blocPpn.externalBlocOperator }}</span>
       <span>{{ typeof this.blocPpn.externalBlocOperator }}</span>
 
       <v-row>
          <v-col>
-            <v-text-field v-on:change="regexPpnControl" :rules="ppnAlert" dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnEntered"> </v-text-field>
-            <span>{{ ppnEntered }}</span>
-            <span>{{ typeof ppnEntered }}</span>
+            <v-text-field @change="regexPpnControlAndUpdateBloc" @blur="regexPpnControlAndUpdateBloc" @keyup.enter="regexPpnControlAndUpdateBloc" :rules="ppnAlert" dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnEntered"> </v-text-field>
+            <span>{{ this.blocPpn.ppnEntered }}</span>
+            <span>{{ typeof this.blocPpn.ppnEntered }}</span>
          </v-col>
          <v-col>
-            <v-text-field v-on:change="regexIssnControl" :rules="issnAlert" dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnEntered"></v-text-field>
-            <span>{{ issnEntered }}</span>
-            <span>{{ typeof issnEntered }}</span>
+            <v-text-field @change="regexPpnControlAndUpdateBloc" @blur="regexIssnControlAndUpdateBloc" @keyup.enter="regexIssnControlAndUpdateBloc" :rules="issnAlert" dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnEntered"></v-text-field>
+            <span>{{ this.blocIssn.issnEntered }}</span>
+            <span>{{ typeof this.blocIssn.issnEntered }}</span>
          </v-col>
       </v-row>
 
@@ -21,29 +21,29 @@
          <v-expansion-panel>
             <v-expansion-panel-header> Rechercher par d'autres critères </v-expansion-panel-header>
             <v-expansion-panel-content>
-               <v-text-field clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titreEntered"></v-text-field>
-               <span>{{ titreEntered }}</span>
-               <span>{{ typeof titreEntered }}</span>
+               <v-text-field @change="eventUpdateBlocTitre" @blur="eventUpdateBlocTitre" @keyup.enter="eventUpdateBlocTitre" clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titreEntered"></v-text-field>
+               <span>{{ this.blocMotDuTitre.titleWordsEntered }}</span>
+               <span>{{ typeof this.blocMotDuTitre.titleWordsEntered }}</span>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" v-on:change="eventUpdateBlocEditeurExternalOperator" class="style2"></v-select>
+                     <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" @change="eventUpdateBlocEditeurExternalOperator" class="style2"></v-select>
                      <span>{{ this.blocEditeur.externalBlocOperator }}</span>
                      <span>{{ typeof this.blocEditeur.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-text-field outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editeurEntered"></v-text-field>
-                     <span>{{ editeurEntered }}</span>
-                     <span>{{ typeof editeurEntered }}</span>
+                     <v-text-field @change="eventUpdateBlocEditeur" @blur="eventUpdateBlocEditeur" @keyup.enter="eventUpdateBlocEditeur" outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editeurEntered"></v-text-field>
+                     <span>{{ this.blocEditeur.editorEntered }}</span>
+                     <span>{{ typeof this.blocEditeur.editorEntered }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="langueExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="langueExternalOperatorSelected" v-on:change="eventUpdateBlocLangueExternalOperator" class="style2"></v-select>
+                     <v-select :items="langueExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="langueExternalOperatorSelected" @change="eventUpdateBlocLangueExternalOperator" class="style2"></v-select>
                      <span>{{ this.blocLangue.externalBlocOperator }}</span>
                      <span>{{ typeof this.blocLangue.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-combobox v-on:change="updateArrayBlocLangue" v-model="langueEntered" :items="langueItems" multiple outlined label="tapez une langue (optionnel)" class="style2" placeholder="langue à saisir">
+                     <v-combobox @change="updateArrayBlocLangue" v-model="langueEntered" :items="langueItems" multiple outlined label="tapez une langue (optionnel)" class="style2" placeholder="langue à saisir">
                         <template v-slot:selection="{attrs, item, selected}">
                            <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
                               <span class="pr-2">
@@ -59,12 +59,12 @@
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
-                     <v-select :items="paysExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="paysExternalOperatorSelected" v-on:change="eventUpdateBlocPaysExternalOperator" class="style2"></v-select>
+                     <v-select :items="paysExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="paysExternalOperatorSelected" @change="eventUpdateBlocPaysExternalOperator" class="style2"></v-select>
                      <span>{{ this.blocPays.externalBlocOperator }}</span>
                      <span>{{ typeof this.blocPays.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
-                     <v-combobox v-on:change="updateArrayBlocPays" v-model="paysEntered" :items="paysItems" multiple outlined label="tapez un pays (optionnel)" class="style2" placeholder="pays à saisir">
+                     <v-combobox @change="updateArrayBlocPays" v-model="paysEntered" :items="paysItems" multiple outlined label="tapez un pays (optionnel)" class="style2" placeholder="pays à saisir">
                         <template v-slot:selection="{attrs, item, selected}">
                            <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
                               <span class="pr-2">
@@ -155,7 +155,7 @@ export default class VuePpn extends Vue {
    private paysExternalBlocOperatorListToSelect: Array<OperatorProvider>;
    private paysExternalOperatorSelected: Ensemble;
 
-   //A chaque creation
+   //A chaque creation du composant
    created(): void {
       this.ppnExternalBlocOperatorListToSelect = this.blocPpn.externalBlocOperatorListToSelect;
       this.ppnExternalBlocOperatorSelected = this.blocPpn.externalBlocOperator;
@@ -178,25 +178,14 @@ export default class VuePpn extends Vue {
       this.paysItems = this.blocPays.paysListe;
    }
 
-   private displayTab: Array<ListProvider>;
-
-   //A Chaque modification -> updated, setters de classe
+   //A Chaque modification du composant -> updated, setters de classe
+   //Déconseillé, utiliser plutôt les events
    //Ne fonctionne que sur les champs de saisie libre, pour les autres champs utiliser les events
    updated(): void {
       console.log('update');
-      this.updateBlocPpnExternalOperatorSelected(this.ppnExternalBlocOperatorSelected);
-
-      this.updateBlocIssnExternalOperatorSelected(Ensemble.Ou);
-      this.updateBlocTitre(this.titreEntered);
-      this.updateBlocEditeurExternalOperatorSelected(this.editeurExternalOperatorSelected);
-      this.updateBlocEditeur(this.editeurEntered);
-      this.updateBlocPaysExternalOperatorSelected(this.paysExternalOperatorSelected);
    }
    computed(): void {
       console.log('computed');
-      this.updateBlocLangueExternalOperatorSelected(this.langueExternalOperatorSelected);
-      this.updateBlocLangue(this.langueEntered);
-      this.updateBlocPays(this.paysEntered);
    }
 
    /*EVENTS*/
@@ -226,20 +215,18 @@ export default class VuePpn extends Vue {
          array = [];
          return array;
       }
-
       if (array.length > sizeLimit) {
          array.pop();
          return array;
       }
-
       return array;
    }
    //v-combobox fin des méthodes de mise a jour
 
    //Events de contrôle des champs
-   private ppnAlert: Array<string> = [];
-   private regexPpnControl(): void {
-      if (this.ppnEntered.match('^\\d{1,9}X?$')) {
+   private ppnAlert: Array<string> = []; //Message d'erreur
+   private regexPpnControlAndUpdateBloc(): void {
+      if (this.ppnEntered.match('^\\d{8,9}X?$')) {
          this.updateBlocPpn(this.ppnEntered);
          this.ppnAlert = [];
       } else {
@@ -249,7 +236,7 @@ export default class VuePpn extends Vue {
    }
 
    private issnAlert: Array<string> = [];
-   private regexIssnControl(): void {
+   private regexIssnControlAndUpdateBloc(): void {
       if (this.issnEntered.match('^\\d{4}-\\d{4}$')) {
          this.updateBlocIssn(this.issnEntered);
          this.issnAlert = [];
@@ -259,7 +246,15 @@ export default class VuePpn extends Vue {
       }
    }
 
-   //Events sur les listes déroulante //TODO reprendre ici faire des events pour chaque element
+   private eventUpdateBlocTitre(): void {
+      this.updateBlocTitre(this.titreEntered);
+   }
+
+   private eventUpdateBlocEditeur(): void {
+      this.updateBlocEditeur(this.editeurEntered);
+   }
+
+   //Events sur les listes déroulante
    eventUpdateBlocPpnExternalOperator(): void {
       this.updateBlocPpnExternalOperatorSelected(this.ppnExternalBlocOperatorSelected);
    }
