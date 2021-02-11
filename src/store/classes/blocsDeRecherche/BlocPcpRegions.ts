@@ -1,4 +1,4 @@
-import {BlocAbstract, CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import { BlocAbstract, CheckboxesProvider, Ensemble } from "@/store/classes/blocsDeRecherche/BlocAbstract";
 
 export class BlocPcpRegions extends BlocAbstract {
    private _type = 'CriterionPcp'; //Valeur fixe définie par l'API
@@ -49,6 +49,26 @@ export class BlocPcpRegions extends BlocAbstract {
 
    set internalBlocOperator(value: number) {
       this._internalBlocOperator = value;
+   }
+
+   get internalBlocOperatorInString(): string {
+      switch (this._internalBlocOperator){
+         case Ensemble.Ou : return 'OU';
+         case Ensemble.Et : return 'ET';
+         case Ensemble.Sauf: return 'SAUF';
+         default: return 'UNDEFINED';
+      }
+   }
+
+   get internalBlocOperatorInArrayString(): Array<string> {
+      const pcpInArrayString: Array<string> = [];
+      switch (this._internalBlocOperator){
+         case Ensemble.Ou: pcpInArrayString.push('OU'); break;
+         case Ensemble.Et: pcpInArrayString.push('ET'); break;
+         case Ensemble.Sauf: pcpInArrayString.push('SAUF'); break;
+         default: pcpInArrayString.push('UNDEFINED'); break;
+      }
+      return pcpInArrayString;
    }
 
    get pcpStringArray(): Array<string> {

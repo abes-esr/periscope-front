@@ -10,6 +10,12 @@ import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
 import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {
+   JsonIssnBlocProvider, JsonMotsDuTitreProvider,
+   JsonPcpBlocProvider,
+   JsonPpnBlocProvider,
+   JsonRcrBlocProvider
+} from "@/store/classes/interfaces/JsonInterfaces";
 
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {
@@ -324,11 +330,53 @@ class RequeteDeRecherche extends VuexModule {
       );
    }
 
-   /*
    @Action({rawError: true})
    public findNoticesByCriteria(): void {
-      const criteria: Array<any> = [];
+      const jsonToSentToBackEnd: Array<any> = [];
 
+      //Construction de la partie PCP Regions et Metiers en JSON
+      const pcpRegionsAndMetiersList: Array<string> = [];
+      this.blocPcpRegions.pcpStringArray.forEach((element) => pcpRegionsAndMetiersList.push(element));
+      this.blocPcpMetiers.pcpStringArray.forEach((element) => pcpRegionsAndMetiersList.push(element));
+
+      const pcpBlocJson: Array<JsonPcpBlocProvider> = [
+         {
+            type: this.blocPcpRegions.type,
+            bloc_operator: this.blocPcpRegions.externalBlocOperatorInString,
+            pcp: pcpRegionsAndMetiersList,
+            pcp_operator: this.blocPcpRegions.internalBlocOperatorInArrayString,
+         },
+      ];
+
+      //Construction de la partie Rcr en JSON
+      const rcrBlocJson: Array<JsonRcrBlocProvider> = [
+         {
+            type: this.blocRcr.type,
+            bloc_operator: this.blocRcr.externalBlocOperatorInString,
+            rcr: this.blocRcr.rcrListString,
+            rcr_operator: this.blocRcr.internalBlocOperatorInString,
+         },
+      ];
+
+      const ppnBlocJson: Array<JsonPpnBlocProvider> = [
+         {
+            type: this.blocPpn.type,
+            bloc_operator: this.blocPpn.externalBlocOperatorInString,
+            ppn: this.blocPpn.ppnEnteredInArrayString,
+         },
+      ];
+
+      const issnBlocJson: Array<JsonIssnBlocProvider> = [
+         {
+            type: this.blocIssn.type,
+            bloc_operator: this.blocIssn.externalBlocOperatorInString,
+            issn: this.blocIssn.issnEnteredInArrayString,
+         }
+      ]
+
+      //this.blocPcpRegions.arrayRegions.forEach((element) => element.value ? criteria.push(element.key))
+
+      /*
       // Critère PCP
       const criterionPcp = new CriterionPcp();
       this.globalRegions.forEach((element) => (element.value ? criterionPcp.addPcp(element.key) : ''));
@@ -416,9 +464,8 @@ class RequeteDeRecherche extends VuexModule {
          .catch((err) => {
             //console.log('Axios err: ', err);
             window.alert("Erreur avec l'API Periscope :" + err);
-         });
+         });*/
    }
-    */
 
    /*@Mutation
    public setNotices(results: any[]): void {

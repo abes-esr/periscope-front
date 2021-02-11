@@ -51,6 +51,12 @@ export class BlocPpn extends BlocAbstract {
       this._ppnEntered = value;
    }
 
+   get ppnEnteredInArrayString(): Array<string> {
+      const arrayString: Array<string> = [];
+      arrayString.push(this._ppnEntered);
+      return arrayString;
+   }
+
    get internalBlocOperatorListToSelect(): Array<OperatorProvider> {
       return this._internalBlocOperatorListToSelect;
    }

@@ -51,6 +51,12 @@ export class BlocIssn extends BlocAbstract {
       this._issnEntered = value;
    }
 
+   get issnEnteredInArrayString(): Array<string> {
+      const arrayString: Array<string> = [];
+      arrayString.push(this._issnEntered);
+      return arrayString;
+   }
+
    get internalBlocOperatorListToSelect(): Array<OperatorProvider> {
       return this._internalBlocOperatorListToSelect;
    }

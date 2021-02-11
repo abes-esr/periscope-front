@@ -40,4 +40,13 @@ export abstract class BlocAbstract {
    set externalBlocOperator(value: number) {
       this._externalBlocOperator = value;
    }
+
+   get externalBlocOperatorInString(): string {
+      switch (this.externalBlocOperator){
+         case Ensemble.Ou : return 'OU';
+         case Ensemble.Et : return 'ET';
+         case Ensemble.Sauf: return 'SAUF';
+         default: return 'UNDEFINED';
+      }
+   }
 }

@@ -40,6 +40,15 @@ export class BlocRcr extends BlocAbstract {
       this._internalBlocOperator = value;
    }
 
+   get internalBlocOperatorInString(): string {
+      switch (this.internalBlocOperator){
+         case Ensemble.Ou : return 'OU';
+         case Ensemble.Et : return 'ET';
+         case Ensemble.Sauf: return 'SAUF';
+         default: return 'UNDEFINED';
+      }
+   }
+
    get externalBlocOperator(): number {
       return this._externalBlocOperator;
    }

@@ -203,7 +203,7 @@ export default class VuePpn extends Vue {
    }
 
    private updateArrayBlocLangue(): void {
-      this.updateBlocLangue(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.langueEntered, 1));
+      this.updateBlocLangue(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.langueEntered, 9));
    }
 
    private updateArrayBlocPays(): void {
@@ -247,7 +247,11 @@ export default class VuePpn extends Vue {
    }
 
    private eventUpdateBlocTitre(): void {
-      this.updateBlocTitre(this.titreEntered);
+      if (String(this.titreEntered) === 'null') {
+         this.updateBlocTitre('');
+      } else {
+         this.updateBlocTitre(this.titreEntered);
+      }
    }
 
    private eventUpdateBlocEditeur(): void {
