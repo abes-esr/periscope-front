@@ -36,6 +36,15 @@ export class BlocPpn extends BlocAbstract {
       this._internalBlocOperator = value;
    }
 
+   get internalBlocOperatorInString(): string {
+      switch (this._internalBlocOperator){
+         case Ensemble.Et: return 'Et';
+         case Ensemble.Ou: return 'Ou';
+         case Ensemble.Sauf: return 'Sauf';
+         default: return 'Non défini';
+      }
+   }
+
    get externalBlocOperator(): Ensemble {
       return this._externalBlocOperator;
    }

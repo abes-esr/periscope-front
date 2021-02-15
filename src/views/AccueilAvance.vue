@@ -1,11 +1,15 @@
 <template>
-   <v-expansion-panels style="padding-top: 1em">
-      <component-bloc></component-bloc>
-   </v-expansion-panels>
+   <v-row justify="center">
+      <v-col cols="11">
+         <v-expansion-panels>
+            <component-bloc></component-bloc>
+         </v-expansion-panels>
+      </v-col>
+   </v-row>
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
+import { Component, Mixins, Vue } from "vue-property-decorator";
 import {namespace} from 'vuex-class';
 import ComponentBloc from '@/components/accueil_avance_niv1/ComponentPpn.vue';
 
