@@ -2,10 +2,10 @@
    <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em">
       <v-row :align="getVerticalAlignValue(1)">
          <!--External Operator-->
-         <v-col xs="12" sm="3" lg="2">
+         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em">
             <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected"></v-select>
          </v-col>
-         <v-col xs="12" sm="7" lg="8">
+         <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
@@ -20,8 +20,8 @@
                </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content>
-               <v-row :align="getVerticalAlignValue(1)" :justify="getHorizontalJustifyValue(1)" style="max-height: 100%">
-                  <v-col>
+               <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
+                  <v-col sm="10">
                      <!--Elements-->
                      <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" clearable multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
                         <template v-slot:selection="{item}">
@@ -32,15 +32,14 @@
                      </v-combobox>
                      <!--Internal Operator-->
                   </v-col>
-               </v-row>
-               <v-row :align="getVerticalAlignValue(1)" :justify="getHorizontalJustifyValue(1)">
-                  <v-col style="padding-left: 0.5em; padding-top: 0.5em">
+                  <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em">
                      <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected"></v-select>
                   </v-col>
                </v-row>
+              <v-alert dense outlined type="warning"> Au dela de <strong>15 PPN</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste de PPN</strong> </v-alert>
             </v-expansion-panel-content>
          </v-col>
-         <v-col xs="12" sm="2" lg="2">
+         <v-col xs="2" sm="2" lg="2">
             <v-btn small icon class="ma-0" fab color="teal">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
@@ -85,8 +84,8 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    private comboboxArrayTyped: Array<string> = [];
 
    created(): void {
-      this.external_operator_label = 'Avec autres blocs';
-      this.internal_operator_label = 'Entre les éléments de ce bloc';
+      this.external_operator_label = 'Autres blocs';
+      this.internal_operator_label = 'Entre PPN';
       this.list_external_operator_to_select = this.blocPpn.externalBlocOperatorListToSelect;
       this.list_internal_operator_to_select = this.blocPpn.internalBlocOperatorListToSelect;
       this.external_operator_selected = this.blocPpn.externalBlocOperator;
