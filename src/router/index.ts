@@ -1,6 +1,7 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
 import Accueil from '@/views/Accueil.vue';
+import AccueilAvance from '@/views/AccueilAvance.vue';
 
 Vue.use(VueRouter);
 
@@ -9,6 +10,11 @@ const routes: Array<RouteConfig> = [
       path: '/',
       name: 'Accueil',
       component: Accueil,
+   },
+   {
+      path: '/v2',
+      name: 'Accueil-v2',
+      component: AccueilAvance,
    },
    {
       path: '/about',

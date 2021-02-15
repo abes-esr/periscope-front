@@ -9,7 +9,7 @@ export interface JsonRcrBlocProvider {
    type: string;
    bloc_operator: string;
    rcr: Array<string>;
-   rcr_operator: string;
+   rcr_operator: Array<string>;
 }
 
 export interface JsonPpnBlocProvider {
@@ -29,4 +29,39 @@ export interface JsonMotsDuTitreProvider {
    bloc_operator: string;
    titleWords: Array<string>;
    titleWordsOperator: Array<string>;
+}
+
+export interface JsonEditeurProvider {
+   type: string;
+   bloc_operator: string;
+   editors: Array<string>;
+   editorsOperator: Array<string>;
+}
+
+export interface JsonMotDuTitreProvider {
+   type: string;
+   bloc_operator: string;
+   titleWords: Array<string>;
+   titleWordsOperator: Array<string>;
+}
+
+export interface JsonPaysProvider {
+   type: string;
+   bloc_operator: string;
+   countries: Array<string>;
+   countriesOperator: Array<string>;
+}
+
+export interface JsonPaysProvider {
+   type: string;
+   bloc_operator: string;
+   countries: Array<string>;
+   countriesOperator: Array<string>;
+}
+
+export interface JsonLanguesProvider {
+   type: string;
+   bloc_operator: string;
+   language: Array<string>;
+   languageOperators: Array<string>;
 }

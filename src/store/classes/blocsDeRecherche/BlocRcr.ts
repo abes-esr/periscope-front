@@ -41,12 +41,35 @@ export class BlocRcr extends BlocAbstract {
    }
 
    get internalBlocOperatorInString(): string {
-      switch (this.internalBlocOperator){
-         case Ensemble.Ou : return 'OU';
-         case Ensemble.Et : return 'ET';
-         case Ensemble.Sauf: return 'SAUF';
-         default: return 'UNDEFINED';
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            return 'OU';
+         case Ensemble.Et:
+            return 'ET';
+         case Ensemble.Sauf:
+            return 'SAUF';
+         default:
+            return 'UNDEFINED';
       }
+   }
+
+   get internalBlocOperatorInArrayString(): Array<string> {
+      const arrayString: Array<string> = [];
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            this.rcrListString.forEach(() => arrayString.push('Ou'));
+            break;
+         case Ensemble.Et:
+            this.rcrListString.forEach(() => arrayString.push('Et'));
+            break;
+         case Ensemble.Sauf:
+            this.rcrListString.forEach(() => arrayString.push('Sauf'));
+            break;
+         default:
+            this.rcrListString.forEach(() => arrayString.push('Undefined'));
+            break;
+      }
+      return arrayString;
    }
 
    get externalBlocOperator(): number {

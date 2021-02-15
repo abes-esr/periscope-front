@@ -10,12 +10,7 @@ import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
 import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-import {
-   JsonIssnBlocProvider, JsonMotsDuTitreProvider,
-   JsonPcpBlocProvider,
-   JsonPpnBlocProvider,
-   JsonRcrBlocProvider
-} from "@/store/classes/interfaces/JsonInterfaces";
+import {JsonEditeurProvider, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/classes/interfaces/JsonInterfaces';
 
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {
@@ -147,6 +142,16 @@ class RequeteDeRecherche extends VuexModule {
    @Action
    public updateBlocPpn(ppn: string): void {
       this.context.commit('setBlocPpn', ppn);
+   }
+
+   @Mutation
+   public setBlocPpnListString(arraySent: Array<string>): void {
+      this.blocPpn.ppnStringArrayClean();
+      this.blocPpn.ppnListString = arraySent;
+   }
+
+   @Action updateBlocPpnStringList(arraySent: Array<string>): void {
+      this.context.commit('setBlocPpnListString', arraySent);
    }
 
    //Bloc Issn
@@ -354,7 +359,7 @@ class RequeteDeRecherche extends VuexModule {
             type: this.blocRcr.type,
             bloc_operator: this.blocRcr.externalBlocOperatorInString,
             rcr: this.blocRcr.rcrListString,
-            rcr_operator: this.blocRcr.internalBlocOperatorInString,
+            rcr_operator: this.blocRcr.internalBlocOperatorInArrayString,
          },
       ];
 
@@ -371,8 +376,48 @@ class RequeteDeRecherche extends VuexModule {
             type: this.blocIssn.type,
             bloc_operator: this.blocIssn.externalBlocOperatorInString,
             issn: this.blocIssn.issnEnteredInArrayString,
-         }
-      ]
+         },
+      ];
+
+      const titleWordsBlocJson: Array<JsonMotsDuTitreProvider> = [
+         {
+            type: this.blocMotDuTitre.type,
+            bloc_operator: this.blocMotDuTitre.externalBlocOperatorInString,
+            titleWords: this.blocMotDuTitre.titleWordsEntered,
+            titleWordsOperator: this.blocMotDuTitre.internalBlocOperatorInArrayString,
+         },
+      ];
+
+      const editorBlocJson: Array<JsonEditeurProvider> = [
+         {
+            type: this.blocEditeur.type,
+            bloc_operator: this.blocEditeur.externalBlocOperatorInString,
+            editors: this.blocEditeur.editorEntered,
+            editorsOperator: this.blocEditeur.internalBlocOperatorInArrayString,
+         },
+      ];
+
+      const paysBlocJson: Array<JsonPaysProvider> = [
+         {
+            type: this.blocPays.type,
+            bloc_operator: this.blocPays.externalBlocOperatorInString,
+            countries: this.blocPays.paysEnteredInArrayString,
+            countriesOperator: this.blocPays.internalBlocOperatorInArrayString,
+         },
+      ];
+
+      const langueBlocJson: Array<JsonLanguesProvider> = [
+         {
+            type: this.blocLangue.type,
+            bloc_operator: this.blocLangue.externalBlocOperatorInString,
+            language: this.blocLangue.paysEnteredInArrayString,
+            languageOperators: this.blocLangue.internalBlocOperatorInArrayString,
+         },
+      ];
+
+      jsonToSentToBackEnd.push(pcpBlocJson, rcrBlocJson, ppnBlocJson, issnBlocJson, titleWordsBlocJson, editorBlocJson, paysBlocJson, langueBlocJson);
+
+      console.log(JSON.stringify(jsonToSentToBackEnd));
 
       //this.blocPcpRegions.arrayRegions.forEach((element) => element.value ? criteria.push(element.key))
 

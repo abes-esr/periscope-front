@@ -40,6 +40,7 @@ export class BlocEditeur extends BlocAbstract {
       this._editorEntered.forEach((element) => (stringBuild += element + ' '));
       return stringBuild;
    }
+
    public editeurStringArrayClean(): void {
       this._editorEntered = [];
    }
@@ -50,6 +51,25 @@ export class BlocEditeur extends BlocAbstract {
 
    set internalBlocOperator(value: Ensemble) {
       this._internalBlocOperator = value;
+   }
+
+   get internalBlocOperatorInArrayString(): Array<string> {
+      const pcpInArrayString: Array<string> = [];
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            this._editorEntered.forEach(() => pcpInArrayString.push('Ou'));
+            break;
+         case Ensemble.Et:
+            this._editorEntered.forEach(() => pcpInArrayString.push('Et'));
+            break;
+         case Ensemble.Sauf:
+            this._editorEntered.forEach(() => pcpInArrayString.push('Sauf'));
+            break;
+         default:
+            this._editorEntered.forEach(() => pcpInArrayString.push('Undefined'));
+            break;
+      }
+      return pcpInArrayString;
    }
 
    get internalBlocOperatorListToSelect(): Array<OperatorProvider> {

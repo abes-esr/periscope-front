@@ -513,12 +513,37 @@ export class BlocLangue extends BlocAbstract {
       this._internalBlocOperator = value;
    }
 
+   get internalBlocOperatorInArrayString(): Array<string> {
+      const pcpInArrayString: Array<string> = [];
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            this._langueEntered.forEach(() => pcpInArrayString.push('Ou'));
+            break;
+         case Ensemble.Et:
+            this._langueEntered.forEach(() => pcpInArrayString.push('Et'));
+            break;
+         case Ensemble.Sauf:
+            this._langueEntered.forEach(() => pcpInArrayString.push('Sauf'));
+            break;
+         default:
+            this._langueEntered.forEach(() => pcpInArrayString.push('Undefined'));
+            break;
+      }
+      return pcpInArrayString;
+   }
+
    get langueEntered(): Array<ListProvider> {
       return this._langueEntered;
    }
 
    set langueEntered(value: Array<ListProvider>) {
       this._langueEntered = value;
+   }
+
+   get paysEnteredInArrayString(): Array<string> {
+      const arrayString: Array<string> = [];
+      this._langueEntered.forEach((element) => arrayString.push(element.id));
+      return arrayString;
    }
 
    public langueStringArrayClean(): void {

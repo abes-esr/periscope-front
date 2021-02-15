@@ -3,7 +3,7 @@
       <v-select dense label="Par defaut, ou" :items="externalBlocOperatorListToSelect" class="style1" outlined v-model="externalOperatorSelected"></v-select>
       <span>{{ externalOperatorSelected }}</span>
       <span>{{ typeof externalOperatorSelected }}</span>
-      <v-combobox clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
+      <v-combobox :rules="rcrAlert" clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
       <span>{{ typeof rcrHandler }}</span> -> <span>{{ rcrHandler }}</span>
       <v-select dense label="Pour ce lot de rcr (par defaut, ou)" :items="internalBlocOperatorListToSelect" class="style1" outlined v-model="internalOperatorSelected"> </v-select>
       <span>{{ internalOperatorSelected }}</span>
@@ -28,6 +28,8 @@ export default class VueRcr extends Vue {
    private updateBlocRcrInternalOperatorSelected!: (operator: number) => void;
    @requeteDeRecherche.Action
    private updateBlocRcrExternalOperatorSelected!: (operator: number) => void;
+
+   private rcrAlert: Array<string> = []; //Message d'erreur
 
    //Lancé à chaque MAJ du composant (saisie utilisateur, etc..)
    updated(): void {
@@ -57,17 +59,20 @@ export default class VueRcr extends Vue {
    rcrTyped(newArrayVal: []): void {
       if (newArrayVal.length === 0) {
          this.rcrHandler = [];
+         this.rcrAlert = [];
          return;
       }
 
       //if the value of last element of array contains characters, it removes from list, return = get out of function
       if (new RegExp('\\D').test(newArrayVal[newArrayVal.length - 1])) {
          newArrayVal.pop();
+         this.rcrAlert.push('Un RCR ne contient pas de caractères');
          return;
       }
 
       //if the value of last element of array contains only digits, and array target to fill length is different from current Array watched
       if (new RegExp('\\d').test(newArrayVal[newArrayVal.length - 1]) && this.rcrHandler.length !== newArrayVal.length) {
+         this.rcrAlert = [];
          //conversion of string input (who contains only digits) in number type
          let newLastValConvertedInNumberType: number = +newArrayVal[newArrayVal.length - 1];
          //push element in rcrHandler array, with id value associated at rcr

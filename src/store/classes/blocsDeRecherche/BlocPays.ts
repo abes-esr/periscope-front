@@ -2,7 +2,7 @@ import {BlocAbstract, Ensemble, ListProvider, OperatorProvider} from '@/store/cl
 
 export class BlocPays extends BlocAbstract {
    private _type = 'CriterionCountry'; //Valeur fixe définie par l'API
-   private _internalBlocOperator: number; //Operateur interne entre les pays
+   private _internalBlocOperator: Ensemble = Ensemble.Ou; //Operateur interne entre les pays
    private _paysEntered: Array<ListProvider> = [];
    private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
@@ -291,12 +291,37 @@ export class BlocPays extends BlocAbstract {
       this._internalBlocOperator = value;
    }
 
+   get internalBlocOperatorInArrayString(): Array<string> {
+      const pcpInArrayString: Array<string> = [];
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            this._paysEntered.forEach(() => pcpInArrayString.push('Ou'));
+            break;
+         case Ensemble.Et:
+            this._paysEntered.forEach(() => pcpInArrayString.push('Et'));
+            break;
+         case Ensemble.Sauf:
+            this._paysEntered.forEach(() => pcpInArrayString.push('Sauf'));
+            break;
+         default:
+            this._paysEntered.forEach(() => pcpInArrayString.push('Undefined'));
+            break;
+      }
+      return pcpInArrayString;
+   }
+
    get paysEntered(): Array<ListProvider> {
       return this._paysEntered;
    }
 
    set paysEntered(value: Array<ListProvider>) {
       this._paysEntered = value;
+   }
+
+   get paysEnteredInArrayString(): Array<string> {
+      const arrayString: Array<string> = [];
+      this._paysEntered.forEach((element) => arrayString.push(element.id));
+      return arrayString;
    }
 
    public paysStringArrayClean(): void {

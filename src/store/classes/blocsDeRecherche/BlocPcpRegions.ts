@@ -1,4 +1,4 @@
-import { BlocAbstract, CheckboxesProvider, Ensemble } from "@/store/classes/blocsDeRecherche/BlocAbstract";
+import {BlocAbstract, CheckboxesProvider, Ensemble} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 export class BlocPcpRegions extends BlocAbstract {
    private _type = 'CriterionPcp'; //Valeur fixe définie par l'API
@@ -52,21 +52,33 @@ export class BlocPcpRegions extends BlocAbstract {
    }
 
    get internalBlocOperatorInString(): string {
-      switch (this._internalBlocOperator){
-         case Ensemble.Ou : return 'OU';
-         case Ensemble.Et : return 'ET';
-         case Ensemble.Sauf: return 'SAUF';
-         default: return 'UNDEFINED';
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            return 'OU';
+         case Ensemble.Et:
+            return 'ET';
+         case Ensemble.Sauf:
+            return 'SAUF';
+         default:
+            return 'UNDEFINED';
       }
    }
 
    get internalBlocOperatorInArrayString(): Array<string> {
       const pcpInArrayString: Array<string> = [];
-      switch (this._internalBlocOperator){
-         case Ensemble.Ou: pcpInArrayString.push('OU'); break;
-         case Ensemble.Et: pcpInArrayString.push('ET'); break;
-         case Ensemble.Sauf: pcpInArrayString.push('SAUF'); break;
-         default: pcpInArrayString.push('UNDEFINED'); break;
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            this._pcpStringArray.forEach(() => pcpInArrayString.push('Ou'));
+            break;
+         case Ensemble.Et:
+            this._pcpStringArray.forEach(() => pcpInArrayString.push('Et'));
+            break;
+         case Ensemble.Sauf:
+            this._pcpStringArray.forEach(() => pcpInArrayString.push('Sauf'));
+            break;
+         default:
+            this._pcpStringArray.forEach(() => pcpInArrayString.push('Undefined'));
+            break;
       }
       return pcpInArrayString;
    }

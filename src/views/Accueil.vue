@@ -13,16 +13,10 @@ import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentRecherche from '@/components/accueil_niv1/Recherche.vue';
 import ComponentFooter from '@/components/accueil_niv1/Footer.vue';
 import {namespace} from 'vuex-class';
+import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 //Classe importée
 const RequeteDeRecherche = namespace('RequeteDeRecherche');
-
-interface Provider {
-   id: number;
-   key: string;
-   text: string;
-   value: boolean;
-}
 
 @Component({
    components: {
@@ -44,7 +38,7 @@ export default class Accueil extends Vue {
    updated(): void {
       //console.log('step');
    }
-   get testReactive(): Array<Provider> {
+   get testReactive(): Array<CheckboxesProvider> {
       //Les getters des parents ne sont actuellement pas reactive
       return this.$store.state.RequeteDeRecherche.globalRegions;
    }

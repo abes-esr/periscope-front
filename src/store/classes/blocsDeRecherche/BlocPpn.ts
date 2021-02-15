@@ -4,6 +4,7 @@ export class BlocPpn extends BlocAbstract {
    private _type = 'CriterionPpn'; //Valeur fixe définie par l'API
    private _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
    private _ppnEntered = '';
+   private _ppnListString: Array<string> = [];
    private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
@@ -57,6 +58,14 @@ export class BlocPpn extends BlocAbstract {
       return arrayString;
    }
 
+   get ppnListString(): Array<string> {
+      return this._ppnListString;
+   }
+
+   set ppnListString(value: Array<string>) {
+      this._ppnListString = value;
+   }
+
    get internalBlocOperatorListToSelect(): Array<OperatorProvider> {
       return this._internalBlocOperatorListToSelect;
    }
@@ -71,5 +80,9 @@ export class BlocPpn extends BlocAbstract {
 
    set externalBlocOperatorListToSelect(value: Array<OperatorProvider>) {
       this._externalBlocOperatorListToSelect = value;
+   }
+
+   public ppnStringArrayClean(): void {
+      this._ppnListString = [];
    }
 }
