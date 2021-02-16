@@ -127,12 +127,21 @@ class RequeteDeRecherche extends VuexModule {
 
    //Bloc Ppn
    @Mutation
-   public setBlocPpnExternalOperator(externalOpertaor: number): void {
-      this.blocPpn.externalBlocOperator = externalOpertaor;
+   public setBlocPpnExternalOperator(externalOperator: number): void {
+      this.blocPpn.externalBlocOperator = externalOperator;
    }
    @Action
    public updateBlocPpnExternalOperatorSelected(externalOperator: number): void {
       this.context.commit('setBlocPpnExternalOperator', externalOperator);
+   }
+
+   @Mutation
+   public setBlocPpnInternalOperator(internalOperator: number): void {
+      this.blocPpn.internalBlocOperator = internalOperator;
+   }
+   @Action
+   public updateBlocPpnInternalOperatorSelected(internalOperator: number): void {
+      this.context.commit('setBlocPpnInternalOperator', internalOperator);
    }
 
    @Mutation

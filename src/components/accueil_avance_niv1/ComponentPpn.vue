@@ -3,7 +3,7 @@
       <v-row :align="getVerticalAlignValue(1)">
          <!--External Operator-->
          <v-col xs="2" sm="2" lg="2" style="margin-right: -2em">
-            <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected"></v-select>
+            <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator"></v-select>
          </v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
@@ -33,10 +33,10 @@
                      <!--Internal Operator-->
                   </v-col>
                   <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em">
-                     <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected"></v-select>
+                     <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
                   </v-col>
                </v-row>
-              <v-alert dense outlined type="warning"> Au dela de <strong>15 PPN</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste de PPN</strong> </v-alert>
+               <v-alert dense outlined type="warning"> Au dela de <strong>15 PPN</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste de PPN</strong> </v-alert>
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
@@ -71,6 +71,10 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
 
    @requeteDeRecherche.Action
    private updateBlocPpnStringList!: (arraySent: Array<string>) => void;
+   @requeteDeRecherche.Action
+   private updateBlocPpnExternalOperatorSelected!: (externalOperator: number) => void;
+   @requeteDeRecherche.Action
+   private updateBlocPpnInternalOperatorSelected!: (externalOperator: number) => void;
 
    private external_operator_label: string;
    private internal_operator_label: string;
@@ -93,10 +97,9 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
       this.comboboxArrayTyped = this.blocPpn.ppnListString;
       this.comboboxLabel = 'PPN saisis';
       this.comboboxPlaceholder = 'Saisir des n° de PPN';
-
-      console.log(this.blocPpn.ppnListString);
    }
 
+   //Events v-combobox
    private addItem(): void {
       if (this.comboboxArrayTyped.length !== 0) {
          const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
@@ -123,6 +126,15 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
          chain += element + ', ';
       });
       return chain;
+   }
+
+   //Events v-select
+   eventUpdateBlocExternalOperator(): void {
+      this.updateBlocPpnExternalOperatorSelected(this.external_operator_selected);
+   }
+
+   eventUpdateBlocInternalOperator(): void {
+      this.updateBlocPpnInternalOperatorSelected(this.internal_operator_selected);
    }
 }
 </script>
