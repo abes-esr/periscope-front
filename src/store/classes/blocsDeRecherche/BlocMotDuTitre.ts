@@ -39,16 +39,16 @@ export class BlocMotDuTitre extends BlocAbstract {
       const pcpInArrayString: Array<string> = [];
       switch (this._internalBlocOperator) {
          case Ensemble.Ou:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('Ou'));
+            this._titleWordsEntered.forEach(() => pcpInArrayString.push('OU'));
             break;
          case Ensemble.Et:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('Et'));
+            this._titleWordsEntered.forEach(() => pcpInArrayString.push('ET'));
             break;
          case Ensemble.Sauf:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('Sauf'));
+            this._titleWordsEntered.forEach(() => pcpInArrayString.push('SAUF'));
             break;
          default:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('Undefined'));
+            this._titleWordsEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
             break;
       }
       return pcpInArrayString;

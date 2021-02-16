@@ -1,4 +1,4 @@
-import {BlocAbstract, CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import { BlocAbstract, CheckboxesProvider, Ensemble } from "@/store/classes/blocsDeRecherche/BlocAbstract";
 
 export class BlocPcpMetiers extends BlocAbstract {
    private _type = 'CriterionPcp'; //Valeur fixe définie par l'API
@@ -46,6 +46,19 @@ export class BlocPcpMetiers extends BlocAbstract {
 
    set internalBlocOperator(value: number) {
       this._internalBlocOperator = value;
+   }
+
+   get internalBlocOperatorInString(): string {
+      switch (this._internalBlocOperator) {
+         case Ensemble.Ou:
+            return 'OU';
+         case Ensemble.Et:
+            return 'ET';
+         case Ensemble.Sauf:
+            return 'SAUF';
+         default:
+            return 'UNDEFINED';
+      }
    }
 
    get pcpStringArray(): Array<string> {

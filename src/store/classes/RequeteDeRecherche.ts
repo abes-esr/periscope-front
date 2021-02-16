@@ -10,7 +10,8 @@ import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
 import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-import {JsonEditeurProvider, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/classes/interfaces/JsonInterfaces';
+import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/classes/interfaces/JsonInterfaces';
+import PeriscopeDataService from '@/axios/services/PeriscopeDataService';
 
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {
@@ -346,167 +347,14 @@ class RequeteDeRecherche extends VuexModule {
 
    @Action({rawError: true})
    public findNoticesByCriteria(): void {
-      const jsonToSentToBackEnd: Array<any> = [];
-
-      //Construction de la partie PCP Regions et Metiers en JSON
-      const pcpRegionsAndMetiersList: Array<string> = [];
-      this.blocPcpRegions.pcpStringArray.forEach((element) => pcpRegionsAndMetiersList.push(element));
-      this.blocPcpMetiers.pcpStringArray.forEach((element) => pcpRegionsAndMetiersList.push(element));
-
-      const pcpBlocJson: Array<JsonPcpBlocProvider> = [
-         {
-            type: this.blocPcpRegions.type,
-            bloc_operator: this.blocPcpRegions.externalBlocOperatorInString,
-            pcp: pcpRegionsAndMetiersList,
-            pcp_operator: this.blocPcpRegions.internalBlocOperatorInArrayString,
-         },
-      ];
-
-      //Construction de la partie Rcr en JSON
-      const rcrBlocJson: Array<JsonRcrBlocProvider> = [
-         {
-            type: this.blocRcr.type,
-            bloc_operator: this.blocRcr.externalBlocOperatorInString,
-            rcr: this.blocRcr.rcrListString,
-            rcr_operator: this.blocRcr.internalBlocOperatorInArrayString,
-         },
-      ];
-
-      const ppnBlocJson: Array<JsonPpnBlocProvider> = [
-         {
-            type: this.blocPpn.type,
-            bloc_operator: this.blocPpn.externalBlocOperatorInString,
-            ppn: this.blocPpn.ppnEnteredInArrayString,
-         },
-      ];
-
-      const issnBlocJson: Array<JsonIssnBlocProvider> = [
-         {
-            type: this.blocIssn.type,
-            bloc_operator: this.blocIssn.externalBlocOperatorInString,
-            issn: this.blocIssn.issnEnteredInArrayString,
-         },
-      ];
-
-      const titleWordsBlocJson: Array<JsonMotsDuTitreProvider> = [
-         {
-            type: this.blocMotDuTitre.type,
-            bloc_operator: this.blocMotDuTitre.externalBlocOperatorInString,
-            titleWords: this.blocMotDuTitre.titleWordsEntered,
-            titleWordsOperator: this.blocMotDuTitre.internalBlocOperatorInArrayString,
-         },
-      ];
-
-      const editorBlocJson: Array<JsonEditeurProvider> = [
-         {
-            type: this.blocEditeur.type,
-            bloc_operator: this.blocEditeur.externalBlocOperatorInString,
-            editors: this.blocEditeur.editorEntered,
-            editorsOperator: this.blocEditeur.internalBlocOperatorInArrayString,
-         },
-      ];
-
-      const paysBlocJson: Array<JsonPaysProvider> = [
-         {
-            type: this.blocPays.type,
-            bloc_operator: this.blocPays.externalBlocOperatorInString,
-            countries: this.blocPays.paysEnteredInArrayString,
-            countriesOperator: this.blocPays.internalBlocOperatorInArrayString,
-         },
-      ];
-
-      const langueBlocJson: Array<JsonLanguesProvider> = [
-         {
-            type: this.blocLangue.type,
-            bloc_operator: this.blocLangue.externalBlocOperatorInString,
-            language: this.blocLangue.paysEnteredInArrayString,
-            languageOperators: this.blocLangue.internalBlocOperatorInArrayString,
-         },
-      ];
-
-      jsonToSentToBackEnd.push(pcpBlocJson, rcrBlocJson, ppnBlocJson, issnBlocJson, titleWordsBlocJson, editorBlocJson, paysBlocJson, langueBlocJson);
+      const jsonToSentToBackEnd: Array<JsonGlobalSearchRequest> = this.context.getters['constructJsonGlobalRequest'];
 
       console.log(JSON.stringify(jsonToSentToBackEnd));
-
-      //this.blocPcpRegions.arrayRegions.forEach((element) => element.value ? criteria.push(element.key))
-
-      /*
-      // Critère PCP
-      const criterionPcp = new CriterionPcp();
-      this.globalRegions.forEach((element) => (element.value ? criterionPcp.addPcp(element.key) : ''));
-      this.globalRegions.forEach(function (pcp) {
-         if (pcp.value) {
-            criterionPcp.addPcp(pcp.key);
-         }
-      });
-      this.globalMetiers.forEach(function (pcp) {
-         if (pcp.value) {
-            criterionPcp.addPcp(pcp.key);
-         }
-      });
-
-      if (criterionPcp.getPcp.length > 0) {
-         criteria.push(criterionPcp);
-      }
-
-      // Critère RCR
-
-
-      const criterionRcr = new CriterionRcr(this.getGlobalOptionsRcrSelectedValue);
-      const myOption = this.getGlobalOptionsLotRcrSelected;
-      this.getRcrHandler.forEach(function (rcr) {
-         //console.log(rcr.value);
-         criterionRcr.addRcr(String(rcr.value), myOption);
-      });
-      if (criterionRcr.getRcr.length > 0) {
-         criteria.push(criterionRcr);
-      }
-
-      // Critère PPN
-      if (this.globalPpnTypedInNumber) {
-         const criterionPpn = new CriterionPpn(this.globalOptionsPpnSelected);
-         criterionPpn.addPpn(String(this.globalPpnTypedInNumber));
-         criteria.push(criterionPpn);
-      }
-
-      // Critère ISSN
-      if (this.globalIssnTypedInNumber) {
-         const criterionIssn = new CriterionIssn(this.globalOptionsPpnSelected);
-         criterionIssn.addIssn(String(this.globalIssnTypedInNumber));
-         criteria.push(criterionIssn);
-      }
-
-      // Critère Mots du titre
-      if (this.globalTitleWordsTyped) {
-         const criterionTitleWords = new CriterionTitleWords(Ensemble.Union);
-         criterionTitleWords.addTitleWord(String(this.globalTitleWordsTyped), Ensemble.Union);
-         criteria.push(criterionTitleWords);
-      }
-
-      // Critère éditeur
-      if (this.globalEditorTyped) {
-         const criterionEditor = new CriterionEditor(this.globalOptionsEditorSelected);
-         criterionEditor.addEditor(String(this.globalEditorTyped), Ensemble.Union);
-         criteria.push(criterionEditor);
-      }
-
-      // Critère Langue de publication
-      if (this.globalLanguageTyped) {
-         const criterionLanguage = new CriterionLanguage(this.globalOptionsLanguageSelected);
-         criterionLanguage.addLanguage(String(this.globalLanguageTyped), Ensemble.Union);
-         criteria.push(criterionLanguage);
-      }
-
-      // Critère pays
-      if (this.globalCountryTyped) {
-         const criterionCountry = new CriterionCountry(this.globalOptionsCountrySelected);
-         criterionCountry.addCountry(String(this.globalCountryTyped), Ensemble.Union);
-         criteria.push(criterionCountry);
-      }
+      console.log(JSON.parse(JSON.stringify(jsonToSentToBackEnd)));
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
-      Promise.all([PeriscopeDataService.findNoticesByCriteria(0, 25, JSON.stringify(criteria))])
+      Promise.all([PeriscopeDataService.findNoticesByCriteria(0, 25, JSON.stringify(jsonToSentToBackEnd))])
          .then((response) => {
             if (response[0].status == 200) {
                this.context.commit('setNotices', response[0].data);
@@ -518,7 +366,87 @@ class RequeteDeRecherche extends VuexModule {
          .catch((err) => {
             //console.log('Axios err: ', err);
             window.alert("Erreur avec l'API Periscope :" + err);
-         });*/
+         });
+   }
+
+   @Action({rawError: true})
+   get constructJsonGlobalRequest(): Array<JsonGlobalSearchRequest> {
+      //Les blocs ne sont rajoutés que si il contiennent des données
+      const jsonToReturn: Array<JsonGlobalSearchRequest> = [];
+
+      //Construction de la partie PCP Regions et Metiers en JSON
+      if (this.blocPcpRegions.pcpStringArray.length !== 0 || this.blocPcpMetiers.pcpStringArray.length !== 0) {
+         const pcpRegionsAndMetiersList: Array<string> = [];
+         this.blocPcpRegions.pcpStringArray.forEach((element) => pcpRegionsAndMetiersList.push(element));
+         this.blocPcpMetiers.pcpStringArray.forEach((element) => pcpRegionsAndMetiersList.push(element));
+         const pcpRegionsAndMetiersInternalOperator: Array<string> = [];
+         this.blocPcpRegions.arrayRegions.forEach((element) => (element.value ? pcpRegionsAndMetiersInternalOperator.push(this.blocPcpRegions.internalBlocOperatorInString) : ''));
+         this.blocPcpMetiers.arrayMetiers.forEach((element) => (element.value ? pcpRegionsAndMetiersInternalOperator.push(this.blocPcpMetiers.internalBlocOperatorInString) : ''));
+
+         const pcpBlocJson: JsonPcpBlocProvider = {
+            type: this.blocPcpRegions.type,
+            bloc_operator: this.blocPcpRegions.externalBlocOperatorInString,
+            pcp: pcpRegionsAndMetiersList,
+            pcp_operator: pcpRegionsAndMetiersInternalOperator,
+         };
+
+         jsonToReturn.push(pcpBlocJson);
+      }
+
+      //Construction de la partie Rcr en JSON
+      if(this.blocRcr.rcrListString.length !== 0){
+         const rcrBlocJson: JsonRcrBlocProvider = {
+            type: this.blocRcr.type,
+            bloc_operator: this.blocRcr.externalBlocOperatorInString,
+            rcr: this.blocRcr.rcrListString,
+            rcr_operator: this.blocRcr.internalBlocOperatorInArrayString,
+         };
+
+         jsonToReturn.push(rcrBlocJson);
+      }
+
+
+      const ppnBlocJson: JsonPpnBlocProvider = {
+         type: this.blocPpn.type,
+         bloc_operator: this.blocPpn.externalBlocOperatorInString,
+         ppn: this.blocPpn.ppnEnteredInArrayString,
+      };
+
+      const issnBlocJson: JsonIssnBlocProvider = {
+         type: this.blocIssn.type,
+         bloc_operator: this.blocIssn.externalBlocOperatorInString,
+         issn: this.blocIssn.issnEnteredInArrayString,
+      };
+
+      const titleWordsBlocJson: JsonMotsDuTitreProvider = {
+         type: this.blocMotDuTitre.type,
+         bloc_operator: this.blocMotDuTitre.externalBlocOperatorInString,
+         titleWords: this.blocMotDuTitre.titleWordsEntered,
+         titleWordsOperator: this.blocMotDuTitre.internalBlocOperatorInArrayString,
+      };
+
+      const editorBlocJson: JsonEditeurProvider = {
+         type: this.blocEditeur.type,
+         bloc_operator: this.blocEditeur.externalBlocOperatorInString,
+         editors: this.blocEditeur.editorEntered,
+         editorsOperator: this.blocEditeur.internalBlocOperatorInArrayString,
+      };
+
+      const paysBlocJson: JsonPaysProvider = {
+         type: this.blocPays.type,
+         bloc_operator: this.blocPays.externalBlocOperatorInString,
+         countries: this.blocPays.paysEnteredInArrayString,
+         countriesOperator: this.blocPays.internalBlocOperatorInArrayString,
+      };
+
+      const langueBlocJson: JsonLanguesProvider = {
+         type: this.blocLangue.type,
+         bloc_operator: this.blocLangue.externalBlocOperatorInString,
+         language: this.blocLangue.paysEnteredInArrayString,
+         languageOperators: this.blocLangue.internalBlocOperatorInArrayString,
+      };
+
+      return jsonToReturn;
    }
 
    /*@Mutation

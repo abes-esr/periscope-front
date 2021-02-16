@@ -57,16 +57,16 @@ export class BlocRcr extends BlocAbstract {
       const arrayString: Array<string> = [];
       switch (this._internalBlocOperator) {
          case Ensemble.Ou:
-            this.rcrListString.forEach(() => arrayString.push('Ou'));
+            this.rcrListString.forEach(() => arrayString.push('OU'));
             break;
          case Ensemble.Et:
-            this.rcrListString.forEach(() => arrayString.push('Et'));
+            this.rcrListString.forEach(() => arrayString.push('ET'));
             break;
          case Ensemble.Sauf:
-            this.rcrListString.forEach(() => arrayString.push('Sauf'));
+            this.rcrListString.forEach(() => arrayString.push('SAUF'));
             break;
          default:
-            this.rcrListString.forEach(() => arrayString.push('Undefined'));
+            this.rcrListString.forEach(() => arrayString.push('UNDEFINED'));
             break;
       }
       return arrayString;

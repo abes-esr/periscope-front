@@ -65,3 +65,7 @@ export interface JsonLanguesProvider {
    language: Array<string>;
    languageOperators: Array<string>;
 }
+
+export interface JsonGlobalSearchRequest {
+
+}

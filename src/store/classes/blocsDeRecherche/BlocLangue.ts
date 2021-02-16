@@ -1,7 +1,7 @@
 import {BlocAbstract, Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 export class BlocLangue extends BlocAbstract {
-   private _type = 'CriterionLangue'; //Valeur fixe définie par l'API
+   private _type = 'CriterionLanguage'; //Valeur fixe définie par l'API
    private _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
    private _langueEntered: Array<ListProvider> = [];
    private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
@@ -517,16 +517,16 @@ export class BlocLangue extends BlocAbstract {
       const pcpInArrayString: Array<string> = [];
       switch (this._internalBlocOperator) {
          case Ensemble.Ou:
-            this._langueEntered.forEach(() => pcpInArrayString.push('Ou'));
+            this._langueEntered.forEach(() => pcpInArrayString.push('OU'));
             break;
          case Ensemble.Et:
-            this._langueEntered.forEach(() => pcpInArrayString.push('Et'));
+            this._langueEntered.forEach(() => pcpInArrayString.push('ET'));
             break;
          case Ensemble.Sauf:
-            this._langueEntered.forEach(() => pcpInArrayString.push('Sauf'));
+            this._langueEntered.forEach(() => pcpInArrayString.push('SAUF'));
             break;
          default:
-            this._langueEntered.forEach(() => pcpInArrayString.push('Undefined'));
+            this._langueEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
             break;
       }
       return pcpInArrayString;

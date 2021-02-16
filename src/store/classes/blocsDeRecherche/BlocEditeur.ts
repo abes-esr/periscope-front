@@ -57,16 +57,16 @@ export class BlocEditeur extends BlocAbstract {
       const pcpInArrayString: Array<string> = [];
       switch (this._internalBlocOperator) {
          case Ensemble.Ou:
-            this._editorEntered.forEach(() => pcpInArrayString.push('Ou'));
+            this._editorEntered.forEach(() => pcpInArrayString.push('OU'));
             break;
          case Ensemble.Et:
-            this._editorEntered.forEach(() => pcpInArrayString.push('Et'));
+            this._editorEntered.forEach(() => pcpInArrayString.push('ET'));
             break;
          case Ensemble.Sauf:
-            this._editorEntered.forEach(() => pcpInArrayString.push('Sauf'));
+            this._editorEntered.forEach(() => pcpInArrayString.push('SAUF'));
             break;
          default:
-            this._editorEntered.forEach(() => pcpInArrayString.push('Undefined'));
+            this._editorEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
             break;
       }
       return pcpInArrayString;
