@@ -401,50 +401,74 @@ class RequeteDeRecherche extends VuexModule {
             rcr: this.blocRcr.rcrListString,
             rcr_operator: this.blocRcr.internalBlocOperatorInArrayString,
          };
-
          jsonToReturn.push(rcrBlocJson);
       }
 
+      //Construction de la partie PPN en JSON
+      //TODO this.blocPpn.ppnEnteredInArrayString n'est jamais vide
+      if(this.blocPpn.ppnEnteredInArrayString.length !== 0) {
+         const ppnBlocJson: JsonPpnBlocProvider = {
+            type: this.blocPpn.type,
+            bloc_operator: this.blocPpn.externalBlocOperatorInString,
+            ppn: this.blocPpn.ppnEnteredInArrayString,
+         };
+         jsonToReturn.push(ppnBlocJson);
+      }
 
-      const ppnBlocJson: JsonPpnBlocProvider = {
-         type: this.blocPpn.type,
-         bloc_operator: this.blocPpn.externalBlocOperatorInString,
-         ppn: this.blocPpn.ppnEnteredInArrayString,
-      };
+      //Construction de la partie ISSN en JSON
+      //TODO this.blocIssn.issnEnteredInArrayString n'est jamais vide
+      if(this.blocIssn.issnEnteredInArrayString.length !== 0) {
+         const issnBlocJson: JsonIssnBlocProvider = {
+            type: this.blocIssn.type,
+            bloc_operator: this.blocIssn.externalBlocOperatorInString,
+            issn: this.blocIssn.issnEnteredInArrayString,
+         };
+         jsonToReturn.push(issnBlocJson);
+      }
 
-      const issnBlocJson: JsonIssnBlocProvider = {
-         type: this.blocIssn.type,
-         bloc_operator: this.blocIssn.externalBlocOperatorInString,
-         issn: this.blocIssn.issnEnteredInArrayString,
-      };
+      //Construction de la partie Mots du titre en JSON
+      if(this.blocMotDuTitre.internalBlocOperatorInArrayString.length !== 0) {
+         const titleWordsBlocJson: JsonMotsDuTitreProvider = {
+            type: this.blocMotDuTitre.type,
+            bloc_operator: this.blocMotDuTitre.externalBlocOperatorInString,
+            titleWords: this.blocMotDuTitre.titleWordsEntered,
+            titleWordsOperator: this.blocMotDuTitre.internalBlocOperatorInArrayString,
+         };
+         jsonToReturn.push(titleWordsBlocJson);
+      }
 
-      const titleWordsBlocJson: JsonMotsDuTitreProvider = {
-         type: this.blocMotDuTitre.type,
-         bloc_operator: this.blocMotDuTitre.externalBlocOperatorInString,
-         titleWords: this.blocMotDuTitre.titleWordsEntered,
-         titleWordsOperator: this.blocMotDuTitre.internalBlocOperatorInArrayString,
-      };
+      //Construction de la partie Editeur en JSON
+      if(this.blocEditeur.internalBlocOperatorInArrayString.length !== 0) {
+         const editorBlocJson: JsonEditeurProvider = {
+            type: this.blocEditeur.type,
+            bloc_operator: this.blocEditeur.externalBlocOperatorInString,
+            editors: this.blocEditeur.editorEntered,
+            editorsOperator: this.blocEditeur.internalBlocOperatorInArrayString,
+         };
+         jsonToReturn.push(editorBlocJson);
+      }
 
-      const editorBlocJson: JsonEditeurProvider = {
-         type: this.blocEditeur.type,
-         bloc_operator: this.blocEditeur.externalBlocOperatorInString,
-         editors: this.blocEditeur.editorEntered,
-         editorsOperator: this.blocEditeur.internalBlocOperatorInArrayString,
-      };
+      //Construction de la partie Pays en JSON
+      if(this.blocPays.internalBlocOperatorInArrayString.length !== 0) {
+         const paysBlocJson: JsonPaysProvider = {
+            type: this.blocPays.type,
+            bloc_operator: this.blocPays.externalBlocOperatorInString,
+            countries: this.blocPays.paysEnteredInArrayString,
+            countriesOperator: this.blocPays.internalBlocOperatorInArrayString,
+         };
+         jsonToReturn.push(paysBlocJson);
+      }
 
-      const paysBlocJson: JsonPaysProvider = {
-         type: this.blocPays.type,
-         bloc_operator: this.blocPays.externalBlocOperatorInString,
-         countries: this.blocPays.paysEnteredInArrayString,
-         countriesOperator: this.blocPays.internalBlocOperatorInArrayString,
-      };
-
-      const langueBlocJson: JsonLanguesProvider = {
-         type: this.blocLangue.type,
-         bloc_operator: this.blocLangue.externalBlocOperatorInString,
-         language: this.blocLangue.paysEnteredInArrayString,
-         languageOperators: this.blocLangue.internalBlocOperatorInArrayString,
-      };
+      //Construction de la partie Langue en JSON
+      if(this.blocLangue.internalBlocOperatorInArrayString.length !== 0) {
+         const langueBlocJson: JsonLanguesProvider = {
+            type: this.blocLangue.type,
+            bloc_operator: this.blocLangue.externalBlocOperatorInString,
+            language: this.blocLangue.paysEnteredInArrayString,
+            languageOperators: this.blocLangue.internalBlocOperatorInArrayString,
+         };
+         jsonToReturn.push(langueBlocJson);
+      }
 
       return jsonToReturn;
    }
