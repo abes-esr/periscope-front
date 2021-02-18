@@ -1,7 +1,8 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import Accueil from '@/views/Accueil.vue';
-import AccueilAvance from '@/views/AccueilAvance.vue';
+import Recherche from '@/views/Recherche.vue';
+import Resultats from "@/views/Resultats.vue";
+import AccueilAvance from '@/views/RechercheAvance.vue';
 
 Vue.use(VueRouter);
 
@@ -9,7 +10,17 @@ const routes: Array<RouteConfig> = [
    {
       path: '/',
       name: 'Accueil',
-      component: Accueil,
+      component: Recherche,
+   },
+   {
+      path: '/recherche',
+      name: 'Recherche',
+      component: Recherche,
+   },
+   {
+      path: '/resultats',
+      name: 'Resultats',
+      component: Resultats,
    },
    {
       path: '/v2',

@@ -67,7 +67,9 @@ export class BlocPpn extends BlocAbstract {
 
    get ppnEnteredInArrayString(): Array<string> {
       const arrayString: Array<string> = [];
-      arrayString.push(this._ppnEntered);
+      if (this._ppnEntered.length > 0) {
+         arrayString.push(this._ppnEntered);
+      }
       return arrayString;
    }
 

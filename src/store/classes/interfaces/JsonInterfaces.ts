@@ -66,6 +66,10 @@ export interface JsonLanguesProvider {
    languageOperators: Array<string>;
 }
 
-export interface JsonGlobalSearchRequest {
+export interface JsonGlobalSearchRequest {}
 
+export interface JsonSent {
+   one: Array<JsonGlobalSearchRequest>;
+   two: number;
+   three: number;
 }

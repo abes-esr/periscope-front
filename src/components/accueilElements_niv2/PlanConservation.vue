@@ -24,13 +24,10 @@ import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties.ts';
 import ComponentRegions from '@/components/accueilSousElements_niv3/Regions.vue';
 import ComponentMetiers from '@/components/accueilSousElements_niv3/Metiers.vue';
+import {namespace} from 'vuex-class';
+import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
-interface Provider {
-   id: number;
-   key: string;
-   text: string;
-   value: boolean;
-}
+const RequeteDeRecherche = namespace('RequeteDeRecherche');
 
 @Component({
    components: {
@@ -39,12 +36,27 @@ interface Provider {
    },
 })
 export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
-   private regions: Array<Provider> = this.$store.state.RequeteDeRecherche.blocPcpRegions.arrayRegions;
-   private metiers: Array<Provider> = this.$store.state.RequeteDeRecherche.blocPcpMetiers.arrayMetiers;
-   private choixTousOuAucun: Array<Provider> = [
+   @RequeteDeRecherche.Action
+   public updateBlocMetiers!: (arraySent: Array<CheckboxesProvider>) => void;
+   @RequeteDeRecherche.Action
+   public updateBlocRegions!: (arraySent: Array<CheckboxesProvider>) => void;
+
+   @RequeteDeRecherche.Getter
+   private getBlocPcpRegionsArrayRegions!: Array<CheckboxesProvider>;
+   @RequeteDeRecherche.Getter
+   private getBlocPcpMetiersArrayMetiers!: Array<CheckboxesProvider>;
+
+   private regions: Array<CheckboxesProvider>;
+   private metiers: Array<CheckboxesProvider>;
+   private choixTousOuAucun: Array<CheckboxesProvider> = [
       {id: 0, key: 'all', value: false, text: 'Tous'},
       {id: 1, key: 'none', value: false, text: 'Aucun'},
    ];
+
+   created(): void {
+      this.regions = this.getBlocPcpRegionsArrayRegions;
+      this.metiers = this.getBlocPcpMetiersArrayMetiers;
+   }
 
    private title = 'Choisir un plan de conservation';
 
@@ -54,8 +66,10 @@ export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
     * @param booleanValue valeur du booléen d'un élément du tableau
     * @private
     */
-   private arrayChangeAllBooleanValues(arrayMember: Array<Provider>, booleanValue: boolean): void {
+   private arrayChangeAllBooleanValues(arrayMember: Array<CheckboxesProvider>, booleanValue: boolean): void {
       arrayMember.forEach((element) => (element.value = booleanValue));
+      this.updateBlocRegions(this.regions);
+      this.updateBlocMetiers(this.metiers);
    }
 
    /**

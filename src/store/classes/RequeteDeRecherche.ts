@@ -9,9 +9,13 @@ import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
 import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
-import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {CheckboxesProvider, Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/classes/interfaces/JsonInterfaces';
 import PeriscopeDataService from '@/axios/services/PeriscopeDataService';
+import {NoticesStored} from '@/store/classes/NoticesStored';
+import {namespace} from 'vuex-class';
+
+const resultatsDeRecherche = namespace('ResultatsDeRecherche');
 
 @Module({namespaced: true})
 class RequeteDeRecherche extends VuexModule {
@@ -26,24 +30,44 @@ class RequeteDeRecherche extends VuexModule {
    private blocIssn: BlocIssn = new BlocIssn(Ensemble.Ou);
    private blocMotDuTitre: BlocMotDuTitre = new BlocMotDuTitre(Ensemble.Ou);
 
-   /*Objet en JSON*/
-   private globalSearchRequestInJson = '';
-
    /* Résultats de la recherche */
    private notices: Array<Notice> = [];
-
-   private solrChainRegions = '';
 
    /*Setters*/
 
    //Bloc plan de conservation régions
+   @Action({rawError: true})
+   get getPersistentContextBlocPcpRegionsArrayRegions(): Array<CheckboxesProvider> {
+      return this.context.rootState.RequeteDeRecherche.blocPcpRegions._arrayRegions;
+   }
+   @Action({rawError: true})
+   get getBlocPcpRegionsArrayRegions(): Array<CheckboxesProvider> {
+      return this.context.getters['getPersistentContextBlocPcpRegionsArrayRegions'];
+   }
+   @Action({rawError: true})
+   get getPersistentContextBlocPcpRegionsInternalOperator(): number {
+      return this.context.rootState.RequeteDeRecherche.blocPcpRegions._internalBlocOperator;
+   }
+   @Action({rawError: true})
+   get getBlocPcpRegionsInternalOperator(): number {
+      return this.context.getters['getPersistentContextBlocPcpRegionsInternalOperator'];
+   }
+   @Action({rawError: true})
+   get getPersistentContextBlocPcpRegionsExternalOperator(): number {
+      return this.context.rootState.RequeteDeRecherche.blocPcpRegions._externalBlocOperator;
+   }
+   @Action({rawError: true})
+   get getBlocPcpRegionsExternalOperator(): number {
+      return this.context.getters['getPersistentContextBlocPcpRegionsExternalOperator'];
+   }
+
    @Mutation
-   public setArrayRegions(arraySent: Array<CheckboxesProvider>): void {
+   public setBlocPcpRegionsArrayRegions(arraySent: Array<CheckboxesProvider>): void {
       this.blocPcpRegions.arrayRegions = arraySent;
    }
    @Mutation
    public setBlocPcpRegionsStringList(arraySent: Array<CheckboxesProvider>): void {
-      this.blocPcpRegions.pcpStringArrayClean();
+      this.blocPcpRegions.pcpStringArray = [];
       arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpRegions.pcpStringArray.push(element.key) : ''));
    }
    @Mutation
@@ -56,20 +80,45 @@ class RequeteDeRecherche extends VuexModule {
    }
    @Action({rawError: true})
    public updateBlocRegions(arraySent: Array<CheckboxesProvider>): void {
-      this.context.commit('setArrayRegions', arraySent);
+      this.context.commit('setBlocPcpRegionsArrayRegions', arraySent);
       this.context.commit('setBlocPcpRegionsStringList', arraySent);
       this.context.commit('setBlocPcpRegionsInternalOperator', Ensemble.Ou);
       this.context.commit('setBlocPcpRegionsExternalOperator', Ensemble.Et);
    }
 
    //Bloc plan de conservation métiers
+   @Action({rawError: true})
+   get getPersistentContextBlocPcpRegionsArrayMetiers(): Array<CheckboxesProvider> {
+      return this.context.rootState.RequeteDeRecherche.blocPcpMetiers._arrayMetiers;
+   }
+   @Action({rawError: true})
+   get getBlocPcpMetiersArrayMetiers(): Array<CheckboxesProvider> {
+      return this.context.getters['getPersistentContextBlocPcpRegionsArrayMetiers'];
+   }
+   @Action({rawError: true})
+   get getPersistentContextBlocPcpMetiersInternalOperator(): number {
+      return this.context.rootState.RequeteDeRecherche.blocPcpMetiers._internalBlocOperator;
+   }
+   @Action({rawError: true})
+   get getBlocPcpMetiersInternalOperator(): number {
+      return this.context.getters['getPersistentContextBlocPcpMetiersInternalOperator'];
+   }
+   @Action({rawError: true})
+   get getPersistentContextBlocPcpMetiersExternalOperator(): number {
+      return this.context.rootState.RequeteDeRecherche.blocPcpMetiers._externalBlocOperator;
+   }
+   @Action({rawError: true})
+   get getBlocPcpMetiersExternalOperator(): number {
+      return this.context.getters['getPersistentContextBlocPcpMetiersExternalOperator'];
+   }
+
    @Mutation
-   public setArrayMetiers(arraySent: Array<CheckboxesProvider>): void {
+   public setBlocPcpMetiersArrayMetiers(arraySent: Array<CheckboxesProvider>): void {
       this.blocPcpMetiers.arrayMetiers = arraySent;
    }
    @Mutation
    public setBlocPcpMetiersStringList(arraySent: Array<CheckboxesProvider>): void {
-      this.blocPcpMetiers.pcpStringArrayClean();
+      this.blocPcpMetiers.pcpStringArray = [];
       arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpMetiers.pcpStringArray.push(element.key) : ''));
    }
    @Mutation
@@ -82,48 +131,86 @@ class RequeteDeRecherche extends VuexModule {
    }
    @Action({rawError: true})
    public updateBlocMetiers(arraySent: Array<CheckboxesProvider>): void {
-      this.context.commit('setArrayMetiers', arraySent);
+      this.context.commit('setBlocPcpMetiersArrayMetiers', arraySent);
       this.context.commit('setBlocPcpMetiersStringList', arraySent);
       this.context.commit('setBlocPcpMetiersInternalOperator', Ensemble.Ou);
       this.context.commit('setBlocPcpMetiersExternalOperator', Ensemble.Et);
    }
 
    //Bloc Rcr
+   @Action({rawError: true})
+   get getPersistentContextBlocRcrInternalOperatorListToSelect(): Array<OperatorProvider> {
+      return this.context.rootState.RequeteDeRecherche.blocRcr._internalBlocOperatorListToSelect;
+   }
+   @Action({rawError: true})
+   get getBlocRcrInternalOperatorListToSelect(): Array<OperatorProvider> {
+      return this.context.getters['getPersistentContextBlocRcrInternalOperatorListToSelect'];
+   }
+
+   @Action({rawError: true})
+   get getPersistentContextBlocRcrExternalOperatorListToSelect(): Array<OperatorProvider> {
+      return this.context.rootState.RequeteDeRecherche.blocRcr._externalBlocOperatorListToSelect;
+   }
+   @Action({rawError: true})
+   get getBlocRcrExternalOperatorListToSelect(): Array<OperatorProvider> {
+      return this.context.getters['getPersistentContextBlocRcrExternalOperatorListToSelect'];
+   }
+
+   @Action({rawError: true})
+   get getPersistentContextBlocRcrInternalOperatorSelected(): number {
+      return this.context.rootState.RequeteDeRecherche.blocRcr._internalBlocOperator;
+   }
+   @Action({rawError: true})
+   get getBlocRcrInternalOperatorSelected(): number {
+      return this.context.getters['getPersistentContextBlocRcrInternalOperatorSelected'];
+   }
+
+   @Action({rawError: true})
+   get getPersistentContextBlocRcrExternalOperatorSelected(): number {
+      return this.context.rootState.RequeteDeRecherche.blocRcr._externalBlocOperator;
+   }
+   @Action({rawError: true})
+   get getBlocRcrExternalOperatorSelected(): number {
+      return this.context.getters['getPersistentContextBlocRcrExternalOperatorSelected'];
+   }
+
+   @Action({rawError: true})
+   get getPersistentContextBlocRcrRcrHandler(): Array<RcrProvider> {
+      return this.context.rootState.RequeteDeRecherche.blocRcr._rcrHandler;
+   }
+   @Action({rawError: true})
+   get getBlocRcrRcrHandler(): Array<RcrProvider> {
+      return this.context.getters['getPersistentContextBlocRcrRcrHandler'];
+   }
+
+   @Action({rawError: true})
+   get getPersistentContextBlocRcrArrayTyped(): Array<string> {
+      return this.context.rootState.RequeteDeRecherche.blocRcr._rcrListString;
+   }
+   @Action({rawError: true}) //TODO essayer @Getter et mettre public au lieu de get si problemes avec getter dans les composants
+   get getBlocRcrArrayTyped(): Array<RcrProvider> {
+      return this.context.getters['getPersistentContextBlocRcrArrayTyped'];
+   }
+
    @Mutation
    public setBlocRcrInternalOperator(operator: number): void {
       this.blocRcr.internalBlocOperator = operator;
    }
-   @Action
-   public updateBlocRcrInternalOperatorSelected(internalOperator: number): void {
-      this.context.commit('setBlocRcrInternalOperator', internalOperator);
-   }
-
    @Mutation
    public setBlocRcrExternalOperator(operator: number): void {
       this.blocRcr.externalBlocOperator = operator;
    }
-   @Action
-   public updateBlocRcrExternalOperatorSelected(externalOperator: number): void {
-      this.context.commit('setBlocRcrExternalOperator', externalOperator);
-      console.log(JSON.stringify(this.blocRcr));
-   }
-
    @Mutation
-   public setBlocRcrRcrHandler(arraySent: Array<RcrProvider>): void {
+   public setBlocRcrRcrHandler(arraySent: Array<RcrProvider>) {
       this.blocRcr.rcrHandler = arraySent;
    }
    @Mutation
-   public setBlocRcrRcrListString(arraySent: Array<RcrProvider>): void {
+   public setBlocRcrRcrListString(arraySent: Array<RcrProvider>) {
       this.blocRcr.rcrStringArrayClean();
       arraySent.forEach((element) => {
          const elementInString = String(element);
          this.blocRcr.rcrListString.push(elementInString);
       });
-   }
-   @Action
-   public updateBlocRcr(arraySent: Array<RcrProvider>): void {
-      this.context.commit('setBlocRcrRcrHandler', arraySent);
-      this.context.commit('setBlocRcrRcrListString', arraySent);
    }
 
    //Bloc Ppn
@@ -263,10 +350,6 @@ class RequeteDeRecherche extends VuexModule {
       this.context.commit('setBlocPays', arraySent);
    }
 
-   get blocPaysListeEntered(): Array<ListProvider> {
-      return this.blocPays.paysEntered;
-   }
-
    /*Getters*/
 
    /*
@@ -298,59 +381,13 @@ class RequeteDeRecherche extends VuexModule {
     */
 
    /*Methods*/
-   @Action
-   public displayFinalRequest(): void {
-      window.alert(
-         JSON.stringify(this.blocPcpRegions.arrayRegions) +
-            '\n\n' +
-            JSON.stringify(this.blocPcpRegions.pcpStringArray) +
-            '\n\n' +
-            JSON.stringify(this.blocPcpMetiers.arrayMetiers) +
-            '\n\n' +
-            JSON.stringify(this.blocPcpMetiers.pcpStringArray) +
-            '\n\n' +
-            JSON.stringify(this.blocRcr.externalBlocOperator) +
-            '\n\n' +
-            JSON.stringify(this.blocRcr.internalBlocOperator) +
-            '\n\n' +
-            JSON.stringify(this.blocRcr.rcrListString) +
-            '\n\n' +
-            JSON.stringify('ppn ext operator' + this.blocPpn.externalBlocOperator) +
-            '\n\n' +
-            JSON.stringify('ppn' + this.blocPpn.ppnEntered) +
-            '\n\n' +
-            JSON.stringify('issn' + this.blocIssn.issnEntered) +
-            '\n\n' +
-            JSON.stringify('issnextop' + this.blocIssn.externalBlocOperator) +
-            '\n\n' +
-            JSON.stringify('mot du titre internal operator' + this.blocMotDuTitre.internalBlocOperator) +
-            '\n\n' +
-            JSON.stringify('mot titre' + this.blocMotDuTitre.titleWordsEntered) +
-            '\n\n' +
-            JSON.stringify('editeurOperator' + this.blocEditeur.externalBlocOperator) +
-            '\n\n' +
-            JSON.stringify('editeur internal Operator' + this.blocEditeur.internalBlocOperator) +
-            '\n\n' +
-            JSON.stringify('editeurs entrés' + this.blocEditeur.editorEntered) +
-            '\n\n' +
-            JSON.stringify('langue ext operator' + this.blocLangue.externalBlocOperator) +
-            '\n\n' +
-            JSON.stringify('langues entrées' + this.blocLangue.langueEntered) +
-            '\n\n' +
-            JSON.stringify('langue ext operator' + this.blocLangue.externalBlocOperator) +
-            '\n\n' +
-            JSON.stringify('pays entrés' + this.blocPays.paysEntered) +
-            '\n\n' +
-            JSON.stringify('pays ext operator' + this.blocPays.externalBlocOperator)
-      );
-   }
-
    @Action({rawError: true})
    public findNoticesByCriteria(): void {
+      //Construction du JSON à envoyer au back end
       const jsonToSentToBackEnd: Array<JsonGlobalSearchRequest> = this.context.getters['constructJsonGlobalRequest'];
 
-      console.log(JSON.stringify(jsonToSentToBackEnd));
-      console.log(JSON.parse(JSON.stringify(jsonToSentToBackEnd)));
+      //console.log(JSON.stringify(jsonToSentToBackEnd));
+      //console.log(JSON.parse(JSON.stringify(jsonToSentToBackEnd)));
 
       // On appelle l'API Periscope
       // Note: Promise.all permet d'appeller plusieurs fonctions qui encapsule des appels Axios
@@ -358,7 +395,6 @@ class RequeteDeRecherche extends VuexModule {
          .then((response) => {
             if (response[0].status == 200) {
                this.context.commit('setNotices', response[0].data);
-               window.alert(JSON.stringify(this.notices));
             } else {
                window.alert("Erreur avec l'API Periscope : status " + response[0].status);
             }
@@ -394,7 +430,7 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       //Construction de la partie Rcr en JSON
-      if(this.blocRcr.rcrListString.length !== 0){
+      if (this.blocRcr.rcrListString.length !== 0) {
          const rcrBlocJson: JsonRcrBlocProvider = {
             type: this.blocRcr.type,
             bloc_operator: this.blocRcr.externalBlocOperatorInString,
@@ -405,8 +441,7 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       //Construction de la partie PPN en JSON
-      //TODO this.blocPpn.ppnEnteredInArrayString n'est jamais vide
-      if(this.blocPpn.ppnEnteredInArrayString.length !== 0) {
+      if (this.blocPpn.ppnEnteredInArrayString.length !== 0) {
          const ppnBlocJson: JsonPpnBlocProvider = {
             type: this.blocPpn.type,
             bloc_operator: this.blocPpn.externalBlocOperatorInString,
@@ -416,8 +451,7 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       //Construction de la partie ISSN en JSON
-      //TODO this.blocIssn.issnEnteredInArrayString n'est jamais vide
-      if(this.blocIssn.issnEnteredInArrayString.length !== 0) {
+      if (this.blocIssn.issnEnteredInArrayString.length !== 0) {
          const issnBlocJson: JsonIssnBlocProvider = {
             type: this.blocIssn.type,
             bloc_operator: this.blocIssn.externalBlocOperatorInString,
@@ -427,7 +461,7 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       //Construction de la partie Mots du titre en JSON
-      if(this.blocMotDuTitre.internalBlocOperatorInArrayString.length !== 0) {
+      if (this.blocMotDuTitre.internalBlocOperatorInArrayString.length !== 0) {
          const titleWordsBlocJson: JsonMotsDuTitreProvider = {
             type: this.blocMotDuTitre.type,
             bloc_operator: this.blocMotDuTitre.externalBlocOperatorInString,
@@ -438,7 +472,7 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       //Construction de la partie Editeur en JSON
-      if(this.blocEditeur.internalBlocOperatorInArrayString.length !== 0) {
+      if (this.blocEditeur.internalBlocOperatorInArrayString.length !== 0) {
          const editorBlocJson: JsonEditeurProvider = {
             type: this.blocEditeur.type,
             bloc_operator: this.blocEditeur.externalBlocOperatorInString,
@@ -449,7 +483,7 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       //Construction de la partie Pays en JSON
-      if(this.blocPays.internalBlocOperatorInArrayString.length !== 0) {
+      if (this.blocPays.internalBlocOperatorInArrayString.length !== 0) {
          const paysBlocJson: JsonPaysProvider = {
             type: this.blocPays.type,
             bloc_operator: this.blocPays.externalBlocOperatorInString,
@@ -460,7 +494,7 @@ class RequeteDeRecherche extends VuexModule {
       }
 
       //Construction de la partie Langue en JSON
-      if(this.blocLangue.internalBlocOperatorInArrayString.length !== 0) {
+      if (this.blocLangue.internalBlocOperatorInArrayString.length !== 0) {
          const langueBlocJson: JsonLanguesProvider = {
             type: this.blocLangue.type,
             bloc_operator: this.blocLangue.externalBlocOperatorInString,
@@ -473,19 +507,11 @@ class RequeteDeRecherche extends VuexModule {
       return jsonToReturn;
    }
 
-   /*@Mutation
+   @Mutation
    public setNotices(results: any[]): void {
       this.notices = []; // On vide le tableau des notices
       // On cast les objets générique en Notice
       results.forEach((obj) => this.notices.push(new Notice(obj)));
    }
-
-   //Test API
-   @Mutation
-   public setTest(elementSent: any[]): void {
-      this.tutorials = elementSent;
-   }
-
-   private tutorials: any[] = [];*/
 }
 export default RequeteDeRecherche;
