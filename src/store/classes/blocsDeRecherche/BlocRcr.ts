@@ -8,7 +8,7 @@ export interface RcrProvider {
 export class BlocRcr extends BlocAbstract {
    private _type = 'CriterionRcr'; //Valeur fixe définie par l'API
    private _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
-   private _rcrHandler: Array<RcrProvider> = []; //Catcheur des RCR saisis
+   private _rcrHandler: Array<RcrProvider> = []; //Catcheur des RCR saisis non utilisé actuellement
    private _rcrListString: Array<string> = []; //Tableau des RCR en chaîne
    private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},

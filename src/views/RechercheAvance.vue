@@ -32,13 +32,10 @@
 
 <script lang="ts">
 import {Component, Mixins, Vue} from 'vue-property-decorator';
-import {namespace} from 'vuex-class';
 import ComponentBloc from '@/components/accueil_avance_niv1/ComponentPpn.vue';
 import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentStepper from '@/components/stepper/Stepper.vue';
 import ComponentListeDeChoix from '@/components/accueil_avance_niv1/ListeDeChoix.vue';
-
-const RequeteDeRecherche = namespace('RequeteDeRecherche');
 
 @Component({
    components: {

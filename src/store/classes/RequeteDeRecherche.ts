@@ -9,16 +9,12 @@ import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
 import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
-import {CheckboxesProvider, Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/classes/interfaces/JsonInterfaces';
 import PeriscopeDataService from '@/axios/services/PeriscopeDataService';
-import {NoticesStored} from '@/store/classes/NoticesStored';
-import {namespace} from 'vuex-class';
 
-const resultatsDeRecherche = namespace('ResultatsDeRecherche');
-
-@Module({namespaced: true})
-class RequeteDeRecherche extends VuexModule {
+@Module
+export default class RequeteDeRecherche extends VuexModule {
    //Blocs de recherche
    private blocPcpRegions: BlocPcpRegions = new BlocPcpRegions(Ensemble.Ou);
    private blocPcpMetiers: BlocPcpMetiers = new BlocPcpMetiers(Ensemble.Ou);
@@ -36,318 +32,145 @@ class RequeteDeRecherche extends VuexModule {
    /*Setters*/
 
    //Bloc plan de conservation régions
-   @Action({rawError: true})
-   get getPersistentContextBlocPcpRegionsArrayRegions(): Array<CheckboxesProvider> {
-      return this.context.rootState.RequeteDeRecherche.blocPcpRegions._arrayRegions;
-   }
-   @Action({rawError: true})
-   get getBlocPcpRegionsArrayRegions(): Array<CheckboxesProvider> {
-      return this.context.getters['getPersistentContextBlocPcpRegionsArrayRegions'];
-   }
-   @Action({rawError: true})
-   get getPersistentContextBlocPcpRegionsInternalOperator(): number {
-      return this.context.rootState.RequeteDeRecherche.blocPcpRegions._internalBlocOperator;
-   }
-   @Action({rawError: true})
-   get getBlocPcpRegionsInternalOperator(): number {
-      return this.context.getters['getPersistentContextBlocPcpRegionsInternalOperator'];
-   }
-   @Action({rawError: true})
-   get getPersistentContextBlocPcpRegionsExternalOperator(): number {
-      return this.context.rootState.RequeteDeRecherche.blocPcpRegions._externalBlocOperator;
-   }
-   @Action({rawError: true})
-   get getBlocPcpRegionsExternalOperator(): number {
-      return this.context.getters['getPersistentContextBlocPcpRegionsExternalOperator'];
-   }
-
    @Mutation
-   public setBlocPcpRegionsArrayRegions(arraySent: Array<CheckboxesProvider>): void {
+   setBlocPcpRegionsArrayRegions(arraySent: Array<CheckboxesProvider>) {
+      console.log(this);
       this.blocPcpRegions.arrayRegions = arraySent;
    }
    @Mutation
-   public setBlocPcpRegionsStringList(arraySent: Array<CheckboxesProvider>): void {
-      this.blocPcpRegions.pcpStringArray = [];
+   setBlocPcpRegionsStringList(arraySent: Array<CheckboxesProvider>) {
       arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpRegions.pcpStringArray.push(element.key) : ''));
    }
    @Mutation
-   public setBlocPcpRegionsInternalOperator(operator: number): void {
+   setBlocPcpRegionsInternalOperator(operator: number) {
       this.blocPcpRegions.internalBlocOperator = operator;
    }
    @Mutation
-   public setBlocPcpRegionsExternalOperator(operator: number): void {
+   setBlocPcpRegionsExternalOperator(operator: number) {
       this.blocPcpRegions.externalBlocOperator = operator;
-   }
-   @Action({rawError: true})
-   public updateBlocRegions(arraySent: Array<CheckboxesProvider>): void {
-      this.context.commit('setBlocPcpRegionsArrayRegions', arraySent);
-      this.context.commit('setBlocPcpRegionsStringList', arraySent);
-      this.context.commit('setBlocPcpRegionsInternalOperator', Ensemble.Ou);
-      this.context.commit('setBlocPcpRegionsExternalOperator', Ensemble.Et);
    }
 
    //Bloc plan de conservation métiers
-   @Action({rawError: true})
-   get getPersistentContextBlocPcpRegionsArrayMetiers(): Array<CheckboxesProvider> {
-      return this.context.rootState.RequeteDeRecherche.blocPcpMetiers._arrayMetiers;
-   }
-   @Action({rawError: true})
-   get getBlocPcpMetiersArrayMetiers(): Array<CheckboxesProvider> {
-      return this.context.getters['getPersistentContextBlocPcpRegionsArrayMetiers'];
-   }
-   @Action({rawError: true})
-   get getPersistentContextBlocPcpMetiersInternalOperator(): number {
-      return this.context.rootState.RequeteDeRecherche.blocPcpMetiers._internalBlocOperator;
-   }
-   @Action({rawError: true})
-   get getBlocPcpMetiersInternalOperator(): number {
-      return this.context.getters['getPersistentContextBlocPcpMetiersInternalOperator'];
-   }
-   @Action({rawError: true})
-   get getPersistentContextBlocPcpMetiersExternalOperator(): number {
-      return this.context.rootState.RequeteDeRecherche.blocPcpMetiers._externalBlocOperator;
-   }
-   @Action({rawError: true})
-   get getBlocPcpMetiersExternalOperator(): number {
-      return this.context.getters['getPersistentContextBlocPcpMetiersExternalOperator'];
-   }
-
    @Mutation
-   public setBlocPcpMetiersArrayMetiers(arraySent: Array<CheckboxesProvider>): void {
+   setBlocPcpMetiersArrayMetiers(arraySent: Array<CheckboxesProvider>) {
       this.blocPcpMetiers.arrayMetiers = arraySent;
    }
    @Mutation
-   public setBlocPcpMetiersStringList(arraySent: Array<CheckboxesProvider>): void {
+   setBlocPcpMetiersStringList(arraySent: Array<CheckboxesProvider>) {
       this.blocPcpMetiers.pcpStringArray = [];
       arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpMetiers.pcpStringArray.push(element.key) : ''));
    }
    @Mutation
-   public setBlocPcpMetiersInternalOperator(operator: number): void {
+   setBlocPcpMetiersInternalOperator(operator: number) {
       this.blocPcpMetiers.internalBlocOperator = operator;
    }
    @Mutation
-   public setBlocPcpMetiersExternalOperator(operator: number): void {
+   setBlocPcpMetiersExternalOperator(operator: number) {
       this.blocPcpMetiers.externalBlocOperator = operator;
-   }
-   @Action({rawError: true})
-   public updateBlocMetiers(arraySent: Array<CheckboxesProvider>): void {
-      this.context.commit('setBlocPcpMetiersArrayMetiers', arraySent);
-      this.context.commit('setBlocPcpMetiersStringList', arraySent);
-      this.context.commit('setBlocPcpMetiersInternalOperator', Ensemble.Ou);
-      this.context.commit('setBlocPcpMetiersExternalOperator', Ensemble.Et);
    }
 
    //Bloc Rcr
-   @Action({rawError: true})
-   get getPersistentContextBlocRcrInternalOperatorListToSelect(): Array<OperatorProvider> {
-      return this.context.rootState.RequeteDeRecherche.blocRcr._internalBlocOperatorListToSelect;
-   }
-   @Action({rawError: true})
-   get getBlocRcrInternalOperatorListToSelect(): Array<OperatorProvider> {
-      return this.context.getters['getPersistentContextBlocRcrInternalOperatorListToSelect'];
-   }
-
-   @Action({rawError: true})
-   get getPersistentContextBlocRcrExternalOperatorListToSelect(): Array<OperatorProvider> {
-      return this.context.rootState.RequeteDeRecherche.blocRcr._externalBlocOperatorListToSelect;
-   }
-   @Action({rawError: true})
-   get getBlocRcrExternalOperatorListToSelect(): Array<OperatorProvider> {
-      return this.context.getters['getPersistentContextBlocRcrExternalOperatorListToSelect'];
-   }
-
-   @Action({rawError: true})
-   get getPersistentContextBlocRcrInternalOperatorSelected(): number {
-      return this.context.rootState.RequeteDeRecherche.blocRcr._internalBlocOperator;
-   }
-   @Action({rawError: true})
-   get getBlocRcrInternalOperatorSelected(): number {
-      return this.context.getters['getPersistentContextBlocRcrInternalOperatorSelected'];
-   }
-
-   @Action({rawError: true})
-   get getPersistentContextBlocRcrExternalOperatorSelected(): number {
-      return this.context.rootState.RequeteDeRecherche.blocRcr._externalBlocOperator;
-   }
-   @Action({rawError: true})
-   get getBlocRcrExternalOperatorSelected(): number {
-      return this.context.getters['getPersistentContextBlocRcrExternalOperatorSelected'];
-   }
-
-   @Action({rawError: true})
-   get getPersistentContextBlocRcrRcrHandler(): Array<RcrProvider> {
-      return this.context.rootState.RequeteDeRecherche.blocRcr._rcrHandler;
-   }
-   @Action({rawError: true})
-   get getBlocRcrRcrHandler(): Array<RcrProvider> {
-      return this.context.getters['getPersistentContextBlocRcrRcrHandler'];
-   }
-
-   @Action({rawError: true})
-   get getPersistentContextBlocRcrArrayTyped(): Array<string> {
-      return this.context.rootState.RequeteDeRecherche.blocRcr._rcrListString;
-   }
-   @Action({rawError: true}) //TODO essayer @Getter et mettre public au lieu de get si problemes avec getter dans les composants
-   get getBlocRcrArrayTyped(): Array<RcrProvider> {
-      return this.context.getters['getPersistentContextBlocRcrArrayTyped'];
-   }
-
    @Mutation
-   public setBlocRcrInternalOperator(operator: number): void {
-      this.blocRcr.internalBlocOperator = operator;
+   setBlocRcrExternalOperator(externalOperator: number) {
+      this.blocRcr.externalBlocOperator = externalOperator;
    }
    @Mutation
-   public setBlocRcrExternalOperator(operator: number): void {
-      this.blocRcr.externalBlocOperator = operator;
+   setBlocRcrInternalOperator(internalOperator: number) {
+      this.blocRcr.internalBlocOperator = internalOperator;
    }
    @Mutation
-   public setBlocRcrRcrHandler(arraySent: Array<RcrProvider>) {
+   setBlocRcrRcrHandler(arraySent: Array<RcrProvider>) {
       this.blocRcr.rcrHandler = arraySent;
    }
    @Mutation
-   public setBlocRcrRcrListString(arraySent: Array<RcrProvider>) {
-      this.blocRcr.rcrStringArrayClean();
-      arraySent.forEach((element) => {
-         const elementInString = String(element);
-         this.blocRcr.rcrListString.push(elementInString);
-      });
+   setBlocRcrRcrListString(arraySent: Array<string>) {
+      this.blocRcr.rcrListString = arraySent;
    }
 
    //Bloc Ppn
    @Mutation
-   public setBlocPpnExternalOperator(externalOperator: number): void {
+   setBlocPpnExternalOperator(externalOperator: number) {
       this.blocPpn.externalBlocOperator = externalOperator;
    }
-   @Action
-   public updateBlocPpnExternalOperatorSelected(externalOperator: number): void {
-      this.context.commit('setBlocPpnExternalOperator', externalOperator);
-   }
 
    @Mutation
-   public setBlocPpnInternalOperator(internalOperator: number): void {
+   setBlocPpnInternalOperator(internalOperator: number) {
       this.blocPpn.internalBlocOperator = internalOperator;
    }
-   @Action
-   public updateBlocPpnInternalOperatorSelected(internalOperator: number): void {
-      this.context.commit('setBlocPpnInternalOperator', internalOperator);
-   }
 
    @Mutation
-   public setBlocPpn(ppn: string): void {
+   setBlocPpn(ppn: string) {
       this.blocPpn.ppnEntered = ppn;
    }
-   @Action
-   public updateBlocPpn(ppn: string): void {
-      this.context.commit('setBlocPpn', ppn);
-   }
 
    @Mutation
-   public setBlocPpnListString(arraySent: Array<string>): void {
+   setBlocPpnListString(arraySent: Array<string>) {
       this.blocPpn.ppnStringArrayClean();
       this.blocPpn.ppnListString = arraySent;
    }
 
-   @Action updateBlocPpnStringList(arraySent: Array<string>): void {
-      this.context.commit('setBlocPpnListString', arraySent);
-   }
-
    //Bloc Issn
    @Mutation
-   public setBlocIssnExternalOperator(externalOperator: number): void {
+   setBlocIssnExternalOperator(externalOperator: number) {
       this.blocIssn.externalBlocOperator = externalOperator;
-   }
-   @Action
-   public updateBlocIssnExternalOperatorSelected(externalOperator: number): void {
-      this.context.commit('setBlocIssnExternalOperator', externalOperator);
    }
 
    @Mutation
-   public setBlocIssn(issn: string): void {
+   setBlocIssn(issn: string) {
       this.blocIssn.issnEntered = issn;
-   }
-   @Action
-   public updateBlocIssn(issn: string): void {
-      this.context.commit('setBlocIssn', issn);
    }
 
    //Bloc Mots du titre
    @Mutation
-   public setBlocTitre(totalString: string): void {
+   setBlocTitre(totalString: string) {
       this.blocMotDuTitre.titleWordsStringArrayClean();
       totalString.split(' ').forEach((element) => {
          const elementInString = String(element);
          this.blocMotDuTitre.titleWordsEntered.push(elementInString);
       });
    }
-   @Action
-   public updateBlocTitre(totalString: string): void {
-      this.context.commit('setBlocTitre', totalString);
-   }
 
    //Bloc editeur
    @Mutation
-   public setBlocEditeurExternalOperatorSelected(externalOperator: number): void {
+   setBlocEditeurExternalOperatorSelected(externalOperator: number) {
       this.blocEditeur.externalBlocOperator = externalOperator;
-   }
-   @Action
-   public updateBlocEditeurExternalOperatorSelected(externalOperator: number): void {
-      this.context.commit('setBlocEditeurExternalOperatorSelected', externalOperator);
    }
 
    @Mutation
-   public setBlocEditeur(totalString: string): void {
+   setBlocEditeur(totalString: string) {
       this.blocEditeur.editeurStringArrayClean();
       totalString.split(' ').forEach((element) => {
          const elementInString = String(element);
          this.blocEditeur.editorEntered.push(elementInString);
       });
    }
-   @Action
-   public updateBlocEditeur(totalString: string): void {
-      this.context.commit('setBlocEditeur', totalString);
-   }
 
    //Bloc langue
    @Mutation
-   public setBlocLangueExternalOperatorSelected(externalOperator: number): void {
+   setBlocLangueExternalOperatorSelected(externalOperator: number) {
       this.blocLangue.externalBlocOperator = externalOperator;
    }
-   @Action
-   public updateBlocLangueExternalOperatorSelected(externalOperator: number): void {
-      this.context.commit('setBlocLangueExternalOperatorSelected', externalOperator);
-   }
+
    @Mutation
-   public setBlocLangue(arraySent: Array<ListProvider>): void {
+   setBlocLangue(arraySent: Array<ListProvider>) {
       this.blocLangue.langueStringArrayClean();
       arraySent.forEach((element) => {
          this.blocLangue.langueEntered.push(element);
       });
    }
-   @Action
-   public updateBlocLangue(arraySent: Array<ListProvider>): void {
-      this.context.commit('setBlocLangue', arraySent);
-   }
 
    //Bloc Pays
    @Mutation
-   public setBlocPaysExternalOperatorSelected(externalOperator: number): void {
+   setBlocPaysExternalOperatorSelected(externalOperator: number) {
       this.blocPays.externalBlocOperator = externalOperator;
-   }
-   @Action
-   public updateBlocPaysExternalOperatorSelected(externalOperator: number): void {
-      this.context.commit('setBlocPaysExternalOperatorSelected', externalOperator);
    }
 
    @Mutation
-   public setBlocPays(arraySent: Array<ListProvider>): void {
+   setBlocPays(arraySent: Array<ListProvider>) {
       this.blocPays.paysStringArrayClean();
       arraySent.forEach((element) => {
          this.blocPays.paysEntered.push(element);
       });
-   }
-   @Action
-   public updateBlocPays(arraySent: Array<ListProvider>): void {
-      this.context.commit('setBlocPays', arraySent);
    }
 
    /*Getters*/
@@ -514,4 +337,3 @@ class RequeteDeRecherche extends VuexModule {
       results.forEach((obj) => this.notices.push(new Notice(obj)));
    }
 }
-export default RequeteDeRecherche;

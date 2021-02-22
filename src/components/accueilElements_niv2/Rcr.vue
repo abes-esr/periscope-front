@@ -1,80 +1,64 @@
 <template>
    <v-container>
-      <v-select @change="updateExternalOperateurEvent()" @blur="updateExternalOperateurEvent()" dense label="Par defaut, ou" :items="externalBlocOperatorListToSelect" class="style1" outlined v-model="externalOperatorSelected"></v-select>
-      <v-combobox @change="addItem()" @blur="addItem()" @keyup.enter="addItem()" :rules="rcrAlert" clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
-      <v-select @change="updateInternalOperateurEvent()" @blur="updateInternalOperateurEvent()" dense label="Pour ce lot de rcr (par defaut, ou)" :items="internalBlocOperatorListToSelect" class="style1" outlined v-model="internalOperatorSelected"> </v-select>
+      <v-row>
+         <v-col>
+            <v-select @change="updateExternalOperateurEvent()" @blur="updateExternalOperateurEvent()" dense label="Par defaut, ou" :items="externalBlocOperatorListToSelect" class="style1" outlined v-model="externalOperatorSelected"></v-select>
+         </v-col>
+      </v-row>
+      <v-row>
+         <v-col>
+            <v-combobox @change="addItem()" @blur="addItem()" @keyup.enter="addItem()" :rules="rcrAlert" clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
+         </v-col>
+      </v-row>
+      <v-row>
+         <v-col>
+            <v-select @change="updateInternalOperateurEvent()" @blur="updateInternalOperateurEvent()" dense label="Pour ce lot de rcr (par defaut, ou)" :items="internalBlocOperatorListToSelect" class="style1" outlined v-model="internalOperatorSelected"> </v-select>
+         </v-col>
+      </v-row>
    </v-container>
 </template>
 
 <script lang="ts">
-import {Component, Vue, Watch} from 'vue-property-decorator';
-import {namespace} from 'vuex-class';
-import {RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
+import {Component, Vue} from 'vue-property-decorator';
 import {OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-
-const RequeteDeRecherche = namespace('RequeteDeRecherche');
 
 @Component
 export default class VueRcr extends Vue {
-   @RequeteDeRecherche.Mutation
-   private setBlocRcrInternalOperator!: (operator: number) => void;
-   @RequeteDeRecherche.Mutation
-   private setBlocRcrExternalOperator!: (operator: number) => void;
-
-   //TODO ne plus passer par context.commit, se referer à setBlocRcrRcrHandler dans requeteDeRecherche pour la syntaxe
-   @RequeteDeRecherche.Mutation
-   private setBlocRcrRcrHandler!: (arraySent: Array<RcrProvider>) => void;
-   @RequeteDeRecherche.Mutation
-   private setBlocRcrRcrListString!: (arraySent: Array<RcrProvider>) => void;
-
-   @RequeteDeRecherche.Getter
-   getBlocRcrInternalOperatorListToSelect!: Array<OperatorProvider>;
-   @RequeteDeRecherche.Getter
-   getBlocRcrExternalOperatorListToSelect!: Array<OperatorProvider>;
-   @RequeteDeRecherche.Getter
-   getBlocRcrInternalOperatorSelected!: number;
-   @RequeteDeRecherche.Getter
-   getBlocRcrExternalOperatorSelected!: number;
-   @RequeteDeRecherche.Getter
-   getBlocRcrRcrHandler!: Array<RcrProvider>;
-   @RequeteDeRecherche.Getter
-   getBlocRcrArrayTyped!: Array<string>;
-
    //Par defaut, ou
    private externalBlocOperatorListToSelect: Array<OperatorProvider>;
    private externalOperatorSelected: number;
 
    //Saisir le rcr d'une bibliothèque
    private rcrArrayTyped: Array<string>;
-   private rcrHandler: Array<RcrProvider>;
 
    //Pour ce lot de rcr (par defaut, ou)
    private internalBlocOperatorListToSelect: Array<OperatorProvider>;
    private internalOperatorSelected: number;
 
    created(): void {
-      this.externalBlocOperatorListToSelect = this.getBlocRcrExternalOperatorListToSelect;
-      this.externalOperatorSelected = this.getBlocRcrExternalOperatorSelected;
-      this.rcrHandler = this.getBlocRcrRcrHandler;
-      this.rcrArrayTyped = this.getBlocRcrArrayTyped;
-      this.internalBlocOperatorListToSelect = this.getBlocRcrInternalOperatorListToSelect;
-      this.internalOperatorSelected = this.getBlocRcrInternalOperatorSelected;
+
+      this.externalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocRcr.externalBlocOperatorListToSelect;
+      this.externalOperatorSelected = this.$store.state.requeteRecherche.blocRcr.externalBlocOperator;
+      this.rcrArrayTyped = this.$store.state.requeteRecherche.blocRcr.rcrListString;
+      this.internalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocRcr.internalBlocOperatorListToSelect;
+      this.internalOperatorSelected = this.$store.state.requeteRecherche.blocRcr.internalBlocOperator;
    }
 
    private rcrAlert: Array<string> = []; //Message d'erreur
 
-   //Lancé à chaque MAJ du composant (saisie utilisateur)
+   //Event v-combobox
    addItem(): void {
-      this.setBlocRcrRcrHandler(this.rcrHandler);
-      this.setBlocRcrRcrListString(this.rcrHandler);
+     this.$store.commit('setBlocRcrRcrListString', this.rcrArrayTyped);
+      //this.$store.state.requeteRecherche.blocRcr.setBlocRcrRcrListString(this.rcrArrayTyped);
+     console.log(this.$store.state.requeteRecherche.blocRcr.rcrListString);
    }
 
    //Events
    private updateExternalOperateurEvent(): void {
-      this.setBlocRcrExternalOperator(this.externalOperatorSelected);
+      this.$store.state.requeteRecherche.blocRcr.setBlocRcrExternalOperator(this.externalOperatorSelected);
    }
    private updateInternalOperateurEvent(): void {
-      this.setBlocRcrInternalOperator(this.internalOperatorSelected);
+      this.$store.state.requeteRecherche.blocRcr.setBlocRcrInternalOperator(this.internalOperatorSelected);
    }
 
    /**
@@ -82,6 +66,7 @@ export default class VueRcr extends Vue {
     * is launched to observe the final current array in combobox
     * @param newArrayVal
     */
+   /*
    @Watch('rcrArrayTyped')
    rcrTyped(newArrayVal: []): void {
       if (newArrayVal.length === 0) {
@@ -112,5 +97,6 @@ export default class VueRcr extends Vue {
          );
       }
    }
+    */
 }
 </script>

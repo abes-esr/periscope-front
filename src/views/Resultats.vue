@@ -28,9 +28,6 @@ import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentStepper from '@/components/stepper/Stepper.vue';
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentFooter from '@/components/accueil_niv1/Footer.vue';
-import {namespace} from 'vuex-class';
-
-const ResultatDeRecherche = namespace('ResultatDeRecherche');
 
 @Component({
    components: {
@@ -40,11 +37,8 @@ const ResultatDeRecherche = namespace('ResultatDeRecherche');
    },
 })
 export default class Resultats extends Vue {
-   @ResultatDeRecherche.Action
-   private displayNotices!: () => void;
-
    private clickVisualisation() {
-      this.displayNotices();
+      this.$store.state.resultatRecherche.displayNotices();
    }
 }
 </script>

@@ -59,23 +59,8 @@ import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Ensemble, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
-import {namespace} from 'vuex-class';
-import {BlocPpn} from '@/store/classes/blocsDeRecherche/BlocPpn';
-
-const requeteDeRecherche = namespace('RequeteDeRecherche');
-
 @Component
 export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
-   @requeteDeRecherche.State
-   private blocPpn!: BlocPpn;
-
-   @requeteDeRecherche.Action
-   private updateBlocPpnStringList!: (arraySent: Array<string>) => void;
-   @requeteDeRecherche.Action
-   private updateBlocPpnExternalOperatorSelected!: (externalOperator: number) => void;
-   @requeteDeRecherche.Action
-   private updateBlocPpnInternalOperatorSelected!: (externalOperator: number) => void;
-
    private external_operator_label: string;
    private internal_operator_label: string;
    private list_external_operator_to_select: Array<OperatorProvider>;
@@ -90,11 +75,11 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    created(): void {
       this.external_operator_label = 'Autres blocs';
       this.internal_operator_label = 'Entre PPN';
-      this.list_external_operator_to_select = this.blocPpn.externalBlocOperatorListToSelect;
-      this.list_internal_operator_to_select = this.blocPpn.internalBlocOperatorListToSelect;
-      this.external_operator_selected = this.blocPpn.externalBlocOperator;
-      this.internal_operator_selected = this.blocPpn.internalBlocOperator;
-      this.comboboxArrayTyped = this.blocPpn.ppnListString;
+      this.list_external_operator_to_select = this.$store.state.requeteRecherche.blocPpn.externalBlocOperatorListToSelect;
+      this.list_internal_operator_to_select = this.$store.state.requeteRecherche.blocPpn.internalBlocOperatorListToSelect;
+      this.external_operator_selected = this.$store.state.requeteRecherche.blocPpn.externalBlocOperator;
+      this.internal_operator_selected = this.$store.state.requeteRecherche.blocPpn.internalBlocOperator;
+      this.comboboxArrayTyped = this.$store.state.requeteRecherche.blocPpn.ppnListString;
       this.comboboxLabel = 'PPN saisis';
       this.comboboxPlaceholder = 'Saisir des n° de PPN';
    }
@@ -104,7 +89,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
       if (this.comboboxArrayTyped.length !== 0) {
          const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
          if (lastElement.match('^\\d{8,9}X?$')) {
-            this.updateBlocPpnStringList(this.comboboxArrayTyped);
+            this.$store.state.requeteRecherche.setBlocPpnListString(this.comboboxArrayTyped);
             this.comboboxAlert = [];
          } else {
             this.removeItem(lastElement);
@@ -130,11 +115,11 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
 
    //Events v-select
    eventUpdateBlocExternalOperator(): void {
-      this.updateBlocPpnExternalOperatorSelected(this.external_operator_selected);
+      this.$store.state.requeteRecherche.blocPpn.setBlocPpnExternalOperator(this.external_operator_selected);
    }
 
    eventUpdateBlocInternalOperator(): void {
-      this.updateBlocPpnInternalOperatorSelected(this.internal_operator_selected);
+      this.$store.state.requeteRecherche.blocPpn.setBlocPpnInternalOperator(this.internal_operator_selected);
    }
 }
 </script>

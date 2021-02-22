@@ -20,6 +20,14 @@ export class BlocPpn extends BlocAbstract {
       super(externalBlocOperator);
    }
 
+   get ppnEntered(): string {
+      return this._ppnEntered;
+   }
+
+   set ppnEntered(value: string) {
+      this._ppnEntered = value;
+   }
+
    get type(): string {
       return this._type;
    }
@@ -28,11 +36,11 @@ export class BlocPpn extends BlocAbstract {
       this._type = value;
    }
 
-   get internalBlocOperator(): Ensemble {
+   get internalBlocOperator(): number {
       return this._internalBlocOperator;
    }
 
-   set internalBlocOperator(value: Ensemble) {
+   set internalBlocOperator(value: number) {
       this._internalBlocOperator = value;
    }
 
@@ -49,20 +57,12 @@ export class BlocPpn extends BlocAbstract {
       }
    }
 
-   get externalBlocOperator(): Ensemble {
+   get externalBlocOperator(): number {
       return this._externalBlocOperator;
    }
 
-   set externalBlocOperator(value: Ensemble) {
+   set externalBlocOperator(value: number) {
       this._externalBlocOperator = value;
-   }
-
-   get ppnEntered(): string {
-      return this._ppnEntered;
-   }
-
-   set ppnEntered(value: string) {
-      this._ppnEntered = value;
    }
 
    get ppnEnteredInArrayString(): Array<string> {

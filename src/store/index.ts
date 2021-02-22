@@ -1,17 +1,17 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import User from '@/store/classes/user';
-import RequeteDeRecherche from '@/store/classes/RequeteDeRecherche';
-import ResultatDeRecherche from "@/store/classes/ResultatDeRecherche";
+import RequeteDeRecherche from '@/store/classes/RequeteDeRecherche.ts';
+import ResultatDeRecherche from '@/store/classes/ResultatDeRecherche.ts';
 
 Vue.use(Vuex);
+Vue.config.silent = true; //Disable vue warn (this2), put false to see warnings
+
 const store = new Vuex.Store({
    modules: {
-      User,
-      RequeteDeRecherche,
-      ResultatDeRecherche
+      requeteRecherche: RequeteDeRecherche,
+      resultatRecherche: ResultatDeRecherche,
    },
-   plugins: [createPersistedState()]
+   plugins: [createPersistedState()],
 });
 export default store;

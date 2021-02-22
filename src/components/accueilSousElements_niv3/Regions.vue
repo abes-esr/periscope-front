@@ -18,26 +18,18 @@
 </template>
 
 <script lang="ts">
-import {Component, Prop, Mixins} from 'vue-property-decorator';
+import {Component, Mixins, Prop} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
-import {namespace} from 'vuex-class';
 import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-
-//Import de classe globale
-const RequeteDeRecherche = namespace('RequeteDeRecherche');
-
 @Component
 export default class Regions extends Mixins(GlobalPropertiesMixin) {
-   //Setters de classe
-   @RequeteDeRecherche.Action
-   public updateBlocRegions!: (arraySent: Array<CheckboxesProvider>) => void;
-
    //Props passées par le parent
    @Prop({required: true}) prop_regions: Array<CheckboxesProvider>;
 
    //Events
-   private eventOnArrayCheckboxes(): void {
-      this.updateBlocRegions(this.prop_regions);
+   eventOnArrayCheckboxes() {
+      this.$store.commit('setBlocPcpRegionsArrayRegions', this.prop_regions);
+      this.$store.commit('setBlocPcpRegionsStringList', this.prop_regions);
    }
 }
 </script>

@@ -1,19 +1,12 @@
 <template>
    <v-container>
       <v-select :items="ppnExternalBlocOperatorListToSelect" label="Par defaut, et" class="style1" outlined v-model="ppnExternalBlocOperatorSelected" @change="eventUpdateBlocPpnExternalOperator" dense> </v-select>
-      <span>{{ this.blocPpn.externalBlocOperator }}</span>
-      <span>{{ typeof this.blocPpn.externalBlocOperator }}</span>
-
       <v-row>
          <v-col>
             <v-text-field @change="regexPpnControlAndUpdateBloc" @blur="regexPpnControlAndUpdateBloc" @keyup.enter="regexPpnControlAndUpdateBloc" :rules="ppnAlert" dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnEntered"> </v-text-field>
-            <span>{{ this.blocPpn.ppnEntered }}</span>
-            <span>{{ typeof this.blocPpn.ppnEntered }}</span>
          </v-col>
          <v-col>
             <v-text-field @change="regexPpnControlAndUpdateBloc" @blur="regexIssnControlAndUpdateBloc" @keyup.enter="regexIssnControlAndUpdateBloc" :rules="issnAlert" dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnEntered"></v-text-field>
-            <span>{{ this.blocIssn.issnEntered }}</span>
-            <span>{{ typeof this.blocIssn.issnEntered }}</span>
          </v-col>
       </v-row>
 
@@ -22,25 +15,17 @@
             <v-expansion-panel-header> Rechercher par d'autres critères </v-expansion-panel-header>
             <v-expansion-panel-content>
                <v-text-field @change="eventUpdateBlocTitre" @blur="eventUpdateBlocTitre" @keyup.enter="eventUpdateBlocTitre" clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titreEntered"></v-text-field>
-               <span>{{ this.blocMotDuTitre.titleWordsEntered }}</span>
-               <span>{{ typeof this.blocMotDuTitre.titleWordsEntered }}</span>
                <v-row dense>
                   <v-col xs="12" sm="4">
                      <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" @change="eventUpdateBlocEditeurExternalOperator" class="style2"></v-select>
-                     <span>{{ this.blocEditeur.externalBlocOperator }}</span>
-                     <span>{{ typeof this.blocEditeur.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
                      <v-text-field @change="eventUpdateBlocEditeur" @blur="eventUpdateBlocEditeur" @keyup.enter="eventUpdateBlocEditeur" outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editeurEntered"></v-text-field>
-                     <span>{{ this.blocEditeur.editorEntered }}</span>
-                     <span>{{ typeof this.blocEditeur.editorEntered }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
                      <v-select :items="langueExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="langueExternalOperatorSelected" @change="eventUpdateBlocLangueExternalOperator" class="style2"></v-select>
-                     <span>{{ this.blocLangue.externalBlocOperator }}</span>
-                     <span>{{ typeof this.blocLangue.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
                      <v-combobox @change="updateArrayBlocLangue" v-model="langueEntered" :items="langueItems" multiple outlined label="tapez une langue (optionnel)" class="style2" placeholder="langue à saisir">
@@ -53,15 +38,11 @@
                            </v-chip>
                         </template>
                      </v-combobox>
-                     <span>{{ this.blocLangue.langueEntered }}</span>
-                     <span>{{ typeof this.blocLangue.langueEntered }}</span>
                   </v-col>
                </v-row>
                <v-row dense>
                   <v-col xs="12" sm="4">
                      <v-select :items="paysExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="paysExternalOperatorSelected" @change="eventUpdateBlocPaysExternalOperator" class="style2"></v-select>
-                     <span>{{ this.blocPays.externalBlocOperator }}</span>
-                     <span>{{ typeof this.blocPays.externalBlocOperator }}</span>
                   </v-col>
                   <v-col xs="12" sm="8">
                      <v-combobox @change="updateArrayBlocPays" v-model="paysEntered" :items="paysItems" multiple outlined label="tapez un pays (optionnel)" class="style2" placeholder="pays à saisir">
@@ -74,8 +55,6 @@
                            </v-chip>
                         </template>
                      </v-combobox>
-                     <span>{{ JSON.stringify(this.blocPays.paysEntered) }}</span>
-                     <span>{{ typeof this.blocPays.paysEntered }}</span>
                   </v-col>
                </v-row>
             </v-expansion-panel-content>
@@ -85,58 +64,11 @@
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
-import {namespace} from 'vuex-class';
-import {Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
-import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
-import {BlocPpn} from '@/store/classes/blocsDeRecherche/BlocPpn';
-import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
-import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
-import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
-
-//Import de classe
-const requeteDeRecherche = namespace('RequeteDeRecherche');
+import { Component, Vue } from "vue-property-decorator";
+import { Ensemble, ListProvider, OperatorProvider } from "@/store/classes/blocsDeRecherche/BlocAbstract";
 
 @Component
 export default class VuePpn extends Vue {
-   //Setters de classe
-   @requeteDeRecherche.Action
-   private updateBlocPpnExternalOperatorSelected!: (element: Ensemble) => void;
-   @requeteDeRecherche.Action
-   private updateBlocPpn!: (element: string) => void;
-   @requeteDeRecherche.Action
-   private updateBlocIssnExternalOperatorSelected!: (element: number) => void;
-   @requeteDeRecherche.Action
-   private updateBlocIssn!: (element: string) => void;
-   @requeteDeRecherche.Action
-   private updateBlocTitre!: (element: string) => void;
-   @requeteDeRecherche.Action
-   private updateBlocEditeurExternalOperatorSelected!: (element: Ensemble) => void;
-   @requeteDeRecherche.Action
-   private updateBlocEditeur!: (element: string) => void;
-   @requeteDeRecherche.Action
-   private updateBlocLangueExternalOperatorSelected!: (element: Ensemble) => void;
-   @requeteDeRecherche.Action
-   private updateBlocLangue!: (element: Array<ListProvider>) => void;
-   @requeteDeRecherche.Action
-   private updateBlocPaysExternalOperatorSelected!: (element: Ensemble) => void;
-   @requeteDeRecherche.Action
-   private updateBlocPays!: (element: Array<ListProvider>) => void;
-
-   @requeteDeRecherche.State
-   private blocPpn!: BlocPpn;
-   @requeteDeRecherche.State
-   private blocIssn!: BlocIssn;
-   @requeteDeRecherche.State
-   private blocMotDuTitre!: BlocMotDuTitre;
-   @requeteDeRecherche.State
-   private blocEditeur!: BlocEditeur;
-   @requeteDeRecherche.State
-   private blocLangue!: BlocLangue; //TODO etape1 nouveaux getters
-   @requeteDeRecherche.State
-   private blocPays!: BlocPays;
-
    /*Attributs*/
    private ppnExternalBlocOperatorListToSelect: Array<OperatorProvider>; //Bloc Ppn
    private ppnExternalBlocOperatorSelected: Ensemble;
@@ -157,25 +89,25 @@ export default class VuePpn extends Vue {
 
    //A chaque creation du composant
    created(): void {
-      this.ppnExternalBlocOperatorListToSelect = this.blocPpn.externalBlocOperatorListToSelect;
-      this.ppnExternalBlocOperatorSelected = this.blocPpn.externalBlocOperator;
-      this.ppnEntered = this.blocPpn.ppnEntered;
-      this.issnEntered = this.blocIssn.issnEntered;
-      this.titreEntered = this.blocMotDuTitre.titleWordsEnteredInString;
+      this.ppnExternalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocPpn.externalBlocOperatorListToSelect;
+      this.ppnExternalBlocOperatorSelected = this.$store.state.requeteRecherche.blocPpn.externalBlocOperator;
+      this.ppnEntered = this.$store.state.requeteRecherche.blocPpn.ppnEntered;
+      this.issnEntered = this.$store.state.requeteRecherche.blocIssn.issnEntered;
+      this.titreEntered = this.$store.state.requeteRecherche.blocMotDuTitre.titleWordsEnteredInString;
 
-      this.editeurExternalBlocOperatorListToSelect = this.blocEditeur.externalBlocOperatorListToSelect;
-      this.editeurExternalOperatorSelected = this.blocEditeur.externalBlocOperator;
-      this.editeurEntered = this.blocEditeur.editorEnteredEnteredInString;
+      this.editeurExternalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocEditeur.externalBlocOperatorListToSelect;
+      this.editeurExternalOperatorSelected = this.$store.state.requeteRecherche.blocEditeur.externalBlocOperator;
+      this.editeurEntered = this.$store.state.requeteRecherche.blocEditeur.editorEnteredEnteredInString;
 
-      this.langueItems = this.blocLangue.langueListe;
-      this.langueEntered = this.blocLangue.langueEntered; //TODO etape2 nouveaux getters
-      this.langueExternalBlocOperatorListToSelect = this.blocLangue.externalBlocOperatorListToSelect;
-      this.langueExternalOperatorSelected = this.blocLangue.externalBlocOperator;
+      this.langueItems = this.$store.state.requeteRecherche.blocLangue.langueListe;
+      this.langueEntered = this.$store.state.requeteRecherche.blocLangue.langueEntered; //TODO etape2 nouveaux getters
+      this.langueExternalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocLangue.externalBlocOperatorListToSelect;
+      this.langueExternalOperatorSelected = this.$store.state.requeteRecherche.blocLangue.externalBlocOperator;
 
-      this.paysEntered = this.blocPays.paysEntered;
-      this.paysExternalBlocOperatorListToSelect = this.blocPays.externalBlocOperatorListToSelect;
-      this.paysExternalOperatorSelected = this.blocPays.externalBlocOperator;
-      this.paysItems = this.blocPays.paysListe;
+      this.paysEntered = this.$store.state.requeteRecherche.blocPays.paysEntered;
+      this.paysExternalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocPays.externalBlocOperatorListToSelect;
+      this.paysExternalOperatorSelected = this.$store.state.requeteRecherche.blocPays.externalBlocOperator;
+      this.paysItems = this.$store.state.requeteRecherche.blocPays.paysListe;
    }
 
    //A Chaque modification du composant -> updated, setters de classe
@@ -198,16 +130,16 @@ export default class VuePpn extends Vue {
       }
       //Attention sur les slots il faut spécifiquement appeler le mutateur d'état dans la méthode reliée à l'event
       //Pas dans updated
-      this.updateBlocLangue(this.langueEntered);
-      this.updateBlocPays(this.paysEntered);
+      this.$store.state.requeteRecherche.blocLangue.setBlocLangue(this.langueEntered);
+      this.$store.state.requeteRecherche.blocPays.setBlocPays(this.paysEntered);
    }
 
    private updateArrayBlocLangue(): void {
-      this.updateBlocLangue(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.langueEntered, 9));
+      this.$store.state.requeteRecherche.blocLangue.setBlocLangue(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.langueEntered, 9));
    }
 
    private updateArrayBlocPays(): void {
-      this.updateBlocPays(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.paysEntered, 1));
+      this.$store.state.requeteRecherche.blocPays.setBlocPays(this.limitArrayListNumberOfElementAndClearArrayIfEmpty(this.paysEntered, 1));
    }
 
    private limitArrayListNumberOfElementAndClearArrayIfEmpty(array: Array<ListProvider>, sizeLimit: number): Array<ListProvider> {
@@ -227,7 +159,7 @@ export default class VuePpn extends Vue {
    private ppnAlert: Array<string> = []; //Message d'erreur
    private regexPpnControlAndUpdateBloc(): void {
       if (this.ppnEntered.match('^\\d{8,9}X?$')) {
-         this.updateBlocPpn(this.ppnEntered);
+         this.$store.state.requeteRecherche.blocPpn.setBlocPpn(this.ppnEntered);
          this.ppnAlert = [];
       } else {
          this.ppnEntered = '';
@@ -238,7 +170,7 @@ export default class VuePpn extends Vue {
    private issnAlert: Array<string> = [];
    private regexIssnControlAndUpdateBloc(): void {
       if (this.issnEntered.match('^\\d{4}-\\d{4}$')) {
-         this.updateBlocIssn(this.issnEntered);
+         this.$store.state.requeteRecherche.blocIssn.setBlocIssn(this.issnEntered);
          this.issnAlert = [];
       } else {
          this.issnEntered = '';
@@ -248,28 +180,28 @@ export default class VuePpn extends Vue {
 
    private eventUpdateBlocTitre(): void {
       if (String(this.titreEntered) === 'null') {
-         this.updateBlocTitre('');
+         this.$store.state.requeteRecherche.blocMotDuTitre.setBlocTitre('');
       } else {
-         this.updateBlocTitre(this.titreEntered);
+         this.$store.state.requeteRecherche.blocMotDuTitre.setBlocTitre(this.titreEntered);
       }
    }
 
    private eventUpdateBlocEditeur(): void {
-      this.updateBlocEditeur(this.editeurEntered);
+      this.$store.state.requeteRecherche.blocEditeur.setBlocEditeur(this.editeurEntered);
    }
 
    //Events sur les listes déroulante
    eventUpdateBlocPpnExternalOperator(): void {
-      this.updateBlocPpnExternalOperatorSelected(this.ppnExternalBlocOperatorSelected);
+      this.$store.state.requeteRecherche.blocPpn.setBlocPpnExternalOperator(this.ppnExternalBlocOperatorSelected);
    }
    eventUpdateBlocLangueExternalOperator(): void {
-      this.updateBlocLangueExternalOperatorSelected(this.langueExternalOperatorSelected);
+      this.$store.state.requeteRecherche.blocLangue.setBlocLangueExternalOperatorSelected(this.langueExternalOperatorSelected);
    }
    eventUpdateBlocEditeurExternalOperator(): void {
-      this.updateBlocEditeurExternalOperatorSelected(this.editeurExternalOperatorSelected);
+      this.$store.state.requeteRecherche.blocEditeur.setBlocEditeurExternalOperatorSelected(this.editeurExternalOperatorSelected);
    }
    eventUpdateBlocPaysExternalOperator(): void {
-      this.updateBlocPaysExternalOperatorSelected(this.paysExternalOperatorSelected);
+      this.$store.state.requeteRecherche.blocPays.setBlocPaysExternalOperatorSelected(this.paysExternalOperatorSelected);
    }
 }
 </script>

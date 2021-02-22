@@ -34,13 +34,6 @@ import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentRecherche from '@/components/accueil_niv1/Recherche.vue';
 import ComponentFooter from '@/components/accueil_niv1/Footer.vue';
 import ComponentStepper from '@/components/stepper/Stepper.vue';
-import {namespace} from 'vuex-class';
-import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-import {ComponentOptions} from 'vue';
-
-//Classe importée
-const RequeteDeRecherche = namespace('RequeteDeRecherche');
-const ResultatDeRecherche = namespace('ResultatDeRecherche');
 
 @Component({
    components: {
@@ -51,24 +44,8 @@ const ResultatDeRecherche = namespace('ResultatDeRecherche');
    },
 })
 export default class Recherche extends Vue {
-   @ResultatDeRecherche.Action
-   private initializeModule!: () => void;
-
-   @ResultatDeRecherche.Action
-   private displayNotices!: () => void;
-
-   @RequeteDeRecherche.Action
-   private getOneTest!: () => void;
-
-   @RequeteDeRecherche.Action
-   private getSpecific!: () => string;
-
-   get testReactive(): Array<CheckboxesProvider> {
-      //Les getters des parents ne sont actuellement pas reactive
-      return this.$store.state.RequeteDeRecherche.globalRegions;
-   }
-   private clickVisualisation() {
-      this.displayNotices();
+   private clickVisualisation(): void {
+      this.$store.dispatch('displayNotices');
    }
 }
 </script>

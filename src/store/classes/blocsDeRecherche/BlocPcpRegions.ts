@@ -89,6 +89,7 @@ export class BlocPcpRegions extends BlocAbstract {
 
    set pcpStringArray(value: Array<string>) {
       this._pcpStringArray = value;
+      console.log(this._pcpStringArray);
    }
 
    public pcpStringArrayClean(): void {

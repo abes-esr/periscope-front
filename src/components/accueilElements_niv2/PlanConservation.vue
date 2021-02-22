@@ -24,10 +24,7 @@ import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties.ts';
 import ComponentRegions from '@/components/accueilSousElements_niv3/Regions.vue';
 import ComponentMetiers from '@/components/accueilSousElements_niv3/Metiers.vue';
-import {namespace} from 'vuex-class';
 import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-
-const RequeteDeRecherche = namespace('RequeteDeRecherche');
 
 @Component({
    components: {
@@ -36,16 +33,6 @@ const RequeteDeRecherche = namespace('RequeteDeRecherche');
    },
 })
 export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
-   @RequeteDeRecherche.Action
-   public updateBlocMetiers!: (arraySent: Array<CheckboxesProvider>) => void;
-   @RequeteDeRecherche.Action
-   public updateBlocRegions!: (arraySent: Array<CheckboxesProvider>) => void;
-
-   @RequeteDeRecherche.Getter
-   private getBlocPcpRegionsArrayRegions!: Array<CheckboxesProvider>;
-   @RequeteDeRecherche.Getter
-   private getBlocPcpMetiersArrayMetiers!: Array<CheckboxesProvider>;
-
    private regions: Array<CheckboxesProvider>;
    private metiers: Array<CheckboxesProvider>;
    private choixTousOuAucun: Array<CheckboxesProvider> = [
@@ -54,8 +41,8 @@ export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
    ];
 
    created(): void {
-      this.regions = this.getBlocPcpRegionsArrayRegions;
-      this.metiers = this.getBlocPcpMetiersArrayMetiers;
+      this.regions = this.$store.state.requeteRecherche.blocPcpRegions._arrayRegions;
+      this.metiers = this.$store.state.requeteRecherche.blocPcpMetiers._arrayMetiers;
    }
 
    private title = 'Choisir un plan de conservation';
@@ -68,8 +55,10 @@ export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
     */
    private arrayChangeAllBooleanValues(arrayMember: Array<CheckboxesProvider>, booleanValue: boolean): void {
       arrayMember.forEach((element) => (element.value = booleanValue));
-      this.updateBlocRegions(this.regions);
-      this.updateBlocMetiers(this.metiers);
+      this.$store.commit('setBlocPcpRegionsArrayRegions', this.regions);
+      this.$store.commit('setBlocPcpRegionsStringList', this.regions);
+      this.$store.commit('setBlocPcpMetiersArrayMetiers', this.regions);
+      this.$store.commit('setBlocPcpMetiersStringList', this.regions);
    }
 
    /**
