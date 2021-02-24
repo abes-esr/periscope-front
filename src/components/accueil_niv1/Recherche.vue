@@ -3,7 +3,7 @@
       <v-container>
          <component-plan-de-conservation></component-plan-de-conservation>
       </v-container>
-      <v-container>
+      <!--<v-container>
          <v-row>
             <v-col>
                <component-rcr class="outlined-app"></component-rcr>
@@ -12,7 +12,7 @@
                <component-ppn class="outlined-app"></component-ppn>
             </v-col>
          </v-row>
-      </v-container>
+      </v-container>-->
       <v-container>
          <component-boutons-recherche></component-boutons-recherche>
       </v-container>

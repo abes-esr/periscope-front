@@ -3,7 +3,7 @@ import { BlocAbstract, CheckboxesProvider, Ensemble } from "@/store/classes/bloc
 export class BlocPcpMetiers extends BlocAbstract {
    private _type = 'CriterionPcp'; //Valeur fixe définie par l'API
    private _internalBlocOperator: number; // ET / Ou entre les PCP
-   private _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
+   public _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
 
    //Tableau des métiers, avec leur état coché non coché persistant
    private _arrayMetiers: Array<CheckboxesProvider> = [
@@ -61,13 +61,7 @@ export class BlocPcpMetiers extends BlocAbstract {
       }
    }
 
-   get pcpStringArray(): Array<string> {
-      return this._pcpStringArray;
-   }
 
-   set pcpStringArray(value: Array<string>) {
-      this._pcpStringArray = value;
-   }
 
    public pcpStringArrayClean(): void {
       this._pcpStringArray = [];

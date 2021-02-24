@@ -1,8 +1,9 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
 import Recherche from '@/views/Recherche.vue';
-import Resultats from "@/views/Resultats.vue";
+import Resultats from '@/views/Resultats.vue';
 import AccueilAvance from '@/views/RechercheAvance.vue';
+import Test from '@/views/test.vue';
 
 Vue.use(VueRouter);
 
@@ -11,6 +12,10 @@ const routes: Array<RouteConfig> = [
       path: '/',
       name: 'Accueil',
       component: Recherche,
+   },
+   {  path: '/test',
+      name: 'Test',
+      component: Test,
    },
    {
       path: '/recherche',

@@ -29,8 +29,26 @@ export default class Metiers extends Mixins(GlobalPropertiesMixin) {
 
    //Events
    private eventOnArrayCheckboxes(): void {
-      this.$store.commit('setBlocPcpMetiersArrayMetiers', this.prop_metiers);
-      this.$store.commit('setBlocPcpMetiersStringList', this.prop_metiers);
+      this.$store
+         .dispatch('blocPcpMetiersArrayMetiersAction', this.prop_metiers)
+         .then(() => {
+            setTimeout(() => {
+               this.prop_metiers = this.$store.state.blocPcpMetiers.arrayMetiers;
+            }, 1500);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+      this.$store
+         .dispatch('blocPcpMetiersArrayMetiersStringListAction', this.prop_metiers)
+         .then(() => {
+            setTimeout(() => {
+               this.prop_metiers = this.$store.state.blocPcpMetiers.arrayMetiers;
+            }, 1500);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    }
 }
 </script>

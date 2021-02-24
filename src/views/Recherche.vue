@@ -45,7 +45,7 @@ import ComponentStepper from '@/components/stepper/Stepper.vue';
 })
 export default class Recherche extends Vue {
    private clickVisualisation(): void {
-      this.$store.dispatch('displayNotices');
+      this.$store.dispatch('displayStore');
    }
 }
 </script>

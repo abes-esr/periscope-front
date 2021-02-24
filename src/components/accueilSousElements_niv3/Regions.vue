@@ -27,9 +27,27 @@ export default class Regions extends Mixins(GlobalPropertiesMixin) {
    @Prop({required: true}) prop_regions: Array<CheckboxesProvider>;
 
    //Events
-   eventOnArrayCheckboxes() {
-      this.$store.commit('setBlocPcpRegionsArrayRegions', this.prop_regions);
-      this.$store.commit('setBlocPcpRegionsStringList', this.prop_regions);
+   eventOnArrayCheckboxes(): void {
+      this.$store
+         .dispatch('blocPcpRegionsArrayRegionsAction', this.prop_regions)
+         .then(() => {
+            setTimeout(() => {
+               this.prop_regions = this.$store.state.blocPcpRegions.arrayRegions;
+            }, 1500);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+      this.$store
+         .dispatch('blocPcpRegionsArrayRegionsStringListAction', this.prop_regions)
+         .then(() => {
+            setTimeout(() => {
+               this.prop_regions = this.$store.state.blocPcpRegions.arrayRegions;
+            }, 1500);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    }
 }
 </script>
