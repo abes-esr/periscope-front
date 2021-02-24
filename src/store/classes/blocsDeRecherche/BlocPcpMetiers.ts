@@ -1,12 +1,12 @@
 import { BlocAbstract, CheckboxesProvider, Ensemble } from "@/store/classes/blocsDeRecherche/BlocAbstract";
 
 export class BlocPcpMetiers extends BlocAbstract {
-   private _type = 'CriterionPcp'; //Valeur fixe définie par l'API
-   private _internalBlocOperator: number; // ET / Ou entre les PCP
-   public _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
+   _type = 'CriterionPcp'; //Valeur fixe définie par l'API
+   _internalBlocOperator = 1; // ET / Ou entre les PCP
+   _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
 
    //Tableau des métiers, avec leur état coché non coché persistant
-   private _arrayMetiers: Array<CheckboxesProvider> = [
+   _arrayMetiers: Array<CheckboxesProvider> = [
       {id: 0, key: 'PCAM', text: 'Arts-et-Métiers', value: false},
       {id: 1, key: 'PCAS', text: 'Arts du spectacle', value: false},
       {id: 2, key: 'PCAnt', text: "Sciences de l'Antiquité et Archéologie", value: false},
@@ -32,22 +32,6 @@ export class BlocPcpMetiers extends BlocAbstract {
       super(externalBlocOperator);
    }
 
-   get type(): string {
-      return this._type;
-   }
-
-   set type(value: string) {
-      this._type = value;
-   }
-
-   get internalBlocOperator(): number {
-      return this._internalBlocOperator;
-   }
-
-   set internalBlocOperator(value: number) {
-      this._internalBlocOperator = value;
-   }
-
    get internalBlocOperatorInString(): string {
       switch (this._internalBlocOperator) {
          case Ensemble.Ou:
@@ -59,19 +43,5 @@ export class BlocPcpMetiers extends BlocAbstract {
          default:
             return 'UNDEFINED';
       }
-   }
-
-
-
-   public pcpStringArrayClean(): void {
-      this._pcpStringArray = [];
-   }
-
-   get arrayMetiers(): Array<CheckboxesProvider> {
-      return this._arrayMetiers;
-   }
-
-   set arrayMetiers(value: Array<CheckboxesProvider>) {
-      this._arrayMetiers = value;
    }
 }

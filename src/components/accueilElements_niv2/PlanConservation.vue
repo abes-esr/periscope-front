@@ -33,50 +33,48 @@ import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract'
    },
 })
 export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
-   private regions: Array<CheckboxesProvider>;
-   private metiers: Array<CheckboxesProvider>;
-   private choixTousOuAucun: Array<CheckboxesProvider>;
-   private title: string;
+   regions: Array<CheckboxesProvider>;
+   metiers: Array<CheckboxesProvider>;
+   choixTousOuAucun: Array<CheckboxesProvider>;
+   title: string;
 
    constructor() {
       super();
-      this.choixTousOuAucun = [
-         {id: 0, key: 'all', value: false, text: 'Tous'},
-         {id: 1, key: 'none', value: false, text: 'Aucun'},
-      ];
       this.regions = this.getArrayRegions;
       this.metiers = this.getArrayMetiers;
+      this.choixTousOuAucun = this.getChoixTousOuAucun;
       this.title = 'Choisir un plan de conservation';
    }
 
    get getTitle(): string {
       return this.title;
    }
-
    get getChoixTousOuAucun(): Array<CheckboxesProvider> {
-      return this.choixTousOuAucun;
+      return [
+         {id: 0, key: 'all', value: false, text: 'Tous'},
+         {id: 1, key: 'none', value: false, text: 'Aucun'},
+      ];
    }
-
    get getArrayRegions(): Array<CheckboxesProvider> {
       return this.$store.state.blocPcpRegions._arrayRegions;
    }
-
    get getArrayMetiers(): Array<CheckboxesProvider> {
       return this.$store.state.blocPcpMetiers._arrayMetiers;
    }
 
+   //Events v-btn
    /**
     * Méthode changeant l'ensemble des valeurs d'un tableau donné
     * @param arrayMember tableau passé en paramètre
     * @param booleanValue valeur du booléen d'un élément du tableau
-    * @private
     */
-   private arrayChangeAllBooleanValues(arrayMember: Array<CheckboxesProvider>, booleanValue: boolean): void {
+   arrayChangeAllBooleanValues(arrayMember: Array<CheckboxesProvider>, booleanValue: boolean): void {
       arrayMember.forEach((element) => (element.value = booleanValue));
       this.$store
          .dispatch('blocPcpRegionsArrayRegionsAction', this.regions)
          .then(() => {
             setTimeout(() => {
+              console.log('time');
                this.regions = this.getArrayRegions;
             }, 1500);
          })
@@ -117,10 +115,9 @@ export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
 
    /**
     * Méthode changeant les valeurs des éléments au moment d'un clic
-    * @param localText valeur d'un élement passé dans l'iteration du template
-    * @private
+    * @param localText valeur d'un element passé dans iteration du template
     */
-   private changeAllValuesWhenClicked(localText: string): void {
+   changeAllValuesWhenClicked(localText: string): void {
       switch (localText) {
          case 'Tous':
             this.arrayChangeAllBooleanValues(this.regions, true);

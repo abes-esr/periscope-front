@@ -23,7 +23,7 @@ import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 @Component
 export default class Regions extends Mixins(GlobalPropertiesMixin) {
-   //Props passées par le parent
+   //Prop passé par le parent
    @Prop({required: true}) prop_regions: Array<CheckboxesProvider>;
 
    //Events

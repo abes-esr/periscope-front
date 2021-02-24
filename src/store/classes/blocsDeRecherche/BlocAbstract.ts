@@ -27,22 +27,14 @@ export enum Ensemble { //Conversion implicite en number
 }
 
 export abstract class BlocAbstract {
-   protected _externalBlocOperator: number;
+   _externalBlocOperator: number;
 
    protected constructor(externalBlocOperator: number) {
       this._externalBlocOperator = externalBlocOperator;
    }
 
-   get externalBlocOperator(): number {
-      return this._externalBlocOperator;
-   }
-
-   set externalBlocOperator(value: number) {
-      this._externalBlocOperator = value;
-   }
-
    get externalBlocOperatorInString(): string {
-      switch (this.externalBlocOperator){
+      switch (this._externalBlocOperator){
          case Ensemble.Ou : return 'OU';
          case Ensemble.Et : return 'ET';
          case Ensemble.Sauf: return 'SAUF';

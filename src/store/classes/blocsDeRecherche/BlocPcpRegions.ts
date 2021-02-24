@@ -1,12 +1,12 @@
 import {BlocAbstract, CheckboxesProvider, Ensemble} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 export class BlocPcpRegions extends BlocAbstract {
-   private _type = 'CriterionPcp'; //Valeur fixe définie par l'API
-   private _internalBlocOperator = 1; // ET / Ou entre les PCP
-   public _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
+   _type = 'CriterionPcp'; //Valeur fixe définie par l'API
+   _internalBlocOperator = 1; // ET / Ou entre les PCP
+   _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
 
    //Tableau des regions, avec leur état coché non coché persistant
-   private _arrayRegions: Array<CheckboxesProvider> = [
+   _arrayRegions: Array<CheckboxesProvider> = [
       {id: 0, key: 'PCAq', text: 'Aquitaine', value: false},
       {id: 1, key: 'PCAu', text: 'Auvergne', value: false},
       {id: 2, key: 'PCBo', text: 'Bourgogne', value: false},
@@ -33,22 +33,6 @@ export class BlocPcpRegions extends BlocAbstract {
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
-   }
-
-   get type(): string {
-      return this._type;
-   }
-
-   set type(value: string) {
-      this._type = value;
-   }
-
-   get internalBlocOperator(): number {
-      return this._internalBlocOperator;
-   }
-
-   set internalBlocOperator(value: number) {
-      this._internalBlocOperator = value;
    }
 
    get internalBlocOperatorInString(): string {
@@ -81,17 +65,5 @@ export class BlocPcpRegions extends BlocAbstract {
             break;
       }
       return pcpInArrayString;
-   }
-
-   public pcpStringArrayClean(): void {
-      this._pcpStringArray = [];
-   }
-
-   get arrayRegions(): Array<CheckboxesProvider> {
-      return this._arrayRegions;
-   }
-
-   set arrayRegions(value: Array<CheckboxesProvider>) {
-      this._arrayRegions = value;
    }
 }

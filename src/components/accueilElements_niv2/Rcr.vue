@@ -7,7 +7,7 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-combobox @change="addItem()" @blur="addItem()" @keyup.enter="addItem()" :rules="rcrAlert" clearable multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped"></v-combobox>
+            <v-combobox @click="addItem()" @change="addItem()" @blur="addItem()" @keyup.enter="addItem()" :rules="rcrAlert" multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped" clearable></v-combobox>
          </v-col>
       </v-row>
       <v-row>
@@ -24,41 +24,72 @@ import {OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 @Component
 export default class VueRcr extends Vue {
-   //Par defaut, ou
-   private externalBlocOperatorListToSelect: Array<OperatorProvider>;
-   private externalOperatorSelected: number;
+   externalBlocOperatorListToSelect: Array<OperatorProvider>;
+   externalOperatorSelected: number;
+   rcrArrayTyped: Array<string>;
+   internalBlocOperatorListToSelect: Array<OperatorProvider>;
+   internalOperatorSelected: number;
+   rcrAlert: Array<string>; //Message d'erreur
 
-   //Saisir le rcr d'une bibliothèque
-   private rcrArrayTyped: Array<string>;
-
-   //Pour ce lot de rcr (par defaut, ou)
-   private internalBlocOperatorListToSelect: Array<OperatorProvider>;
-   private internalOperatorSelected: number;
-
-   created(): void {
-
-      this.externalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocRcr.externalBlocOperatorListToSelect;
-      this.externalOperatorSelected = this.$store.state.requeteRecherche.blocRcr.externalBlocOperator;
-      this.rcrArrayTyped = this.$store.state.requeteRecherche.blocRcr.rcrListString;
-      this.internalBlocOperatorListToSelect = this.$store.state.requeteRecherche.blocRcr.internalBlocOperatorListToSelect;
-      this.internalOperatorSelected = this.$store.state.requeteRecherche.blocRcr.internalBlocOperator;
+   constructor() {
+      super();
+      this.externalBlocOperatorListToSelect = this.getExternalBlocOperatorListToSelect;
+      this.externalOperatorSelected = this.getExternalOperatorSelected;
+      this.rcrArrayTyped = this.getRcrArrayTyped;
+      this.internalBlocOperatorListToSelect = this.getInternalBlocOperatorListToSelect;
+      this.internalOperatorSelected = this.getInternalOperatorSelected;
+      this.rcrAlert = [];
    }
 
-   private rcrAlert: Array<string> = []; //Message d'erreur
+   get getExternalBlocOperatorListToSelect(): Array<OperatorProvider> {
+      return this.$store.state.blocRcr._externalBlocOperatorListToSelect;
+   }
+   get getExternalOperatorSelected(): number {
+      return this.$store.state.blocRcr._externalBlocOperator;
+   }
+   get getRcrArrayTyped(): Array<string> {
+      return this.$store.state.blocRcr._rcrListString;
+   }
+   get getInternalBlocOperatorListToSelect(): Array<OperatorProvider> {
+      return this.$store.state.blocRcr._internalBlocOperatorListToSelect;
+   }
+   get getInternalOperatorSelected(): number {
+      return this.$store.state.blocRcr._internalBlocOperator;
+   }
 
-   //Event v-combobox
+   //Events v-combobox
    addItem(): void {
-     this.$store.commit('setBlocRcrRcrListString', this.rcrArrayTyped);
-      //this.$store.state.requeteRecherche.blocRcr.setBlocRcrRcrListString(this.rcrArrayTyped);
-     console.log(this.$store.state.requeteRecherche.blocRcr.rcrListString);
+      this.$store
+         .dispatch('blocRcrRcrListStringAction', this.rcrArrayTyped);
    }
 
-   //Events
-   private updateExternalOperateurEvent(): void {
-      this.$store.state.requeteRecherche.blocRcr.setBlocRcrExternalOperator(this.externalOperatorSelected);
+   //Events v-select
+   updateExternalOperateurEvent(): void {
+      this.$store
+         .dispatch('blocRcrExternalOperatorAction', this.externalOperatorSelected)
+         .then(() => {
+            setTimeout(() => {
+               this.externalOperatorSelected = this.getExternalOperatorSelected;
+            }, 1500);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
    }
-   private updateInternalOperateurEvent(): void {
-      this.$store.state.requeteRecherche.blocRcr.setBlocRcrInternalOperator(this.internalOperatorSelected);
+   updateInternalOperateurEvent(): void {
+      this.$store
+         .dispatch('blocRcrInternalOperatorAction', this.internalOperatorSelected)
+         .then(() => {
+            setTimeout(() => {
+               this.internalOperatorSelected = this.getInternalOperatorSelected;
+            }, 1500);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }
+   test(): void {
+      console.log('shui');
    }
 
    /**

@@ -28,7 +28,7 @@ export default class Metiers extends Mixins(GlobalPropertiesMixin) {
    @Prop({required: true}) prop_metiers: Array<CheckboxesProvider>;
 
    //Events
-   private eventOnArrayCheckboxes(): void {
+   eventOnArrayCheckboxes(): void {
       this.$store
          .dispatch('blocPcpMetiersArrayMetiersAction', this.prop_metiers)
          .then(() => {

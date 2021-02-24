@@ -6,15 +6,15 @@ export interface RcrProvider {
 }
 
 export class BlocRcr extends BlocAbstract {
-   private _type = 'CriterionRcr'; //Valeur fixe définie par l'API
-   private _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
-   private _rcrHandler: Array<RcrProvider> = []; //Catcheur des RCR saisis non utilisé actuellement
-   private _rcrListString: Array<string> = []; //Tableau des RCR en chaîne
-   private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
+   _type = 'CriterionRcr'; //Valeur fixe définie par l'API
+   _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
+   _rcrHandler: Array<RcrProvider> = []; //Catcheur des RCR saisis non utilisé actuellement
+   _rcrListString: Array<string> = []; //Tableau des RCR en chaîne
+   _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
    ];
-   private _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
+   _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
       {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
@@ -22,22 +22,6 @@ export class BlocRcr extends BlocAbstract {
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
-   }
-
-   get type(): string {
-      return this._type;
-   }
-
-   set type(value: string) {
-      this._type = value;
-   }
-
-   get internalBlocOperator(): number {
-      return this._internalBlocOperator;
-   }
-
-   set internalBlocOperator(value: number) {
-      this._internalBlocOperator = value;
    }
 
    get internalBlocOperatorInString(): string {
@@ -57,62 +41,18 @@ export class BlocRcr extends BlocAbstract {
       const arrayString: Array<string> = [];
       switch (this._internalBlocOperator) {
          case Ensemble.Ou:
-            this.rcrListString.forEach(() => arrayString.push('OU'));
+            this._rcrListString.forEach(() => arrayString.push('OU'));
             break;
          case Ensemble.Et:
-            this.rcrListString.forEach(() => arrayString.push('ET'));
+            this._rcrListString.forEach(() => arrayString.push('ET'));
             break;
          case Ensemble.Sauf:
-            this.rcrListString.forEach(() => arrayString.push('SAUF'));
+            this._rcrListString.forEach(() => arrayString.push('SAUF'));
             break;
          default:
-            this.rcrListString.forEach(() => arrayString.push('UNDEFINED'));
+            this._rcrListString.forEach(() => arrayString.push('UNDEFINED'));
             break;
       }
       return arrayString;
-   }
-
-   get externalBlocOperator(): number {
-      return this._externalBlocOperator;
-   }
-
-   set externalBlocOperator(value: number) {
-      this._externalBlocOperator = value;
-   }
-
-   get rcrHandler(): Array<RcrProvider> {
-      return this._rcrHandler;
-   }
-
-   set rcrHandler(value: Array<RcrProvider>) {
-      this._rcrHandler = value;
-   }
-
-   get rcrListString(): Array<string> {
-      return this._rcrListString;
-   }
-
-   set rcrListString(value: Array<string>) {
-      this._rcrListString = value;
-   }
-
-   public rcrStringArrayClean(): void {
-      this._rcrListString = [];
-   }
-
-   get internalBlocOperatorListToSelect(): Array<OperatorProvider> {
-      return this._internalBlocOperatorListToSelect;
-   }
-
-   set internalBlocOperatorListToSelect(value: Array<OperatorProvider>) {
-      this._internalBlocOperatorListToSelect = value;
-   }
-
-   get externalBlocOperatorListToSelect(): Array<OperatorProvider> {
-      return this._externalBlocOperatorListToSelect;
-   }
-
-   set externalBlocOperatorListToSelect(value: Array<OperatorProvider>) {
-      this._externalBlocOperatorListToSelect = value;
    }
 }

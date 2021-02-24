@@ -16,9 +16,6 @@ import PeriscopeDataService from '@/axios/services/PeriscopeDataService';
 @Module
 export default class RequeteDeRecherche extends VuexModule {
    //Blocs de recherche
-   private blocPcpRegions: BlocPcpRegions = new BlocPcpRegions(Ensemble.Ou);
-   private blocPcpMetiers: BlocPcpMetiers = new BlocPcpMetiers(Ensemble.Ou);
-   private blocRcr: BlocRcr = new BlocRcr(Ensemble.Ou);
    private blocPpn: BlocPpn = new BlocPpn(Ensemble.Ou);
    private blocEditeur: BlocEditeur = new BlocEditeur(Ensemble.Ou);
    private blocPays: BlocPays = new BlocPays(Ensemble.Ou);
@@ -30,62 +27,6 @@ export default class RequeteDeRecherche extends VuexModule {
    private notices: Array<Notice> = [];
 
    /*Setters*/
-
-   //Bloc plan de conservation régions
-   @Mutation
-   setBlocPcpRegionsArrayRegions(arraySent: Array<CheckboxesProvider>) {
-      console.log(this);
-      this.blocPcpRegions.arrayRegions = arraySent;
-   }
-   @Mutation
-   setBlocPcpRegionsStringList(arraySent: Array<CheckboxesProvider>) {
-      arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpRegions.pcpStringArray.push(element.key) : ''));
-   }
-   @Mutation
-   setBlocPcpRegionsInternalOperator(operator: number) {
-      this.blocPcpRegions.internalBlocOperator = operator;
-   }
-   @Mutation
-   setBlocPcpRegionsExternalOperator(operator: number) {
-      this.blocPcpRegions.externalBlocOperator = operator;
-   }
-
-   //Bloc plan de conservation métiers
-   @Mutation
-   setBlocPcpMetiersArrayMetiers(arraySent: Array<CheckboxesProvider>) {
-      this.blocPcpMetiers.arrayMetiers = arraySent;
-   }
-   @Mutation
-   setBlocPcpMetiersStringList(arraySent: Array<CheckboxesProvider>) {
-      this.blocPcpMetiers.pcpStringArray = [];
-      arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? this.blocPcpMetiers.pcpStringArray.push(element.key) : ''));
-   }
-   @Mutation
-   setBlocPcpMetiersInternalOperator(operator: number) {
-      this.blocPcpMetiers.internalBlocOperator = operator;
-   }
-   @Mutation
-   setBlocPcpMetiersExternalOperator(operator: number) {
-      this.blocPcpMetiers.externalBlocOperator = operator;
-   }
-
-   //Bloc Rcr
-   @Mutation
-   setBlocRcrExternalOperator(externalOperator: number) {
-      this.blocRcr.externalBlocOperator = externalOperator;
-   }
-   @Mutation
-   setBlocRcrInternalOperator(internalOperator: number) {
-      this.blocRcr.internalBlocOperator = internalOperator;
-   }
-   @Mutation
-   setBlocRcrRcrHandler(arraySent: Array<RcrProvider>) {
-      this.blocRcr.rcrHandler = arraySent;
-   }
-   @Mutation
-   setBlocRcrRcrListString(arraySent: Array<string>) {
-      this.blocRcr.rcrListString = arraySent;
-   }
 
    //Bloc Ppn
    @Mutation
