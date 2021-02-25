@@ -1,118 +1,23 @@
 import {Action, Module, Mutation, VuexModule} from 'vuex-module-decorators';
 import Notice from '@/store/classes/Notice';
-import {BlocPcpRegions} from '@/store/classes/blocsDeRecherche/BlocPcpRegions';
 import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
-import {BlocPcpMetiers} from '@/store/classes/blocsDeRecherche/BlocPcpMetiers';
-import {BlocRcr, RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
 import {BlocPpn} from '@/store/classes/blocsDeRecherche/BlocPpn';
 import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
 import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
-import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/classes/interfaces/JsonInterfaces';
 import PeriscopeDataService from '@/axios/services/PeriscopeDataService';
 
 @Module
 export default class RequeteDeRecherche extends VuexModule {
    //Blocs de recherche
-   private blocPpn: BlocPpn = new BlocPpn(Ensemble.Ou);
-   private blocEditeur: BlocEditeur = new BlocEditeur(Ensemble.Ou);
-   private blocPays: BlocPays = new BlocPays(Ensemble.Ou);
-   private blocLangue: BlocLangue = new BlocLangue(Ensemble.Ou);
-   private blocIssn: BlocIssn = new BlocIssn(Ensemble.Ou);
-   private blocMotDuTitre: BlocMotDuTitre = new BlocMotDuTitre(Ensemble.Ou);
 
    /* Résultats de la recherche */
    private notices: Array<Notice> = [];
 
    /*Setters*/
-
-   //Bloc Ppn
-   @Mutation
-   setBlocPpnExternalOperator(externalOperator: number) {
-      this.blocPpn.externalBlocOperator = externalOperator;
-   }
-
-   @Mutation
-   setBlocPpnInternalOperator(internalOperator: number) {
-      this.blocPpn.internalBlocOperator = internalOperator;
-   }
-
-   @Mutation
-   setBlocPpn(ppn: string) {
-      this.blocPpn.ppnEntered = ppn;
-   }
-
-   @Mutation
-   setBlocPpnListString(arraySent: Array<string>) {
-      this.blocPpn.ppnStringArrayClean();
-      this.blocPpn.ppnListString = arraySent;
-   }
-
-   //Bloc Issn
-   @Mutation
-   setBlocIssnExternalOperator(externalOperator: number) {
-      this.blocIssn.externalBlocOperator = externalOperator;
-   }
-
-   @Mutation
-   setBlocIssn(issn: string) {
-      this.blocIssn.issnEntered = issn;
-   }
-
-   //Bloc Mots du titre
-   @Mutation
-   setBlocTitre(totalString: string) {
-      this.blocMotDuTitre.titleWordsStringArrayClean();
-      totalString.split(' ').forEach((element) => {
-         const elementInString = String(element);
-         this.blocMotDuTitre.titleWordsEntered.push(elementInString);
-      });
-   }
-
-   //Bloc editeur
-   @Mutation
-   setBlocEditeurExternalOperatorSelected(externalOperator: number) {
-      this.blocEditeur.externalBlocOperator = externalOperator;
-   }
-
-   @Mutation
-   setBlocEditeur(totalString: string) {
-      this.blocEditeur.editeurStringArrayClean();
-      totalString.split(' ').forEach((element) => {
-         const elementInString = String(element);
-         this.blocEditeur.editorEntered.push(elementInString);
-      });
-   }
-
-   //Bloc langue
-   @Mutation
-   setBlocLangueExternalOperatorSelected(externalOperator: number) {
-      this.blocLangue.externalBlocOperator = externalOperator;
-   }
-
-   @Mutation
-   setBlocLangue(arraySent: Array<ListProvider>) {
-      this.blocLangue.langueStringArrayClean();
-      arraySent.forEach((element) => {
-         this.blocLangue.langueEntered.push(element);
-      });
-   }
-
-   //Bloc Pays
-   @Mutation
-   setBlocPaysExternalOperatorSelected(externalOperator: number) {
-      this.blocPays.externalBlocOperator = externalOperator;
-   }
-
-   @Mutation
-   setBlocPays(arraySent: Array<ListProvider>) {
-      this.blocPays.paysStringArrayClean();
-      arraySent.forEach((element) => {
-         this.blocPays.paysEntered.push(element);
-      });
-   }
 
    /*Getters*/
 

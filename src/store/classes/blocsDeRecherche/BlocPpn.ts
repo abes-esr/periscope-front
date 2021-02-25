@@ -2,7 +2,7 @@ import {BlocAbstract, Ensemble, OperatorProvider} from '@/store/classes/blocsDeR
 
 export class BlocPpn extends BlocAbstract {
    _type = 'CriterionPpn'; //Valeur fixe définie par l'API
-   _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
+   _internalBlocOperator = Ensemble.Et; // ET / OU / SAUF entre les RCR
    _ppnEntered = '';
    _ppnListString: Array<string> = [];
    _internalBlocOperatorListToSelect: Array<OperatorProvider> = [

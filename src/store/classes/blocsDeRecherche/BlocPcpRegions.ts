@@ -2,7 +2,7 @@ import {BlocAbstract, CheckboxesProvider, Ensemble} from '@/store/classes/blocsD
 
 export class BlocPcpRegions extends BlocAbstract {
    _type = 'CriterionPcp'; //Valeur fixe définie par l'API
-   _internalBlocOperator = 1; // ET / Ou entre les PCP
+   _internalBlocOperator = Ensemble.Et; // ET / Ou entre les PCP
    _pcpStringArray: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
 
    //Tableau des regions, avec leur état coché non coché persistant

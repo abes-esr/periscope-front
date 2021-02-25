@@ -11,10 +11,10 @@
          </v-col>
       </v-row>
       <v-row>
-         <component-regions v-bind:prop_regions="getArrayRegions"></component-regions>
+         <component-regions></component-regions>
       </v-row>
       <v-row>
-         <component-metiers v-bind:prop_metiers="getArrayMetiers"></component-metiers>
+         <component-metiers></component-metiers>
       </v-row>
    </v-container>
 </template>
@@ -70,47 +70,10 @@ export default class PlanConservation extends Mixins(GlobalPropertiesMixin) {
     */
    arrayChangeAllBooleanValues(arrayMember: Array<CheckboxesProvider>, booleanValue: boolean): void {
       arrayMember.forEach((element) => (element.value = booleanValue));
-      this.$store
-         .dispatch('blocPcpRegionsArrayRegionsAction', this.regions)
-         .then(() => {
-            setTimeout(() => {
-              console.log('time');
-               this.regions = this.getArrayRegions;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-      this.$store
-         .dispatch('blocPcpRegionsArrayRegionsStringListAction', this.regions)
-         .then(() => {
-            setTimeout(() => {
-               this.regions = this.getArrayRegions;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-      this.$store
-         .dispatch('blocPcpMetiersArrayMetiersAction', this.metiers)
-         .then(() => {
-            setTimeout(() => {
-               this.metiers = this.getArrayMetiers;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-      this.$store
-         .dispatch('blocPcpMetiersArrayMetiersStringListAction', this.metiers)
-         .then(() => {
-            setTimeout(() => {
-               this.metiers = this.getArrayMetiers;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
+      this.$store.dispatch('blocPcpRegionsArrayRegionsAction', this.regions);
+      this.$store.dispatch('blocPcpRegionsArrayRegionsStringListAction', this.regions);
+      this.$store.dispatch('blocPcpMetiersArrayMetiersAction', this.metiers);
+      this.$store.dispatch('blocPcpMetiersArrayMetiersStringListAction', this.metiers);
    }
 
    /**

@@ -1,20 +1,20 @@
 import {BlocAbstract, Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 export class BlocLangue extends BlocAbstract {
-   private _type = 'CriterionLanguage'; //Valeur fixe définie par l'API
-   private _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
-   private _langueEntered: Array<ListProvider> = [];
-   private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
+   _type = 'CriterionLanguage'; //Valeur fixe définie par l'API
+   _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
+   _languesEntered: Array<string> = [];
+   _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
       {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
    ];
-   private _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
+   _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
       {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
    ];
-   private _langueListe: Array<ListProvider> = [
+   _langueListe: Array<ListProvider> = [
       {id: 'abk', text: 'Abkhaz'},
       {id: 'ace', text: 'Achinese'},
       {id: 'ach', text: 'Acoli'},
@@ -497,80 +497,22 @@ export class BlocLangue extends BlocAbstract {
       super(externalBlocOperator);
    }
 
-   get type(): string {
-      return this._type;
-   }
-
-   set type(value: string) {
-      this._type = value;
-   }
-
-   get internalBlocOperator(): Ensemble {
-      return this._internalBlocOperator;
-   }
-
-   set internalBlocOperator(value: Ensemble) {
-      this._internalBlocOperator = value;
-   }
-
    get internalBlocOperatorInArrayString(): Array<string> {
-      const pcpInArrayString: Array<string> = [];
+      let pcpInArrayString: Array<string> = [];
       switch (this._internalBlocOperator) {
          case Ensemble.Ou:
-            this._langueEntered.forEach(() => pcpInArrayString.push('OU'));
+            this._languesEntered.forEach(() => pcpInArrayString.push('OU'));
             break;
          case Ensemble.Et:
-            this._langueEntered.forEach(() => pcpInArrayString.push('ET'));
+            this._languesEntered.forEach(() => pcpInArrayString.push('ET'));
             break;
          case Ensemble.Sauf:
-            this._langueEntered.forEach(() => pcpInArrayString.push('SAUF'));
+            this._languesEntered.forEach(() => pcpInArrayString.push('SAUF'));
             break;
          default:
-            this._langueEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
+            this._languesEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
             break;
       }
       return pcpInArrayString;
-   }
-
-   get langueEntered(): Array<ListProvider> {
-      return this._langueEntered;
-   }
-
-   set langueEntered(value: Array<ListProvider>) {
-      this._langueEntered = value;
-   }
-
-   get paysEnteredInArrayString(): Array<string> {
-      const arrayString: Array<string> = [];
-      this._langueEntered.forEach((element) => arrayString.push(element.id));
-      return arrayString;
-   }
-
-   public langueStringArrayClean(): void {
-      this._langueEntered = [];
-   }
-
-   get internalBlocOperatorListToSelect(): Array<OperatorProvider> {
-      return this._internalBlocOperatorListToSelect;
-   }
-
-   set internalBlocOperatorListToSelect(value: Array<OperatorProvider>) {
-      this._internalBlocOperatorListToSelect = value;
-   }
-
-   get externalBlocOperatorListToSelect(): Array<OperatorProvider> {
-      return this._externalBlocOperatorListToSelect;
-   }
-
-   set externalBlocOperatorListToSelect(value: Array<OperatorProvider>) {
-      this._externalBlocOperatorListToSelect = value;
-   }
-
-   get langueListe(): Array<ListProvider> {
-      return this._langueListe;
-   }
-
-   set langueListe(value: Array<ListProvider>) {
-      this._langueListe = value;
    }
 }

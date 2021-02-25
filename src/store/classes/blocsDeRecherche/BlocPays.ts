@@ -1,20 +1,20 @@
 import {BlocAbstract, Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 
 export class BlocPays extends BlocAbstract {
-   private _type = 'CriterionCountry'; //Valeur fixe définie par l'API
-   private _internalBlocOperator: Ensemble = Ensemble.Ou; //Operateur interne entre les pays
-   private _paysEntered: Array<ListProvider> = [];
-   private _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
+   _type = 'CriterionCountry'; //Valeur fixe définie par l'API
+   _internalBlocOperator: Ensemble = Ensemble.Ou; //Operateur interne entre les pays
+   _paysEntered: Array<string> = [];
+   _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
       {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
    ];
-   private _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
+   _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
       {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
       {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
       {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
    ];
-   private _paysListe: Array<ListProvider> = [
+   _paysListe: Array<ListProvider> = [
       {id: 'AF', text: 'Afghanistan'},
       {id: 'ZA', text: 'Afrique du Sud'},
       {id: 'AX', text: 'Aland Iles'},
@@ -275,22 +275,6 @@ export class BlocPays extends BlocAbstract {
       super(externalBlocOperator);
    }
 
-   get type(): string {
-      return this._type;
-   }
-
-   set type(value: string) {
-      this._type = value;
-   }
-
-   get internalBlocOperator(): number {
-      return this._internalBlocOperator;
-   }
-
-   set internalBlocOperator(value: number) {
-      this._internalBlocOperator = value;
-   }
-
    get internalBlocOperatorInArrayString(): Array<string> {
       const pcpInArrayString: Array<string> = [];
       switch (this._internalBlocOperator) {
@@ -308,47 +292,5 @@ export class BlocPays extends BlocAbstract {
             break;
       }
       return pcpInArrayString;
-   }
-
-   get paysEntered(): Array<ListProvider> {
-      return this._paysEntered;
-   }
-
-   set paysEntered(value: Array<ListProvider>) {
-      this._paysEntered = value;
-   }
-
-   get paysEnteredInArrayString(): Array<string> {
-      const arrayString: Array<string> = [];
-      this._paysEntered.forEach((element) => arrayString.push(element.id));
-      return arrayString;
-   }
-
-   public paysStringArrayClean(): void {
-      this._paysEntered = [];
-   }
-
-   get internalBlocOperatorListToSelect(): Array<OperatorProvider> {
-      return this._internalBlocOperatorListToSelect;
-   }
-
-   set internalBlocOperatorListToSelect(value: Array<OperatorProvider>) {
-      this._internalBlocOperatorListToSelect = value;
-   }
-
-   get externalBlocOperatorListToSelect(): Array<OperatorProvider> {
-      return this._externalBlocOperatorListToSelect;
-   }
-
-   set externalBlocOperatorListToSelect(value: Array<OperatorProvider>) {
-      this._externalBlocOperatorListToSelect = value;
-   }
-
-   get paysListe(): Array<ListProvider> {
-      return this._paysListe;
-   }
-
-   set paysListe(value: Array<ListProvider>) {
-      this._paysListe = value;
    }
 }
