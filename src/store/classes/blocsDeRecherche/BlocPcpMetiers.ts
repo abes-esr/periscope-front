@@ -1,4 +1,5 @@
-import { BlocAbstract, CheckboxesProvider, Ensemble } from "@/store/classes/blocsDeRecherche/BlocAbstract";
+import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {CheckboxesProvider, Ensemble} from '@/store/interfaces/BlocInterfaces';
 
 export class BlocPcpMetiers extends BlocAbstract {
    _type = 'CriterionPcp'; //Valeur fixe définie par l'API
@@ -30,18 +31,5 @@ export class BlocPcpMetiers extends BlocAbstract {
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
-   }
-
-   get internalBlocOperatorInString(): string {
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            return 'OU';
-         case Ensemble.Et:
-            return 'ET';
-         case Ensemble.Sauf:
-            return 'SAUF';
-         default:
-            return 'UNDEFINED';
-      }
    }
 }

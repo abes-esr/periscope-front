@@ -1,4 +1,5 @@
-import {BlocAbstract, Ensemble, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {Ensemble, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 export class BlocMotDuTitre extends BlocAbstract {
    _type = 'CriterionTitleWords'; //Valeur fixe définie par l'API
@@ -17,34 +18,5 @@ export class BlocMotDuTitre extends BlocAbstract {
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
-   }
-
-   get internalBlocOperatorInArrayString(): Array<string> {
-      const pcpInArrayString: Array<string> = [];
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('OU'));
-            break;
-         case Ensemble.Et:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('ET'));
-            break;
-         case Ensemble.Sauf:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('SAUF'));
-            break;
-         default:
-            this._titleWordsEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
-            break;
-      }
-      return pcpInArrayString;
-   }
-
-   get titleWordsEnteredInString(): string {
-      let stringBuild = '';
-      this._titleWordsEntered.forEach((element) => (stringBuild += element + ' '));
-      return stringBuild;
-   }
-
-   static test(a: number, b: number): number{
-      return a + b;
    }
 }

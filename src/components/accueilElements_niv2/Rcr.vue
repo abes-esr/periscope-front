@@ -20,7 +20,7 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 @Component
 export default class VueRcr extends Vue {
@@ -59,8 +59,7 @@ export default class VueRcr extends Vue {
 
    //Events v-combobox
    addItem(): void {
-      this.$store
-         .dispatch('blocRcrRcrListStringAction', this.rcrArrayTyped);
+      this.$store.dispatch('blocRcrRcrListStringAction', this.rcrArrayTyped);
    }
 
    //Events v-select

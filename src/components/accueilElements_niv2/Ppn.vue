@@ -64,8 +64,8 @@
 </template>
 
 <script lang="ts">
-import { Component, Vue } from "vue-property-decorator";
-import { Ensemble, ListProvider, OperatorProvider } from "@/store/classes/blocsDeRecherche/BlocAbstract";
+import {Component, Vue} from 'vue-property-decorator';
+import {Ensemble, ListProvider, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 @Component
 export default class VuePpn extends Vue {

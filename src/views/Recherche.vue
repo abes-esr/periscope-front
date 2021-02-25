@@ -17,7 +17,9 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-btn v-on:click="clickVisualisation">Data Visualisation in console</v-btn>
+            <v-btn @click="feedJson">Feed JSON</v-btn>
+            <v-btn @click="callAxios">Call Axios</v-btn>
+            <v-btn @click="clickVisualisation">Data Visualisation in console</v-btn>
          </v-col>
       </v-row>
       <v-row>
@@ -44,8 +46,26 @@ import ComponentStepper from '@/components/stepper/Stepper.vue';
    },
 })
 export default class Recherche extends Vue {
-   private clickVisualisation(): void {
-      this.$store.dispatch('displayStore');
+   clickVisualisation(): void {
+      this.$store
+         .dispatch('displayStore')
+         .then(() => {
+            console.log('Requête supérieure à 5 secondes');
+            setTimeout(() => {
+               console.log('');
+            }, 5000);
+         })
+         .catch((error) => {
+            console.error(error);
+         });
+   }
+
+   feedJson(): void {
+      this.$store.dispatch('constructJsonAction');
+   }
+
+   callAxios(): void {
+     this.$store.dispatch('getNoticesAndErasePreviousNoticesAction');
    }
 }
 </script>

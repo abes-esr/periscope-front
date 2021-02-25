@@ -20,7 +20,7 @@
 <script lang="ts">
 import {Component, Mixins, Prop} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
-import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import { CheckboxesProvider } from "@/store/interfaces/BlocInterfaces";
 @Component
 export default class Regions extends Mixins(GlobalPropertiesMixin) {
    regions: Array<CheckboxesProvider>;

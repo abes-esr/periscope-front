@@ -57,7 +57,7 @@
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
-import {Ensemble, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {Ensemble, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 @Component
 export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {

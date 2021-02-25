@@ -1,4 +1,5 @@
-import {BlocAbstract, Ensemble, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {Ensemble, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 export class BlocEditeur extends BlocAbstract {
    _type = 'CriterionEditor'; //Valeur fixe définie par l'API

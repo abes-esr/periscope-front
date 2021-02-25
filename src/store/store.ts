@@ -1,7 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 import {BlocPcpRegions} from '@/store/classes/blocsDeRecherche/BlocPcpRegions';
 import {BlocPcpMetiers} from '@/store/classes/blocsDeRecherche/BlocPcpMetiers';
 import {BlocRcr, RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
@@ -11,7 +10,11 @@ import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
 import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
 import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
-import Notice from "@/store/classes/Notice";
+import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/interfaces/BlocInterfaces';
+import {JsonTraitements} from '@/store/classes/traitements/JsonTraitements';
+import {AxiosTraitements} from '@/store/classes/appelsBackEnd/AxiosTraitements';
+import {LotNotices} from '@/store/classes/resultatsDeRecherche/LotNotices';
+import Notice from '@/store/classes/resultatsDeRecherche/Notice';
 
 Vue.use(Vuex);
 
@@ -28,7 +31,9 @@ export default new Vuex.Store({
       blocLangue: new BlocLangue(Ensemble.Ou),
       blocPays: new BlocPays(Ensemble.Ou),
       //Resultats de recherche
-
+      lotNotices: new LotNotices(),
+      //Objets JSON à envoyer au back-end
+      jsonTraitements: new JsonTraitements(),
       //Etat du composant de test
       chainTyped: 0,
    },
@@ -44,6 +49,7 @@ export default new Vuex.Store({
          state.blocPcpRegions._arrayRegions = arraySent;
       },
       blocPcpRegionsArrayRegionsStringListMutation(state, arraySent: Array<CheckboxesProvider>) {
+         state.blocPcpRegions._pcpStringArray = [];
          arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? state.blocPcpRegions._pcpStringArray.push(element.key) : ''));
       },
 
@@ -58,6 +64,7 @@ export default new Vuex.Store({
          state.blocPcpMetiers._arrayMetiers = arraySent;
       },
       blocPcpMetiersArrayMetiersStringListMutation(state, arraySent: Array<CheckboxesProvider>) {
+         state.blocPcpMetiers._pcpStringArray = [];
          arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? state.blocPcpMetiers._pcpStringArray.push(element.key) : ''));
       },
 
@@ -83,7 +90,7 @@ export default new Vuex.Store({
          state.blocPpn._internalBlocOperator = operator;
       },
       blocPpnPpnEnteredMutation(state, string) {
-         state.blocPpn._ppnEntered = string;
+         state.blocPpn._ppnListString.push(string);
       },
       blocPpnListStringMutation(state, arraySent: Array<string>) {
          state.blocPpn._ppnListString = arraySent;
@@ -97,7 +104,7 @@ export default new Vuex.Store({
          state.blocIssn._internalBlocOperator = operator;
       },
       blocIssnIssnEnteredMutation(state, string) {
-         state.blocIssn._issnEntered = string;
+         state.blocIssn._issnListString.push(string);
       },
 
       //Bloc de recherche Mots du titre
@@ -139,6 +146,29 @@ export default new Vuex.Store({
          arraySent.forEach((element) => {
             state.blocPays._paysEntered.push(element.id);
          });
+      },
+
+      //Construction de l'objet JSON contenant les critères de recherche à envoyer dans les requêtes
+      jsonSearchRequestConstructionMutation(state) {
+         state.jsonTraitements._jsonSearchRequest = JsonTraitements.constructJsonGlobalRequest(state.blocPcpRegions, state.blocPcpMetiers, state.blocRcr, state.blocPpn, state.blocIssn, state.blocMotsDuTitre, state.blocEditeur, state.blocLangue, state.blocPays);
+      },
+
+      //Récupération des notices par critères et effacement des notices précédentes dans le store
+      async pushNoticesAndErasePreviousNoticesMutation(state) {
+         state.lotNotices._lotNotices = [];
+         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
+         lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+      },
+
+      //Récupération des notices par critères et ajout aux notices précédentes dans le store
+      async pushNoticesAndAddToPreviousNotices(state) {
+         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
+         lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+      },
+
+      //Effacement des notices stockées dans le store
+      eraseAllNotices(state) {
+         state.lotNotices._lotNotices = [];
       },
 
       //Bloc de Test
@@ -243,6 +273,17 @@ export default new Vuex.Store({
          context.commit('blocPaysPaysEnteredMutation', arraySent);
       },
 
+      //Construction du Json à envoyer aux requêtes de recherche
+      constructJsonAction(context) {
+         context.commit('jsonSearchRequestConstructionMutation');
+      },
+
+      //Appel au back-end pour recupération de notices
+      getNoticesAndErasePreviousNoticesAction(context) {
+         context.commit('pushNoticesAndErasePreviousNoticesMutation');
+      },
+
+      //Afficher le state global en console
       displayStore() {
          console.log(JSON.parse(JSON.stringify(this.state)));
       },

@@ -24,7 +24,7 @@ import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties.ts';
 import ComponentRegions from '@/components/accueilSousElements_niv3/Regions.vue';
 import ComponentMetiers from '@/components/accueilSousElements_niv3/Metiers.vue';
-import {CheckboxesProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {CheckboxesProvider} from '@/store/interfaces/BlocInterfaces';
 
 @Component({
    components: {

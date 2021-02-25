@@ -1,4 +1,5 @@
-import {BlocAbstract, Ensemble, ListProvider, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {Ensemble, ListProvider, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 export class BlocLangue extends BlocAbstract {
    _type = 'CriterionLanguage'; //Valeur fixe définie par l'API

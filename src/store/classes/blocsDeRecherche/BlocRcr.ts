@@ -1,4 +1,5 @@
-import {BlocAbstract, Ensemble, OperatorProvider} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import {Ensemble, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 export interface RcrProvider {
    id: number;
@@ -22,37 +23,5 @@ export class BlocRcr extends BlocAbstract {
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
-   }
-
-   get internalBlocOperatorInString(): string {
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            return 'OU';
-         case Ensemble.Et:
-            return 'ET';
-         case Ensemble.Sauf:
-            return 'SAUF';
-         default:
-            return 'UNDEFINED';
-      }
-   }
-
-   get internalBlocOperatorInArrayString(): Array<string> {
-      const arrayString: Array<string> = [];
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            this._rcrListString.forEach(() => arrayString.push('OU'));
-            break;
-         case Ensemble.Et:
-            this._rcrListString.forEach(() => arrayString.push('ET'));
-            break;
-         case Ensemble.Sauf:
-            this._rcrListString.forEach(() => arrayString.push('SAUF'));
-            break;
-         default:
-            this._rcrListString.forEach(() => arrayString.push('UNDEFINED'));
-            break;
-      }
-      return arrayString;
    }
 }
