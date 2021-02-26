@@ -497,23 +497,4 @@ export class BlocLangue extends BlocAbstract {
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
    }
-
-   get internalBlocOperatorInArrayString(): Array<string> {
-      let pcpInArrayString: Array<string> = [];
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            this._languesEntered.forEach(() => pcpInArrayString.push('OU'));
-            break;
-         case Ensemble.Et:
-            this._languesEntered.forEach(() => pcpInArrayString.push('ET'));
-            break;
-         case Ensemble.Sauf:
-            this._languesEntered.forEach(() => pcpInArrayString.push('SAUF'));
-            break;
-         default:
-            this._languesEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
-            break;
-      }
-      return pcpInArrayString;
-   }
 }

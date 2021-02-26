@@ -38,13 +38,6 @@ export interface JsonEditeurProvider {
    editorsOperator: Array<string>;
 }
 
-export interface JsonMotDuTitreProvider {
-   type: string;
-   bloc_operator: string;
-   titleWords: Array<string>;
-   titleWordsOperator: Array<string>;
-}
-
 export interface JsonPaysProvider {
    type: string;
    bloc_operator: string;
