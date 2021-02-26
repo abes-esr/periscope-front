@@ -8,11 +8,9 @@
             <v-col>
                <component-rcr class="outlined-app"></component-rcr>
             </v-col>
-           <!--
             <v-col>
                <component-ppn class="outlined-app"></component-ppn>
             </v-col>
-            -->
          </v-row>
       </v-container>
       <v-container>
