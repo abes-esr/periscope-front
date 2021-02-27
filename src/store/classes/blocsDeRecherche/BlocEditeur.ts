@@ -19,29 +19,4 @@ export class BlocEditeur extends BlocAbstract {
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
    }
-
-   get editorEnteredEnteredInString(): string {
-      let stringBuild = '';
-      this._editorsEntered.forEach((element) => (stringBuild += element + ' '));
-      return stringBuild;
-   }
-
-   get internalBlocOperatorInArrayString(): Array<string> {
-      const pcpInArrayString: Array<string> = [];
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            this._editorsEntered.forEach(() => pcpInArrayString.push('OU'));
-            break;
-         case Ensemble.Et:
-            this._editorsEntered.forEach(() => pcpInArrayString.push('ET'));
-            break;
-         case Ensemble.Sauf:
-            this._editorsEntered.forEach(() => pcpInArrayString.push('SAUF'));
-            break;
-         default:
-            this._editorsEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
-            break;
-      }
-      return pcpInArrayString;
-   }
 }

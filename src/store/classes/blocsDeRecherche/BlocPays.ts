@@ -275,23 +275,4 @@ export class BlocPays extends BlocAbstract {
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
    }
-
-   get internalBlocOperatorInArrayString(): Array<string> {
-      const pcpInArrayString: Array<string> = [];
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            this._paysEntered.forEach(() => pcpInArrayString.push('OU'));
-            break;
-         case Ensemble.Et:
-            this._paysEntered.forEach(() => pcpInArrayString.push('ET'));
-            break;
-         case Ensemble.Sauf:
-            this._paysEntered.forEach(() => pcpInArrayString.push('SAUF'));
-            break;
-         default:
-            this._paysEntered.forEach(() => pcpInArrayString.push('UNDEFINED'));
-            break;
-      }
-      return pcpInArrayString;
-   }
 }

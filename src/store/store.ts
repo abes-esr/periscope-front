@@ -32,10 +32,8 @@ export default new Vuex.Store({
       blocPays: new BlocPays(Ensemble.Ou),
       //Resultats de recherche
       lotNotices: new LotNotices(),
-      //Objets JSON à envoyer au back-end
+      //Méthodes pour construire JSON à envoyer au back-end
       jsonTraitements: new JsonTraitements(),
-      //Etat du composant de test
-      chainTyped: 0,
    },
    mutations: {
       //Bloc de recherche PcpRegions
@@ -74,9 +72,6 @@ export default new Vuex.Store({
       },
       blocRcrInternalOperatorMutation(state, operator: number) {
          state.blocRcr._internalBlocOperator = operator;
-      },
-      blocRcrRcrHandlerMutation(state, arraySent: Array<RcrProvider>) {
-         state.blocRcr._rcrHandler = arraySent;
       },
       blocRcrRcrListStringMutation(state, arraySent: Array<string>) {
          state.blocRcr._rcrListString = arraySent;
@@ -148,6 +143,39 @@ export default new Vuex.Store({
          });
       },
 
+      //Reinitialisation de l'ensemble des blocs de recherche
+      resetAllBlocsMutation(state) {
+         state.blocPcpRegions._externalBlocOperator = Ensemble.Ou;
+         state.blocPcpRegions._internalBlocOperator = Ensemble.Et;
+         state.blocPcpRegions._pcpStringArray = [];
+         state.blocPcpRegions._arrayRegions.forEach((element) => (element.value = false));
+         state.blocPcpMetiers._externalBlocOperator = Ensemble.Ou;
+         state.blocPcpMetiers._internalBlocOperator = Ensemble.Et;
+         state.blocPcpMetiers._pcpStringArray = [];
+         state.blocPcpMetiers._arrayMetiers.forEach((element) => (element.value = false));
+         state.blocRcr._externalBlocOperator = Ensemble.Ou;
+         state.blocRcr._internalBlocOperator = Ensemble.Et;
+         state.blocRcr._rcrListString = [];
+         state.blocPpn._externalBlocOperator = Ensemble.Ou;
+         state.blocPpn._internalBlocOperator = Ensemble.Et;
+         state.blocPpn._ppnListString = [];
+         state.blocIssn._externalBlocOperator = Ensemble.Ou;
+         state.blocIssn._internalBlocOperator = Ensemble.Et;
+         state.blocIssn._issnListString = [];
+         state.blocMotsDuTitre._externalBlocOperator = Ensemble.Ou;
+         state.blocMotsDuTitre._internalBlocOperator = Ensemble.Et;
+         state.blocMotsDuTitre._titleWordsEntered = [];
+         state.blocEditeur._externalBlocOperator = Ensemble.Ou;
+         state.blocEditeur._internalBlocOperator = Ensemble.Et;
+         state.blocEditeur._editorsEntered = [];
+         state.blocPays._externalBlocOperator = Ensemble.Ou;
+         state.blocPays._internalBlocOperator = Ensemble.Et;
+         state.blocPays._paysEntered = [];
+         state.blocLangue._externalBlocOperator = Ensemble.Ou;
+         state.blocLangue._internalBlocOperator = Ensemble.Et;
+         state.blocLangue._languesEntered = [];
+      },
+
       //Construction de l'objet JSON contenant les critères de recherche à envoyer dans les requêtes
       jsonSearchRequestConstructionMutation(state) {
          state.jsonTraitements._jsonSearchRequest = JsonTraitements.constructJsonGlobalRequest(state.blocPcpRegions, state.blocPcpMetiers, state.blocRcr, state.blocPpn, state.blocIssn, state.blocMotsDuTitre, state.blocEditeur, state.blocLangue, state.blocPays);
@@ -169,11 +197,6 @@ export default new Vuex.Store({
       //Effacement des notices stockées dans le store
       eraseAllNotices(state) {
          state.lotNotices._lotNotices = [];
-      },
-
-      //Bloc de Test
-      addValueMutation(state, value: number) {
-         state.chainTyped += value;
       },
    },
    actions: {
@@ -211,9 +234,6 @@ export default new Vuex.Store({
       },
       blocRcrInternalOperatorAction(context, operator: number) {
          context.commit('blocRcrInternalOperatorMutation', operator);
-      },
-      blocRcrRcrHandlerAction(context, arraySent: Array<RcrProvider>) {
-         context.commit('blocRcrRcrHandlerMutation', arraySent);
       },
       blocRcrRcrListStringAction(context, arraySent: Array<string>) {
          context.commit('blocRcrRcrListStringMutation', arraySent);
@@ -271,6 +291,11 @@ export default new Vuex.Store({
       },
       blocPaysPaysEnteredAction(context, arraySent: Array<ListProvider>) {
          context.commit('blocPaysPaysEnteredMutation', arraySent);
+      },
+
+      //Reinitialisation ensemble des blocs de recherche
+      resetAllBlocsAction(context) {
+         context.commit('resetAllBlocsMutation');
       },
 
       //Construction du Json à envoyer aux requêtes de recherche

@@ -13,7 +13,6 @@ const routes: Array<RouteConfig> = [
       name: 'Accueil',
       component: Recherche,
    },
-   {path: '/test', name: 'Test', component: Test},
    {
       path: '/recherche',
       name: 'Recherche',

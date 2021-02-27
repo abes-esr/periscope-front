@@ -64,31 +64,10 @@ export default class VueRcr extends Vue {
 
    //Events v-select
    updateExternalOperateurEvent(): void {
-      this.$store
-         .dispatch('blocRcrExternalOperatorAction', this.externalOperatorSelected)
-         .then(() => {
-            setTimeout(() => {
-               this.externalOperatorSelected = this.getExternalOperatorSelected;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
+      this.$store.dispatch('blocRcrExternalOperatorAction', this.externalOperatorSelected);
    }
    updateInternalOperateurEvent(): void {
-      this.$store
-         .dispatch('blocRcrInternalOperatorAction', this.internalOperatorSelected)
-         .then(() => {
-            setTimeout(() => {
-               this.internalOperatorSelected = this.getInternalOperatorSelected;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
-   }
-   test(): void {
-      console.log('shui');
+      this.$store.dispatch('blocRcrInternalOperatorAction', this.internalOperatorSelected);
    }
 
    /**

@@ -35,23 +35,4 @@ export class BlocPcpRegions extends BlocAbstract {
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
    }
-
-   get internalBlocOperatorInArrayString(): Array<string> {
-      const pcpInArrayString: Array<string> = [];
-      switch (this._internalBlocOperator) {
-         case Ensemble.Ou:
-            this._pcpStringArray.forEach(() => pcpInArrayString.push('OU'));
-            break;
-         case Ensemble.Et:
-            this._pcpStringArray.forEach(() => pcpInArrayString.push('ET'));
-            break;
-         case Ensemble.Sauf:
-            this._pcpStringArray.forEach(() => pcpInArrayString.push('SAUF'));
-            break;
-         default:
-            this._pcpStringArray.forEach(() => pcpInArrayString.push('UNDEFINED'));
-            break;
-      }
-      return pcpInArrayString;
-   }
 }
