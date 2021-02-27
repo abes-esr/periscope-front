@@ -84,9 +84,6 @@ export default new Vuex.Store({
       blocPpnInternalOperatorMutation(state, operator: number) {
          state.blocPpn._internalBlocOperator = operator;
       },
-      blocPpnPpnEnteredMutation(state, string) {
-         state.blocPpn._ppnListString.push(string);
-      },
       blocPpnListStringMutation(state, arraySent: Array<string>) {
          state.blocPpn._ppnListString = arraySent;
       },
@@ -98,8 +95,8 @@ export default new Vuex.Store({
       blocIssnInternalOperatorMutation(state, operator: number) {
          state.blocIssn._internalBlocOperator = operator;
       },
-      blocIssnIssnEnteredMutation(state, string) {
-         state.blocIssn._issnListString.push(string);
+      blocIssnListStringMutation(state, arraySent: Array<string>) {
+         state.blocIssn._issnListString = arraySent;
       },
 
       //Bloc de recherche Mots du titre
@@ -260,8 +257,8 @@ export default new Vuex.Store({
       blocIssnInternalOperatorAction(context, operator: number) {
          context.commit('blocIssnInternalOperatorMutation', operator);
       },
-      blocIssnIssnEnteredAction(context, stringEntered: string) {
-         context.commit('blocIssnIssnEnteredMutation', stringEntered);
+      blocIssnListStringAction(context, arraySent: Array<string>) {
+         context.commit('blocIssnListStringMutation', arraySent);
       },
 
       //Bloc de recherche mots du titre

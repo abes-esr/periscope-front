@@ -59,6 +59,19 @@ export default class VueRcr extends Vue {
 
    //Events v-combobox
    addItem(): void {
+      this.rcrAlert = [];
+      if (this.rcrArrayTyped.length === 0) {
+         this.rcrAlert = [];
+         return;
+      }
+
+      //if the value of last element of array contains characters, it removes from list, return = get out of function
+      if (new RegExp('\\D').test(this.rcrArrayTyped[this.rcrArrayTyped.length - 1])) {
+         this.rcrArrayTyped.pop();
+         this.rcrAlert.push('Un RCR ne contient pas de caractères');
+         return;
+      }
+
       this.$store.dispatch('blocRcrRcrListStringAction', this.rcrArrayTyped);
    }
 
@@ -69,43 +82,5 @@ export default class VueRcr extends Vue {
    updateInternalOperateurEvent(): void {
       this.$store.dispatch('blocRcrInternalOperatorAction', this.internalOperatorSelected);
    }
-
-   /**
-    * The global array of combobox component watched by this function, after each typed by user, this function
-    * is launched to observe the final current array in combobox
-    * @param newArrayVal
-    */
-   /*
-   @Watch('rcrArrayTyped')
-   rcrTyped(newArrayVal: []): void {
-      if (newArrayVal.length === 0) {
-         this.rcrHandler = [];
-         this.rcrAlert = [];
-         return;
-      }
-
-      //if the value of last element of array contains characters, it removes from list, return = get out of function
-      if (new RegExp('\\D').test(newArrayVal[newArrayVal.length - 1])) {
-         newArrayVal.pop();
-         this.rcrAlert.push('Un RCR ne contient pas de caractères');
-         return;
-      }
-
-      //if the value of last element of array contains only digits, and array target to fill length is different from current Array watched
-      if (new RegExp('\\d').test(newArrayVal[newArrayVal.length - 1]) && this.rcrHandler.length !== newArrayVal.length) {
-         this.rcrAlert = [];
-         //conversion of string input (who contains only digits) in number type
-         let newLastValConvertedInNumberType: number = +newArrayVal[newArrayVal.length - 1];
-         //push element in rcrHandler array, with id value associated at rcr
-         //console.log(this.rcrHandler.length !== newArrayVal.length);
-         this.rcrHandler.push(
-            new (class implements RcrProvider {
-               id: number = newArrayVal.length - 1;
-               value: number = newLastValConvertedInNumberType;
-            })()
-         );
-      }
-   }
-    */
 }
 </script>

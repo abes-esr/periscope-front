@@ -1,5 +1,5 @@
 <template>
-   <v-container class="outlined-app" :key="reloadComponentKey">
+   <v-container class="outlined-app">
       <v-container>
          <component-plan-de-conservation></component-plan-de-conservation>
       </v-container>
@@ -35,16 +35,5 @@ import ComponentPlanDeConservation from '@/components/accueilElements_niv2/PlanC
       ComponentPlanDeConservation,
    },
 })
-export default class Recherche extends Mixins(GlobalPropertiesMixin) {
-  reloadComponentKey: number;
-
-  constructor() {
-    super();
-    this.reloadComponentKey = this.reloadComponentKeyGetter;
-  }
-
-  get reloadComponentKeyGetter(): number {
-    return this.$store.state.variablesGlobales._reloadComponentKey;
-  }
-}
+export default class Recherche extends Mixins(GlobalPropertiesMixin) {}
 </script>

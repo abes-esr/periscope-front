@@ -7,10 +7,22 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="PPN" placeholder="saisir un n° de ppn" class="style1" v-model="ppnEntered"></v-text-field>
+            <v-combobox @click="eventUpdatePpn()" @change="eventUpdatePpn()" @blur="eventUpdatePpn()" @keyup.enter="eventUpdatePpn()" :rules="ppnAlert" multiple outlined small-chips label="PPN" class="style2" placeholder="saisir un n° PPN" v-model="ppnEntered" clearable>
+               <template v-slot:selection="{item}">
+                  <v-chip close @click:close="removeItemPpn(item)">
+                     <span class="pr-2">{{ item }}</span>
+                  </v-chip>
+               </template>
+            </v-combobox>
          </v-col>
          <v-col>
-            <v-text-field dense multiple outlined small-chips label="ISSN" placeholder="saisir un n° issn" class="style1" v-model="issnEntered"></v-text-field>
+            <v-combobox @click="eventUpdateIssn()" @change="eventUpdateIssn()" @blur="eventUpdateIssn()" @keyup.enter="eventUpdateIssn()" :rules="issnAlert" multiple outlined small-chips label="ISSN" class="style2" placeholder="saisir un n° ISSN" v-model="issnEntered" clearable>
+               <template v-slot:selection="{item}">
+                  <v-chip close @click:close="removeItemIssn(item)">
+                     <span class="pr-2">{{ item }}</span>
+                  </v-chip>
+               </template>
+            </v-combobox>
          </v-col>
       </v-row>
 
@@ -20,7 +32,11 @@
                <v-expansion-panel>
                   <v-expansion-panel-header> Rechercher par d'autres critères</v-expansion-panel-header>
                   <v-expansion-panel-content>
-                     <v-text-field @change="eventUpdateBlocTitre" @blur="eventUpdateBlocTitre" @keyup.enter="eventUpdateBlocTitre" clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titreEntered"></v-text-field>
+                     <v-row>
+                        <v-col>
+                           <v-text-field @change="eventUpdateBlocTitre" @blur="eventUpdateBlocTitre" @keyup.enter="eventUpdateBlocTitre" clearable multiple outlined small-chips label="Mots du titre" placeholder="tapez un titre (optionnel)" class="style2" v-model="titreEntered"></v-text-field>
+                        </v-col>
+                     </v-row>
                      <v-row dense>
                         <v-col xs="12" sm="4">
                            <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" @change="eventUpdateBlocEditeurExternalOperator" class="style2"></v-select>
@@ -81,7 +97,9 @@ export default class VuePpn extends Vue {
    ppnExternalBlocOperatorListToSelect: Array<OperatorProvider>; //Bloc Ppn
    ppnExternalBlocOperatorSelected: number;
    ppnEntered: Array<string>;
+   ppnAlert: Array<string>;
    issnEntered: Array<string>; //Bloc Issn
+   issnAlert: Array<string>;
    titreEntered: Array<string>; //Bloc Mots du titre
    editeurExternalBlocOperatorListToSelect: Array<OperatorProvider>; //Bloc editeur
    editeurExternalOperatorSelected: number;
@@ -101,7 +119,9 @@ export default class VuePpn extends Vue {
       this.ppnExternalBlocOperatorListToSelect = this.getPpnExternalBlocOperatorListToSelect;
       this.ppnExternalBlocOperatorSelected = this.getPpnExternalBlocOperatorSelected;
       this.ppnEntered = this.getPpnEntered;
+      this.ppnAlert = [];
       this.issnEntered = this.getIssnEntered;
+      this.issnAlert = [];
       this.titreEntered = this.getTitreEntered;
 
       this.editeurExternalBlocOperatorListToSelect = this.getEditeurExternalBlocOperatorListToSelect;
@@ -109,7 +129,7 @@ export default class VuePpn extends Vue {
       this.editeurEntered = this.getEditeurEntered;
 
       this.langueItems = this.getLangueItems;
-      this.langueEntered = this.getLangueEntered; //TODO etape2 nouveaux getters
+      this.langueEntered = this.getLangueEntered;
       this.langueExternalBlocOperatorListToSelect = this.getLangueExternalBlocOperatorListToSelect;
       this.langueExternalOperatorSelected = this.getLangueExternalOperatorSelected;
 
@@ -184,6 +204,59 @@ export default class VuePpn extends Vue {
    }
 
    /*EVENTS*/
+   eventUpdatePpn(): void {
+      this.ppnAlert = [];
+      if (this.ppnEntered.length === 0) {
+         this.ppnAlert = [];
+         return;
+      }
+      if (this.ppnEntered.length > 1) {
+         this.ppnEntered.pop();
+      }
+
+      this.ppnEntered.forEach((element) => {
+         if (!element.match('^\\d{8,9}X?$')) {
+            this.ppnEntered.pop();
+            this.ppnAlert.push("Un PPN Contient 8 ou 9 chiffres suivis ou pas d'un X");
+         } else {
+            this.$store.dispatch('blocPpnListStringAction', this.ppnEntered);
+         }
+      });
+   }
+
+   removeItemPpn(item: string): void {
+      const index: number = this.ppnEntered.indexOf(item);
+      if (index > -1) {
+         this.ppnEntered.splice(index, 1);
+      }
+   }
+
+   eventUpdateIssn(): void {
+      this.issnAlert = [];
+      if (this.issnEntered.length === 0) {
+         this.issnAlert = [];
+         return;
+      }
+      if (this.issnEntered.length > 1) {
+         this.issnEntered.pop();
+      }
+
+      this.issnEntered.forEach((element) => {
+         if (!element.match('^\\d{4}-\\d{4}$')) {
+            this.issnEntered.pop();
+            this.issnAlert.push("Un ISSN contient 4 chiffres suivi d'un - et 4 chiffres");
+         } else {
+            this.$store.dispatch('blocIssnListStringAction', this.issnEntered);
+         }
+      });
+   }
+
+   removeItemIssn(item: string): void {
+      const index: number = this.issnEntered.indexOf(item);
+      if (index > -1) {
+         this.issnEntered.splice(index, 1);
+      }
+   }
 
    //v-combobox Events de mise à jour
    removeItem(itemId: ListProvider, arrayTarget: Array<ListProvider>): void {
@@ -191,8 +264,6 @@ export default class VuePpn extends Vue {
       if (index > -1) {
          arrayTarget.splice(index, 1);
       }
-      //Attention sur les slots il faut spécifiquement appeler le mutateur d'état dans la méthode reliée à l'event
-      //Pas dans updated
       this.$store.state.requeteRecherche.blocLangue.setBlocLangue(this.langueEntered);
       this.$store.state.requeteRecherche.blocPays.setBlocPays(this.paysEntered);
    }
@@ -204,40 +275,9 @@ export default class VuePpn extends Vue {
    updateArrayBlocPays(): void {
       this.$store.dispatch('blocPaysPaysEnteredAction', this.paysEntered);
    }
-
-   /*limitArrayListNumberOfElementAndClearArrayIfEmpty(array: Array<ListProvider>, sizeLimit: number): Array<ListProvider> {
-     if (array.length === 0) {
-        array = [];
-        return array;
-     }
-     if (array.length > sizeLimit) {
-        array.pop();
-        return array;
-     }
-     return array;
-  }*/
    //v-combobox fin des méthodes de mise a jour
 
    //Events de contrôle des champs
-   /*ppnAlert: Array<string> = ["Format de PPN Incorrect"]; //Message d'erreur
-  regexPpnControlAndUpdateBloc(): void {
-    this.ppnEntered.forEach((element) => {
-     if (!element.match('^\\d{8,9}X?$')) {
-        this.ppnEntered = [];
-        this.ppnAlert.push(element);
-     }});
-  }
-
-  issnAlert: Array<string> = ["Format d'ISSN Incorrect : "];
-  regexIssnControlAndUpdateBloc(): void {
-    this.issnEntered.forEach((element) => {
-      if (!element.match('^\\d{4}-\\d{4}$')) {
-        this.issnEntered = [];
-        this.issnAlert.push(element);
-      }
-    })
-  }*/
-
    eventUpdateBlocTitre(): void {
       if (String(this.titreEntered) === 'null') {
          this.$store.dispatch('blocMotsDuTitreTitleWordsEnteredAction', '');
