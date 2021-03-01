@@ -3,7 +3,7 @@ import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
 import {BlocPcpRegions} from '@/store/classes/blocsDeRecherche/BlocPcpRegions';
 import {BlocPcpMetiers} from '@/store/classes/blocsDeRecherche/BlocPcpMetiers';
-import {BlocRcr, RcrProvider} from '@/store/classes/blocsDeRecherche/BlocRcr';
+import {BlocRcr} from '@/store/classes/blocsDeRecherche/BlocRcr';
 import {BlocPpn} from '@/store/classes/blocsDeRecherche/BlocPpn';
 import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
 import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
@@ -15,6 +15,7 @@ import {JsonTraitements} from '@/store/classes/traitements/JsonTraitements';
 import {AxiosTraitements} from '@/store/classes/appelsBackEnd/AxiosTraitements';
 import {LotNotices} from '@/store/classes/resultatsDeRecherche/LotNotices';
 import Notice from '@/store/classes/resultatsDeRecherche/Notice';
+import {Composants} from '@/store/classes/composants/Composants';
 
 Vue.use(Vuex);
 
@@ -32,6 +33,8 @@ export default new Vuex.Store({
       blocPays: new BlocPays(Ensemble.Ou),
       //Resultats de recherche
       lotNotices: new LotNotices(),
+      //Composants
+      composants: new Composants(),
       //Méthodes pour construire JSON à envoyer au back-end
       jsonTraitements: new JsonTraitements(),
    },
@@ -102,20 +105,21 @@ export default new Vuex.Store({
       //Bloc de recherche Mots du titre
       blocMotsDuTitreTitleWordsEnteredMutation(state, stringEntered: string) {
          state.blocMotsDuTitre._titleWordsEntered = [];
-         stringEntered.split(' ').forEach((element: string) => {
-            state.blocMotsDuTitre._titleWordsEntered.push(String(element));
-         });
+         if (stringEntered === '') {
+            state.blocMotsDuTitre._titleWordsEntered = [];
+         } else {
+            stringEntered.split(' ').forEach((element: string) => {
+               state.blocMotsDuTitre._titleWordsEntered.push(String(element));
+            });
+         }
       },
 
       //Bloc de recherche Editeur
       blocEditeurExternalOperatorMutation(state, externalOperator: number) {
          state.blocEditeur._externalBlocOperator = externalOperator;
       },
-      blocEditeurEditorEnteredMutation(state, stringEntered: string) {
-         state.blocEditeur._editorsEntered = [];
-         stringEntered.split(' ').forEach((element: string) => {
-            state.blocEditeur._editorsEntered.push(String(element));
-         });
+      blocEditeurEditorEnteredMutation(state, arraySent: Array<string>) {
+         state.blocEditeur._editorsEntered = arraySent;
       },
 
       //Bloc de recherche Langue
@@ -181,19 +185,57 @@ export default new Vuex.Store({
       //Récupération des notices par critères et effacement des notices précédentes dans le store
       async pushNoticesAndErasePreviousNoticesMutation(state) {
          state.lotNotices._lotNotices = [];
+         state.lotNotices._resultArrayContentNotices = [];
          const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
          lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+         state.lotNotices._lotNotices.forEach((element) => {
+            state.lotNotices._resultArrayContentNotices.push({
+               ppn: element.ppn,
+               continiousType: element.continiousType,
+               issn: element.issn,
+               keyTitle: element.keyTitle,
+               editor: element.editor,
+               startDate: element.startDate,
+               endDate: element.endDate,
+               pcpList: element.pcpList,
+               rcrLength: element.rcrList.length,
+               titleComplement: element.titleComplement,
+               keyTitleQualifer: element.keyTitleQualifer,
+               rcrList: element.rcrList,
+            });
+         });
       },
 
       //Récupération des notices par critères et ajout aux notices précédentes dans le store
       async pushNoticesAndAddToPreviousNotices(state) {
          const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
          lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+         state.lotNotices._lotNotices.forEach((element) => {
+            state.lotNotices._resultArrayContentNotices.push({
+               ppn: element.ppn,
+               continiousType: element.continiousType,
+               issn: element.issn,
+               keyTitle: element.keyTitle,
+               editor: element.editor,
+               startDate: element.startDate,
+               endDate: element.endDate,
+               pcpList: element.pcpList,
+               rcrLength: element.rcrList.length,
+               titleComplement: element.titleComplement,
+               keyTitleQualifer: element.keyTitleQualifer,
+               rcrList: element.rcrList,
+            });
+         });
       },
 
       //Effacement des notices stockées dans le store
       eraseAllNotices(state) {
          state.lotNotices._lotNotices = [];
+      },
+
+      //Changement d'étape dans le stepper
+      changeStepMutation(state, stepSent: number) {
+         state.composants._stepperCurrentValue = stepSent;
       },
    },
    actions: {
@@ -270,8 +312,8 @@ export default new Vuex.Store({
       blocEditeurExternalOperatorAction(context, externalOperator: number) {
          context.commit('blocEditeurExternalOperatorMutation', externalOperator);
       },
-      blocEditeurEditorEnteredAction(context, stringEntered: string) {
-         context.commit('blocEditeurEditorEnteredMutation', stringEntered);
+      blocEditeurEditorEnteredAction(context, arraySent: Array<string>) {
+         context.commit('blocEditeurEditorEnteredMutation', arraySent);
       },
 
       //Bloc de recherche Langue
@@ -310,9 +352,9 @@ export default new Vuex.Store({
          console.log(JSON.parse(JSON.stringify(this.state)));
       },
 
-      //Bloc de Test
-      addValueAction(context, value: number) {
-         context.commit('addValueMutation', value);
+      //Stepper changement de step
+      changeStepAction(context, stepSent: number) {
+         context.commit('changeStepMutation', stepSent);
       },
    },
    plugins: [createPersistedState()],

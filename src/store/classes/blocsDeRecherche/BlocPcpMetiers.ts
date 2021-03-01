@@ -18,7 +18,7 @@ export class BlocPcpMetiers extends BlocAbstract {
       {id: 7, key: 'PCGéo', text: 'Géographie', value: false},
       {id: 8, key: 'PCIta', text: 'Etudes italiennes', value: false},
       {id: 9, key: 'PCMedieval', text: 'Médiéval', value: false},
-      {id: 10, key: 'PCNum', text: 'Sciences du Numériques', value: false},
+      {id: 10, key: 'PCNum', text: 'Sciences du Numérique', value: false},
       {id: 11, key: 'PCMath', text: 'Mathématiques RNBM', value: false},
       {id: 12, key: 'PCMed', text: 'Médecine', value: false},
       {id: 13, key: 'PCPsy', text: 'Psychologie, Psychanalyse', value: false},

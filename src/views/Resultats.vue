@@ -12,6 +12,11 @@
       </v-row>
       <v-row>
          <v-col>
+            <component-tableau-resultats></component-tableau-resultats>
+         </v-col>
+      </v-row>
+      <v-row>
+         <v-col>
             <v-btn v-on:click="clickVisualisation">Data Visualisation in console</v-btn>
          </v-col>
       </v-row>
@@ -28,17 +33,19 @@ import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentStepper from '@/components/stepper/Stepper.vue';
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentFooter from '@/components/accueil_niv1/Footer.vue';
+import ComponentTableauResultats from '@/components/resultats/TableauResultats.vue';
 
 @Component({
    components: {
       ComponentStepper,
       ComponentHeader,
       ComponentFooter,
+      ComponentTableauResultats,
    },
 })
 export default class Resultats extends Vue {
    private clickVisualisation() {
-      this.$store.state.resultatRecherche.displayNotices();
+      this.$store.dispatch('displayStore');
    }
 }
 </script>

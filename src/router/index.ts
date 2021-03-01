@@ -3,7 +3,8 @@ import VueRouter, {RouteConfig} from 'vue-router';
 import Recherche from '@/views/Recherche.vue';
 import Resultats from '@/views/Resultats.vue';
 import AccueilAvance from '@/views/RechercheAvance.vue';
-import Test from '@/views/Test.vue';
+import ConditionsGenerales from '@/views/ConditionsGenerales.vue';
+import MentionsLegales from '@/views/MentionsLegales.vue';
 
 Vue.use(VueRouter);
 
@@ -17,6 +18,16 @@ const routes: Array<RouteConfig> = [
       path: '/recherche',
       name: 'Recherche',
       component: Recherche,
+   },
+   {
+      path: '/conditions-generales',
+      name: 'ConditionsGenerales',
+      component: ConditionsGenerales,
+   },
+   {
+      path: '/mentions-legales',
+      name: 'MentionsLegales',
+      component: MentionsLegales,
    },
    {
       path: '/resultats',

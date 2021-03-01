@@ -42,7 +42,13 @@
                            <v-select :items="editeurExternalBlocOperatorListToSelect" label="et/ou/sauf" outlined v-model="editeurExternalOperatorSelected" @change="eventUpdateBlocEditeurExternalOperator" class="style2"></v-select>
                         </v-col>
                         <v-col xs="12" sm="8">
-                           <v-text-field @change="eventUpdateBlocEditeur" @blur="eventUpdateBlocEditeur" @keyup.enter="eventUpdateBlocEditeur" outlined label="Editeur" placeholder="tapez un editeur (optionnel)" class="style2" v-model="editeurEntered"></v-text-field>
+                           <v-combobox @change="eventUpdateBlocEditeur" @blur="eventUpdateBlocEditeur" @keyup.enter="eventUpdateBlocEditeur" multiple outlined small-chips label="Editeur" class="style2" placeholder="tapez un editeur (optionnel)" v-model="editeurEntered" clearable>
+                              <template v-slot:selection="{item}">
+                                 <v-chip close @click:close="removeItemEditeur(item)">
+                                    <span class="pr-2">{{ item }}</span>
+                                 </v-chip>
+                              </template>
+                           </v-combobox>
                         </v-col>
                      </v-row>
                      <v-row dense>
@@ -100,7 +106,7 @@ export default class VuePpn extends Vue {
    ppnAlert: Array<string>;
    issnEntered: Array<string>; //Bloc Issn
    issnAlert: Array<string>;
-   titreEntered: Array<string>; //Bloc Mots du titre
+   titreEntered: string; //Bloc Mots du titre
    editeurExternalBlocOperatorListToSelect: Array<OperatorProvider>; //Bloc editeur
    editeurExternalOperatorSelected: number;
    editeurEntered: Array<string>;
@@ -155,8 +161,12 @@ export default class VuePpn extends Vue {
       return this.$store.state.blocIssn._issnListString;
    }
 
-   get getTitreEntered(): Array<string> {
-      return this.$store.state.blocMotsDuTitre._titleWordsEntered;
+   get getTitreEntered(): string {
+      let motsDuTitreInString = '';
+      this.$store.state.blocMotsDuTitre._titleWordsEntered.forEach((element: string) => {
+         motsDuTitreInString += element + ' ';
+      });
+      return motsDuTitreInString;
    }
 
    get getEditeurExternalBlocOperatorListToSelect(): Array<OperatorProvider> {
@@ -228,6 +238,7 @@ export default class VuePpn extends Vue {
       const index: number = this.ppnEntered.indexOf(item);
       if (index > -1) {
          this.ppnEntered.splice(index, 1);
+         this.$store.dispatch('blocPpnListStringAction', this.ppnEntered);
       }
    }
 
@@ -255,6 +266,7 @@ export default class VuePpn extends Vue {
       const index: number = this.issnEntered.indexOf(item);
       if (index > -1) {
          this.issnEntered.splice(index, 1);
+         this.$store.dispatch('blocIssnListStringAction', this.issnEntered);
       }
    }
 
@@ -264,8 +276,8 @@ export default class VuePpn extends Vue {
       if (index > -1) {
          arrayTarget.splice(index, 1);
       }
-      this.$store.state.requeteRecherche.blocLangue.setBlocLangue(this.langueEntered);
-      this.$store.state.requeteRecherche.blocPays.setBlocPays(this.paysEntered);
+      this.$store.dispatch('blocLangueLanguesEnteredAction', this.langueEntered);
+      this.$store.dispatch('blocPaysPaysEnteredAction', this.paysEntered);
    }
 
    updateArrayBlocLangue(): void {
@@ -275,7 +287,6 @@ export default class VuePpn extends Vue {
    updateArrayBlocPays(): void {
       this.$store.dispatch('blocPaysPaysEnteredAction', this.paysEntered);
    }
-   //v-combobox fin des méthodes de mise a jour
 
    //Events de contrôle des champs
    eventUpdateBlocTitre(): void {
@@ -287,60 +298,35 @@ export default class VuePpn extends Vue {
    }
 
    eventUpdateBlocEditeur(): void {
+      if (this.editeurEntered.length > 1) {
+         this.editeurEntered.pop();
+      }
       this.$store.dispatch('blocEditeurEditorEnteredAction', this.editeurEntered);
+   }
+
+   removeItemEditeur(item: string): void {
+      const index: number = this.editeurEntered.indexOf(item);
+      if (index > -1) {
+         this.editeurEntered.splice(index, 1);
+         this.$store.dispatch('blocPpnListStringAction', this.editeurEntered);
+      }
    }
 
    //Events sur les listes déroulante
    eventUpdateBlocPpnExternalOperator(): void {
-      this.$store
-         .dispatch('blocPpnExternalOperatorAction', this.ppnExternalBlocOperatorSelected)
-         .then(() => {
-            setTimeout(() => {
-               this.ppnExternalBlocOperatorSelected = this.getPpnExternalBlocOperatorSelected;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
+      this.$store.dispatch('blocPpnExternalOperatorAction', this.ppnExternalBlocOperatorSelected);
    }
 
    eventUpdateBlocLangueExternalOperator(): void {
-      this.$store
-         .dispatch('blocLangueExternalOperatorAction', this.langueExternalOperatorSelected)
-         .then(() => {
-            setTimeout(() => {
-               this.langueExternalOperatorSelected = this.getLangueExternalOperatorSelected;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
+      this.$store.dispatch('blocLangueExternalOperatorAction', this.langueExternalOperatorSelected);
    }
 
    eventUpdateBlocEditeurExternalOperator(): void {
-      this.$store
-         .dispatch('blocEditeurExternalOperatorAction', this.editeurExternalOperatorSelected)
-         .then(() => {
-            setTimeout(() => {
-               this.editeurExternalOperatorSelected = this.getEditeurExternalOperatorSelected;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
+      this.$store.dispatch('blocEditeurExternalOperatorAction', this.editeurExternalOperatorSelected);
    }
 
    eventUpdateBlocPaysExternalOperator(): void {
-      this.$store
-         .dispatch('blocPaysExternalOperatorAction', this.paysExternalOperatorSelected)
-         .then(() => {
-            setTimeout(() => {
-               this.paysExternalOperatorSelected = this.getPaysExternalOperatorSelected;
-            }, 1500);
-         })
-         .catch((error) => {
-            console.error(error);
-         });
+      this.$store.dispatch('blocPaysExternalOperatorAction', this.paysExternalOperatorSelected);
    }
 }
 </script>
