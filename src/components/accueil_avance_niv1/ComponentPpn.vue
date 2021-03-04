@@ -1,5 +1,5 @@
 <template>
-   <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em">
+   <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
       <v-row :align="getVerticalAlignValue(1)">
          <!--External Operator-->
          <v-col xs="2" sm="2" lg="2" style="margin-right: -2em">
@@ -40,13 +40,7 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal">
-               <v-icon>mdi-arrow-up</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal">
-               <v-icon>mdi-arrow-down</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1">
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -118,7 +112,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
       if (this.comboboxArrayTyped.length !== 0) {
          const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
          if (lastElement.match('^\\d{8,9}X?$')) {
-            this.$store.state.requeteRecherche.setBlocPpnListString(this.comboboxArrayTyped);
+            this.$store.dispatch('blocPpnListStringAction', this.comboboxArrayTyped);
             this.comboboxAlert = [];
          } else {
             this.removeItem(lastElement);
@@ -144,11 +138,16 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
 
    //Events v-select
    eventUpdateBlocExternalOperator(): void {
-      this.$store.state.requeteRecherche.blocPpn.setBlocPpnExternalOperator(this.external_operator_selected);
+      this.$store.dispatch('blocPpnExternalOperatorAction', this.external_operator_selected);
    }
 
    eventUpdateBlocInternalOperator(): void {
-      this.$store.state.requeteRecherche.blocPpn.setBlocPpnInternalOperator(this.internal_operator_selected);
+      this.$store.dispatch('blocPpnInternalOperatorAction', this.internal_operator_selected);
+   }
+
+   //Events v-btn
+   closePanel() {
+      this.$store.dispatch('displayPpnPanelAction', false);
    }
 }
 </script>

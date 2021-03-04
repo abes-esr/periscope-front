@@ -18,12 +18,8 @@
       <v-row>
          <v-col>
             <v-expansion-panels>
-               <v-row
-                  ><v-col><component-bloc></component-bloc></v-col
-               ></v-row>
-               <v-row
-                  ><v-col><component-bloc></component-bloc></v-col
-               ></v-row>
+               <component-ppn v-if="getPpnPanelDisplayed()"></component-ppn>
+               <component-issn v-if="getIssnPanelDisplayed()"></component-issn>
             </v-expansion-panels>
          </v-col>
       </v-row>
@@ -31,19 +27,28 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins, Vue} from 'vue-property-decorator';
-import ComponentBloc from '@/components/accueil_avance_niv1/ComponentPpn.vue';
+import {Component, Vue} from 'vue-property-decorator';
+import ComponentPpn from '@/components/accueil_avance_niv1/ComponentPpn.vue';
 import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentStepper from '@/components/stepper/Stepper.vue';
 import ComponentListeDeChoix from '@/components/accueil_avance_niv1/ListeDeChoix.vue';
+import ComponentIssn from '@/components/accueil_avance_niv1/ComponentIssn.vue';
 
 @Component({
    components: {
+      ComponentIssn,
       ComponentHeader,
       ComponentStepper,
-      ComponentBloc,
+      ComponentPpn,
       ComponentListeDeChoix,
    },
 })
-export default class RechercheAvance extends Vue {}
+export default class RechercheAvance extends Vue {
+   getPpnPanelDisplayed(): boolean {
+      return this.$store.state.composants._panelPpnDisplayed;
+   }
+   getIssnPanelDisplayed(): boolean {
+      return this.$store.state.composants._panelIssnDisplayed;
+   }
+}
 </script>

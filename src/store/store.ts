@@ -261,6 +261,14 @@ export default new Vuex.Store({
       closeSnackBarMutation(state, value: boolean) {
          state.composants._snackBarDisplay = value;
       },
+
+      //Affichage des différents panneaux de recherche
+      displayPpnPanelMutation(state, value: boolean) {
+         state.composants._panelPpnDisplayed = value;
+      },
+      displayIssnPanelMutation(state, value: boolean) {
+         state.composants._panelIssnDisplayed = value;
+      }
    },
    actions: {
       //Bloc de recherche PcpRegions
@@ -385,6 +393,14 @@ export default new Vuex.Store({
       closeSnackBarAction(context, value: boolean) {
          context.commit('closeSnackBarMutation', value);
       },
+
+      //Affichage des différents panneaux de recherche
+      displayPpnPanelAction(context, value: boolean) {
+         context.commit('displayPpnPanelMutation', value)
+      },
+      displayIssnPanelAction(context, value: boolean) {
+         context.commit('displayIssnPanelMutation', value)
+      }
    },
    plugins: [createPersistedState()],
 });

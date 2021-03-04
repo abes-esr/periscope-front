@@ -4,4 +4,7 @@ export class Composants {
   _snackBarDisplay = false;
   _snackBarMultiline = true;
   _snackBarText = '';
+
+  _panelPpnDisplayed = false;
+  _panelIssnDisplayed = false;
 }

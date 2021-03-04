@@ -12,7 +12,7 @@
                      <v-col xs="12" sm="4" lg="3"> Recherche par ISSN </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de PPN </span>
+                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° d'ISSN </span>
                            <span v-else key="1"> {{ returnItem() + ' | Entre PPN: ' + getInternalOperatorSelectedInString }} </span>
                         </v-fade-transition>
                      </v-col>
@@ -40,13 +40,7 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal">
-               <v-icon>mdi-arrow-up</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal">
-               <v-icon>mdi-arrow-down</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1">
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -60,7 +54,7 @@ import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Ensemble, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 @Component
-export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
+export default class ComponentIssn extends Mixins(GlobalPropertiesMixin) {
    external_operator_label: string;
    internal_operator_label: string;
    list_external_operator_to_select: Array<OperatorProvider>;
@@ -75,24 +69,24 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    constructor() {
       super();
       this.external_operator_label = 'Autres blocs';
-      this.internal_operator_label = 'Entre PPN';
+      this.internal_operator_label = 'Entre Issn';
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.comboboxArrayTyped = this.getComboboxArrayTyped;
-      this.comboboxLabel = 'PPN saisis';
-      this.comboboxPlaceholder = 'Saisir des n° de PPN';
+      this.comboboxLabel = 'ISSN saisis';
+      this.comboboxPlaceholder = "Saisir des n° d'ISSN";
    }
 
    get getExternalOperatorList(): Array<OperatorProvider> {
-      return this.$store.state.blocPpn._externalBlocOperatorListToSelect;
+      return this.$store.state.blocIssn._externalBlocOperatorListToSelect;
    }
    get getInternalOperatorList(): Array<OperatorProvider> {
-      return this.$store.state.blocPpn._internalBlocOperatorListToSelect;
+      return this.$store.state.blocIssn._internalBlocOperatorListToSelect;
    }
    get getInternalOperatorSelected(): Ensemble {
-      return this.$store.state.blocPpn._internalBlocOperator;
+      return this.$store.state.blocIssn._internalBlocOperator;
    }
    get getInternalOperatorSelectedInString(): string {
       switch (this.internal_operator_selected) {
@@ -107,10 +101,10 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
       }
    }
    get getExternalOperatorSelected(): Ensemble {
-      return this.$store.state.blocPpn._externalBlocOperator;
+      return this.$store.state.blocIssn._externalBlocOperator;
    }
    get getComboboxArrayTyped(): Array<string> {
-      return this.$store.state.blocPpn._ppnListString;
+      return this.$store.state.blocIssn._issnListString;
    }
 
    //Events v-combobox
@@ -144,11 +138,16 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
 
    //Events v-select
    eventUpdateBlocExternalOperator(): void {
-      this.$store.state.requeteRecherche.blocPpn.setBlocPpnExternalOperator(this.external_operator_selected);
+      this.$store.dispatch('blocIssnExternalOperatorAction', this.external_operator_selected);
    }
 
    eventUpdateBlocInternalOperator(): void {
-      this.$store.state.requeteRecherche.blocPpn.setBlocPpnInternalOperator(this.internal_operator_selected);
+      this.$store.dispatch('blocIssnInternalOperatorAction', this.internal_operator_selected);
+   }
+
+   //Events v-btn
+   closePanel() {
+      this.$store.dispatch('displayIssnPanelAction', false);
    }
 }
 </script>
