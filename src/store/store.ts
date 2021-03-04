@@ -388,4 +388,3 @@ export default new Vuex.Store({
    },
    plugins: [createPersistedState()],
 });
-s
