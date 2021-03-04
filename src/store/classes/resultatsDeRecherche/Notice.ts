@@ -4,13 +4,13 @@
 export class Notice {
    /**
     * Construit un objet Notice à partir d'un objet générique JSON
-    * @param obj Objet provenant du JSON
+    * @param obj Objet provenant du JSON, les champs peuvent être nuls
     */
    constructor(obj: any = {}) {
       this.ppn = obj.ppn;
       this.issn = obj.issn;
       this.pcpList = obj.pcpList;
-      this.rcrList = obj.rcrList;
+      if(obj.rcrList == null){this.rcrList = []}else{this.rcrList = obj.rcrList}
       this.editor = obj.editeur;
       this.keyTitle = obj.titre_cle;
       this.keyShortedTitle = obj.titre_court;
@@ -27,8 +27,8 @@ export class Notice {
 
    ppn: number;
    issn: number;
-   pcpList: Array<string>;
-   rcrList: Array<string>;
+   pcpList: Array<string> = [];
+   rcrList: Array<string> = [];
    editor: string;
    keyTitle: string;
    keyShortedTitle: string;

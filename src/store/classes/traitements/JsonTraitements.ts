@@ -78,7 +78,7 @@ export class JsonTraitements {
             type: blocMotsDuTitre._type,
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocMotsDuTitre._externalBlocOperator),
             titleWords: blocMotsDuTitre._titleWordsEntered,
-            titleWordsOperator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocMotsDuTitre._internalBlocOperator, blocMotsDuTitre._titleWordsEntered.length),
+            title_words_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocMotsDuTitre._internalBlocOperator, blocMotsDuTitre._titleWordsEntered.length),
          };
          jsonToReturn.push(titleWordsBlocJson);
       }
@@ -89,7 +89,7 @@ export class JsonTraitements {
             type: blocEditeur._type,
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocEditeur._externalBlocOperator),
             editors: blocEditeur._editorsEntered,
-            editorsOperator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocEditeur._internalBlocOperator, blocEditeur._editorsEntered.length),
+            editors_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocEditeur._internalBlocOperator, blocEditeur._editorsEntered.length),
          };
          jsonToReturn.push(editorBlocJson);
       }
@@ -100,7 +100,7 @@ export class JsonTraitements {
             type: blocPays._type,
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPays._externalBlocOperator),
             countries: blocPays._paysEntered,
-            countriesOperator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocPays._internalBlocOperator, blocPays._paysEntered.length),
+            countries_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocPays._internalBlocOperator, blocPays._paysEntered.length),
          };
          jsonToReturn.push(paysBlocJson);
       }
@@ -111,7 +111,7 @@ export class JsonTraitements {
             type: blocLangue._type,
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocLangue._externalBlocOperator),
             language: blocLangue._languesEntered,
-            languageOperators: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocLangue._internalBlocOperator, blocLangue._languesEntered.length),
+            language_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocLangue._internalBlocOperator, blocLangue._languesEntered.length),
          };
          jsonToReturn.push(langueBlocJson);
       }

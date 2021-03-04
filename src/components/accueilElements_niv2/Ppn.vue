@@ -62,7 +62,7 @@
                                     <span class="pr-2">
                                        {{ item.text }}
                                     </span>
-                                    <v-icon small @click="removeItem(item, langueEntered)">x</v-icon>
+                                    <v-icon small @click="removeItemLangue(item)">x</v-icon>
                                  </v-chip>
                               </template>
                            </v-combobox>
@@ -79,7 +79,7 @@
                                     <span class="pr-2">
                                        {{ item.text }}
                                     </span>
-                                    <v-icon small @click="removeItem(item, paysEntered)">x</v-icon>
+                                    <v-icon small @click="removeItemPays(item)">x</v-icon>
                                  </v-chip>
                               </template>
                            </v-combobox>
@@ -113,7 +113,7 @@ export default class VuePpn extends Vue {
    langueItems: Array<ListProvider>; //Bloc langue
    langueExternalBlocOperatorListToSelect: Array<OperatorProvider>;
    langueExternalOperatorSelected: number;
-   langueEntered: Array<string>; //TODO etape3 nouveau getters
+   langueEntered: Array<string>;
    paysItems: Array<ListProvider>; //Bloc Pays
    paysEntered: Array<string>;
    paysExternalBlocOperatorListToSelect: Array<OperatorProvider>;
@@ -270,14 +270,20 @@ export default class VuePpn extends Vue {
       }
    }
 
-   //v-combobox Events de mise à jour
-   removeItem(itemId: ListProvider, arrayTarget: Array<ListProvider>): void {
-      const index = arrayTarget.indexOf(itemId, 0);
+   removeItemPays(item: string): void {
+      const index: number = this.paysEntered.indexOf(item);
       if (index > -1) {
-         arrayTarget.splice(index, 1);
+         this.paysEntered.splice(index, 1);
+         this.$store.dispatch('blocPaysPaysEnteredAction', this.paysEntered);
       }
-      this.$store.dispatch('blocLangueLanguesEnteredAction', this.langueEntered);
-      this.$store.dispatch('blocPaysPaysEnteredAction', this.paysEntered);
+   }
+
+   removeItemLangue(item: string): void {
+      const index: number = this.langueEntered.indexOf(item);
+      if (index > -1) {
+         this.langueEntered.splice(index, 1);
+         this.$store.dispatch('blocLangueLanguesEnteredAction', this.langueEntered);
+      }
    }
 
    updateArrayBlocLangue(): void {

@@ -28,35 +28,35 @@ export interface JsonMotsDuTitreProvider {
    type: string;
    bloc_operator: string;
    titleWords: Array<string>;
-   titleWordsOperator: Array<string>;
+   title_words_operator: Array<string>;
 }
 
 export interface JsonEditeurProvider {
    type: string;
    bloc_operator: string;
    editors: Array<string>;
-   editorsOperator: Array<string>;
+   editors_operator: Array<string>;
 }
 
 export interface JsonPaysProvider {
    type: string;
    bloc_operator: string;
    countries: Array<string>;
-   countriesOperator: Array<string>;
+   countries_operator: Array<string>;
 }
 
 export interface JsonPaysProvider {
    type: string;
    bloc_operator: string;
    countries: Array<string>;
-   countriesOperator: Array<string>;
+   countries_operator: Array<string>;
 }
 
 export interface JsonLanguesProvider {
    type: string;
    bloc_operator: string;
    language: Array<string>;
-   languageOperators: Array<string>;
+   language_operator: Array<string>;
 }
 
 export interface JsonGlobalSearchRequest {}
