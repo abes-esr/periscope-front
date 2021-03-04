@@ -66,9 +66,9 @@ export default class VueRcr extends Vue {
       }
 
       //if the value of last element of array contains characters, it removes from list, return = get out of function
-      if (new RegExp('\\D').test(this.rcrArrayTyped[this.rcrArrayTyped.length - 1])) {
+      if (!(new RegExp('^\\d{8,9}X?$').test(this.rcrArrayTyped[this.rcrArrayTyped.length - 1]))) {
          this.rcrArrayTyped.pop();
-         this.rcrAlert.push('Un RCR ne contient pas de caractères');
+         this.rcrAlert.push('RCR : 8 ou 9 chiffres suivis ou non d\'un X');
          return;
       }
 
