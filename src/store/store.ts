@@ -15,7 +15,10 @@ import {JsonTraitements} from '@/store/classes/traitements/JsonTraitements';
 import {AxiosTraitements} from '@/store/classes/appelsBackEnd/AxiosTraitements';
 import {LotNotices} from '@/store/classes/resultatsDeRecherche/LotNotices';
 import Notice from '@/store/classes/resultatsDeRecherche/Notice';
-import {Composants} from '@/store/classes/composants/Composants';
+import {Composants} from './classes/composants/Composants';
+import router from '@/router/index.ts';
+import { JsonGlobalSearchRequest } from "@/store/interfaces/JsonInterfaces";
+import { AxiosResponse } from "axios";
 
 Vue.use(Vuex);
 
@@ -187,23 +190,32 @@ export default new Vuex.Store({
          state.lotNotices._lotNotices = [];
          state.lotNotices._resultArrayContentNotices = [];
          const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
-         lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
-         state.lotNotices._lotNotices.forEach((element) => {
-            state.lotNotices._resultArrayContentNotices.push({
-               ppn: element.ppn,
-               continiousType: element.continiousType,
-               issn: element.issn,
-               keyTitle: element.keyTitle,
-               editor: element.editor,
-               startDate: element.startDate,
-               endDate: element.endDate,
-               pcpList: element.pcpList,
-               rcrLength: element.rcrList.length,
-               titleComplement: element.titleComplement,
-               keyTitleQualifer: element.keyTitleQualifer,
-               rcrList: element.rcrList,
+
+         if(lotNoticesReceived.length === 1){
+            state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
+            state.composants._snackBarDisplay = true;
+         }else{
+            lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+            state.lotNotices._lotNotices.forEach((element) => {
+               state.lotNotices._resultArrayContentNotices.push({
+                  ppn: element.ppn,
+                  continiousType: element.continiousType,
+                  issn: element.issn,
+                  keyTitle: element.keyTitle,
+                  editor: element.editor,
+                  startDate: element.startDate,
+                  endDate: element.endDate,
+                  pcpList: element.pcpList,
+                  rcrLength: element.rcrList.length,
+                  titleComplement: element.titleComplement,
+                  keyTitleQualifer: element.keyTitleQualifer,
+                  rcrList: element.rcrList,
+               });
             });
-         });
+
+            await router.push('Resultats');
+         }
+
       },
 
       //Récupération des notices par critères et ajout aux notices précédentes dans le store
@@ -233,9 +245,15 @@ export default new Vuex.Store({
          state.lotNotices._lotNotices = [];
       },
 
+      //Actions liées aux composants
       //Changement d'étape dans le stepper
       changeStepMutation(state, stepSent: number) {
          state.composants._stepperCurrentValue = stepSent;
+      },
+
+      //Fermeture de la snackbar
+      closeSnackBarMutation(state, value: boolean) {
+         state.composants._snackBarDisplay = value;
       },
    },
    actions: {
@@ -352,9 +370,19 @@ export default new Vuex.Store({
          console.log(JSON.parse(JSON.stringify(this.state)));
       },
 
+      //Actions liées au composants
       //Stepper changement de step
       changeStepAction(context, stepSent: number) {
          context.commit('changeStepMutation', stepSent);
+      },
+
+      closeSnackBarAction(context, value: boolean) {
+         context.commit('closeSnackBarMutation', value);
+      },
+   },
+   getters: {
+      snackBarLiveValue: (state) => {
+         return state.composants._snackBarDisplay;
       },
    },
    plugins: [createPersistedState()],

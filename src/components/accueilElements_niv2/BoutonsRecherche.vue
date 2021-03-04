@@ -20,7 +20,6 @@ export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
    clickSearch() {
       this.$store.dispatch('constructJsonAction');
       this.$store.dispatch('getNoticesAndErasePreviousNoticesAction');
-      this.$router.replace('Resultats');
    }
 
    resetStore() {

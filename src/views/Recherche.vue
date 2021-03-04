@@ -27,6 +27,7 @@
             <component-footer></component-footer>
          </v-col>
       </v-row>
+     <component-snackbar></component-snackbar>
    </v-container>
 </template>
 
@@ -36,6 +37,7 @@ import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentRecherche from '@/components/accueil_niv1/Recherche.vue';
 import ComponentFooter from '@/components/accueil_niv1/Footer.vue';
 import ComponentStepper from '@/components/stepper/Stepper.vue';
+import ComponentSnackbar from '@/components/autres/Alerte.vue';
 
 @Component({
    components: {
@@ -43,6 +45,7 @@ import ComponentStepper from '@/components/stepper/Stepper.vue';
       ComponentHeader,
       ComponentRecherche,
       ComponentFooter,
+      ComponentSnackbar,
    },
 })
 export default class Recherche extends Vue {
@@ -65,7 +68,7 @@ export default class Recherche extends Vue {
    }
 
    callAxios(): void {
-     this.$store.dispatch('getNoticesAndErasePreviousNoticesAction');
+      this.$store.dispatch('getNoticesAndErasePreviousNoticesAction');
    }
 }
 </script>

@@ -8,14 +8,18 @@ export class AxiosTraitements {
       // Note: Promise.all permet d'appeler plusieurs fonctions qui encapsule des appels Axios
       return Promise.all([PeriscopeDataService.findNoticesByCriteria(0, 25, JSON.stringify(jsonObject))])
          .then((response) => {
+            console.log(response);
             if (response[0].status == 200) {
                return response[0].data;
             } else {
-               window.alert("Erreur avec l'API Periscope : status " + response[0].status);
+               console.log('rate');
             }
          })
          .catch((err) => {
-            window.alert("Erreur avec l'API Periscope :" + err);
+            const arrayError: Array<string> = [];
+            arrayError.push(err.config.baseURL + ' : Erreur de code ' + err.message.replace(/\D/g, ''));
+            return arrayError;
+            //pour placer des données de retour -> analyser -> return JSON.parse(JSON.stringify(err);
          });
    }
 }
