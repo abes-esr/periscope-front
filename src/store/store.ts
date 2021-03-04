@@ -17,8 +17,8 @@ import {LotNotices} from '@/store/classes/resultatsDeRecherche/LotNotices';
 import Notice from '@/store/classes/resultatsDeRecherche/Notice';
 import {Composants} from './classes/composants/Composants';
 import router from '@/router/index.ts';
-import { JsonGlobalSearchRequest } from "@/store/interfaces/JsonInterfaces";
-import { AxiosResponse } from "axios";
+import {JsonGlobalSearchRequest} from '@/store/interfaces/JsonInterfaces';
+import {AxiosResponse} from 'axios';
 
 Vue.use(Vuex);
 
@@ -191,10 +191,10 @@ export default new Vuex.Store({
          state.lotNotices._resultArrayContentNotices = [];
          const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
 
-         if(lotNoticesReceived.length === 1){
+         if (lotNoticesReceived.length === 1) {
             state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
             state.composants._snackBarDisplay = true;
-         }else{
+         } else {
             lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
             state.lotNotices._lotNotices.forEach((element) => {
                state.lotNotices._resultArrayContentNotices.push({
@@ -215,29 +215,35 @@ export default new Vuex.Store({
 
             await router.push('Resultats');
          }
-
       },
 
       //Récupération des notices par critères et ajout aux notices précédentes dans le store
       async pushNoticesAndAddToPreviousNotices(state) {
          const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
-         lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
-         state.lotNotices._lotNotices.forEach((element) => {
-            state.lotNotices._resultArrayContentNotices.push({
-               ppn: element.ppn,
-               continiousType: element.continiousType,
-               issn: element.issn,
-               keyTitle: element.keyTitle,
-               editor: element.editor,
-               startDate: element.startDate,
-               endDate: element.endDate,
-               pcpList: element.pcpList,
-               rcrLength: element.rcrList.length,
-               titleComplement: element.titleComplement,
-               keyTitleQualifer: element.keyTitleQualifer,
-               rcrList: element.rcrList,
+         if (lotNoticesReceived.length === 1) {
+            state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
+            state.composants._snackBarDisplay = true;
+         } else {
+            lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+            state.lotNotices._lotNotices.forEach((element) => {
+               state.lotNotices._resultArrayContentNotices.push({
+                  ppn: element.ppn,
+                  continiousType: element.continiousType,
+                  issn: element.issn,
+                  keyTitle: element.keyTitle,
+                  editor: element.editor,
+                  startDate: element.startDate,
+                  endDate: element.endDate,
+                  pcpList: element.pcpList,
+                  rcrLength: element.rcrList.length,
+                  titleComplement: element.titleComplement,
+                  keyTitleQualifer: element.keyTitleQualifer,
+                  rcrList: element.rcrList,
+               });
             });
-         });
+
+            await router.push('Resultats');
+         }
       },
 
       //Effacement des notices stockées dans le store
@@ -380,10 +386,6 @@ export default new Vuex.Store({
          context.commit('closeSnackBarMutation', value);
       },
    },
-   getters: {
-      snackBarLiveValue: (state) => {
-         return state.composants._snackBarDisplay;
-      },
-   },
    plugins: [createPersistedState()],
 });
+s
