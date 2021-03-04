@@ -1,6 +1,6 @@
 <template>
    <div class="text-center">
-      <v-snackbar outlined color="error" v-model="getSnackbarDisplayValue" :multi-line="getSnackbarMultiline" top timeout="0">
+      <v-snackbar outlined color="error" v-model="getSnackbarDisplayValue" :multi-line="getSnackbarMultiline" top timeout="-1">
          {{ getSnackbarText }}
          <template v-slot:action="{attrs}">
             <v-btn color="red" text v-bind="attrs" @click="closeSnackBar()"> Fermer </v-btn>
