@@ -7,7 +7,13 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-combobox @click="addItem()" @change="addItem()" @blur="addItem()" @keyup.enter="addItem()" :rules="rcrAlert" multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped" clearable></v-combobox>
+            <v-combobox @click="addItem()" @change="addItem()" @blur="addItem()" @keyup.enter="addItem()" :rules="rcrAlert" multiple outlined small-chips label="Saisir le rcr d'une bibliothèque" class="style2" placeholder="rcr à saisir" v-model="rcrArrayTyped" clearable>
+               <template v-slot:selection="{item}">
+                  <v-chip close @click:close="removeItemRcr(item)">
+                     <span class="pr-2">{{ item }}</span>
+                  </v-chip>
+               </template>
+            </v-combobox>
          </v-col>
       </v-row>
       <v-row>
@@ -66,13 +72,21 @@ export default class VueRcr extends Vue {
       }
 
       //if the value of last element of array contains characters, it removes from list, return = get out of function
-      if (!(new RegExp('^\\d{8,9}X?$').test(this.rcrArrayTyped[this.rcrArrayTyped.length - 1]))) {
+      if (!new RegExp('^\\d{8,9}X?$').test(this.rcrArrayTyped[this.rcrArrayTyped.length - 1])) {
          this.rcrArrayTyped.pop();
-         this.rcrAlert.push('RCR : 8 ou 9 chiffres suivis ou non d\'un X');
+         this.rcrAlert.push("RCR : 8 ou 9 chiffres suivis ou non d'un X");
          return;
       }
 
       this.$store.dispatch('blocRcrRcrListStringAction', this.rcrArrayTyped);
+   }
+
+   removeItemRcr(item: string): void {
+      const index: number = this.rcrArrayTyped.indexOf(item);
+      if (index > -1) {
+         this.rcrArrayTyped.splice(index, 1);
+         this.$store.dispatch('blocRcrRcrListStringAction', this.rcrArrayTyped);
+      }
    }
 
    //Events v-select
