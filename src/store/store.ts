@@ -17,8 +17,6 @@ import {LotNotices} from '@/store/classes/resultatsDeRecherche/LotNotices';
 import Notice from '@/store/classes/resultatsDeRecherche/Notice';
 import {Composants} from './classes/composants/Composants';
 import router from '@/router/index.ts';
-import {JsonGlobalSearchRequest} from '@/store/interfaces/JsonInterfaces';
-import {AxiosResponse} from 'axios';
 
 Vue.use(Vuex);
 
@@ -262,13 +260,23 @@ export default new Vuex.Store({
          state.composants._snackBarDisplay = value;
       },
 
-      //Affichage des différents panneaux de recherche
-      displayPpnPanelMutation(state, value: boolean) {
-         state.composants._panelPpnDisplayed = value;
+      //Mouvements des blocs de recherche
+      moveUpElementPanelMutation(state, element: string) {
+         Composants.panelMovement(element, state.composants._panel, 'UP');
+         router.go(0);
       },
-      displayIssnPanelMutation(state, value: boolean) {
-         state.composants._panelIssnDisplayed = value;
-      }
+      moveDownElementPanelMutation(state, element: string) {
+         Composants.panelMovement(element, state.composants._panel, 'DOWN');
+         router.go(0);
+      },
+      switchElementPanelBooleanAtTrueMutation(state, element: string) {
+         Composants.panelSwitchBooleanAtTrue(element, state.composants._panel);
+         router.go(0);
+      },
+      switchElementPanelBooleanAtFalseMutation(state, element: string) {
+         Composants.panelSwitchBooleanAtFalse(element, state.composants._panel);
+         router.go(0);
+      },
    },
    actions: {
       //Bloc de recherche PcpRegions
@@ -395,11 +403,25 @@ export default new Vuex.Store({
       },
 
       //Affichage des différents panneaux de recherche
-      displayPpnPanelAction(context, value: boolean) {
-         context.commit('displayPpnPanelMutation', value)
+      displayElementPanelAction(context, value: boolean) {
+         context.commit('displayElementPanelMutation', value);
       },
-      displayIssnPanelAction(context, value: boolean) {
-         context.commit('displayIssnPanelMutation', value)
+      moveUpElementPanelAction(context, value: string) {
+         context.commit('moveUpElementPanelMutation', value);
+      },
+      moveDownElementPanelAction(context, value: string) {
+         context.commit('moveDownElementPanelMutation', value);
+      },
+      switchElementPanelBooleanAtTrueAction(context, value: string) {
+         context.commit('switchElementPanelBooleanAtTrueMutation', value);
+      },
+      switchElementPanelBooleanAtFalseMutation(context, value: string) {
+         context.commit('switchElementPanelBooleanAtFalseMutation', value);
+      },
+   },
+   getters: {
+      isFirstElement: (state) => (text: string) => {
+         return Composants.isFirstElement(text, state.composants._panel);
       }
    },
    plugins: [createPersistedState()],

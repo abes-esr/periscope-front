@@ -2,9 +2,10 @@
    <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
       <v-row :align="getVerticalAlignValue(1)">
          <!--External Operator-->
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em">
+         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstElement">
             <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator"></v-select>
          </v-col>
+         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="isFirstElement"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
@@ -40,7 +41,13 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel()">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('PPN')">
+               <v-icon>mdi-arrow-up</v-icon>
+            </v-btn>
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('PPN')">
+               <v-icon>mdi-arrow-down</v-icon>
+            </v-btn>
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('PPN')">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -68,7 +75,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
 
    constructor() {
       super();
-      this.external_operator_label = 'Autres blocs';
+      this.external_operator_label = '';
       this.internal_operator_label = 'Entre PPN';
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.list_internal_operator_to_select = this.getInternalOperatorList;
@@ -105,6 +112,9 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    }
    get getComboboxArrayTyped(): Array<string> {
       return this.$store.state.blocPpn._ppnListString;
+   }
+   get isFirstElement(): boolean {
+     return this.$store.getters.isFirstElement('PPN');
    }
 
    //Events v-combobox
@@ -146,8 +156,16 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    }
 
    //Events v-btn
-   closePanel() {
-      this.$store.dispatch('displayPpnPanelAction', false);
+   closePanel(element: string) {
+      this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element);
+   }
+
+   moveUpPanel(element: string) {
+      this.$store.dispatch('moveUpElementPanelAction', element);
+   }
+
+   moveDownPanel(element: string) {
+      this.$store.dispatch('moveDownElementPanelAction', element);
    }
 }
 </script>
