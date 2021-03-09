@@ -14,7 +14,7 @@
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
                            <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° d'ISSN </span>
-                           <span v-else key="1"> {{ returnItem() + ' | Entre PPN: ' + getInternalOperatorSelectedInString }} </span>
+                           <span v-else key="1"> {{ returnItem() + ' | Entre ISSN: ' + getInternalOperatorSelectedInString }} </span>
                         </v-fade-transition>
                      </v-col>
                   </v-row>
@@ -121,12 +121,12 @@ export default class ComponentIssn extends Mixins(GlobalPropertiesMixin) {
    private addItem(): void {
       if (this.comboboxArrayTyped.length !== 0) {
          const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
-         if (lastElement.match('^\\d{8,9}X?$')) {
+         if (lastElement.match('^\\d{4}-\\d{4}$')) {
             this.$store.state.requeteRecherche.setBlocPpnListString(this.comboboxArrayTyped);
             this.comboboxAlert = [];
          } else {
             this.removeItem(lastElement);
-            this.comboboxAlert.push("Le PPN est constitué de 8 ou 9 chiffres suivis ou pas d'un X");
+            this.comboboxAlert.push("L'ISSN est constitué de 4 chiffres suivis d'un - et de 4 chiffres");
          }
       }
    }

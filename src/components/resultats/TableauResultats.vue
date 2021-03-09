@@ -1,9 +1,16 @@
 <template>
    <v-container class="outlined-app">
-      <v-card>
-         <v-card-title>
-            <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details></v-text-field>
-         </v-card-title>
+      <v-container>
+         <v-row>
+            <v-col cols="1">
+               <v-btn class="outlined-app" style="margin-top: -2em" outlined small @click.stop="drawer = !drawer"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
+            </v-col>
+            <v-col style="margin-top: -2em" cols="11">
+               <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details></v-text-field>
+            </v-col>
+         </v-row>
+      </v-container>
+      <v-card style="margin-top: -0.5em">
          <v-data-table
             dense
             :search="search"
@@ -35,6 +42,85 @@
             </template>
          </v-data-table>
       </v-card>
+      <v-navigation-drawer v-model="drawer" absolute temporary width="400">
+         <v-expansion-panels accordion>
+            <v-expansion-panel>
+               <v-expansion-panel-header> Publication vivante / morte </v-expansion-panel-header>
+               <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Vivante"></v-checkbox>
+                  </v-row>
+                  <v-row>
+                     <v-checkbox label="Morte"></v-checkbox>
+                  </v-row>
+               </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+               <v-expansion-panel-header> Type / Support </v-expansion-panel-header>
+               <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Périodiques"></v-checkbox>
+                  </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Imprimés"></v-checkbox>
+                  </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Collections"></v-checkbox>
+                  </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Electroniques"></v-checkbox>
+                  </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Blogs"></v-checkbox>
+                  </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Journaux"></v-checkbox>
+                  </v-row>
+                  <v-row>
+                     <v-checkbox label="Autres"></v-checkbox>
+                  </v-row>
+               </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+               <v-expansion-panel-header> ILN </v-expansion-panel-header>
+               <v-expansion-panel-content>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+               </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+               <v-expansion-panel-header> Etablissement </v-expansion-panel-header>
+               <v-expansion-panel-content>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+               </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+               <v-expansion-panel-header> Plan de conservation </v-expansion-panel-header>
+               <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Pôle de conservation"></v-checkbox>
+                  </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Membre du plan"></v-checkbox>
+                  </v-row>
+                  <v-row>
+                     <v-checkbox label="Non renseigné"></v-checkbox>
+                  </v-row>
+               </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+               <v-expansion-panel-header> Positionnement </v-expansion-panel-header>
+               <v-expansion-panel-content>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+               </v-expansion-panel-content>
+            </v-expansion-panel>
+            <v-expansion-panel>
+               <v-expansion-panel-header style="background-color: dodgerblue; color: white"> Exporter la liste </v-expansion-panel-header>
+               <v-expansion-panel-content>
+                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+               </v-expansion-panel-content>
+            </v-expansion-panel>
+         </v-expansion-panels>
+      </v-navigation-drawer>
    </v-container>
 </template>
 
@@ -53,6 +139,7 @@ export default class TableauResultats extends Vue {
    expanded: [];
    selected: [];
    search: string;
+   drawer: any;
 
    constructor() {
       super();
@@ -65,6 +152,7 @@ export default class TableauResultats extends Vue {
       this.expanded = [];
       this.selected = [];
       this.search = '';
+      this.drawer = null;
    }
 
    get getHeaders(): Array<TableHeader> {
