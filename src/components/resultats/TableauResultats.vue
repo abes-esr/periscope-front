@@ -13,6 +13,8 @@
       <v-card style="margin-top: -0.5em">
          <v-data-table
             dense
+            multi-sort
+            :custom-sort="customSort"
             :search="search"
             :headers="headers"
             :items="notices"
@@ -67,9 +69,9 @@
                   <v-row>
                      <v-checkbox label="Autres"></v-checkbox>
                   </v-row>
-                 <v-row style="max-height: 2em">
-                   <v-checkbox label="Périodiques"></v-checkbox>
-                 </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Périodiques"></v-checkbox>
+                  </v-row>
                </v-expansion-panel-content>
             </v-expansion-panel>
          </v-expansion-panels>
@@ -155,6 +157,27 @@ export default class TableauResultats extends Vue {
 
    get getNotices(): Array<ContentHeader> {
       return this.$store.state.lotNotices._resultArrayContentNotices;
+   }
+
+   customSort(items: Array<TableHeader>, index: Array<string>, isDesc: Array<boolean>) {
+      const arrayToSentAtStore: Array<string> = [];
+      for (let i = 0; i < index.length; i++) {
+         arrayToSentAtStore.push(index[i]);
+         if (!isDesc[i]) {
+            arrayToSentAtStore.push('ASC');
+         } else {
+            arrayToSentAtStore.push('DESC');
+         }
+      }
+      //Envoi des critères de tri dans le bloc de tri
+      this.$store.dispatch('blocTriAction', arrayToSentAtStore);
+      //Reconstruction du JSON à envoyer
+      this.$store.dispatch('constructJsonAction');
+      //TODO une action qui recharge les notices
+
+
+      //TODO il ne peut retourner les items autrement
+      return this.notices;
    }
 }
 </script>

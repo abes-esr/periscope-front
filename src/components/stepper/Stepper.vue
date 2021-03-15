@@ -45,7 +45,7 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
          case 2:
             this.$store.dispatch('changeStepAction', stepNumber);
             this.$store.dispatch('constructJsonAction');
-            this.$store.dispatch('getNoticesAndErasePreviousNoticesAction');
+            this.$store.dispatch('getNoticesAndErasePreviousNoticesAction', false);
             break;
          case 3:
             this.$store.dispatch('changeStepAction', stepNumber);

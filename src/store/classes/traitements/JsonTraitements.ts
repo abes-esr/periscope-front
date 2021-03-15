@@ -9,18 +9,20 @@ import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
 import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/interfaces/JsonInterfaces';
 import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
+import { TriTableauInterface } from "@/store/interfaces/TriTableauInterface";
+import { BlocTri } from "@/store/classes/blocsDeRecherche/BlocTri";
 
 export class JsonTraitements {
    /**
     * Objet Json contenant les critères de recherche, a envoyer dans les requêtes au back
     */
-   _jsonSearchRequest: Array<JsonGlobalSearchRequest>;
+   _jsonSearchRequest: JsonGlobalSearchRequest;
    /**
     * Construit un objet JSON à partir des données des blocs de recherche pour envoi au back-end
     */
-   static constructJsonGlobalRequest(blocPcpRegions: BlocPcpRegions, blocPcpMetiers: BlocPcpMetiers, blocRcr: BlocRcr, blocPpn: BlocPpn, blocIssn: BlocIssn, blocMotsDuTitre: BlocMotDuTitre, blocEditeur: BlocEditeur, blocLangue: BlocLangue, blocPays: BlocPays): Array<JsonGlobalSearchRequest> {
+   static constructJsonGlobalRequest(blocPcpRegions: BlocPcpRegions, blocPcpMetiers: BlocPcpMetiers, blocRcr: BlocRcr, blocPpn: BlocPpn, blocIssn: BlocIssn, blocMotsDuTitre: BlocMotDuTitre, blocEditeur: BlocEditeur, blocLangue: BlocLangue, blocPays: BlocPays, blocTri: BlocTri): JsonGlobalSearchRequest {
       //Les blocs ne sont rajoutés que si il contiennent des données
-      const jsonToReturn: Array<JsonGlobalSearchRequest> = [];
+      const criteres: Array<JsonGlobalSearchRequest> = [];
 
       //Construction de la partie PCP Regions et Metiers en JSON
       if (blocPcpRegions._pcpStringArray.length !== 0 || blocPcpMetiers._pcpStringArray.length !== 0) {
@@ -38,7 +40,7 @@ export class JsonTraitements {
             pcp_operator: pcpRegionsAndMetiersInternalOperators,
          };
 
-         jsonToReturn.push(pcpBlocJson);
+         criteres.push(pcpBlocJson);
       }
 
       //Construction de la partie Rcr en JSON
@@ -49,7 +51,7 @@ export class JsonTraitements {
             rcr: blocRcr._rcrListString,
             rcr_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocRcr._internalBlocOperator, blocRcr._rcrListString.length),
          };
-         jsonToReturn.push(rcrBlocJson);
+         criteres.push(rcrBlocJson);
       }
 
       //Construction de la partie PPN en JSON
@@ -59,7 +61,7 @@ export class JsonTraitements {
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPpn._externalBlocOperator),
             ppn: blocPpn._ppnListString,
          };
-         jsonToReturn.push(ppnBlocJson);
+         criteres.push(ppnBlocJson);
       }
 
       //Construction de la partie ISSN en JSON
@@ -69,7 +71,7 @@ export class JsonTraitements {
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocIssn._externalBlocOperator),
             issn: blocIssn._issnListString,
          };
-         jsonToReturn.push(issnBlocJson);
+         criteres.push(issnBlocJson);
       }
 
       //Construction de la partie Mots du titre en JSON
@@ -80,7 +82,7 @@ export class JsonTraitements {
             titleWords: blocMotsDuTitre._titleWordsEntered,
             title_words_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocMotsDuTitre._internalBlocOperator, blocMotsDuTitre._titleWordsEntered.length),
          };
-         jsonToReturn.push(titleWordsBlocJson);
+         criteres.push(titleWordsBlocJson);
       }
 
       //Construction de la partie Editeur en JSON
@@ -91,7 +93,7 @@ export class JsonTraitements {
             editors: blocEditeur._editorsEntered,
             editors_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocEditeur._internalBlocOperator, blocEditeur._editorsEntered.length),
          };
-         jsonToReturn.push(editorBlocJson);
+         criteres.push(editorBlocJson);
       }
 
       //Construction de la partie Pays en JSON
@@ -102,7 +104,7 @@ export class JsonTraitements {
             countries: blocPays._paysEntered,
             countries_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocPays._internalBlocOperator, blocPays._paysEntered.length),
          };
-         jsonToReturn.push(paysBlocJson);
+         criteres.push(paysBlocJson);
       }
 
       //Construction de la partie Langue en JSON
@@ -113,10 +115,11 @@ export class JsonTraitements {
             language: blocLangue._languesEntered,
             language_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocLangue._internalBlocOperator, blocLangue._languesEntered.length),
          };
-         jsonToReturn.push(langueBlocJson);
+         criteres.push(langueBlocJson);
       }
 
+      //Construction du JSON de plus haut niveau
+      const jsonToReturn: JsonGlobalSearchRequest = {criteres: criteres, tri: blocTri._array};
       return jsonToReturn;
    }
-
 }

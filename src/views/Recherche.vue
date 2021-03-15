@@ -68,7 +68,7 @@ export default class Recherche extends Vue {
    }
 
    callAxios(): void {
-      this.$store.dispatch('getNoticesAndErasePreviousNoticesAction');
+      this.$store.dispatch('getNoticesAndErasePreviousNoticesAction', true);
    }
 }
 </script>

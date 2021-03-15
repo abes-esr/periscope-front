@@ -17,6 +17,7 @@ import {LotNotices} from '@/store/classes/resultatsDeRecherche/LotNotices';
 import Notice from '@/store/classes/resultatsDeRecherche/Notice';
 import {Composants} from './classes/composants/Composants';
 import router from '@/router/index.ts';
+import {BlocTri} from '@/store/classes/blocsDeRecherche/BlocTri';
 
 Vue.use(Vuex);
 
@@ -38,6 +39,8 @@ export default new Vuex.Store({
       composants: new Composants(),
       //Méthodes pour construire JSON à envoyer au back-end
       jsonTraitements: new JsonTraitements(),
+      //Bloc de tri multiples
+      blocTri: new BlocTri(),
    },
    mutations: {
       //Bloc de recherche PcpRegions
@@ -180,7 +183,7 @@ export default new Vuex.Store({
 
       //Construction de l'objet JSON contenant les critères de recherche à envoyer dans les requêtes
       jsonSearchRequestConstructionMutation(state) {
-         state.jsonTraitements._jsonSearchRequest = JsonTraitements.constructJsonGlobalRequest(state.blocPcpRegions, state.blocPcpMetiers, state.blocRcr, state.blocPpn, state.blocIssn, state.blocMotsDuTitre, state.blocEditeur, state.blocLangue, state.blocPays);
+         state.jsonTraitements._jsonSearchRequest = JsonTraitements.constructJsonGlobalRequest(state.blocPcpRegions, state.blocPcpMetiers, state.blocRcr, state.blocPpn, state.blocIssn, state.blocMotsDuTitre, state.blocEditeur, state.blocLangue, state.blocPays, state.blocTri);
       },
 
       //Récupération des notices par critères et effacement des notices précédentes dans le store
@@ -276,6 +279,12 @@ export default new Vuex.Store({
       switchElementPanelBooleanAtFalseMutation(state, element: string) {
          Composants.panelSwitchBooleanAtFalse(element, state.composants._panel);
          router.go(0);
+      },
+
+      //Tri multiples sur le tableau de résultats
+      blocTriMutation(state, element: Array<string>) {
+         BlocTri.updateArray(state.blocTri, element);
+         console.log(state.blocTri);
       },
    },
    actions: {
@@ -418,11 +427,16 @@ export default new Vuex.Store({
       switchElementPanelBooleanAtFalseMutation(context, value: string) {
          context.commit('switchElementPanelBooleanAtFalseMutation', value);
       },
+
+      //Tri multiple sur le tableau de résultats
+      blocTriAction(context, value: Array<string>) {
+         context.commit('blocTriMutation', value);
+      },
    },
    getters: {
       isFirstElement: (state) => (text: string) => {
          return Composants.isFirstElement(text, state.composants._panel);
-      }
+      },
    },
    plugins: [createPersistedState()],
 });
