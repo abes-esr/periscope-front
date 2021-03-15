@@ -20,7 +20,7 @@
             <v-expansion-panels v-for="i in panel" :key="i.id">
                <component-ppn v-if="i.text === 'PPN' && i.displayed === true"></component-ppn>
                <component-issn v-if="i.text === 'ISSN' && i.displayed === true"></component-issn>
-               <component-rcr></component-rcr>
+               <component-rcr v-if="i.text === 'RCR' && i.displayed === true"></component-rcr>
                <component-plan-conservation-metiers></component-plan-conservation-metiers>
                <component-plan-conservation-regions></component-plan-conservation-regions>
                <component-mots-du-titre></component-mots-du-titre>
@@ -35,18 +35,18 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import ComponentPpn from '@/components/accueil_avance_niv1/ComponentPpn.vue';
+import ComponentPpn from '@/components/accueil_avance_niv1/BlocPpn.vue';
 import ComponentHeader from '@/components/accueil_niv1/Header.vue';
 import ComponentStepper from '@/components/stepper/Stepper.vue';
 import ComponentListeDeChoix from '@/components/accueil_avance_niv1/ListeDeChoix.vue';
-import ComponentIssn from '@/components/accueil_avance_niv1/ComponentIssn.vue';
-import ComponentRcr from '@/components/accueil_avance_niv1/ComponentRcr.vue';
-import ComponentPlanConservationMetiers from '@/components/accueil_avance_niv1/ComponentPlanConservationMetiers.vue';
-import ComponentMotsDuTitre from '@/components/accueil_avance_niv1/ComponentMotsDuTitre.vue';
-import ComponentEditeur from '@/components/accueil_avance_niv1/ComponentEditeur.vue';
-import ComponentLangue from '@/components/accueil_avance_niv1/ComponentLangue.vue';
-import ComponentPays from '@/components/accueil_avance_niv1/ComponentPays.vue';
-import ComponentPlanConservationRegions from '@/components/accueil_avance_niv1/ComponentPlanConservationRegions.vue';
+import ComponentIssn from '@/components/accueil_avance_niv1/BlocIssn.vue';
+import ComponentRcr from '@/components/accueil_avance_niv1/BlocRcr.vue';
+import ComponentPlanConservationMetiers from '@/components/accueil_avance_niv1/BlocPlanConservationMetiers.vue';
+import ComponentMotsDuTitre from '@/components/accueil_avance_niv1/BlocMotsDuTitre.vue';
+import ComponentEditeur from '@/components/accueil_avance_niv1/BlocEditeur.vue';
+import ComponentLangue from '@/components/accueil_avance_niv1/BlocLangue.vue';
+import ComponentPays from '@/components/accueil_avance_niv1/BlocPays.vue';
+import ComponentPlanConservationRegions from '@/components/accueil_avance_niv1/BlocPlanConservationRegions.vue';
 import {PanelProvider} from '@/store/interfaces/PanelInterfaces';
 
 @Component({
@@ -71,6 +71,7 @@ export default class RechercheAvance extends Vue {
    constructor() {
       super();
       this.panel = this.getPanel;
+      console.log(JSON.parse(JSON.stringify(this.panel)));
    }
 
    get getPanel(): Array<PanelProvider> {

@@ -24,7 +24,6 @@
             item-key="ppn"
             show-select
             show-expand
-            multi-sort
             :footer-props="{
                showFirstLastPage: true,
                firstIcon: 'mdi-arrow-collapse-left',
@@ -44,17 +43,6 @@
       </v-card>
       <v-navigation-drawer v-model="drawer" absolute temporary width="400">
          <v-expansion-panels accordion>
-            <v-expansion-panel>
-               <v-expansion-panel-header> Publication vivante / morte </v-expansion-panel-header>
-               <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
-                  <v-row style="max-height: 2em">
-                     <v-checkbox label="Vivante"></v-checkbox>
-                  </v-row>
-                  <v-row>
-                     <v-checkbox label="Morte"></v-checkbox>
-                  </v-row>
-               </v-expansion-panel-content>
-            </v-expansion-panel>
             <v-expansion-panel>
                <v-expansion-panel-header> Type / Support </v-expansion-panel-header>
                <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
@@ -79,44 +67,9 @@
                   <v-row>
                      <v-checkbox label="Autres"></v-checkbox>
                   </v-row>
-               </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel>
-               <v-expansion-panel-header> ILN </v-expansion-panel-header>
-               <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-               </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel>
-               <v-expansion-panel-header> Etablissement </v-expansion-panel-header>
-               <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-               </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel>
-               <v-expansion-panel-header> Plan de conservation </v-expansion-panel-header>
-               <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
-                  <v-row style="max-height: 2em">
-                     <v-checkbox label="Pôle de conservation"></v-checkbox>
-                  </v-row>
-                  <v-row style="max-height: 2em">
-                     <v-checkbox label="Membre du plan"></v-checkbox>
-                  </v-row>
-                  <v-row>
-                     <v-checkbox label="Non renseigné"></v-checkbox>
-                  </v-row>
-               </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel>
-               <v-expansion-panel-header> Positionnement </v-expansion-panel-header>
-               <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-               </v-expansion-panel-content>
-            </v-expansion-panel>
-            <v-expansion-panel>
-               <v-expansion-panel-header style="background-color: dodgerblue; color: white"> Exporter la liste </v-expansion-panel-header>
-               <v-expansion-panel-content>
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+                 <v-row style="max-height: 2em">
+                   <v-checkbox label="Périodiques"></v-checkbox>
+                 </v-row>
                </v-expansion-panel-content>
             </v-expansion-panel>
          </v-expansion-panels>

@@ -118,4 +118,5 @@ export class JsonTraitements {
 
       return jsonToReturn;
    }
+
 }

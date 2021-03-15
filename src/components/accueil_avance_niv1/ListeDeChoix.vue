@@ -25,8 +25,9 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
    }
 
    get getPanel(): Array<PanelProvider> {
-      return this.$store.state.composants._panel.filter((x: { displayed: boolean; }) => !x.displayed);
+      return this.$store.state.composants._panel.filter((x: {displayed: boolean}) => !x.displayed);
    }
+
 
    updatePanel() {
       switch (this.panelSelected) {
@@ -34,6 +35,9 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
             this.$store.dispatch('switchElementPanelBooleanAtTrueAction', 'PPN');
             break;
          case 'ISSN':
+            this.$store.dispatch('switchElementPanelBooleanAtTrueAction', 'ISSN');
+            break;
+         case 'RCR':
             this.$store.dispatch('switchElementPanelBooleanAtTrueAction', 'ISSN');
             break;
       }
