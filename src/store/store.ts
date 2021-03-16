@@ -218,6 +218,38 @@ export default new Vuex.Store({
          }
       },
 
+      //Actualisation des notices par critères sur page en cours et effacement des notices précédentes dans le store
+      async actualizeNoticesInCurrentPageMutation(state) {
+         state.lotNotices._lotNotices = [];
+         state.lotNotices._resultArrayContentNotices = [];
+         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
+
+         if (lotNoticesReceived.length === 1) {
+            state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
+            state.composants._snackBarDisplay = true;
+         } else {
+            lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+            state.lotNotices._lotNotices.forEach((element) => {
+               state.lotNotices._resultArrayContentNotices.push({
+                  ppn: element.ppn,
+                  continiousType: element.continiousType,
+                  issn: element.issn,
+                  keyTitle: element.keyTitle,
+                  editor: element.editor,
+                  startDate: element.startDate,
+                  endDate: element.endDate,
+                  pcpList: element.pcpList,
+                  rcrLength: element.rcrList.length,
+                  titleComplement: element.titleComplement,
+                  keyTitleQualifer: element.keyTitleQualifer,
+                  rcrList: element.rcrList,
+               });
+            });
+
+            router.go(0);
+         }
+      },
+
       //Récupération des notices par critères et ajout aux notices précédentes dans le store
       async pushNoticesAndAddToPreviousNotices(state) {
          const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
@@ -284,7 +316,6 @@ export default new Vuex.Store({
       //Tri multiples sur le tableau de résultats
       blocTriMutation(state, element: Array<string>) {
          BlocTri.updateArray(state.blocTri, element);
-         console.log(state.blocTri);
       },
    },
    actions: {
@@ -396,6 +427,10 @@ export default new Vuex.Store({
          context.commit('pushNoticesAndErasePreviousNoticesMutation');
       },
 
+      actualizeNoticesInCurrentPageAction(context) {
+         context.commit('actualizeNoticesInCurrentPageMutation');
+      },
+
       //Afficher le state global en console
       displayStore() {
          console.log(JSON.parse(JSON.stringify(this.state)));
@@ -436,6 +471,12 @@ export default new Vuex.Store({
    getters: {
       isFirstElement: (state) => (text: string) => {
          return Composants.isFirstElement(text, state.composants._panel);
+      },
+      orderSortArrayResultLabelElements: (state) => {
+         return BlocTri.getLabelElements(state.blocTri);
+      },
+      orderSortArrayResultBooleanElements: (state) => {
+         return BlocTri.getBooleanElements(state.blocTri);
       },
    },
    plugins: [createPersistedState()],

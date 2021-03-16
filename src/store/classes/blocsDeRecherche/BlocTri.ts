@@ -5,16 +5,35 @@ export class BlocTri {
 
    static updateArray(blocTri: BlocTri, elements: Array<string>): void {
       blocTri._array = [];
-      console.log(JSON.stringify(elements));
       for (let i = 0; i < elements.length / 2; i++) {
          //TODO faire sauter la condition quand la date de fin sera indexable
          if (elements[i * 2] != 'endDate') {
-            blocTri._array.push({sort: BlocTri.labelConverter(elements[i * 2]), order: elements[i * 2 + 1]});
+            blocTri._array.push({sort: BlocTri.labelConverterFromFrontToBack(elements[i * 2]), order: elements[i * 2 + 1]});
          }
       }
    }
 
-   static labelConverter(label: string): string {
+   static getLabelElements(blocTri: BlocTri): Array<string> {
+      const arrayToReturn: Array<string> = [];
+      for (let i = 0; i < blocTri._array.length; i++) {
+         arrayToReturn.push(BlocTri.labelConverterFromBackToFront(blocTri._array[i].sort));
+      }
+      return arrayToReturn;
+   }
+
+   static getBooleanElements(blocTri: BlocTri): Array<boolean> {
+      const arrayToReturn: Array<boolean> = [];
+      for (let i = 0; i < blocTri._array.length; i++) {
+         if (blocTri._array[i].order === 'ASC') {
+            arrayToReturn.push(false);
+         } else {
+            arrayToReturn.push(true);
+         }
+      }
+      return arrayToReturn;
+   }
+
+   static labelConverterFromFrontToBack(label: string): string {
       switch (label) {
          case 'ppn':
             return 'PPN';
@@ -32,6 +51,29 @@ export class BlocTri {
             return 'currently unavailable';
          case 'pcpList':
             return 'PCP_LIST';
+         default:
+            return 'UNDEFINED';
+      }
+   }
+
+   static labelConverterFromBackToFront(label: string): string {
+      switch (label) {
+         case 'PPN':
+            return 'ppn';
+         case 'CONTINIOUS_TYPE':
+            return 'continiousType';
+         case 'ISSN':
+            return 'issn';
+         case 'KEY_TITLE':
+            return 'keyTitle';
+         case 'EDITOR':
+            return 'editor';
+         case 'PROCESSING_GLOBAL_DATA':
+            return 'startDate';
+         case 'currently unavailable':
+            return 'endDate';
+         case 'PCP_LIST':
+            return 'pcpList';
          default:
             return 'UNDEFINED';
       }

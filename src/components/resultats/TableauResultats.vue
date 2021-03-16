@@ -12,6 +12,10 @@
       </v-container>
       <v-card style="margin-top: -0.5em">
          <v-data-table
+            @update:sort-asc="test()"
+            @update:sort-desc="test()"
+            :sort-by="orderLabels"
+            :sort-desc="orderBooleans"
             dense
             multi-sort
             :custom-sort="customSort"
@@ -95,6 +99,8 @@ export default class TableauResultats extends Vue {
    selected: [];
    search: string;
    drawer: any;
+   orderBooleans: Array<boolean>;
+   orderLabels: Array<string>;
 
    constructor() {
       super();
@@ -108,6 +114,18 @@ export default class TableauResultats extends Vue {
       this.selected = [];
       this.search = '';
       this.drawer = null;
+      this.orderBooleans = this.getOrderSortBooleans;
+      this.orderLabels = this.getOrderSortLabels;
+      console.log(this.orderLabels);
+      console.log(this.orderBooleans);
+   }
+
+   get getOrderSortBooleans(): Array<boolean> {
+      return this.$store.getters.orderSortArrayResultBooleanElements;
+   }
+
+   get getOrderSortLabels(): Array<string> {
+      return this.$store.getters.orderSortArrayResultLabelElements;
    }
 
    get getHeaders(): Array<TableHeader> {
@@ -159,6 +177,12 @@ export default class TableauResultats extends Vue {
       return this.$store.state.lotNotices._resultArrayContentNotices;
    }
 
+   test() {
+      setTimeout(() => {
+         this.$store.dispatch('actualizeNoticesInCurrentPageAction');
+      }, 1000);
+   }
+
    customSort(items: Array<TableHeader>, index: Array<string>, isDesc: Array<boolean>) {
       const arrayToSentAtStore: Array<string> = [];
       for (let i = 0; i < index.length; i++) {
@@ -174,7 +198,6 @@ export default class TableauResultats extends Vue {
       //Reconstruction du JSON à envoyer
       this.$store.dispatch('constructJsonAction');
       //TODO une action qui recharge les notices
-
 
       //TODO il ne peut retourner les items autrement
       return this.notices;
