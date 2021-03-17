@@ -12,7 +12,7 @@
               <v-btn icon color="primary" style="margin-top: -1.8em" @click="previousPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
                <v-chip color="primary" outlined style="margin-top: -1.7em">
                   <v-icon left>mdi-file-document-outline</v-icon>
-                  Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }}
+                  Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }} sur ?????
                </v-chip>
               <v-btn icon color="primary" style="margin-top: -1.8em" @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
             </v-col>
@@ -80,40 +80,46 @@
             <v-col cols="1">
                <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
             </v-col>
+           <v-col cols="1">
+             <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage"><v-icon>mdi-arrow-up</v-icon></v-btn>
+           </v-col>
          </v-row>
       </v-container>
       <v-navigation-drawer v-model="drawer" absolute temporary width="400">
          <v-expansion-panels accordion>
             <v-expansion-panel>
-               <v-expansion-panel-header> Type / Support </v-expansion-panel-header>
+               <v-expansion-panel-header> Type </v-expansion-panel-header>
                <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
                   <v-row style="max-height: 2em">
                      <v-checkbox label="Périodiques"></v-checkbox>
                   </v-row>
                   <v-row style="max-height: 2em">
-                     <v-checkbox label="Imprimés"></v-checkbox>
-                  </v-row>
-                  <v-row style="max-height: 2em">
                      <v-checkbox label="Collections"></v-checkbox>
-                  </v-row>
-                  <v-row style="max-height: 2em">
-                     <v-checkbox label="Electroniques"></v-checkbox>
                   </v-row>
                   <v-row style="max-height: 2em">
                      <v-checkbox label="Blogs"></v-checkbox>
                   </v-row>
-                  <v-row style="max-height: 2em">
-                     <v-checkbox label="Journaux"></v-checkbox>
-                  </v-row>
                   <v-row>
-                     <v-checkbox label="Autres"></v-checkbox>
-                  </v-row>
-                  <v-row style="max-height: 2em">
-                     <v-checkbox label="Périodiques"></v-checkbox>
+                     <v-checkbox label="Journaux"></v-checkbox>
                   </v-row>
                </v-expansion-panel-content>
             </v-expansion-panel>
+           <v-expansion-panel>
+             <v-expansion-panel-header> Support </v-expansion-panel-header>
+             <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
+               <v-row style="max-height: 2em">
+                 <v-checkbox label="Imprimé"></v-checkbox>
+               </v-row>
+               <v-row style="max-height: 2em">
+                 <v-checkbox label="Electronique"></v-checkbox>
+               </v-row>
+               <v-row>
+                 <v-checkbox label="Autre"></v-checkbox>
+               </v-row>
+             </v-expansion-panel-content>
+           </v-expansion-panel>
          </v-expansion-panels>
+        <v-btn block elevation="0">Réinitialiser les filtres</v-btn>
       </v-navigation-drawer>
    </v-container>
 </template>
@@ -241,6 +247,10 @@ export default class TableauResultats extends Vue {
    nextPage() {
       this.$store.dispatch('resetNoticesAction');
       this.$store.dispatch('getNoticesAction', 'current');
+   }
+
+   goToTopOfPage(){
+     scroll(0,0);
    }
 
    //Lorsque l'utilisateur modifie le nombre de résultats voulus par page
