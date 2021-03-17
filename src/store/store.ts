@@ -18,6 +18,8 @@ import Notice from '@/store/classes/resultatsDeRecherche/Notice';
 import {Composants} from './classes/composants/Composants';
 import router from '@/router/index.ts';
 import {BlocTri} from '@/store/classes/blocsDeRecherche/BlocTri';
+import {Pagination} from '@/store/classes/resultatsDeRecherche/Pagination';
+import {TriTableauInterface} from '@/store/interfaces/TriTableauInterface';
 
 Vue.use(Vuex);
 
@@ -41,6 +43,7 @@ export default new Vuex.Store({
       jsonTraitements: new JsonTraitements(),
       //Bloc de tri multiples
       blocTri: new BlocTri(),
+      pagination: new Pagination(),
    },
    mutations: {
       //Bloc de recherche PcpRegions
@@ -187,101 +190,70 @@ export default new Vuex.Store({
       },
 
       //Récupération des notices par critères et effacement des notices précédentes dans le store
-      async pushNoticesAndErasePreviousNoticesMutation(state) {
+      async addNoticesMutation(state, route: string) {
+         console.log('PAGE:' + state.pagination._nextPageToAsk + '|SIZE:' + state.pagination._sizeWanted + '|REQUEST:' + JSON.stringify(state.jsonTraitements._jsonSearchRequest));
+         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteriaByPageAndSize(state.jsonTraitements._jsonSearchRequest, state.pagination._nextPageToAsk, state.pagination._sizeWanted);
+         //Si une erreur avec le ws est jetée, on affiche un message d'erreur
+         if (lotNoticesReceived.length === 1) {
+            state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
+            state.composants._snackBarDisplay = true;
+         } else {
+            //Modifie la pagination pour les résultats suivants
+            state.pagination._nextPageToAsk += 1;
+            //Contient les notices brutes
+            lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+            //Contient les notices avec un formatage des données
+            state.lotNotices._lotNotices.forEach((element) => {
+               state.lotNotices._resultArrayContentNotices.push({
+                  ppn: element.ppn,
+                  continiousType: element.continiousType,
+                  issn: element.issn,
+                  keyTitle: element.keyTitle,
+                  editor: element.editor,
+                  startDate: element.startDate,
+                  endDate: element.endDate,
+                  pcpList: element.pcpList,
+                  rcrLength: element.rcrList.length,
+                  titleComplement: element.titleComplement,
+                  keyTitleQualifer: element.keyTitleQualifer,
+                  rcrList: element.rcrList,
+               });
+            });
+
+            //Si il s'agit d'un rechargement de la page en cours (tableau)
+            if (route === 'current') {
+               await router.go(0);
+               //Si il s'agit d'une redirection sur le tableau de résultat
+            } else {
+               await router.push(route);
+            }
+         }
+      },
+
+      //Changement du nombre d'éléments souhaité par page
+      changeNumberOfElementsParPageMutation(state, nbElement: number) {
+         state.pagination._sizeWanted = nbElement;
+      },
+
+      //Effacement des notices stockées dans le store et réinitialisation de la pagination
+      resetNoticesAndPaginationMutation(state) {
          state.lotNotices._lotNotices = [];
          state.lotNotices._resultArrayContentNotices = [];
-         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
-
-         if (lotNoticesReceived.length === 1) {
-            state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
-            state.composants._snackBarDisplay = true;
-         } else {
-            lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
-            state.lotNotices._lotNotices.forEach((element) => {
-               state.lotNotices._resultArrayContentNotices.push({
-                  ppn: element.ppn,
-                  continiousType: element.continiousType,
-                  issn: element.issn,
-                  keyTitle: element.keyTitle,
-                  editor: element.editor,
-                  startDate: element.startDate,
-                  endDate: element.endDate,
-                  pcpList: element.pcpList,
-                  rcrLength: element.rcrList.length,
-                  titleComplement: element.titleComplement,
-                  keyTitleQualifer: element.keyTitleQualifer,
-                  rcrList: element.rcrList,
-               });
-            });
-
-            await router.push('Resultats');
-         }
+         state.pagination._nextPageToAsk = 0;
+         state.pagination._totalSize = 0;
       },
 
-      //Actualisation des notices par critères sur page en cours et effacement des notices précédentes dans le store
-      async actualizeNoticesInCurrentPageMutation(state) {
+      //Effacement des notices stockées dans le store sans changement de pagination
+      resetNoticesMutation(state) {
          state.lotNotices._lotNotices = [];
          state.lotNotices._resultArrayContentNotices = [];
-         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
-
-         if (lotNoticesReceived.length === 1) {
-            state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
-            state.composants._snackBarDisplay = true;
-         } else {
-            lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
-            state.lotNotices._lotNotices.forEach((element) => {
-               state.lotNotices._resultArrayContentNotices.push({
-                  ppn: element.ppn,
-                  continiousType: element.continiousType,
-                  issn: element.issn,
-                  keyTitle: element.keyTitle,
-                  editor: element.editor,
-                  startDate: element.startDate,
-                  endDate: element.endDate,
-                  pcpList: element.pcpList,
-                  rcrLength: element.rcrList.length,
-                  titleComplement: element.titleComplement,
-                  keyTitleQualifer: element.keyTitleQualifer,
-                  rcrList: element.rcrList,
-               });
-            });
-
-            router.go(0);
-         }
       },
 
-      //Récupération des notices par critères et ajout aux notices précédentes dans le store
-      async pushNoticesAndAddToPreviousNotices(state) {
-         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteria(state.jsonTraitements._jsonSearchRequest);
-         if (lotNoticesReceived.length === 1) {
-            state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
-            state.composants._snackBarDisplay = true;
-         } else {
-            lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
-            state.lotNotices._lotNotices.forEach((element) => {
-               state.lotNotices._resultArrayContentNotices.push({
-                  ppn: element.ppn,
-                  continiousType: element.continiousType,
-                  issn: element.issn,
-                  keyTitle: element.keyTitle,
-                  editor: element.editor,
-                  startDate: element.startDate,
-                  endDate: element.endDate,
-                  pcpList: element.pcpList,
-                  rcrLength: element.rcrList.length,
-                  titleComplement: element.titleComplement,
-                  keyTitleQualifer: element.keyTitleQualifer,
-                  rcrList: element.rcrList,
-               });
-            });
-
-            await router.push('Resultats');
+      previousPageDecrementPaginationMutation(state) {
+         state.pagination._nextPageToAsk = state.pagination._nextPageToAsk - 2;
+         if (state.pagination._nextPageToAsk < 0) {
+            state.pagination._nextPageToAsk = 0;
          }
-      },
-
-      //Effacement des notices stockées dans le store
-      eraseAllNotices(state) {
-         state.lotNotices._lotNotices = [];
       },
 
       //Actions liées aux composants
@@ -316,6 +288,11 @@ export default new Vuex.Store({
       //Tri multiples sur le tableau de résultats
       blocTriMutation(state, element: Array<string>) {
          BlocTri.updateArray(state.blocTri, element);
+      },
+
+      //Modification de la pagination
+      newNumberOfNoticesAskedForNewCallMutation(state, element: number) {
+         state.pagination._sizeWanted = element;
       },
    },
    actions: {
@@ -423,12 +400,26 @@ export default new Vuex.Store({
       },
 
       //Appel au back-end pour recupération de notices
-      getNoticesAndErasePreviousNoticesAction(context) {
-         context.commit('pushNoticesAndErasePreviousNoticesMutation');
+      getNoticesAction(context, route: string) {
+         context.commit('addNoticesMutation', route);
       },
 
-      actualizeNoticesInCurrentPageAction(context) {
-         context.commit('actualizeNoticesInCurrentPageMutation');
+      //Changement du nombre d'éléments souhaités par page
+      changeNumberOfElementsParPageAction(context, nbElements: number) {
+         context.commit('changeNumberOfElementsParPageMutation', nbElements);
+      },
+
+      //Effacement des notices stockées dans le store et réinitialisation de la pagination
+      resetNoticesAndPaginationAction(context) {
+         context.commit('resetNoticesAndPaginationMutation');
+      },
+
+      resetNoticesAction(context) {
+         context.commit('resetNoticesMutation');
+      },
+
+      previousPageDecrementPaginationAction(context) {
+         context.commit('previousPageDecrementPaginationMutation');
       },
 
       //Afficher le state global en console
@@ -467,6 +458,11 @@ export default new Vuex.Store({
       blocTriAction(context, value: Array<string>) {
          context.commit('blocTriMutation', value);
       },
+
+      //Modification de la pagination
+      newNumberOfNoticesAskedForNewCallAction(context, value: number) {
+         context.commit('newNumberOfNoticesAskedForNewCallMutation', value);
+      },
    },
    getters: {
       isFirstElement: (state) => (text: string) => {
@@ -477,6 +473,15 @@ export default new Vuex.Store({
       },
       orderSortArrayResultBooleanElements: (state) => {
          return BlocTri.getBooleanElements(state.blocTri);
+      },
+      getRequestLaunchedToBackEnd: (state) => {
+         return 'request launched => PAGE:' + (state.pagination._nextPageToAsk - 1) + '|SIZE:' + state.pagination._sizeWanted + '|REQUEST:' + JSON.stringify(state.jsonTraitements._jsonSearchRequest);
+      },
+      getCurrentPositionNoticesStartedDisplayed: (state) => {
+         return (state.pagination._nextPageToAsk - 1) * state.pagination._sizeWanted + 1;
+      },
+      getCurrentPositionNoticesEndedDisplayed: (state) => {
+         return state.pagination._nextPageToAsk * state.pagination._sizeWanted;
       },
    },
    plugins: [createPersistedState()],

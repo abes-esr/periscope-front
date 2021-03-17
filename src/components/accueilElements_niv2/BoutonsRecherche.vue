@@ -19,7 +19,8 @@ import GlobalPropertiesMixin from '@/mixins/globalProperties';
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
    clickSearch() {
       this.$store.dispatch('constructJsonAction');
-      this.$store.dispatch('getNoticesAndErasePreviousNoticesAction');
+      this.$store.dispatch('resetNoticesAndPaginationAction');
+      this.$store.dispatch('getNoticesAction', 'Resultats');
    }
 
    resetStore() {

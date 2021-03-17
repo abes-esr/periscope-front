@@ -2,8 +2,10 @@ import {TriTableauInterface} from '@/store/interfaces/TriTableauInterface';
 
 export class BlocTri {
    _array: Array<TriTableauInterface> = [];
+   _rawArrayForObserver: Array<string>;
 
    static updateArray(blocTri: BlocTri, elements: Array<string>): void {
+      blocTri._rawArrayForObserver = elements;
       blocTri._array = [];
       for (let i = 0; i < elements.length / 2; i++) {
          //TODO faire sauter la condition quand la date de fin sera indexable

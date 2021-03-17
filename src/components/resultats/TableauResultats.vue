@@ -5,20 +5,29 @@
             <v-col cols="1">
                <v-btn class="outlined-app" style="margin-top: -2em" outlined small @click.stop="drawer = !drawer"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
             </v-col>
-            <v-col style="margin-top: -2em" cols="11">
+            <v-col cols="1">
+               <v-btn class="outlined-app" style="margin-top: -2em" outlined small @click="sortColumns"><v-icon>mdi-sync</v-icon>Tri</v-btn>
+            </v-col>
+            <v-col cols="4">
+              <v-btn icon color="primary" style="margin-top: -1.8em" @click="previousPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
+               <v-chip color="primary" outlined style="margin-top: -1.7em">
+                  <v-icon left>mdi-file-document-outline</v-icon>
+                  Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }}
+               </v-chip>
+              <v-btn icon color="primary" style="margin-top: -1.8em" @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
+            </v-col>
+            <v-col style="margin-top: -2em" cols="6">
                <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details></v-text-field>
             </v-col>
          </v-row>
       </v-container>
       <v-card style="margin-top: -0.5em">
          <v-data-table
-            @update:sort-asc="test()"
-            @update:sort-desc="test()"
+            :custom-sort="customSort"
             :sort-by="orderLabels"
             :sort-desc="orderBooleans"
             dense
             multi-sort
-            :custom-sort="customSort"
             :search="search"
             :headers="headers"
             :items="notices"
@@ -30,12 +39,18 @@
             item-key="ppn"
             show-select
             show-expand
+            :items-per-page="getNumberOfNoticesAskedForNewCall"
+            @update:items-per-page="getItemPerPage"
             :footer-props="{
-               showFirstLastPage: true,
+               disablePagination: true,
+               pageText: '',
+               itemsPerPageText: 'nombre de notices affichées',
+               itemsPerPageOptions: [25, 50, 250, 1000],
+               showFirstLastPage: false,
                firstIcon: 'mdi-arrow-collapse-left',
                lastIcon: 'mdi-arrow-collapse-right',
-               prevIcon: 'mdi-minus',
-               nextIcon: 'mdi-plus',
+               prevIcon: '',
+               nextIcon: '',
             }"
          >
             <template v-slot:expanded-item="{item}">
@@ -45,8 +60,28 @@
                   Liste des établissements : {{ item.rcrList }}<br />
                </td>
             </template>
+            <template v-slot:footer>
+               <div style="position: absolute" class="pa-0 pt-4 pl-2 ml-16">
+                  <span style="font-size: 0.9em">Exporter de la notice n° </span>
+                  <label for="exportNumberStart"></label>
+                  <input style="max-width: 3em" class="outlined-app" type="text" id="exportNumberStart" name="name" required minlength="4" maxlength="8" size="10" />
+                  <span style="font-size: 0.9em"> à </span>
+                  <label for="exportNumberEnd"></label>
+                  <input style="max-width: 3em" class="outlined-app" type="text" id="exportNumberEnd" name="name" required minlength="4" maxlength="8" size="10" />
+               </div>
+            </template>
          </v-data-table>
       </v-card>
+      <v-container>
+         <v-row justify="end" align="center">
+            <v-col cols="1">
+               <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="previousPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
+            </v-col>
+            <v-col cols="1">
+               <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
+            </v-col>
+         </v-row>
+      </v-container>
       <v-navigation-drawer v-model="drawer" absolute temporary width="400">
          <v-expansion-panels accordion>
             <v-expansion-panel>
@@ -86,6 +121,8 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {ContentHeader, TableHeader} from '@/store/interfaces/TableInterfaces';
+//Permet de faire patienter un certain nombre de secondes avant l'exécution d'une fonction dans le code avec async await
+const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 @Component
 export default class TableauResultats extends Vue {
@@ -101,6 +138,7 @@ export default class TableauResultats extends Vue {
    drawer: any;
    orderBooleans: Array<boolean>;
    orderLabels: Array<string>;
+   numberOfNoticesAskedForNewCall: number;
 
    constructor() {
       super();
@@ -116,8 +154,8 @@ export default class TableauResultats extends Vue {
       this.drawer = null;
       this.orderBooleans = this.getOrderSortBooleans;
       this.orderLabels = this.getOrderSortLabels;
-      console.log(this.orderLabels);
-      console.log(this.orderBooleans);
+      this.numberOfNoticesAskedForNewCall = this.getNumberOfNoticesAskedForNewCall;
+      console.log(this.$store.getters.getRequestLaunchedToBackEnd);
    }
 
    get getOrderSortBooleans(): Array<boolean> {
@@ -177,10 +215,40 @@ export default class TableauResultats extends Vue {
       return this.$store.state.lotNotices._resultArrayContentNotices;
    }
 
-   test() {
-      setTimeout(() => {
-         this.$store.dispatch('actualizeNoticesInCurrentPageAction');
-      }, 1000);
+   get getCurrentPositionNoticesStartedDisplayed(): number {
+      return this.$store.getters.getCurrentPositionNoticesStartedDisplayed;
+   }
+
+   get getCurrentPositionNoticesEndedDisplayed(): number {
+      return this.$store.getters.getCurrentPositionNoticesEndedDisplayed;
+   }
+
+   get getNumberOfNoticesAskedForNewCall(): number {
+      return this.$store.state.pagination._sizeWanted;
+   }
+
+   //Lorsque l'utilisateur clique sur le bouton d'actualisation du tri
+   sortColumns() {
+      this.$store.dispatch('resetNoticesAndPaginationAction');
+      this.$store.dispatch('getNoticesAction', 'current');
+   }
+
+   previousPage() {
+      this.$store.dispatch('previousPageDecrementPaginationAction');
+      this.$store.dispatch('getNoticesAction', 'current');
+   }
+
+   nextPage() {
+      this.$store.dispatch('resetNoticesAction');
+      this.$store.dispatch('getNoticesAction', 'current');
+   }
+
+   //Lorsque l'utilisateur modifie le nombre de résultats voulus par page
+   getItemPerPage(val: number) {
+      this.$store.dispatch('resetNoticesAndPaginationAction');
+      this.$store.dispatch('changeNumberOfElementsParPageAction', val);
+      this.$store.dispatch('getNoticesAction', 'current');
+      this.numberOfNoticesAskedForNewCall = val;
    }
 
    customSort(items: Array<TableHeader>, index: Array<string>, isDesc: Array<boolean>) {
@@ -197,10 +265,7 @@ export default class TableauResultats extends Vue {
       this.$store.dispatch('blocTriAction', arrayToSentAtStore);
       //Reconstruction du JSON à envoyer
       this.$store.dispatch('constructJsonAction');
-      //TODO une action qui recharge les notices
-
-      //TODO il ne peut retourner les items autrement
-      return this.notices;
+      return items;
    }
 }
 </script>

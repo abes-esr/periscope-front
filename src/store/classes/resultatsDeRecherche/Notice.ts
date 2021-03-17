@@ -9,7 +9,7 @@ export class Notice {
    constructor(obj: any = {}) {
       this.ppn = obj.ppn;
       this.issn = obj.issn;
-      this.pcpList = obj.pcpList;
+      obj.pcpList.forEach((element: string) => this.pcpList.push(element + ' '));
       if(obj.rcrList == null){this.rcrList = []}else{this.rcrList = obj.rcrList}
       this.editor = obj.editeur;
       this.keyTitle = obj.titre_cle;
@@ -41,9 +41,5 @@ export class Notice {
    continiousType: string;
    startDate: string;
    endDate: string;
-
-   public getPpn(): number {
-      return this.ppn;
-   }
 }
 export default Notice;
