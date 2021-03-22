@@ -11,6 +11,8 @@
                   <v-stepper-step :complete="current > 2" step="3" @click="changePage(3)">Visualisation</v-stepper-step>
                   <v-divider></v-divider>
                   <v-stepper-step :complete="current > 3" step="4" @click="changePage(4)">Exports</v-stepper-step>
+                  <v-divider></v-divider>
+                  <v-stepper-step complete editable edit-icon="mdi-history" @click="changePage(5)">Historique</v-stepper-step>
                </v-stepper-header>
             </v-stepper>
          </v-col>
