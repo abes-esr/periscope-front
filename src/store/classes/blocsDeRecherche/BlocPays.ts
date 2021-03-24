@@ -5,16 +5,6 @@ export class BlocPays extends BlocAbstract {
    _type = 'CriterionCountry'; //Valeur fixe définie par l'API
    _internalBlocOperator: Ensemble = Ensemble.Ou; //Operateur interne entre les pays
    _paysEntered: Array<string> = [];
-   _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
-      {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
-      {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
-      {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
-   ];
-   _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
-      {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
-      {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
-      {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
-   ];
    _paysListe: Array<ListProvider> = [
       {id: 'AF', text: 'Afghanistan'},
       {id: 'ZA', text: 'Afrique du Sud'},

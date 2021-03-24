@@ -24,7 +24,7 @@
                <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" clearable multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
+                     <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
                         <template v-slot:selection="{item}">
                            <v-chip close @click:close="removeItem(item)">
                               <span class="pr-2">{{ item }}</span>
@@ -34,22 +34,25 @@
                      <!--Internal Operator-->
                   </v-col>
                   <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em">
-                     <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
+                     <v-select disabled dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
                   </v-col>
                </v-row>
                <v-alert dense outlined type="warning"> Au dela de <strong>15 ISSN</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste d'ISSN</strong> </v-alert>
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-           <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('ISSN')">
-             <v-icon>mdi-arrow-up</v-icon>
-           </v-btn>
-           <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('ISSN')">
-             <v-icon>mdi-arrow-down</v-icon>
-           </v-btn>
-           <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('ISSN')">
-             <v-icon>mdi-close</v-icon>
-           </v-btn>
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+               <v-icon>mdi-cancel</v-icon>
+            </v-btn>
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('ISSN')">
+               <v-icon>mdi-arrow-up</v-icon>
+            </v-btn>
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('ISSN')">
+               <v-icon>mdi-arrow-down</v-icon>
+            </v-btn>
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('ISSN')">
+               <v-icon>mdi-close</v-icon>
+            </v-btn>
          </v-col>
       </v-row>
    </v-expansion-panel>
@@ -122,7 +125,7 @@ export default class ComponentIssn extends Mixins(GlobalPropertiesMixin) {
       if (this.comboboxArrayTyped.length !== 0) {
          const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
          if (lastElement.match('^\\d{4}-\\d{4}$')) {
-            this.$store.state.requeteRecherche.setBlocPpnListString(this.comboboxArrayTyped);
+            this.$store.dispatch('blocIssnListStringAction', this.comboboxArrayTyped);
             this.comboboxAlert = [];
          } else {
             this.removeItem(lastElement);
@@ -150,7 +153,6 @@ export default class ComponentIssn extends Mixins(GlobalPropertiesMixin) {
    eventUpdateBlocExternalOperator(): void {
       this.$store.dispatch('blocIssnExternalOperatorAction', this.external_operator_selected);
    }
-
    eventUpdateBlocInternalOperator(): void {
       this.$store.dispatch('blocIssnInternalOperatorAction', this.internal_operator_selected);
    }
@@ -159,13 +161,15 @@ export default class ComponentIssn extends Mixins(GlobalPropertiesMixin) {
    closePanel(element: string) {
       this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element);
    }
-
    moveUpPanel(element: string) {
       this.$store.dispatch('moveUpElementPanelAction', element);
    }
-
    moveDownPanel(element: string) {
       this.$store.dispatch('moveDownElementPanelAction', element);
+   }
+   clearBloc() {
+      this.$store.dispatch('blocIssnListStringAction', []);
+      this.comboboxArrayTyped = [];
    }
 }
 </script>

@@ -19,7 +19,7 @@ import {Composants} from './classes/composants/Composants';
 import router from '@/router/index.ts';
 import {BlocTri} from '@/store/classes/blocsDeRecherche/BlocTri';
 import {Pagination} from '@/store/classes/resultatsDeRecherche/Pagination';
-import {TriTableauInterface} from '@/store/interfaces/TriTableauInterface';
+import {BlocRequeteEnregistree} from '@/store/classes/blocsDeRecherche/BlocRequeteEnregistree';
 
 Vue.use(Vuex);
 
@@ -35,6 +35,7 @@ export default new Vuex.Store({
       blocEditeur: new BlocEditeur(Ensemble.Ou),
       blocLangue: new BlocLangue(Ensemble.Ou),
       blocPays: new BlocPays(Ensemble.Ou),
+      blocRequeteDirecte: new BlocRequeteEnregistree(),
       //Resultats de recherche
       lotNotices: new LotNotices(),
       //Composants
@@ -92,6 +93,7 @@ export default new Vuex.Store({
          state.blocPpn._externalBlocOperator = operator;
       },
       blocPpnInternalOperatorMutation(state, operator: number) {
+         console.log(operator);
          state.blocPpn._internalBlocOperator = operator;
       },
       blocPpnListStringMutation(state, arraySent: Array<string>) {
@@ -120,10 +122,19 @@ export default new Vuex.Store({
             });
          }
       },
+      blocMotsDuTitreExternalOperatorMutation(state, operator: number) {
+         state.blocMotsDuTitre._externalBlocOperator = operator;
+      },
+      blocMotsDuTitreInternalOperatorMutation(state, operator: number) {
+         state.blocMotsDuTitre._internalBlocOperator = operator;
+      },
 
       //Bloc de recherche Editeur
       blocEditeurExternalOperatorMutation(state, externalOperator: number) {
          state.blocEditeur._externalBlocOperator = externalOperator;
+      },
+      blocEditeurInternalOperatorMutation(state, externalOperator: number) {
+         state.blocEditeur._internalBlocOperator = externalOperator;
       },
       blocEditeurEditorEnteredMutation(state, arraySent: Array<string>) {
          state.blocEditeur._editorsEntered = arraySent;
@@ -132,6 +143,9 @@ export default new Vuex.Store({
       //Bloc de recherche Langue
       blocLangueExternalOperatorMutation(state, externalOperator: number) {
          state.blocLangue._externalBlocOperator = externalOperator;
+      },
+      blocLangueInternalOperatorMutation(state, externalOperator: number) {
+         state.blocLangue._internalBlocOperator = externalOperator;
       },
       blocLangueLanguesEnteredMutation(state, arraySent: Array<ListProvider>) {
          state.blocLangue._languesEntered = [];
@@ -144,11 +158,22 @@ export default new Vuex.Store({
       blocPaysExternalOperatorMutation(state, externalOperator: number) {
          state.blocPays._externalBlocOperator = externalOperator;
       },
+      blocPaysInternalOperatorMutation(state, externalOperator: number) {
+         state.blocPays._internalBlocOperator = externalOperator;
+      },
       blocPaysPaysEnteredMutation(state, arraySent: Array<ListProvider>) {
          state.blocPays._paysEntered = [];
          arraySent.forEach((element) => {
             state.blocPays._paysEntered.push(element.id);
          });
+      },
+
+      //Bloc de requete directe
+      blocRequeteDirecteMutation(state, element: string) {
+         state.blocRequeteDirecte._directRequest = element;
+      },
+      blocRequeteDirecteAddRequestToHistory(state, element: string) {
+         state.blocRequeteDirecte._historyOfAllRequests.push(element);
       },
 
       //Reinitialisation de l'ensemble des blocs de recherche
@@ -186,13 +211,28 @@ export default new Vuex.Store({
 
       //Construction de l'objet JSON contenant les critères de recherche à envoyer dans les requêtes
       jsonSearchRequestConstructionMutation(state) {
-         state.jsonTraitements._jsonSearchRequest = JsonTraitements.constructJsonGlobalRequest(state.blocPcpRegions, state.blocPcpMetiers, state.blocRcr, state.blocPpn, state.blocIssn, state.blocMotsDuTitre, state.blocEditeur, state.blocLangue, state.blocPays, state.blocTri);
+         state.jsonTraitements._jsonSearchRequest = JsonTraitements.constructJsonGlobalRequest(
+            state.blocPcpRegions,
+            state.blocPcpMetiers,
+            state.blocRcr,
+            state.blocPpn,
+            state.blocIssn,
+            state.blocMotsDuTitre,
+            state.blocEditeur,
+            state.blocLangue,
+            state.blocPays,
+            state.blocRequeteDirecte,
+            state.blocTri
+         );
       },
 
       //Récupération des notices par critères et effacement des notices précédentes dans le store
       async addNoticesMutation(state, route: string) {
          console.log('PAGE:' + state.pagination._nextPageToAsk + '|SIZE:' + state.pagination._sizeWanted + '|REQUEST:' + JSON.stringify(state.jsonTraitements._jsonSearchRequest));
-         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteriaByPageAndSize(state.jsonTraitements._jsonSearchRequest, state.pagination._nextPageToAsk, state.pagination._sizeWanted);
+         //On place dans l'historique la requête qui va être envoyée au back-end
+         state.blocRequeteDirecte._historyOfAllRequests.push(JSON.stringify(state.jsonTraitements._jsonSearchRequest).replace(/\\/g, ''));
+         //On envoie la requête au back-end
+         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteriaByPageAndSize(JSON.stringify(state.jsonTraitements._jsonSearchRequest), state.pagination._nextPageToAsk, state.pagination._sizeWanted);
          //Si une erreur avec le ws est jetée, on affiche un message d'erreur
          if (lotNoticesReceived.length === 1) {
             state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
@@ -364,10 +404,19 @@ export default new Vuex.Store({
       blocMotsDuTitreTitleWordsEnteredAction(context, stringEntered: string) {
          context.commit('blocMotsDuTitreTitleWordsEnteredMutation', stringEntered);
       },
+      blocMotsDuTitreExternalOperatorAction(context, externalOperator: number) {
+         context.commit('blocMotsDuTitreExternalOperatorMutation', externalOperator);
+      },
+      blocMotsDuTitreInternalOperatorAction(context, internalOperator: number) {
+         context.commit('blocMotsDuTitreInternalOperatorMutation', internalOperator);
+      },
 
       //Bloc de recherche editeur
       blocEditeurExternalOperatorAction(context, externalOperator: number) {
          context.commit('blocEditeurExternalOperatorMutation', externalOperator);
+      },
+      blocEditeurInternalOperatorAction(context, internalOperator: number) {
+         context.commit('blocEditeurInternalOperatorMutation', internalOperator);
       },
       blocEditeurEditorEnteredAction(context, arraySent: Array<string>) {
          context.commit('blocEditeurEditorEnteredMutation', arraySent);
@@ -377,6 +426,9 @@ export default new Vuex.Store({
       blocLangueExternalOperatorAction(context, externalOperator: number) {
          context.commit('blocLangueExternalOperatorMutation', externalOperator);
       },
+      blocLangueInternalOperatorAction(context, internalOperator: number) {
+         context.commit('blocLangueInternalOperatorMutation', internalOperator);
+      },
       blocLangueLanguesEnteredAction(context, arraySent: Array<ListProvider>) {
          context.commit('blocLangueLanguesEnteredMutation', arraySent);
       },
@@ -385,8 +437,16 @@ export default new Vuex.Store({
       blocPaysExternalOperatorAction(context, externalOperator: number) {
          context.commit('blocPaysExternalOperatorMutation', externalOperator);
       },
+      blocPaysInternalOperatorAction(context, internalOperator: number) {
+         context.commit('blocPaysInternalOperatorMutationOperatorMutation', internalOperator);
+      },
       blocPaysPaysEnteredAction(context, arraySent: Array<ListProvider>) {
          context.commit('blocPaysPaysEnteredMutation', arraySent);
+      },
+
+      //Bloc de requete directe
+      blocRequeteDirecteAction(context, element: string) {
+         context.commit('blocRequeteDirecteMutation', element);
       },
 
       //Reinitialisation ensemble des blocs de recherche
@@ -468,6 +528,10 @@ export default new Vuex.Store({
       isFirstElement: (state) => (text: string) => {
          return Composants.isFirstElement(text, state.composants._panel);
       },
+      getArrayRegions: (state) => {
+         console.log(state.blocPcpRegions._arrayRegions);
+         return state.blocPcpRegions._arrayRegions;
+      },
       orderSortArrayResultLabelElements: (state) => {
          return BlocTri.getLabelElements(state.blocTri);
       },
@@ -482,6 +546,24 @@ export default new Vuex.Store({
       },
       getCurrentPositionNoticesEndedDisplayed: (state) => {
          return state.pagination._nextPageToAsk * state.pagination._sizeWanted;
+      },
+      getCurrentArrayPcpRegionsElementsChecked: (state) => {
+         const arrayReturned: Array<string> = [];
+         state.blocPcpRegions._arrayRegions.forEach((element) => {
+            if (element.value) {
+               arrayReturned.push(element.text);
+            }
+         });
+         return arrayReturned;
+      },
+      getCurrentArrayPcpMetiersElementsChecked: (state) => {
+         const arrayReturned: Array<string> = [];
+         state.blocPcpMetiers._arrayMetiers.forEach((element) => {
+            if (element.value) {
+               arrayReturned.push(element.text);
+            }
+         });
+         return arrayReturned;
       },
    },
    plugins: [createPersistedState()],

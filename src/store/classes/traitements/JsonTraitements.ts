@@ -11,6 +11,7 @@ import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, Json
 import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
 import { TriTableauInterface } from "@/store/interfaces/TriTableauInterface";
 import { BlocTri } from "@/store/classes/blocsDeRecherche/BlocTri";
+import { BlocRequeteEnregistree } from "@/store/classes/blocsDeRecherche/BlocRequeteEnregistree";
 
 export class JsonTraitements {
    /**
@@ -20,7 +21,7 @@ export class JsonTraitements {
    /**
     * Construit un objet JSON à partir des données des blocs de recherche pour envoi au back-end
     */
-   static constructJsonGlobalRequest(blocPcpRegions: BlocPcpRegions, blocPcpMetiers: BlocPcpMetiers, blocRcr: BlocRcr, blocPpn: BlocPpn, blocIssn: BlocIssn, blocMotsDuTitre: BlocMotDuTitre, blocEditeur: BlocEditeur, blocLangue: BlocLangue, blocPays: BlocPays, blocTri: BlocTri): JsonGlobalSearchRequest {
+   static constructJsonGlobalRequest(blocPcpRegions: BlocPcpRegions, blocPcpMetiers: BlocPcpMetiers, blocRcr: BlocRcr, blocPpn: BlocPpn, blocIssn: BlocIssn, blocMotsDuTitre: BlocMotDuTitre, blocEditeur: BlocEditeur, blocLangue: BlocLangue, blocPays: BlocPays, blocRequeteDirecte: BlocRequeteEnregistree, blocTri: BlocTri): JsonGlobalSearchRequest {
       //Les blocs ne sont rajoutés que si il contiennent des données
       const criteres: Array<JsonGlobalSearchRequest> = [];
 
@@ -116,6 +117,12 @@ export class JsonTraitements {
             language_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocLangue._internalBlocOperator, blocLangue._languesEntered.length),
          };
          criteres.push(langueBlocJson);
+      }
+
+      //Construction d'une requête en cas de saisie directe de requête, effacement de l'ensemble des autres élements
+      if(blocRequeteDirecte._directRequest.length !== 0){
+         //On retourne la chaîne directement
+         return JSON.parse(blocRequeteDirecte._directRequest);
       }
 
       //Construction du JSON de plus haut niveau

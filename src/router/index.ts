@@ -2,22 +2,23 @@ import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
 import Recherche from '@/views/Recherche.vue';
 import Resultats from '@/views/Resultats.vue';
-import AccueilAvance from '@/views/RechercheAvance.vue';
+import RechercheAvance from '@/views/RechercheAvance.vue';
 import ConditionsGenerales from '@/views/ConditionsGenerales.vue';
 import MentionsLegales from '@/views/MentionsLegales.vue';
+import HistoriqueRequetes from "@/views/HistoriqueRequetes.vue";
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
    {
       path: '/',
-      name: 'Accueil',
-      component: Recherche,
+      name: '/accueil',
+      component: RechercheAvance,
    },
    {
       path: '/recherche',
       name: 'Recherche',
-      component: Recherche,
+      component: RechercheAvance,
    },
    {
       path: '/conditions-generales',
@@ -35,10 +36,15 @@ const routes: Array<RouteConfig> = [
       component: Resultats,
    },
    {
-      path: '/v2',
-      name: 'Accueil-v2',
-      component: AccueilAvance,
+      path: '/v1',
+      name: 'AncienneRecherche',
+      component: Recherche,
    },
+   {
+      path: '/historiqueRequetes',
+      name: 'HistoriqueRequetes',
+      component: HistoriqueRequetes,
+   }
 ];
 
 const router = new VueRouter({

@@ -4,15 +4,15 @@
          <v-col>
             <v-stepper>
                <v-stepper-header>
-                  <v-stepper-step :complete="current > 1" step="1" @click="changePage(1)">Recherche</v-stepper-step>
+                  <v-stepper-step color="grey lighten-2" complete editable edit-icon="mdi-magnify" step="1" @click="changePage(1)">Recherche</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step :complete="current > 1" step="2" @click="changePage(2)">Résultats</v-stepper-step>
+                  <v-stepper-step color="grey lighten-2" complete editable edit-icon="mdi-table" step="2" @click="changePage(2)">Résultats</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step :complete="current > 2" step="3" @click="changePage(3)">Visualisation</v-stepper-step>
+                  <v-stepper-step color="grey lighten-2" complete editable edit-icon="mdi-tune" step="3" @click="changePage(3)">Visualisation</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step :complete="current > 3" step="4" @click="changePage(4)">Exports</v-stepper-step>
+                  <v-stepper-step color="grey lighten-2" complete editable edit-icon="mdi-file-export" step="4" @click="changePage(4)">Exports</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step complete editable edit-icon="mdi-history" @click="changePage(5)">Historique</v-stepper-step>
+                  <v-stepper-step color="grey lighten-2" complete editable edit-icon="mdi-backup-restore" step="5" @click="changePage(5)">Historique</v-stepper-step>
                </v-stepper-header>
             </v-stepper>
          </v-col>
@@ -26,11 +26,8 @@ import GlobalPropertiesMixin from '../../mixins/globalProperties';
 
 @Component
 export default class Stepper extends Mixins(GlobalPropertiesMixin) {
-   current: number;
-
    constructor() {
       super();
-      this.current = this.getStepCurrentNumber;
    }
 
    get getStepCurrentNumber(): number {
@@ -47,7 +44,8 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
          case 2:
             this.$store.dispatch('changeStepAction', stepNumber);
             this.$store.dispatch('constructJsonAction');
-            this.$store.dispatch('getNoticesAndErasePreviousNoticesAction', false);
+            this.$store.dispatch('resetNoticesAndPaginationAction');
+            this.$store.dispatch('getNoticesAction', 'Resultats');
             break;
          case 3:
             this.$store.dispatch('changeStepAction', stepNumber);
@@ -56,6 +54,10 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
          case 4:
             this.$store.dispatch('changeStepAction', stepNumber);
             this.$router.replace('Export');
+            break;
+         case 5:
+            this.$store.dispatch('changeStepAction', stepNumber);
+            this.$router.replace('HistoriqueRequetes');
             break;
       }
    }

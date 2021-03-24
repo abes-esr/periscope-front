@@ -1,7 +1,17 @@
-import {Ensemble} from '@/store/interfaces/BlocInterfaces';
+import { Ensemble, OperatorProvider } from "@/store/interfaces/BlocInterfaces";
 
 export abstract class BlocAbstract {
    _externalBlocOperator: number;
+   _internalBlocOperatorListToSelect: Array<OperatorProvider> = [
+      {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
+      {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
+      {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
+   ];
+   _externalBlocOperatorListToSelect: Array<OperatorProvider> = [
+      {id: 0, key: 'internalRcrOperatorOU', text: 'OU', value: Ensemble.Ou},
+      {id: 1, key: 'internalRcrOperatorET', text: 'ET', value: Ensemble.Et},
+      {id: 2, key: 'internalRcrOperatorSAUF', text: 'SAUF', value: Ensemble.Sauf},
+   ];
 
    protected constructor(externalBlocOperator: number) {
       this._externalBlocOperator = externalBlocOperator;

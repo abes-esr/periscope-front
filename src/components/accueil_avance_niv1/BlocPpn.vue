@@ -1,6 +1,6 @@
 <template>
    <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
-      <v-row :align="getVerticalAlignValue(1)">
+      <v-row align="center">
          <!--External Operator-->
          <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstElement">
             <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator"></v-select>
@@ -24,7 +24,7 @@
                <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" clearable multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
+                     <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
                         <template v-slot:selection="{item}">
                            <v-chip close @click:close="removeItem(item)">
                               <span class="pr-2">{{ item }}</span>
@@ -34,13 +34,16 @@
                      <!--Internal Operator-->
                   </v-col>
                   <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em">
-                     <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
+                     <v-select disabled dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
                   </v-col>
                </v-row>
                <v-alert dense outlined type="warning"> Au dela de <strong>15 PPN</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste de PPN</strong> </v-alert>
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+               <v-icon>mdi-cancel</v-icon>
+            </v-btn>
             <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('PPN')">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
@@ -114,7 +117,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
       return this.$store.state.blocPpn._ppnListString;
    }
    get isFirstElement(): boolean {
-     return this.$store.getters.isFirstElement('PPN');
+      return this.$store.getters.isFirstElement('PPN');
    }
 
    //Events v-combobox
@@ -166,6 +169,10 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
 
    moveDownPanel(element: string) {
       this.$store.dispatch('moveDownElementPanelAction', element);
+   }
+   clearBloc() {
+      this.$store.dispatch('blocPpnListStringAction', []);
+      this.comboboxArrayTyped = [];
    }
 }
 </script>

@@ -10,7 +10,7 @@
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par PPN </v-col>
+                     <v-col xs="12" sm="4" lg="3"> Recherche par RCR </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
                            <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de RCR d'une Bibliothèque</span>
@@ -24,7 +24,7 @@
                <v-row justify="center" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" clearable multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
+                     <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
                         <template v-slot:selection="{item}">
                            <v-chip close @click:close="removeItem(item)">
                               <span class="pr-2">{{ item }}</span>
@@ -37,10 +37,13 @@
                      <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
                   </v-col>
                </v-row>
-               <v-alert dense outlined type="warning"> Au dela de <strong>15 PPN</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste de PPN</strong> </v-alert>
+               <v-alert dense outlined type="warning"> Au dela de <strong>15 RCR</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste de RCR</strong> </v-alert>
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+               <v-icon>mdi-cancel</v-icon>
+            </v-btn>
             <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('RCR')">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
@@ -61,110 +64,112 @@ import {Ensemble, OperatorProvider} from '@/store/interfaces/BlocInterfaces';
 
 @Component
 export default class ComponentRcr extends Vue {
-  external_operator_label: string;
-  internal_operator_label: string;
-  list_external_operator_to_select: Array<OperatorProvider>;
-  list_internal_operator_to_select: Array<OperatorProvider>;
-  external_operator_selected: Ensemble;
-  internal_operator_selected: Ensemble;
-  comboboxAlert: Array<string> = [];
-  comboboxLabel: string;
-  comboboxPlaceholder: string;
-  comboboxArrayTyped: Array<string> = [];
+   external_operator_label: string;
+   internal_operator_label: string;
+   list_external_operator_to_select: Array<OperatorProvider>;
+   list_internal_operator_to_select: Array<OperatorProvider>;
+   external_operator_selected: Ensemble;
+   internal_operator_selected: Ensemble;
+   comboboxAlert: Array<string> = [];
+   comboboxLabel: string;
+   comboboxPlaceholder: string;
+   comboboxArrayTyped: Array<string> = [];
 
-  constructor() {
-    super();
-    this.external_operator_label = '';
-    this.internal_operator_label = 'Entre RCR';
-    this.list_external_operator_to_select = this.getExternalOperatorList;
-    this.list_internal_operator_to_select = this.getInternalOperatorList;
-    this.external_operator_selected = this.getExternalOperatorSelected;
-    this.internal_operator_selected = this.getInternalOperatorSelected;
-    this.comboboxArrayTyped = this.getComboboxArrayTyped;
-    this.comboboxLabel = 'RCR saisis';
-    this.comboboxPlaceholder = 'Saisir des n° de RCR';
-  }
+   constructor() {
+      super();
+      this.external_operator_label = '';
+      this.internal_operator_label = 'Entre RCR';
+      this.list_external_operator_to_select = this.getExternalOperatorList;
+      this.list_internal_operator_to_select = this.getInternalOperatorList;
+      this.external_operator_selected = this.getExternalOperatorSelected;
+      this.internal_operator_selected = this.getInternalOperatorSelected;
+      this.comboboxArrayTyped = this.getComboboxArrayTyped;
+      this.comboboxLabel = 'RCR saisis';
+      this.comboboxPlaceholder = 'Saisir des n° de RCR';
+   }
 
-  get getExternalOperatorList(): Array<OperatorProvider> {
-    return this.$store.state.blocPpn._externalBlocOperatorListToSelect;
-  }
-  get getInternalOperatorList(): Array<OperatorProvider> {
-    return this.$store.state.blocPpn._internalBlocOperatorListToSelect;
-  }
-  get getInternalOperatorSelected(): Ensemble {
-    return this.$store.state.blocPpn._internalBlocOperator;
-  }
-  get getInternalOperatorSelectedInString(): string {
-    switch (this.internal_operator_selected) {
-      case Ensemble.Et:
-        return 'ET';
-      case Ensemble.Ou:
-        return 'OU';
-      case Ensemble.Sauf:
-        return 'SAUF';
-      default:
-        return 'NON DEFINI';
-    }
-  }
-  get getExternalOperatorSelected(): Ensemble {
-    return this.$store.state.blocPpn._externalBlocOperator;
-  }
-  get getComboboxArrayTyped(): Array<string> {
-    return this.$store.state.blocPpn._ppnListString;
-  }
-  get isFirstElement(): boolean {
-    return this.$store.getters.isFirstElement('RCR');
-  }
-
-  //Events v-combobox
-  private addItem(): void {
-    if (this.comboboxArrayTyped.length !== 0) {
-      const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
-      if (lastElement.match('^\\d{8,9}X?$')) {
-        this.$store.dispatch('blocPpnListStringAction', this.comboboxArrayTyped);
-        this.comboboxAlert = [];
-      } else {
-        this.removeItem(lastElement);
-        this.comboboxAlert.push("RCR : 8 ou 9 chiffres suivis ou non d'un X");
+   get getExternalOperatorList(): Array<OperatorProvider> {
+      return this.$store.state.blocRcr._externalBlocOperatorListToSelect;
+   }
+   get getInternalOperatorList(): Array<OperatorProvider> {
+      return this.$store.state.blocRcr._internalBlocOperatorListToSelect;
+   }
+   get getInternalOperatorSelected(): Ensemble {
+      return this.$store.state.blocRcr._internalBlocOperator;
+   }
+   get getInternalOperatorSelectedInString(): string {
+      switch (this.internal_operator_selected) {
+         case Ensemble.Et:
+            return 'ET';
+         case Ensemble.Ou:
+            return 'OU';
+         case Ensemble.Sauf:
+            return 'SAUF';
+         default:
+            return 'NON DEFINI';
       }
-    }
-  }
+   }
+   get getExternalOperatorSelected(): Ensemble {
+      return this.$store.state.blocRcr._externalBlocOperator;
+   }
+   get getComboboxArrayTyped(): Array<string> {
+      return this.$store.state.blocRcr._rcrListString;
+   }
+   get isFirstElement(): boolean {
+      return this.$store.getters.isFirstElement('RCR');
+   }
 
-  private removeItem(item: string): void {
-    const index: number = this.comboboxArrayTyped.indexOf(item);
-    if (index > -1) {
-      this.comboboxArrayTyped.splice(index, 1);
-    }
-  }
+   //Events v-combobox
+   private addItem(): void {
+      if (this.comboboxArrayTyped.length !== 0) {
+         const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
+         if (lastElement.match('^\\d{8,9}X?$')) {
+            this.$store.dispatch('blocRcrRcrListStringAction', this.comboboxArrayTyped);
+            this.comboboxAlert = [];
+         } else {
+            this.removeItem(lastElement);
+            this.comboboxAlert.push("RCR : 8 ou 9 chiffres suivis ou non d'un X");
+         }
+      }
+   }
 
-  private returnItem(): string {
-    let chain = '';
-    this.comboboxArrayTyped.forEach((element) => {
-      chain += element + ', ';
-    });
-    return chain;
-  }
+   private removeItem(item: string): void {
+      const index: number = this.comboboxArrayTyped.indexOf(item);
+      if (index > -1) {
+         this.comboboxArrayTyped.splice(index, 1);
+      }
+   }
 
-  //Events v-select
-  eventUpdateBlocExternalOperator(): void {
-    this.$store.dispatch('blocRcrExternalOperatorAction', this.external_operator_selected);
-  }
+   private returnItem(): string {
+      let chain = '';
+      this.comboboxArrayTyped.forEach((element) => {
+         chain += element + ', ';
+      });
+      return chain;
+   }
 
-  eventUpdateBlocInternalOperator(): void {
-    this.$store.dispatch('blocRcrInternalOperatorAction', this.internal_operator_selected);
-  }
+   //Events v-select
+   eventUpdateBlocExternalOperator(): void {
+      this.$store.dispatch('blocRcrExternalOperatorAction', this.external_operator_selected);
+   }
 
-  //Events v-btn
-  closePanel(element: string) {
-    this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element);
-  }
+   eventUpdateBlocInternalOperator(): void {
+      this.$store.dispatch('blocRcrInternalOperatorAction', this.internal_operator_selected);
+   }
 
-  moveUpPanel(element: string) {
-    this.$store.dispatch('moveUpElementPanelAction', element);
-  }
-
-  moveDownPanel(element: string) {
-    this.$store.dispatch('moveDownElementPanelAction', element);
-  }
+   //Events v-btn
+   closePanel(element: string) {
+      this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element);
+   }
+   moveUpPanel(element: string) {
+      this.$store.dispatch('moveUpElementPanelAction', element);
+   }
+   moveDownPanel(element: string) {
+      this.$store.dispatch('moveDownElementPanelAction', element);
+   }
+   clearBloc() {
+      this.$store.dispatch('blocRcrRcrListStringAction', []);
+      this.comboboxArrayTyped = [];
+   }
 }
 </script>
