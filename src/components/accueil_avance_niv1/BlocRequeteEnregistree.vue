@@ -7,10 +7,10 @@
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par requête enregistrée </v-col>
+                     <v-col xs="12" sm="4" lg="3"> Recherche par requête JSON directe </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || requeteEntered.length === 0" key="0"> Collez une requête ou créez des requêtes plus complexes</span>
+                           <span v-if="open || requeteEntered.length === 0" key="0">Collez une requête à partir de l'historique ou créez des requêtes plus complexes</span>
                         </v-fade-transition>
                      </v-col>
                   </v-row>
