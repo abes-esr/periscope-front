@@ -207,6 +207,7 @@ export default new Vuex.Store({
          state.blocLangue._externalBlocOperator = Ensemble.Ou;
          state.blocLangue._internalBlocOperator = Ensemble.Et;
          state.blocLangue._languesEntered = [];
+         state.blocRequeteDirecte._directRequest = '';
       },
 
       //Construction de l'objet JSON contenant les critères de recherche à envoyer dans les requêtes

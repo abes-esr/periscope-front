@@ -31,6 +31,10 @@
                         class="style2"
                         v-model="requeteEntered"
                      ></v-text-field>
+                     <v-chip class="ma-2" outlined pill>
+                       <v-icon left> mdi-book-open-page-variant-outline  </v-icon>
+                       L'annuaire des clés est disponible ici (lien à mettre)
+                     </v-chip>
                      <!--Internal Operator-->
                   </v-col>
                   <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em"> </v-col>

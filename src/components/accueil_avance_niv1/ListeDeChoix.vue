@@ -15,6 +15,7 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {PanelProvider} from '@/store/interfaces/PanelInterfaces';
+import router from "@/router";
 
 @Component
 export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
@@ -88,6 +89,9 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
      this.$store.dispatch('blocEditeurEditorEnteredAction', []);
      this.$store.dispatch('blocLangueLanguesEnteredAction', []);
      this.$store.dispatch('blocPaysPaysEnteredAction', []);
+     this.$store.dispatch('blocRequeteDirecteAction', '');
+     this.$store.dispatch('resetAllBlocsAction');
+     this.$router.go(0);
    }
 }
 </script>
