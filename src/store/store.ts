@@ -233,7 +233,7 @@ export default new Vuex.Store({
          //On place dans l'historique la requête qui va être envoyée au back-end
          state.blocRequeteDirecte._historyOfAllRequests.push(JSON.stringify(state.jsonTraitements._jsonSearchRequest).replace(/\\/g, ''));
          //On envoie la requête au back-end
-         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteriaByPageAndSize(JSON.stringify(state.jsonTraitements._jsonSearchRequest), state.pagination._nextPageToAsk, state.pagination._sizeWanted);
+         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteriaByPageAndSize(state.jsonTraitements._jsonSearchRequest, state.pagination._nextPageToAsk, state.pagination._sizeWanted);
          //Si une erreur avec le ws est jetée, on affiche un message d'erreur
          if (lotNoticesReceived.length === 1) {
             state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);
