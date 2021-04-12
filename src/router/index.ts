@@ -31,7 +31,7 @@ const routes: Array<RouteConfig> = [
       component: MentionsLegales,
    },
    {
-      path: '/resultats',
+      path: '/resultat',
       name: 'Resultats',
       component: Resultats,
    },

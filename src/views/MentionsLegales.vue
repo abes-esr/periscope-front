@@ -24,10 +24,10 @@
 </template>
 
 <script lang="ts">
-import ComponentMentionsLegales from '@/components/autres/MentionsLegalesComponent.vue';
-import ComponentHeader from '@/components/accueil_niv1/Header.vue';
-import ComponentFooter from '@/components/accueil_niv1/Footer.vue';
-import ComponentStepper from '@/components/stepper/Stepper.vue';
+import ComponentMentionsLegales from '@/components/page/autres/MentionsLegalesComponent.vue';
+import ComponentHeader from '@/components/page/Header.vue';
+import ComponentFooter from '@/components/page/Footer.vue';
+import ComponentStepper from '@/components/page/Stepper.vue';
 
 import {Component, Vue} from 'vue-property-decorator';
 @Component({

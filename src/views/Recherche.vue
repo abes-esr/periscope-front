@@ -33,11 +33,11 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import ComponentHeader from '@/components/accueil_niv1/Header.vue';
-import ComponentRecherche from '@/components/accueil_niv1/Recherche.vue';
-import ComponentFooter from '@/components/accueil_niv1/Footer.vue';
-import ComponentStepper from '@/components/stepper/Stepper.vue';
-import ComponentSnackbar from '@/components/autres/Alerte.vue';
+import ComponentHeader from '@/components/page/Header.vue';
+import ComponentRecherche from '@/components/page/Recherche.vue';
+import ComponentFooter from '@/components/page/Footer.vue';
+import ComponentStepper from '@/components/page/Stepper.vue';
+import ComponentSnackbar from '@/components/page/autres/Alerte.vue';
 
 @Component({
    components: {

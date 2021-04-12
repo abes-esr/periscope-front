@@ -29,8 +29,8 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import ComponentHeader from '../components/accueil_niv1/Header.vue';
-import ComponentStepper from '../components/stepper/Stepper.vue';
+import ComponentHeader from '../components/page/Header.vue';
+import ComponentStepper from '../components/page/Stepper.vue';
 
 @Component({
    components: {

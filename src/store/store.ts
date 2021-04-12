@@ -1,25 +1,25 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import {BlocPcpRegions} from '@/store/classes/blocsDeRecherche/BlocPcpRegions';
-import {BlocPcpMetiers} from '@/store/classes/blocsDeRecherche/BlocPcpMetiers';
-import {BlocRcr} from '@/store/classes/blocsDeRecherche/BlocRcr';
-import {BlocPpn} from '@/store/classes/blocsDeRecherche/BlocPpn';
-import {BlocIssn} from '@/store/classes/blocsDeRecherche/BlocIssn';
-import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
-import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
-import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
-import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
-import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/interfaces/BlocInterfaces';
-import {JsonTraitements} from '@/store/classes/traitements/JsonTraitements';
-import {AxiosTraitements} from '@/store/classes/appelsBackEnd/AxiosTraitements';
-import {LotNotices} from '@/store/classes/resultatsDeRecherche/LotNotices';
-import Notice from '@/store/classes/resultatsDeRecherche/Notice';
-import {Composants} from './classes/composants/Composants';
+import {BlocPcpRegions} from '@/store/api/periscope/criteres/BlocPcpRegions';
+import {BlocPcpMetiers} from '@/store/api/periscope/criteres/BlocPcpMetiers';
+import {BlocRcr} from '@/store/api/periscope/criteres/BlocRcr';
+import {BlocPpn} from '@/store/api/periscope/criteres/BlocPpn';
+import {BlocIssn} from '@/store/api/periscope/criteres/BlocIssn';
+import {BlocMotDuTitre} from '@/store/api/periscope/criteres/BlocMotDuTitre';
+import {BlocEditeur} from '@/store/api/periscope/criteres/BlocEditeur';
+import {BlocLangue} from '@/store/api/periscope/criteres/BlocLangue';
+import {BlocPays} from '@/store/api/periscope/criteres/BlocPays';
+import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/recherche/BlocInterfaces';
+import {SearchRequest} from '@/store/api/periscope/SearchRequest';
+import {PeriscopeApi} from '@/store/api/periscope/PeriscopeApi';
+import {LotNotices} from '@/store/resultat/LotNotices';
+import Notice from '@/store/entity/Notice';
+import {Composants} from './recherche/Composants';
 import router from '@/router/index.ts';
-import {BlocTri} from '@/store/classes/blocsDeRecherche/BlocTri';
-import {Pagination} from '@/store/classes/resultatsDeRecherche/Pagination';
-import {BlocRequeteEnregistree} from '@/store/classes/blocsDeRecherche/BlocRequeteEnregistree';
+import {BlocTri} from '@/store/api/periscope/criteres/BlocTri';
+import {Pagination} from '@/store/resultat/Pagination';
+import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
 
 Vue.use(Vuex);
 
@@ -41,7 +41,7 @@ export default new Vuex.Store({
       //Composants
       composants: new Composants(),
       //Méthodes pour construire JSON à envoyer au back-end
-      jsonTraitements: new JsonTraitements(),
+      jsonTraitements: new SearchRequest(),
       //Bloc de tri multiples
       blocTri: new BlocTri(),
       pagination: new Pagination(),
@@ -212,7 +212,7 @@ export default new Vuex.Store({
 
       //Construction de l'objet JSON contenant les critères de recherche à envoyer dans les requêtes
       jsonSearchRequestConstructionMutation(state) {
-         state.jsonTraitements._jsonSearchRequest = JsonTraitements.constructJsonGlobalRequest(
+         state.jsonTraitements._jsonSearchRequest = SearchRequest.constructJsonGlobalRequest(
             state.blocPcpRegions,
             state.blocPcpMetiers,
             state.blocRcr,
@@ -233,7 +233,7 @@ export default new Vuex.Store({
          //On place dans l'historique la requête qui va être envoyée au back-end
          state.blocRequeteDirecte._historyOfAllRequests.push(JSON.stringify(state.jsonTraitements._jsonSearchRequest).replace(/\\/g, ''));
          //On envoie la requête au back-end
-         const lotNoticesReceived = await AxiosTraitements.findNoticeByCriteriaByPageAndSize(state.jsonTraitements._jsonSearchRequest, state.pagination._nextPageToAsk, state.pagination._sizeWanted);
+         const lotNoticesReceived = await PeriscopeApi.findNoticeByCriteriaByPageAndSize(state.jsonTraitements._jsonSearchRequest, state.pagination._nextPageToAsk, state.pagination._sizeWanted);
          //Si une erreur avec le ws est jetée, on affiche un message d'erreur
          if (lotNoticesReceived.length === 1) {
             state.composants._snackBarText = JSON.stringify(lotNoticesReceived[0]);

@@ -36,20 +36,20 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import ComponentPpn from '@/components/accueil_avance_niv1/BlocPpn.vue';
-import ComponentHeader from '@/components/accueil_niv1/Header.vue';
-import ComponentStepper from '@/components/stepper/Stepper.vue';
-import ComponentListeDeChoix from '@/components/accueil_avance_niv1/ListeDeChoix.vue';
-import ComponentIssn from '@/components/accueil_avance_niv1/BlocIssn.vue';
-import ComponentRcr from '@/components/accueil_avance_niv1/BlocRcr.vue';
-import ComponentPlanConservationMetiers from '@/components/accueil_avance_niv1/BlocPlanConservationMetiers.vue';
-import ComponentMotsDuTitre from '@/components/accueil_avance_niv1/BlocMotsDuTitre.vue';
-import ComponentEditeur from '@/components/accueil_avance_niv1/BlocEditeur.vue';
-import ComponentLangue from '@/components/accueil_avance_niv1/BlocLangue.vue';
-import ComponentPays from '@/components/accueil_avance_niv1/BlocPays.vue';
-import ComponentPlanConservationRegions from '@/components/accueil_avance_niv1/BlocPlanConservationRegions.vue';
-import ComponentRequeteEnregistree from '@/components/accueil_avance_niv1/BlocRequeteEnregistree.vue';
-import {PanelProvider} from '@/store/interfaces/PanelInterfaces';
+import ComponentPpn from '@/components/recherche/criteres/BlocPpn.vue';
+import ComponentHeader from '@/components/page/Header.vue';
+import ComponentStepper from '@/components/page/Stepper.vue';
+import ComponentListeDeChoix from '@/components/recherche/criteres/ListeDeChoix.vue';
+import ComponentIssn from '@/components/recherche/criteres/BlocIssn.vue';
+import ComponentRcr from '@/components/recherche/criteres/BlocRcr.vue';
+import ComponentPlanConservationMetiers from '@/components/recherche/criteres/BlocPlanConservationMetiers.vue';
+import ComponentMotsDuTitre from '@/components/recherche/criteres/BlocMotsDuTitre.vue';
+import ComponentEditeur from '@/components/recherche/criteres/BlocEditeur.vue';
+import ComponentLangue from '@/components/recherche/criteres/BlocLangue.vue';
+import ComponentPays from '@/components/recherche/criteres/BlocPays.vue';
+import ComponentPlanConservationRegions from '@/components/recherche/criteres/BlocPlanConservationRegions.vue';
+import ComponentRequeteEnregistree from '@/components/recherche/criteres/BlocRequeteEnregistree.vue';
+import {PanelProvider} from '@/store/resultat/PanelInterfaces';
 
 @Component({
    components: {
