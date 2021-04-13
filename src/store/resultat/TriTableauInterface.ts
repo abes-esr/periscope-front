@@ -1,4 +1,4 @@
-export interface TriTableauInterface{
-  sort: string;
-  order: string;
+export interface TriTableauInterface {
+   sort: string;
+   order: string;
 }

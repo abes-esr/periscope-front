@@ -23,6 +23,7 @@
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '../../mixins/globalProperties';
+import {Logger} from '@/store/utils/Logger';
 
 @Component
 export default class Stepper extends Mixins(GlobalPropertiesMixin) {
@@ -38,26 +39,50 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
    changePage(stepNumber: number): void {
       switch (stepNumber) {
          case 1:
-            this.$store.dispatch('changeStepAction', stepNumber);
-            this.$router.replace('Recherche');
+            this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
+               Logger.error(err);
+            });
+            this.$router.replace('Recherche').catch((err) => {
+               Logger.error(err);
+            });
             break;
          case 2:
-            this.$store.dispatch('changeStepAction', stepNumber);
-            this.$store.dispatch('constructJsonAction');
-            this.$store.dispatch('resetNoticesAndPaginationAction');
-            this.$store.dispatch('getNoticesAction', 'Resultats');
+            this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
+               Logger.error(err);
+            });
+            this.$store.dispatch('constructJsonAction').catch((err) => {
+               Logger.error(err);
+            });
+            this.$store.dispatch('resetNoticesAndPaginationAction').catch((err) => {
+               Logger.error(err);
+            });
+            this.$store.dispatch('getNoticesAction', 'Resultats').catch((err) => {
+               Logger.error(err);
+            });
             break;
          case 3:
-            this.$store.dispatch('changeStepAction', stepNumber);
-            this.$router.replace('Visualisation');
+            this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
+               Logger.error(err);
+            });
+            this.$router.replace('Visualisation').catch((err) => {
+               Logger.error(err);
+            });
             break;
          case 4:
-            this.$store.dispatch('changeStepAction', stepNumber);
-            this.$router.replace('Export');
+            this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
+               Logger.error(err);
+            });
+            this.$router.replace('Export').catch((err) => {
+               Logger.error(err);
+            });
             break;
          case 5:
-            this.$store.dispatch('changeStepAction', stepNumber);
-            this.$router.replace('HistoriqueRequetes');
+            this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
+               Logger.error(err);
+            });
+            this.$router.replace('HistoriqueRequetes').catch((err) => {
+               Logger.error(err);
+            });
             break;
       }
    }

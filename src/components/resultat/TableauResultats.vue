@@ -127,6 +127,7 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {ContentHeader, TableHeader} from '@/store/resultat/TableInterfaces';
+import {Logger} from "@/store/utils/Logger";
 //Permet de faire patienter un certain nombre de secondes avant l'exécution d'une fonction dans le code avec async await
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -161,7 +162,7 @@ export default class TableauResultats extends Vue {
       this.orderBooleans = this.getOrderSortBooleans;
       this.orderLabels = this.getOrderSortLabels;
       this.numberOfNoticesAskedForNewCall = this.getNumberOfNoticesAskedForNewCall;
-      console.log(this.$store.getters.getRequestLaunchedToBackEnd);
+      Logger.debug(this.$store.getters.getRequestLaunchedToBackEnd);
    }
 
    get getOrderSortBooleans(): Array<boolean> {
@@ -235,18 +236,18 @@ export default class TableauResultats extends Vue {
 
    //Lorsque l'utilisateur clique sur le bouton d'actualisation du tri
    sortColumns() {
-      this.$store.dispatch('resetNoticesAndPaginationAction');
-      this.$store.dispatch('getNoticesAction', 'current');
+      this.$store.dispatch('resetNoticesAndPaginationAction').catch(err => {Logger.error(err)});
+      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
    }
 
    previousPage() {
-      this.$store.dispatch('previousPageDecrementPaginationAction');
-      this.$store.dispatch('getNoticesAction', 'current');
+      this.$store.dispatch('previousPageDecrementPaginationAction').catch(err => {Logger.error(err)});
+      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
    }
 
    nextPage() {
-      this.$store.dispatch('resetNoticesAction');
-      this.$store.dispatch('getNoticesAction', 'current');
+      this.$store.dispatch('resetNoticesAction').catch(err => {Logger.error(err)});
+      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
    }
 
    goToTopOfPage(){
@@ -255,9 +256,9 @@ export default class TableauResultats extends Vue {
 
    //Lorsque l'utilisateur modifie le nombre de résultats voulus par page
    getItemPerPage(val: number) {
-      this.$store.dispatch('resetNoticesAndPaginationAction');
-      this.$store.dispatch('changeNumberOfElementsParPageAction', val);
-      this.$store.dispatch('getNoticesAction', 'current');
+      this.$store.dispatch('resetNoticesAndPaginationAction').catch(err => {Logger.error(err)});
+      this.$store.dispatch('changeNumberOfElementsParPageAction', val).catch(err => {Logger.error(err)});
+      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
       this.numberOfNoticesAskedForNewCall = val;
    }
 

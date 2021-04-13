@@ -10,7 +10,11 @@ export class Notice {
       this.ppn = obj.ppn;
       this.issn = obj.issn;
       obj.pcpList.forEach((element: string) => this.pcpList.push(element + ' '));
-      if(obj.rcrList == null){this.rcrList = []}else{this.rcrList = obj.rcrList}
+      if (obj.rcrList == null) {
+         this.rcrList = [];
+      } else {
+         this.rcrList = obj.rcrList;
+      }
       this.editor = obj.editeur;
       this.keyTitle = obj.titre_cle;
       this.keyShortedTitle = obj.titre_court;

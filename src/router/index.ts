@@ -53,4 +53,6 @@ const router = new VueRouter({
    routes,
 });
 
+//this.$router.push({}).catch((err) => { throw new RouterError(err); });
+
 export default router;

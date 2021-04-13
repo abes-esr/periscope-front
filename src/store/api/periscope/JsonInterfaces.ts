@@ -2,6 +2,11 @@
  * Représente les interfaces pour l'intégration avec VueJS
  */
 
+export interface RcrProvider {
+   id: number;
+   value: number;
+}
+
 export interface JsonPcpBlocProvider {
    type: string;
    bloc_operator: string;
@@ -31,7 +36,7 @@ export interface JsonIssnBlocProvider {
 export interface JsonMotsDuTitreProvider {
    type: string;
    bloc_operator: string;
-   titleWords: Array<string>;
+   title_words: Array<string>;
    title_words_operator: Array<string>;
 }
 

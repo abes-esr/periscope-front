@@ -1,4 +1,5 @@
 import {PanelProvider} from '@/store/resultat/PanelInterfaces';
+import {Logger} from "@/store/utils/Logger";
 
 /**
  * Composant pour l'onglet de Recherche
@@ -35,7 +36,7 @@ export class Composants {
             panel[position] = x;
          }
       } else if (movement === 'DOWN') {
-         console.log(position);
+         Logger.debug(JSON.stringify(position));
          if (position === panel.filter((x) => x.displayed).length - 1) {
             return;
          } else {

@@ -38,6 +38,7 @@ import ComponentRecherche from '@/components/page/Recherche.vue';
 import ComponentFooter from '@/components/page/Footer.vue';
 import ComponentStepper from '@/components/page/Stepper.vue';
 import ComponentSnackbar from '@/components/page/autres/Alerte.vue';
+import {Logger} from "@/store/utils/Logger";
 
 @Component({
    components: {
@@ -53,13 +54,13 @@ export default class Recherche extends Vue {
       this.$store
          .dispatch('displayStore')
          .then(() => {
-            console.log('Requête supérieure à 5 secondes');
+            Logger.debug('Requête supérieure à 5 secondes');
             setTimeout(() => {
-               console.log('');
+               Logger.debug('');
             }, 5000);
          })
          .catch((error) => {
-            console.error(error);
+            Logger.error(error);
          });
    }
 

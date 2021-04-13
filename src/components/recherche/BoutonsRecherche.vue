@@ -14,17 +14,26 @@
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Logger} from '@/store/utils/Logger';
 
 @Component
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
    clickSearch() {
-      this.$store.dispatch('constructJsonAction');
-      this.$store.dispatch('resetNoticesAndPaginationAction');
-      this.$store.dispatch('getNoticesAction', 'Resultats');
+      this.$store.dispatch('constructJsonAction').catch((err) => {
+         Logger.error(err);
+      });
+      this.$store.dispatch('resetNoticesAndPaginationAction').catch((err) => {
+         Logger.error(err);
+      });
+      this.$store.dispatch('getNoticesAction', 'Resultats').catch((err) => {
+         Logger.error(err);
+      });
    }
 
    resetStore() {
-      this.$store.dispatch('resetAllBlocsAction');
+      this.$store.dispatch('resetAllSelectedValue').catch((err) => {
+         Logger.error(err);
+      });
       document.location.reload();
    }
 }

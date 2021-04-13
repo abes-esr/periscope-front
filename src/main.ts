@@ -5,13 +5,21 @@ import store from './store/store';
 import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
+import {Logger} from '@/store/utils/Logger';
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = ['Regions'];
 
-new Vue({
+// Handle all Vue errors
+Vue.config.errorHandler = (error) => Logger.error(error.message, error.constructor.name);
+
+const vue = new Vue({
    router,
    store,
    vuetify,
    render: (h) => h(App),
 }).$mount('#app');
+
+vue.$store.dispatch('loadCandidatesValue').catch((err) => {
+   Logger.error(err);
+});

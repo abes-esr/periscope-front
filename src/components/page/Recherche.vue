@@ -22,10 +22,10 @@
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
-import ComponentPpn from '@/components/recherche/Ppn.vue';
-import ComponentRcr from '@/components/recherche/Rcr.vue';
+import ComponentPpn from '@/components/recherche/criteres/v1/Ppn.vue';
+import ComponentRcr from '@/components/recherche/criteres/v1/Rcr.vue';
 import ComponentBoutonsRecherche from '@/components/recherche/BoutonsRecherche.vue';
-import ComponentPlanDeConservation from '@/components/recherche/PlanConservation.vue';
+import ComponentPlanDeConservation from '@/components/recherche/criteres/v1/PlanConservation.vue';
 
 @Component({
    components: {

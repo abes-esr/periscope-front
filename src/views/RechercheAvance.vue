@@ -21,7 +21,7 @@
                <component-ppn v-if="i.text === 'PPN' && i.displayed === true"></component-ppn>
                <component-issn v-if="i.text === 'ISSN' && i.displayed === true"></component-issn>
                <component-rcr v-if="i.text === 'RCR' && i.displayed === true"></component-rcr>
-               <component-plan-conservation-regions v-if="i.text === 'REGIONS' && i.displayed === true"></component-plan-conservation-regions>
+               <component-plan-conservation-regions ref="regions" v-if="i.text === 'REGIONS' && i.displayed === true"></component-plan-conservation-regions>
                <component-plan-conservation-metiers v-if="i.text === 'METIERS' && i.displayed === true"></component-plan-conservation-metiers>
                <component-mots-du-titre v-if="i.text === 'WORDS' && i.displayed === true"></component-mots-du-titre>
                <component-editeur v-if="i.text === 'EDITOR' && i.displayed === true"></component-editeur>
@@ -36,19 +36,19 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import ComponentPpn from '@/components/recherche/criteres/BlocPpn.vue';
+import ComponentPpn from '@/components/recherche/criteres/v2/BlocPpn.vue';
 import ComponentHeader from '@/components/page/Header.vue';
 import ComponentStepper from '@/components/page/Stepper.vue';
-import ComponentListeDeChoix from '@/components/recherche/criteres/ListeDeChoix.vue';
-import ComponentIssn from '@/components/recherche/criteres/BlocIssn.vue';
-import ComponentRcr from '@/components/recherche/criteres/BlocRcr.vue';
-import ComponentPlanConservationMetiers from '@/components/recherche/criteres/BlocPlanConservationMetiers.vue';
-import ComponentMotsDuTitre from '@/components/recherche/criteres/BlocMotsDuTitre.vue';
-import ComponentEditeur from '@/components/recherche/criteres/BlocEditeur.vue';
-import ComponentLangue from '@/components/recherche/criteres/BlocLangue.vue';
-import ComponentPays from '@/components/recherche/criteres/BlocPays.vue';
-import ComponentPlanConservationRegions from '@/components/recherche/criteres/BlocPlanConservationRegions.vue';
-import ComponentRequeteEnregistree from '@/components/recherche/criteres/BlocRequeteEnregistree.vue';
+import ComponentListeDeChoix from '@/components/recherche/criteres/v2/ListeDeChoix.vue';
+import ComponentIssn from '@/components/recherche/criteres/v2/BlocIssn.vue';
+import ComponentRcr from '@/components/recherche/criteres/v2/BlocRcr.vue';
+import ComponentPlanConservationMetiers from '@/components/recherche/criteres/v2/BlocPlanConservationMetiers.vue';
+import ComponentMotsDuTitre from '@/components/recherche/criteres/v2/BlocMotsDuTitre.vue';
+import ComponentEditeur from '@/components/recherche/criteres/v2/BlocEditeur.vue';
+import ComponentLangue from '@/components/recherche/criteres/v2/BlocLangue.vue';
+import ComponentPays from '@/components/recherche/criteres/v2/BlocPays.vue';
+import ComponentPlanConservationRegions from '@/components/recherche/criteres/v2/BlocPlanConservationRegions.vue';
+import ComponentRequeteEnregistree from '@/components/recherche/criteres/v2/BlocRequeteEnregistree.vue';
 import {PanelProvider} from '@/store/resultat/PanelInterfaces';
 
 @Component({

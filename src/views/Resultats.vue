@@ -34,6 +34,7 @@ import ComponentStepper from '@/components/page/Stepper.vue';
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentFooter from '@/components/page/Footer.vue';
 import ComponentTableauResultats from '@/components/resultat/TableauResultats.vue';
+import {Logger} from "@/store/utils/Logger";
 
 @Component({
    components: {
@@ -45,7 +46,7 @@ import ComponentTableauResultats from '@/components/resultat/TableauResultats.vu
 })
 export default class Resultats extends Vue {
    private clickVisualisation() {
-      this.$store.dispatch('displayStore');
+      this.$store.dispatch('displayStore').catch(err => {Logger.error(err)});
    }
 }
 </script>

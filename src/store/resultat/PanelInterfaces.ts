@@ -1,5 +1,5 @@
-export interface PanelProvider{
-  text: string;
-  displayed: boolean;
-  label: string;
+export interface PanelProvider {
+   text: string;
+   displayed: boolean;
+   label: string;
 }
