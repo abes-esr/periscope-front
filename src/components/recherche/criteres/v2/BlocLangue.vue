@@ -24,7 +24,20 @@
                <v-row justify="center">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-combobox @change="updateArrayBlocLangue" v-model="langueEntered" :items="langueItems" multiple outlined label="tapez une langue (optionnel)" class="style2" placeholder="langue à saisir">
+                     <v-autocomplete
+                        @change="updateArrayBlocLangue"
+                        v-model="langueEntered"
+                        :items="langueItems"
+                        @input="searchInput = null"
+                        :search-input.sync="searchInput"
+                        item-text="text"
+                        item-value="id"
+                        multiple
+                        outlined
+                        label="tapez une langue (optionnel)"
+                        class="style2"
+                        placeholder="langue à saisir"
+                     >
                         <template v-slot:selection="{attrs, item, selected}">
                            <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
                               <span class="pr-2">
@@ -33,7 +46,7 @@
                               <v-icon small @click="removeItemLangue(item)">x</v-icon>
                            </v-chip>
                         </template>
-                     </v-combobox>
+                     </v-autocomplete>
                      <!--Internal Operator-->
                   </v-col>
                   <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em">
@@ -43,16 +56,16 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('LANG')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('LANG')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
                <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('LANG')">
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -63,9 +76,13 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {Ensemble, ListProvider, OperatorProvider} from '@/store/recherche/BlocInterfaces';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
+import {Logger} from '@/store/utils/Logger';
+import {ValueError} from "@/store/exception/ValueError";
 
 @Component
 export default class ComponentLangue extends Vue {
+   id: PanelType = PanelType.LANG;
    external_operator_label: string;
    internal_operator_label: string;
    list_external_operator_to_select: Array<OperatorProvider>;
@@ -74,6 +91,7 @@ export default class ComponentLangue extends Vue {
    internal_operator_selected: Ensemble;
    langueItems: Array<ListProvider>;
    langueEntered: Array<string>;
+   searchInput = null; // Pour supprimer le texte saisie à la recherche
 
    constructor() {
       super();
@@ -112,7 +130,7 @@ export default class ComponentLangue extends Vue {
       return this.$store.state.blocLangue._externalBlocOperator;
    }
    get isFirstElement(): boolean {
-      return this.$store.getters.isFirstElement('LANG');
+      return this.$store.getters.isFirstElement(this.id);
    }
    get getLangueItems(): Array<ListProvider> {
       return this.$store.state.blocLangue._candidates;
@@ -121,16 +139,35 @@ export default class ComponentLangue extends Vue {
       return this.$store.state.blocLangue._selected;
    }
 
-   removeItemLangue(item: string): void {
-      const index: number = this.langueEntered.indexOf(item);
-      if (index > -1) {
-         this.langueEntered.splice(index, 1);
-         this.$store.dispatch('updateSelectedLangue', this.langueEntered);
-      }
+   removeItemLangue(value: ListProvider): void {
+     let index: number = this.langueEntered.indexOf(value.id);
+     if (index == -1) {
+       throw new ValueError('Language selected ' + value + ' not found');
+     }
+     this.langueEntered.splice(index, 1);
+
+     index = this.langueItems.findIndex((x) => x.id === value.id);
+     if (index == -1) {
+       throw new ValueError('Language ' + value + ' not found');
+     }
+     this.langueItems[index].value = false;
+
+     this.$store.dispatch('updateSelectedPays', this.langueItems).catch((err) => {
+       Logger.error(err);
+     });
    }
 
-   updateArrayBlocLangue(): void {
-      this.$store.dispatch('updateSelectedLangue', this.langueEntered);
+   updateArrayBlocLangue(items: Array<string>): void {
+     for (let value of items) {
+       const index = this.langueItems.findIndex((x) => x.id === value);
+       if (index == -1) {
+         throw new ValueError('Language ' + value + ' not found');
+       }
+       this.langueItems[index].value = true;
+     }
+     this.$store.dispatch('updateSelectedLangue', this.langueItems).catch((err) => {
+       Logger.error(err);
+     });
    }
 
    //Events v-select
@@ -142,18 +179,50 @@ export default class ComponentLangue extends Vue {
    }
 
    //Events v-btn
-   closePanel(element: string) {
-      this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element);
+   removePanel() {
+      this.clearSelectedValues();
+      const action: PanelDisplaySwitchProvider = {
+         panelId: this.id,
+         value: DisplaySwitch.OFF,
+      };
+      this.$store.dispatch('switchElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
    }
-   moveUpPanel(element: string) {
-      this.$store.dispatch('moveUpElementPanelAction', element);
+   moveUpPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.UP,
+      };
+
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   moveDownPanel(element: string) {
-      this.$store.dispatch('moveDownElementPanelAction', element);
+   moveDownPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.DOWN,
+      };
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   clearBloc() {
-      this.langueEntered = [];
-      this.$store.dispatch('updateSelectedLangue', this.langueEntered);
+   clearSelectedValues() {
+      this.$store.dispatch('resetBlocLangue').catch((err) => {
+         Logger.error(err);
+      });
+      this.reloadFromStore();
+   }
+   reloadFromStore() {
+      this.list_external_operator_to_select = this.getExternalOperatorList;
+      this.list_internal_operator_to_select = this.getInternalOperatorList;
+      this.external_operator_selected = this.getExternalOperatorSelected;
+      this.internal_operator_selected = this.getInternalOperatorSelected;
+      this.langueItems = this.getLangueItems;
+      this.langueEntered = this.getLangueEntered;
    }
 }
 </script>

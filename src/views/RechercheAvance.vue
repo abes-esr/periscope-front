@@ -12,25 +12,28 @@
       </v-row>
       <v-row>
          <v-col>
-            <component-liste-de-choix></component-liste-de-choix>
+            <component-liste-de-choix @onChange="renderPanelList"></component-liste-de-choix>
          </v-col>
       </v-row>
       <v-row>
          <v-col>
-            <v-expansion-panels v-for="i in panel" :key="i.id">
-               <component-ppn v-if="i.text === 'PPN' && i.displayed === true"></component-ppn>
-               <component-issn v-if="i.text === 'ISSN' && i.displayed === true"></component-issn>
-               <component-rcr v-if="i.text === 'RCR' && i.displayed === true"></component-rcr>
-               <component-plan-conservation-regions ref="regions" v-if="i.text === 'REGIONS' && i.displayed === true"></component-plan-conservation-regions>
-               <component-plan-conservation-metiers v-if="i.text === 'METIERS' && i.displayed === true"></component-plan-conservation-metiers>
-               <component-mots-du-titre v-if="i.text === 'WORDS' && i.displayed === true"></component-mots-du-titre>
-               <component-editeur v-if="i.text === 'EDITOR' && i.displayed === true"></component-editeur>
-               <component-langue v-if="i.text === 'LANG' && i.displayed === true"></component-langue>
-               <component-pays v-if="i.text === 'COUNTRY' && i.displayed === true"></component-pays>
-               <component-requete-enregistree v-if="i.text === 'HISTORY' && i.displayed === true"></component-requete-enregistree>
+            <v-expansion-panels v-for="i in panel" :key="i.position" >
+               <component-ppn v-if="i.id === 0 && i.displayed === true" @onChange="renderPanelList"></component-ppn>
+               <component-issn v-if="i.id === 1 && i.displayed === true" @onChange="renderPanelList"></component-issn>
+               <component-rcr v-if="i.id === 2 && i.displayed === true" @onChange="renderPanelList"></component-rcr>
+               <component-plan-conservation-regions v-if="i.id === 3 && i.displayed === true" @onChange="renderPanelList"></component-plan-conservation-regions>
+               <component-plan-conservation-metiers v-if="i.id === 4 && i.displayed === true" @onChange="renderPanelList"></component-plan-conservation-metiers>
+               <component-mots-du-titre v-if="i.id === 5 && i.displayed === true" @onChange="renderPanelList"></component-mots-du-titre>
+               <component-editeur v-if="i.id === 6 && i.displayed === true" @onChange="renderPanelList"></component-editeur>
+               <component-langue v-if="i.id === 7 && i.displayed === true" @onChange="renderPanelList"></component-langue>
+               <component-pays v-if="i.id === 8 && i.displayed === true" @onChange="renderPanelList"></component-pays>
+               <component-requete-enregistree v-if="i.id === 9 && i.displayed === true" @onChange="renderPanelList"></component-requete-enregistree>
             </v-expansion-panels>
          </v-col>
       </v-row>
+      <v-container>
+         <component-boutons-recherche @onChange="renderPanelList"></component-boutons-recherche>
+      </v-container>
    </v-container>
 </template>
 
@@ -49,7 +52,9 @@ import ComponentLangue from '@/components/recherche/criteres/v2/BlocLangue.vue';
 import ComponentPays from '@/components/recherche/criteres/v2/BlocPays.vue';
 import ComponentPlanConservationRegions from '@/components/recherche/criteres/v2/BlocPlanConservationRegions.vue';
 import ComponentRequeteEnregistree from '@/components/recherche/criteres/v2/BlocRequeteEnregistree.vue';
-import {PanelProvider} from '@/store/resultat/PanelInterfaces';
+import ComponentBoutonsRecherche from '@/components/recherche/BoutonsRecherche.vue';
+import {Logger} from "@/store/utils/Logger";
+import {PanelProvider} from "@/store/recherche/ComposantInterfaces";
 
 @Component({
    components: {
@@ -66,6 +71,7 @@ import {PanelProvider} from '@/store/resultat/PanelInterfaces';
       ComponentLangue,
       ComponentPays,
       ComponentRequeteEnregistree,
+      ComponentBoutonsRecherche,
    },
 })
 export default class RechercheAvance extends Vue {
@@ -83,5 +89,9 @@ export default class RechercheAvance extends Vue {
    get getPanel(): Array<PanelProvider> {
       return this.$store.state.composants._panel;
    }
+
+   renderPanelList() {
+     this.panel = this.getPanel;
+  }
 }
 </script>

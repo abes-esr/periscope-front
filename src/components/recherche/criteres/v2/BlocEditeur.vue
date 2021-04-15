@@ -40,16 +40,16 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('EDITOR')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('EDITOR')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
                <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('EDITOR')">
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -61,9 +61,17 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {Ensemble, OperatorProvider} from '@/store/recherche/BlocInterfaces';
 import {Logger} from '@/store/utils/Logger';
+import {
+  DisplaySwitch,
+  Movement,
+  PanelDisplaySwitchProvider,
+  PanelMovementProvider,
+  PanelType
+} from '@/store/recherche/ComposantInterfaces';
 
 @Component
 export default class ComponentEditeur extends Vue {
+   id: PanelType = PanelType.EDITOR;
    external_operator_label: string;
    internal_operator_label: string;
    list_external_operator_to_select: Array<OperatorProvider>;
@@ -84,13 +92,13 @@ export default class ComponentEditeur extends Vue {
    }
 
    get getExternalOperatorList(): Array<OperatorProvider> {
-      return this.$store.state.blocMotsDuTitre._externalBlocOperatorListToSelect;
+      return this.$store.state.blocEditeur._externalBlocOperatorListToSelect;
    }
    get getInternalOperatorList(): Array<OperatorProvider> {
-      return this.$store.state.blocMotsDuTitre._internalBlocOperatorListToSelect;
+      return this.$store.state.blocEditeur._internalBlocOperatorListToSelect;
    }
    get getInternalOperatorSelected(): Ensemble {
-      return this.$store.state.blocMotsDuTitre._internalBlocOperator;
+      return this.$store.state.blocEditeur._internalBlocOperator;
    }
    get getInternalOperatorSelectedInString(): string {
       switch (this.internal_operator_selected) {
@@ -105,10 +113,10 @@ export default class ComponentEditeur extends Vue {
       }
    }
    get getExternalOperatorSelected(): Ensemble {
-      return this.$store.state.blocMotsDuTitre._externalBlocOperator;
+      return this.$store.state.blocEditeur._externalBlocOperator;
    }
    get isFirstElement(): boolean {
-      return this.$store.getters.isFirstElement('EDITOR');
+      return this.$store.getters.isFirstElement(this.id);
    }
 
    get getEditeur(): Array<string> {
@@ -124,12 +132,12 @@ export default class ComponentEditeur extends Vue {
 
    //Events v-select
    eventUpdateBlocExternalOperator(): void {
-      this.$store.dispatch('updateSelectedExternalMotsDuTitreOperator', this.external_operator_selected).catch((err) => {
+      this.$store.dispatch('updateSelectedExternalEditeurOperator', this.external_operator_selected).catch((err) => {
          Logger.error(err);
       });
    }
    eventUpdateBlocInternalOperator(): void {
-      this.$store.dispatch('updateSelectedInternalMotsDuTitreOperator', this.internal_operator_selected).catch((err) => {
+      this.$store.dispatch('updateSelectedInternalEditeurOperator', this.internal_operator_selected).catch((err) => {
          Logger.error(err);
       });
    }
@@ -155,26 +163,49 @@ export default class ComponentEditeur extends Vue {
    }
 
    //Events v-btn
-   closePanel(element: string) {
-      this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element).catch((err) => {
+   removePanel() {
+      this.clearSelectedValues();
+      const action: PanelDisplaySwitchProvider = {
+         panelId: this.id,
+         value: DisplaySwitch.OFF,
+      };
+      this.$store.dispatch('switchElementPanel', action).catch((err) => {
          Logger.error(err);
       });
    }
-   moveUpPanel(element: string) {
-      this.$store.dispatch('moveUpElementPanelAction', element).catch((err) => {
+   moveUpPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.UP,
+      };
+
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   moveDownPanel(element: string) {
-      this.$store.dispatch('moveDownElementPanelAction', element).catch((err) => {
+   moveDownPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.DOWN,
+      };
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   clearBloc() {
-      this.editeurEntered = [];
-      this.$store.dispatch('updateSelectedEditeur', this.editeurEntered).catch((err) => {
+   clearSelectedValues() {
+      this.$store.dispatch('resetBlocEditeur').catch((err) => {
          Logger.error(err);
       });
+      this.reloadFromStore();
+   }
+   reloadFromStore() {
+      this.list_external_operator_to_select = this.getExternalOperatorList;
+      this.list_internal_operator_to_select = this.getInternalOperatorList;
+      this.external_operator_selected = this.getExternalOperatorSelected;
+      this.internal_operator_selected = this.getInternalOperatorSelected;
+      this.editeurEntered = this.getEditeur;
    }
 }
 </script>

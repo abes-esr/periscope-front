@@ -1,4 +1,4 @@
-import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/api/periscope/JsonInterfaces';
+import {JsonCriteres, JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider, JsonTri, JsonTriProvider} from '@/store/api/periscope/JsonInterfaces';
 import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
@@ -38,7 +38,8 @@ export class SearchRequest {
       blocTri: BlocTri
    ): JsonGlobalSearchRequest {
       //Les blocs ne sont rajoutés que si il contiennent des données
-      const Blocs: Array<JsonGlobalSearchRequest> = [];
+      const criteria: Array<JsonCriteres> = [];
+      const sort: Array<JsonTri> = [];
 
       //Construction de la partie PCP Regions et Metiers en JSON
       if (blocPcpRegions._selected.length !== 0 || blocPcpMetiers._selected.length !== 0) {
@@ -56,7 +57,7 @@ export class SearchRequest {
             pcp_operator: pcpRegionsAndMetiersInternalOperators,
          };
 
-         Blocs.push(pcpBlocJson);
+         criteria.push(pcpBlocJson);
       }
 
       //Construction de la partie Rcr en JSON
@@ -67,7 +68,7 @@ export class SearchRequest {
             rcr: blocRcr._selected,
             rcr_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocRcr._internalBlocOperator, blocRcr._selected.length),
          };
-         Blocs.push(rcrBlocJson);
+         criteria.push(rcrBlocJson);
       }
 
       //Construction de la partie PPN en JSON
@@ -77,7 +78,7 @@ export class SearchRequest {
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPpn._externalBlocOperator),
             ppn: blocPpn._selected,
          };
-         Blocs.push(ppnBlocJson);
+         criteria.push(ppnBlocJson);
       }
 
       //Construction de la partie ISSN en JSON
@@ -87,7 +88,7 @@ export class SearchRequest {
             bloc_operator: BlocAbstract.convertBlocOperatorInString(blocIssn._externalBlocOperator),
             issn: blocIssn._selected,
          };
-         Blocs.push(issnBlocJson);
+         criteria.push(issnBlocJson);
       }
 
       //Construction de la partie Mots du titre en JSON
@@ -98,7 +99,7 @@ export class SearchRequest {
             title_words: blocMotsDuTitre._selected,
             title_words_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocMotsDuTitre._internalBlocOperator, blocMotsDuTitre._selected.length),
          };
-         Blocs.push(titleWordsBlocJson);
+         criteria.push(titleWordsBlocJson);
       }
 
       //Construction de la partie Editeur en JSON
@@ -109,7 +110,7 @@ export class SearchRequest {
             editors: blocEditeur._selected,
             editors_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocEditeur._internalBlocOperator, blocEditeur._selected.length),
          };
-         Blocs.push(editorBlocJson);
+         criteria.push(editorBlocJson);
       }
 
       //Construction de la partie Pays en JSON
@@ -120,7 +121,7 @@ export class SearchRequest {
             countries: blocPays._selected,
             countries_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocPays._internalBlocOperator, blocPays._selected.length),
          };
-         Blocs.push(paysBlocJson);
+         criteria.push(paysBlocJson);
       }
 
       //Construction de la partie Langue en JSON
@@ -131,7 +132,7 @@ export class SearchRequest {
             language: blocLangue._selected,
             language_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocLangue._internalBlocOperator, blocLangue._selected.length),
          };
-         Blocs.push(langueBlocJson);
+         criteria.push(langueBlocJson);
       }
 
       //Construction d'une requête en cas de saisie directe de requête, effacement de l'ensemble des autres élements
@@ -140,8 +141,71 @@ export class SearchRequest {
          return JSON.parse(blocRequeteDirecte._directRequest);
       }
 
+      //Construction des tris
+      for (let i = 0; i < blocTri._array.length; i++) {
+         //TODO faire sauter la condition quand la date de fin sera indexable
+         if (blocTri._array[i].sort != 'endDate') {
+            const triJson: JsonTriProvider = {
+               sort: SearchRequest.labelConverterFromFrontToBack(blocTri._array[i].sort),
+               order: blocTri._array[i].order,
+            };
+            sort.push(triJson);
+         }
+      }
+
       //Construction du JSON de plus haut niveau
-      const jsonToReturn: JsonGlobalSearchRequest = {Blocs: Blocs, tri: blocTri._array};
+      const jsonToReturn: JsonGlobalSearchRequest = {criteres: criteria, tri: blocTri._array};
+
       return jsonToReturn;
+   }
+
+   static labelConverterFromFrontToBack(label: string): string {
+      switch (label) {
+         case 'ppn':
+            return 'PPN';
+         case 'continiousType':
+            return 'CONTINIOUS_TYPE';
+         case 'issn':
+            return 'ISSN';
+         case 'keyTitle':
+            return 'KEY_TITLE';
+         case 'editor':
+            return 'EDITOR';
+         case 'startDate':
+            return 'PROCESSING_GLOBAL_DATA';
+         case 'endDate':
+            return 'currently unavailable';
+         case 'pcpList':
+            return 'PCP_LIST';
+         case 'rcrLength':
+            return 'NB_LOC';
+         default:
+            return 'UNDEFINED';
+      }
+   }
+
+   static labelConverterFromBackToFront(label: string): string {
+      switch (label) {
+         case 'PPN':
+            return 'ppn';
+         case 'CONTINIOUS_TYPE':
+            return 'continiousType';
+         case 'ISSN':
+            return 'issn';
+         case 'KEY_TITLE':
+            return 'keyTitle';
+         case 'EDITOR':
+            return 'editor';
+         case 'PROCESSING_GLOBAL_DATA':
+            return 'startDate';
+         case 'currently unavailable':
+            return 'endDate';
+         case 'PCP_LIST':
+            return 'pcpList';
+         case 'NB_LOC':
+            return 'rcrLength';
+         default:
+            return 'UNDEFINED';
+      }
    }
 }

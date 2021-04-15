@@ -41,16 +41,16 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('RCR')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('RCR')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
                <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('RCR')">
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -62,9 +62,11 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {Ensemble, OperatorProvider} from '@/store/recherche/BlocInterfaces';
 import {Logger} from '@/store/utils/Logger';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 
 @Component
 export default class ComponentRcr extends Vue {
+   id: PanelType = PanelType.RCR;
    external_operator_label: string;
    internal_operator_label: string;
    list_external_operator_to_select: Array<OperatorProvider>;
@@ -117,7 +119,7 @@ export default class ComponentRcr extends Vue {
       return this.$store.state.blocRcr._selected;
    }
    get isFirstElement(): boolean {
-      return this.$store.getters.isFirstElement('RCR');
+      return this.$store.getters.isFirstElement(this.id);
    }
 
    //Events v-combobox
@@ -165,26 +167,49 @@ export default class ComponentRcr extends Vue {
    }
 
    //Events v-btn
-   closePanel(element: string) {
-      this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element).catch((err) => {
+   removePanel() {
+      this.clearSelectedValues();
+      const action: PanelDisplaySwitchProvider = {
+         panelId: this.id,
+         value: DisplaySwitch.OFF,
+      };
+      this.$store.dispatch('switchElementPanel', action).catch((err) => {
          Logger.error(err);
       });
    }
-   moveUpPanel(element: string) {
-      this.$store.dispatch('moveUpElementPanelAction', element).catch((err) => {
+   moveUpPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.UP,
+      };
+
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   moveDownPanel(element: string) {
-      this.$store.dispatch('moveDownElementPanelAction', element).catch((err) => {
+   moveDownPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.DOWN,
+      };
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   clearBloc() {
-      this.$store.dispatch('updateSelectedRcr', []).catch((err) => {
+   clearSelectedValues() {
+      this.$store.dispatch('resetBlocRcr').catch((err) => {
          Logger.error(err);
       });
-      this.comboboxArrayTyped = [];
+      this.reloadFromStore();
+   }
+   reloadFromStore() {
+      this.list_external_operator_to_select = this.getExternalOperatorList;
+      this.list_internal_operator_to_select = this.getInternalOperatorList;
+      this.external_operator_selected = this.getExternalOperatorSelected;
+      this.internal_operator_selected = this.getInternalOperatorSelected;
+      this.comboboxArrayTyped = this.getComboboxArrayTyped;
    }
 }
 </script>

@@ -60,7 +60,7 @@
                               <template v-slot:selection="{attrs, item, selected}">
                                  <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
                                     <span class="pr-2">
-                                       {{ item.text }}
+                                       {{ item.type }}
                                     </span>
                                     <v-icon small @click="removeItemLangue(item)">x</v-icon>
                                  </v-chip>
@@ -77,7 +77,7 @@
                               <template v-slot:selection="{attrs, item, selected}">
                                  <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
                                     <span class="pr-2">
-                                       {{ item.text }}
+                                       {{ item.type }}
                                     </span>
                                     <v-icon small @click="removeItemPays(item)">x</v-icon>
                                  </v-chip>

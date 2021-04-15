@@ -1,4 +1,5 @@
-import {PanelProvider} from '@/store/resultat/PanelInterfaces';
+import {DisplaySwitch, Movement, PanelProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
+import {ValueError} from '@/store/exception/ValueError';
 import {Logger} from "@/store/utils/Logger";
 
 /**
@@ -6,59 +7,112 @@ import {Logger} from "@/store/utils/Logger";
  */
 export class Composants {
    _stepperCurrentValue = 1;
-
    _snackBarDisplay = false;
    _snackBarMultiline = true;
    _snackBarText = '';
+   _panel: Array<PanelProvider> = [];
 
-   _panel: Array<PanelProvider> = [
-      {text: 'PPN', displayed: false, label: 'PPN'},
-      {text: 'ISSN', displayed: false, label: 'ISSN'},
-      {text: 'RCR', displayed: false, label: 'RCR'},
-      {text: 'REGIONS', displayed: false, label: 'PCP Régions'},
-      {text: 'METIERS', displayed: false, label: 'PCP Métiers'},
-      {text: 'WORDS', displayed: false, label: 'Mots du Titre'},
-      {text: 'EDITOR', displayed: false, label: 'Editeur'},
-      {text: 'LANG', displayed: false, label: 'Langue'},
-      {text: 'COUNTRY', displayed: false, label: 'Pays'},
-      {text: 'HISTORY', displayed: false, label: 'Requête enregistrée'},
-   ];
+   static panelMovement(id: PanelType, panel: Array<PanelProvider>, movement: Movement): void {
+      const index = panel.findIndex((x) => x.id === id);
 
-   static panelMovement(element: string, panel: Array<PanelProvider>, movement: string): void {
-      const position = panel.findIndex((x) => x.text === element);
+      if (index == -1) {
+         throw new ValueError('Panel ' + id + ' not found');
+      }
 
-      if (movement === 'UP') {
-         if (position === 0) {
-            return;
-         } else {
-            const x: PanelProvider = panel[position - 1];
-            panel[position - 1] = panel[position];
-            panel[position] = x;
+      switch (movement) {
+         case Movement.UP:
+
+            if (panel[index].position === 0) {
+               return;
+            } else {
+               // On cherche le panneau visible au dessus
+               let ii:number=index - 1;
+               while(ii>0 && !panel[ii].displayed) {
+                  ii-=1;
+               }
+
+               if(ii==-1) {
+                  // On échange avec le premier
+                  const x: number = panel[0].position;
+                  panel[0].position = panel[index].position;
+                  panel[index].position = x;
+               } else {
+                  // On échange avec un autre
+                  const x: number = panel[ii].position;
+                  panel[ii].position = panel[index].position;
+                  panel[index].position = x;
+               }
+            }
+            break;
+         case Movement.DOWN:
+            if (panel[index].position === panel.length-1) {
+               return;
+            } else {
+               // On cherche le panneau visible au dessous
+               let ii:number=index+1;
+               while(ii<panel.length && !panel[ii].displayed) {
+                  ii+=1;
+               }
+
+               if(ii==panel.length+1) {
+                  // On échange avec le dernierr
+                  const x: number = panel[panel.length-1].position;
+                  panel[panel.length-1].position = panel[index].position;
+                  panel[index].position = x;
+               } else {
+                  // On échange avec un autre
+                  const x: number = panel[ii].position;
+                  panel[ii].position = panel[index].position;
+                  panel[index].position = x;
+               }
+            }
+            break;
+         default:
+            throw new ValueError('Unable to decode panel movement ' + movement);
+            break;
+      }
+
+      // On tri le tableau en fonction des nouvelles positions
+      panel.sort((n1, n2) => {
+         if (n1.position > n2.position) {
+            return 1;
          }
-      } else if (movement === 'DOWN') {
-         Logger.debug(JSON.stringify(position));
-         if (position === panel.filter((x) => x.displayed).length - 1) {
-            return;
-         } else {
-            const x: PanelProvider = panel[position + 1];
-            panel[position + 1] = panel[position];
-            panel[position] = x;
+
+         if (n1.position < n2.position) {
+            return -1;
          }
+
+         return 0;
+      });
+      //Logger.debug("Nouvelles positions :"+JSON.stringify(panel));
+   }
+
+   static switchPanelDisplay(id: PanelType, panel: Array<PanelProvider>, value: DisplaySwitch) {
+      const index = panel.findIndex((x) => x.id === id);
+
+      if (index == -1) {
+         throw new ValueError('Panel ' + id + ' not found');
+      }
+
+      switch (value) {
+         case DisplaySwitch.ON:
+            panel[index].displayed = true;
+            break;
+         case DisplaySwitch.OFF:
+            panel[index].displayed = false;
+            break;
+         default:
+            throw new ValueError('Unable to decode panel display ' + value);
+            break;
       }
    }
 
-   static panelSwitchBooleanAtTrue(element: string, panel: Array<PanelProvider>) {
-      const position = panel.findIndex((x) => x.text === element);
-      panel[position].displayed = true;
-   }
+   static isFirstElement(id: PanelType, panel: Array<PanelProvider>): boolean {
+      const index = panel.findIndex((x) => x.id === id);
 
-   static panelSwitchBooleanAtFalse(element: string, panel: Array<PanelProvider>) {
-      const position = panel.findIndex((x) => x.text === element);
-      panel[position].displayed = false;
-   }
-
-   static isFirstElement(element: string, panel: Array<PanelProvider>): boolean {
-      const position = panel.findIndex((x) => x.text === element);
-      return position === 0;
+      if (index == -1) {
+         throw new ValueError('Panel ' + id + ' not found');
+      }
+      return panel[index].position === 0;
    }
 }

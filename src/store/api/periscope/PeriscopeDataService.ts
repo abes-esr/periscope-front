@@ -5,7 +5,7 @@ import axios, {AxiosInstance, AxiosResponse} from 'axios';
  */
 class PeriscopeDataService {
    client: AxiosInstance = axios.create({
-      baseURL: process.env.VUE_APP_PERISCOPE_V2_API_URL,
+      baseURL: process.env.VUE_APP_PERISCOPE_V1_API_URL,
       headers: {
          'Content-type': 'application/json',
       },

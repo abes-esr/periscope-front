@@ -34,7 +34,7 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentHeader from '@/components/page/Header.vue';
-import ComponentRecherche from '@/components/page/Recherche.vue';
+import ComponentRecherche from '@/components/recherche/Recherche.vue';
 import ComponentFooter from '@/components/page/Footer.vue';
 import ComponentStepper from '@/components/page/Stepper.vue';
 import ComponentSnackbar from '@/components/page/autres/Alerte.vue';

@@ -18,6 +18,7 @@ export interface ListProvider {
    //Liste d'éléments à selectionner
    id: string;
    text: string;
+   value: boolean;
 }
 
 export enum Ensemble { //Conversion implicite en number

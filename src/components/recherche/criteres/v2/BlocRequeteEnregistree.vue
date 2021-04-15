@@ -42,16 +42,16 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('HISTORY')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('HISTORY')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
                <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('HISTORY')">
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -61,9 +61,12 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
+import {Logger} from '@/store/utils/Logger';
 
 @Component
 export default class ComponentRequeteEnregistree extends Vue {
+   id: PanelType = PanelType.HISTORY;
    requeteEntered: string;
 
    constructor() {
@@ -81,18 +84,45 @@ export default class ComponentRequeteEnregistree extends Vue {
    }
 
    //Events v-btn
-   closePanel(element: string) {
-      this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element);
+   removePanel() {
+      this.clearSelectedValues();
+      const action: PanelDisplaySwitchProvider = {
+         panelId: this.id,
+         value: DisplaySwitch.OFF,
+      };
+      this.$store.dispatch('switchElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
    }
-   moveUpPanel(element: string) {
-      this.$store.dispatch('moveUpElementPanelAction', element);
+   moveUpPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.UP,
+      };
+
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   moveDownPanel(element: string) {
-      this.$store.dispatch('moveDownElementPanelAction', element);
+   moveDownPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.DOWN,
+      };
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   clearBloc() {
-      this.requeteEntered = '';
-      this.$store.dispatch('updateSelectedRequeteDirecte', this.requeteEntered);
+   clearSelectedValues() {
+      this.$store.dispatch('resetBlocRequeteDirecte').catch((err) => {
+         Logger.error(err);
+      });
+      this.reloadFromStore();
+   }
+   reloadFromStore() {
+      this.requeteEntered = this.getRequeteEntered;
    }
 }
 </script>

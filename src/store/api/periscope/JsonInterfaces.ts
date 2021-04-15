@@ -2,9 +2,15 @@
  * Représente les interfaces pour l'intégration avec VueJS
  */
 
-export interface RcrProvider {
-   id: number;
-   value: number;
+export interface JsonCriteres {
+}
+
+export interface JsonTri {
+}
+
+export interface JsonGlobalSearchRequest {
+   criteres: object,
+   tri: object,
 }
 
 export interface JsonPcpBlocProvider {
@@ -68,7 +74,10 @@ export interface JsonLanguesProvider {
    language_operator: Array<string>;
 }
 
-export interface JsonGlobalSearchRequest {}
+export interface JsonTriProvider {
+   sort: string;
+   order: string;
+}
 
 export interface JsonSent {
    one: Array<JsonGlobalSearchRequest>;

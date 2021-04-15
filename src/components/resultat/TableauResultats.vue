@@ -149,6 +149,7 @@ export default class TableauResultats extends Vue {
 
    constructor() {
       super();
+      Logger.debug("CTOR");
       this.totalNotices = 0;
       this.headers = this.getHeaders;
       this.notices = this.getNotices;
@@ -237,17 +238,17 @@ export default class TableauResultats extends Vue {
    //Lorsque l'utilisateur clique sur le bouton d'actualisation du tri
    sortColumns() {
       this.$store.dispatch('resetNoticesAndPaginationAction').catch(err => {Logger.error(err)});
-      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
+      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
    }
 
    previousPage() {
       this.$store.dispatch('previousPageDecrementPaginationAction').catch(err => {Logger.error(err)});
-      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
+      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
    }
 
    nextPage() {
       this.$store.dispatch('resetNoticesAction').catch(err => {Logger.error(err)});
-      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
+      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
    }
 
    goToTopOfPage(){
@@ -258,7 +259,7 @@ export default class TableauResultats extends Vue {
    getItemPerPage(val: number) {
       this.$store.dispatch('resetNoticesAndPaginationAction').catch(err => {Logger.error(err)});
       this.$store.dispatch('changeNumberOfElementsParPageAction', val).catch(err => {Logger.error(err)});
-      this.$store.dispatch('getNoticesAction', 'current').catch(err => {Logger.error(err)});
+      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
       this.numberOfNoticesAskedForNewCall = val;
    }
 
@@ -273,7 +274,7 @@ export default class TableauResultats extends Vue {
          }
       }
       //Envoi des critères de tri dans le bloc de tri
-      this.$store.dispatch('blocTriAction', arrayToSentAtStore);
+      this.$store.dispatch('updateSelectedTri', arrayToSentAtStore);
       //Reconstruction du JSON à envoyer
       this.$store.dispatch('constructJsonAction');
       return items;

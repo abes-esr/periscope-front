@@ -50,16 +50,16 @@
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
+            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('REGIONS')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel('REGIONS')">
+            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
                <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="closePanel('REGIONS')">
+            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
          </v-col>
@@ -71,9 +71,11 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {CheckboxesProvider, Ensemble, OperatorProvider} from '@/store/recherche/BlocInterfaces';
 import {Logger} from '@/store/utils/Logger';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 
 @Component
 export default class ComponentPlanConservationRegions extends Vue {
+   id: PanelType = PanelType.REGIONS;
    external_operator_label: string;
    internal_operator_label: string;
    list_external_operator_to_select: Array<OperatorProvider>;
@@ -128,12 +130,13 @@ export default class ComponentPlanConservationRegions extends Vue {
       return this.$store.getters.getCurrentArrayPcpRegionsElementsChecked;
    }
    get isFirstElement(): boolean {
-      return this.$store.getters.isFirstElement('PCPR');
+      return this.$store.getters.isFirstElement(this.id);
    }
 
    //Events
    eventOnArrayCheckboxes(): void {
-      this.$store.dispatch('updateCandidatesPcpRegions', this.regions).catch((err) => {
+      Logger.debug('update des pcp regions');
+      this.$store.dispatch('updateSelectedPcpRegions', this.regions).catch((err) => {
          Logger.error(err);
       });
    }
@@ -152,32 +155,55 @@ export default class ComponentPlanConservationRegions extends Vue {
    }
 
    //Events v-btn
-   closePanel(element: string) {
-      this.$store.dispatch('switchElementPanelBooleanAtFalseMutation', element);
+   removePanel() {
+      this.clearSelectedValues();
+      const action: PanelDisplaySwitchProvider = {
+         panelId: this.id,
+         value: DisplaySwitch.OFF,
+      };
+      this.$store.dispatch('switchElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
    }
-   moveUpPanel(element: string) {
-      this.$store.dispatch('moveUpElementPanelAction', element);
+   moveUpPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.UP,
+      };
+
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      this.$emit('onChange'); // On notifie le composant parent
    }
-   moveDownPanel(element: string) {
-      this.$store.dispatch('moveDownElementPanelAction', element);
+   moveDownPanel() {
+      const action: PanelMovementProvider = {
+         panelId: this.id,
+         value: Movement.DOWN,
+      };
+      this.$store.dispatch('moveElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      this.$emit('onChange'); // On notifie le composant parent
    }
    selectAll() {
       this.regions.forEach((x: CheckboxesProvider) => (x.value = true));
-      this.$store.dispatch('updateCandidatesPcpRegions', this.regions).catch((err) => {
-         Logger.error(err);
-      });
       this.$store.dispatch('updateSelectedPcpRegions', this.regions).catch((err) => {
          Logger.error(err);
       });
    }
-   clearBloc() {
-      this.regions.forEach((x: CheckboxesProvider) => (x.value = false));
-      this.$store.dispatch('updateCandidatesPcpRegions', this.regions).catch((err) => {
+   clearSelectedValues() {
+      this.$store.dispatch('resetBlocPcpRegions').catch((err) => {
          Logger.error(err);
       });
-      this.$store.dispatch('updateSelectedPcpRegions', this.regions).catch((err) => {
-         Logger.error(err);
-      });
+      this.reloadFromStore();
+   }
+   reloadFromStore() {
+      this.list_external_operator_to_select = this.getExternalOperatorList;
+      this.list_internal_operator_to_select = this.getInternalOperatorList;
+      this.external_operator_selected = this.getExternalOperatorSelected;
+      this.internal_operator_selected = this.getInternalOperatorSelected;
+      this.regions = this.getRegions;
    }
 }
 </script>

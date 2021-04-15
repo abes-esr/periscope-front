@@ -20,6 +20,13 @@ const vue = new Vue({
    render: (h) => h(App),
 }).$mount('#app');
 
-vue.$store.dispatch('loadCandidatesValue').catch((err) => {
+vue.$store.dispatch('loadCandidatesValue',false).catch((err) => {
    Logger.error(err);
 });
+
+/*vue.$store.dispatch('resetSearchPanel').catch((err) => {
+   Logger.error(err);
+});*/
+
+
+

@@ -2,7 +2,7 @@
    <v-container>
       <v-row :justify="getHorizontalJustifyValue(3)">
          <v-col xs="6" sm="3">
-            <v-btn @click="resetStore()" color="#E53935" dark large>Réinitialiser<v-icon dark right> mdi-cancel </v-icon></v-btn>
+            <v-btn @click="resetSearch()" color="#E53935" dark large>Réinitialiser<v-icon dark right> mdi-cancel </v-icon></v-btn>
          </v-col>
          <v-col xs="6" sm="3">
             <v-btn @click="clickSearch()" color="#4CAF50" dark large>Recherche<v-icon dark right> mdi-checkbox-marked-circle</v-icon></v-btn>
@@ -25,16 +25,19 @@ export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
       this.$store.dispatch('resetNoticesAndPaginationAction').catch((err) => {
          Logger.error(err);
       });
-      this.$store.dispatch('getNoticesAction', 'Resultats').catch((err) => {
+      this.$store.dispatch('callPeriscopeAPI', 'Resultats').catch((err) => {
          Logger.error(err);
       });
    }
 
-   resetStore() {
-      this.$store.dispatch('resetAllSelectedValue').catch((err) => {
+   resetSearch() {
+      this.$store.dispatch('resetAllBlocs').catch((err) => {
          Logger.error(err);
       });
-      document.location.reload();
+     this.$store.dispatch('resetSearchPanel').catch((err) => {
+       Logger.error(err);
+     });
+     this.$emit('onChange'); // On notifie le composant parent
    }
 }
 </script>
