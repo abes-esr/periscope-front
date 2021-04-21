@@ -61,16 +61,16 @@ node {
             }
 
             if (ENV == 'DEV') {
-                serverHostnames.add('hostname.server-front-1-dev')
-                serverHostnames.add('hostname.server-front-2-dev')
+                serverHostnames.add('hostname.server-frontAphyl-1-dev')
+                serverHostnames.add('hostname.server-frontAphyl-2-dev')
 
             } else if (ENV == 'TEST') {
-                serverHostnames.add('hostname.server-front-1-test')
-                serverHostnames.add('hostname.server-front-2-test')
+                serverHostnames.add('hostname.server-frontAphyl-1-test')
+                serverHostnames.add('hostname.server-frontAphyl-2-test')
 
             } else if (ENV == 'PROD') {
-                serverHostnames.add('hostname.server-front-1-prod')
-                serverHostnames.add('hostname.server-front-2-prod')
+                serverHostnames.add('hostname.server-frontAphyl-1-prod')
+                serverHostnames.add('hostname.server-frontAphyl-2-prod')
             }
 
         } catch (e) {
