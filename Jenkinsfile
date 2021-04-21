@@ -7,7 +7,7 @@ node {
     def gitURL = "https://github.com/abes-esr/periscope-front.git"
     def gitCredentials = ''
     def jsDir = "dist/"
-    def htmlBaseDir = "/var/www/html/periscope2/"
+    def htmlBaseDir = "/var/www/html/periscope/"
     def slackChannel = "#notif-periscope"
 
     // Variables globales
