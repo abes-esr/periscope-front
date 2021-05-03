@@ -449,7 +449,6 @@ export default new Vuex.Store({
       blocRequeteDirecteAction(context, element: string) {
          context.commit('blocRequeteDirecteMutation', element);
       },
-
       //Reinitialisation ensemble des blocs de recherche
       resetAllBlocsAction(context) {
          context.commit('resetAllBlocsMutation');
