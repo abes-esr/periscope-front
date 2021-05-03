@@ -1,6 +1,6 @@
 import {DisplaySwitch, Movement, PanelProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 import {ValueError} from '@/store/exception/ValueError';
-import {Logger} from "@/store/utils/Logger";
+import {Logger} from '@/store/utils/Logger';
 
 /**
  * Composant pour l'onglet de Recherche
@@ -21,17 +21,16 @@ export class Composants {
 
       switch (movement) {
          case Movement.UP:
-
             if (panel[index].position === 0) {
                return;
             } else {
                // On cherche le panneau visible au dessus
-               let ii:number=index - 1;
-               while(ii>0 && !panel[ii].displayed) {
-                  ii-=1;
+               let ii: number = index - 1;
+               while (ii > 0 && !panel[ii].displayed) {
+                  ii -= 1;
                }
 
-               if(ii==-1) {
+               if (ii == -1) {
                   // On échange avec le premier
                   const x: number = panel[0].position;
                   panel[0].position = panel[index].position;
@@ -45,19 +44,19 @@ export class Composants {
             }
             break;
          case Movement.DOWN:
-            if (panel[index].position === panel.length-1) {
+            if (panel[index].position === panel.length - 1) {
                return;
             } else {
                // On cherche le panneau visible au dessous
-               let ii:number=index+1;
-               while(ii<panel.length && !panel[ii].displayed) {
-                  ii+=1;
+               let ii: number = index + 1;
+               while (ii < panel.length && !panel[ii].displayed) {
+                  ii += 1;
                }
 
-               if(ii==panel.length+1) {
+               if (ii == panel.length + 1) {
                   // On échange avec le dernierr
-                  const x: number = panel[panel.length-1].position;
-                  panel[panel.length-1].position = panel[index].position;
+                  const x: number = panel[panel.length - 1].position;
+                  panel[panel.length - 1].position = panel[index].position;
                   panel[index].position = x;
                } else {
                   // On échange avec un autre
@@ -84,7 +83,7 @@ export class Composants {
 
          return 0;
       });
-      //Logger.debug("Nouvelles positions :"+JSON.stringify(panel));
+      //Logger.debug('Nouvelles positions :' + JSON.stringify(panel));
    }
 
    static switchPanelDisplay(id: PanelType, panel: Array<PanelProvider>, value: DisplaySwitch) {
@@ -97,9 +96,23 @@ export class Composants {
       switch (value) {
          case DisplaySwitch.ON:
             panel[index].displayed = true;
+            panel[index].available = false;
+
+            if (panel[index].id === PanelType.HISTORY) {
+               panel.forEach(function (part, index, theArray) {
+                  theArray[index].available = false;
+               });
+            }
             break;
          case DisplaySwitch.OFF:
             panel[index].displayed = false;
+            panel[index].available = true;
+
+            if (panel[index].id === PanelType.HISTORY) {
+               panel.forEach(function (part, index, theArray) {
+                  theArray[index].available = true;
+               });
+            }
             break;
          default:
             throw new ValueError('Unable to decode panel display ' + value);
@@ -107,12 +120,45 @@ export class Composants {
       }
    }
 
-   static isFirstElement(id: PanelType, panel: Array<PanelProvider>): boolean {
-      const index = panel.findIndex((x) => x.id === id);
-
-      if (index == -1) {
-         throw new ValueError('Panel ' + id + ' not found');
+   static isFirstDisplayedElement(id: PanelType, panel: Array<PanelProvider>): boolean {
+      let firstDisplayedIndex: number;
+      firstDisplayedIndex = 0;
+      while (firstDisplayedIndex < panel.length && !panel[firstDisplayedIndex].displayed) {
+         firstDisplayedIndex++;
       }
-      return panel[index].position === 0;
+
+      if (firstDisplayedIndex >= panel.length) {
+         Logger.warn('No displayed panel found');
+         return false;
+      }
+
+      Logger.debug('First displayed pannel is ' + panel[firstDisplayedIndex].label);
+
+      if (panel[firstDisplayedIndex].id === id) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+
+   static isLastDisplayedElement(id: PanelType, panel: Array<PanelProvider>): boolean {
+      let lastDisplayedIndex: number;
+      lastDisplayedIndex = panel.length - 1;
+      while (lastDisplayedIndex > 0 && !panel[lastDisplayedIndex].displayed) {
+         lastDisplayedIndex--;
+      }
+
+      if (lastDisplayedIndex < 0) {
+         Logger.warn('No displayed panel found');
+         return false;
+      }
+
+      Logger.debug('Last displayed pannel is ' + panel[lastDisplayedIndex].label);
+
+      if (panel[lastDisplayedIndex].id === id) {
+         return true;
+      } else {
+         return false;
+      }
    }
 }

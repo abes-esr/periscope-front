@@ -45,12 +45,6 @@
             <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
-               <v-icon>mdi-arrow-up</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
-               <v-icon>mdi-arrow-down</v-icon>
-            </v-btn>
             <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
                <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -93,6 +87,7 @@ export default class ComponentRequeteEnregistree extends Vue {
       this.$store.dispatch('switchElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      this.$emit('onChange'); // On notifie le composant parent
    }
    moveUpPanel() {
       const action: PanelMovementProvider = {

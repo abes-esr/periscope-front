@@ -23,13 +23,7 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {
-   DisplaySwitch,
-   Movement,
-   PanelDisplaySwitchProvider,
-   PanelMovementProvider,
-   PanelType
-} from '@/store/recherche/ComposantInterfaces';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 
 Vue.use(Vuex);
 
@@ -70,7 +64,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation Operateur interne des Pcp Regions');
          state.blocPcpRegions._internalBlocOperator = operator;
       },
-      resetInternalPcpRegionsOperator(state,) {
+      resetInternalPcpRegionsOperator(state) {
          Logger.debug('Reset Operateur interne des Pcp Regions');
          state.blocPcpRegions._internalBlocOperator = Ensemble.Et;
       },
@@ -120,7 +114,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation Operateur externe des Pcp Metiers');
          state.blocPcpMetiers._externalBlocOperator = operator;
       },
-      resetExternalPcpMetiersOperator(state,) {
+      resetExternalPcpMetiersOperator(state) {
          Logger.debug('Reset Operateur externe des Pcp Metiers');
          state.blocPcpMetiers._externalBlocOperator = Ensemble.Ou;
       },
@@ -330,7 +324,7 @@ export default new Vuex.Store({
          state.blocLangue._selected = [];
          arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocLangue._selected.push(element.id) : ''));
       },
-      loadCandidatesLangue(state,force?: boolean) {
+      loadCandidatesLangue(state, force?: boolean) {
          if (force || state.blocLangue._candidates.length == 0) {
             Logger.debug('Chargement des Langues');
             state.blocLangue._candidates = [
@@ -342,7 +336,7 @@ export default new Vuex.Store({
                {id: 'aar', text: 'Afar', value: false},
                {id: 'afh', text: 'Afrihili', value: false},
                {id: 'afr', text: 'Afrikaans', value: false},
-               {id: 'afa', text: 'Afro-asiatiques (diverses)',value: false},
+               {id: 'afa', text: 'Afro-asiatiques (diverses)', value: false},
                {id: 'ain', text: 'Ainou', value: false},
                {id: 'aka', text: 'Akan', value: false},
                {id: 'akk', text: 'Akkadien', value: false},
@@ -817,7 +811,6 @@ export default new Vuex.Store({
          Logger.debug('Reset des Langues');
          state.blocLangue._selected = [];
          state.blocLangue._candidates.forEach((element: {value: boolean}) => (element.value = false));
-
       },
 
       //Bloc de recherche Pays
@@ -843,7 +836,7 @@ export default new Vuex.Store({
          state.blocPays._selected = [];
          arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocPays._selected.push(element.id) : ''));
       },
-      loadCandidatesPays(state,force?: boolean) {
+      loadCandidatesPays(state, force?: boolean) {
          if (force || state.blocPays._candidates.length == 0) {
             Logger.debug('Chargement des Pays');
             state.blocPays._candidates = [
@@ -1139,26 +1132,26 @@ export default new Vuex.Store({
       },
       //Mouvements des blocs de recherche
       mutationPanelMovement(state, action: PanelMovementProvider) {
-         Logger.debug("Mutation Panel Movement : "+PanelType[action.panelId]+" "+Movement[action.value]);
+         Logger.debug('Mutation Panel Movement : ' + PanelType[action.panelId] + ' ' + Movement[action.value]);
          Composants.panelMovement(action.panelId, state.composants._panel, action.value);
       },
       mutationPanelDisplaySwitch(state, action: PanelDisplaySwitchProvider) {
-         Logger.debug("Mutation Panel Display switch : "+PanelType[action.panelId]+" "+DisplaySwitch[action.value]);
+         Logger.debug('Mutation Panel Display switch : ' + PanelType[action.panelId] + ' ' + DisplaySwitch[action.value]);
          Composants.switchPanelDisplay(action.panelId, state.composants._panel, action.value);
       },
       resetSearchPanel(state) {
          Logger.debug('Reset des panneaux de recherche');
          state.composants._panel = [
-            {id:PanelType.PPN, position:2, displayed: false,  label: 'PPN'},
-            {id:PanelType.ISSN, position:3, displayed: false, label: 'ISSN'},
-            {id:PanelType.RCR, position:4, displayed: false, label: 'RCR'},
-            {id:PanelType.REGIONS, position:0, displayed: false, label: 'PCP Régions'},
-            {id:PanelType.METIERS, position:1,  displayed: false, label: 'PCP Métiers'},
-            {id:PanelType.WORDS, position:5,  displayed: false, label: 'Mots du Titre'},
-            {id:PanelType.EDITOR, position:6,  displayed: false, label: 'Editeur'},
-            {id:PanelType.LANG, position:7,  displayed: false, label: 'Langue'},
-            {id:PanelType.COUNTRY, position:8, displayed: false, label: 'Pays'},
-            {id:PanelType.HISTORY, position:9, displayed: false, label: 'Requête enregistrée'},
+            {id: PanelType.PPN, position: 2, displayed: false, available: true, label: 'PPN'},
+            {id: PanelType.ISSN, position: 3, displayed: false, available: true, label: 'ISSN'},
+            {id: PanelType.RCR, position: 4, displayed: false, available: true, label: 'RCR'},
+            {id: PanelType.REGIONS, position: 0, displayed: false, available: true, label: 'PCP Régions'},
+            {id: PanelType.METIERS, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
+            {id: PanelType.WORDS, position: 5, displayed: false, available: true, label: 'Mots du Titre'},
+            {id: PanelType.EDITOR, position: 6, displayed: false, available: true, label: 'Editeur'},
+            {id: PanelType.LANG, position: 7, displayed: false, available: true, label: 'Langue'},
+            {id: PanelType.COUNTRY, position: 8, displayed: false, available: true, label: 'Pays'},
+            {id: PanelType.HISTORY, position: 9, displayed: false, available: true, label: 'Requête enregistrée'},
          ];
       },
       //Modification de la pagination
@@ -1462,11 +1455,11 @@ export default new Vuex.Store({
       //******************
       //       API
       //*******************
-      loadCandidatesValue(context, force?:boolean) {
-         context.commit('loadCandidatesPcpMetiers',force);
-         context.commit('loadCandidatesPcpRegions',force);
-         context.commit('loadCandidatesLangue',force);
-         context.commit('loadCandidatesPays',force);
+      loadCandidatesValue(context, force?: boolean) {
+         context.commit('loadCandidatesPcpMetiers', force);
+         context.commit('loadCandidatesPcpRegions', force);
+         context.commit('loadCandidatesLangue', force);
+         context.commit('loadCandidatesPays', force);
       },
       constructJsonAction(context) {
          context.commit('mutationSearchRequest');
@@ -1483,8 +1476,11 @@ export default new Vuex.Store({
       },
    },
    getters: {
-      isFirstElement: (state) => (id: PanelType) => {
-         return Composants.isFirstElement(id, state.composants._panel);
+      isFirstDisplayedElement: (state) => (id: PanelType) => {
+         return Composants.isFirstDisplayedElement(id, state.composants._panel);
+      },
+      isLastDisplayedElement: (state) => (id: PanelType) => {
+         return Composants.isLastDisplayedElement(id, state.composants._panel);
       },
       getArrayRegions: (state) => {
          return state.blocPcpRegions._candidates;

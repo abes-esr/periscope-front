@@ -2,6 +2,7 @@ export interface PanelProvider {
    id: PanelType;
    position: number;
    displayed: boolean;
+   available: boolean;
    label: string;
 }
 

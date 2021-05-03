@@ -2,10 +2,10 @@
    <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
       <v-row align="center">
          <!--External Operator-->
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstElement">
+         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstDisplayedElement">
             <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator"></v-select>
          </v-col>
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="isFirstElement"></v-col>
+         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="isFirstDisplayedElement"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
@@ -53,10 +53,10 @@
             <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
+            <v-btn :disabled="isFirstDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
+            <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
                <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
             <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
@@ -129,8 +129,11 @@ export default class ComponentPlanConservationMetiers extends Vue {
    get getMetiersChecked(): Array<CheckboxesProvider> {
       return this.$store.getters.getCurrentArrayPcpMetiersElementsChecked;
    }
-   get isFirstElement(): boolean {
-      return this.$store.getters.isFirstElement(this.id);
+   get isFirstDisplayedElement(): boolean {
+      return this.$store.getters.isFirstDisplayedElement(this.id);
+   }
+   get isLastDisplayedElement(): boolean {
+      return this.$store.getters.isLastDisplayedElement(this.id);
    }
 
    //Events
@@ -163,6 +166,7 @@ export default class ComponentPlanConservationMetiers extends Vue {
       this.$store.dispatch('switchElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      this.$emit('onChange'); // On notifie le composant parent
    }
    moveUpPanel() {
       const action: PanelMovementProvider = {

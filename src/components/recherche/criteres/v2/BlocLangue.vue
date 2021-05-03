@@ -2,10 +2,10 @@
    <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
       <v-row align="center">
          <!--External Operator-->
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstElement">
+         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstDisplayedElement">
             <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator"></v-select>
          </v-col>
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="isFirstElement"></v-col>
+         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="isFirstDisplayedElement"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
@@ -59,10 +59,10 @@
             <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
+            <v-btn :disabled="isFirstDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
-            <v-btn small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
+            <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
                <v-icon>mdi-arrow-down</v-icon>
             </v-btn>
             <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
@@ -78,7 +78,7 @@ import {Component, Vue} from 'vue-property-decorator';
 import {Ensemble, ListProvider, OperatorProvider} from '@/store/recherche/BlocInterfaces';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 import {Logger} from '@/store/utils/Logger';
-import {ValueError} from "@/store/exception/ValueError";
+import {ValueError} from '@/store/exception/ValueError';
 
 @Component
 export default class ComponentLangue extends Vue {
@@ -129,8 +129,11 @@ export default class ComponentLangue extends Vue {
    get getExternalOperatorSelected(): Ensemble {
       return this.$store.state.blocLangue._externalBlocOperator;
    }
-   get isFirstElement(): boolean {
-      return this.$store.getters.isFirstElement(this.id);
+   get isFirstDisplayedElement(): boolean {
+      return this.$store.getters.isFirstDisplayedElement(this.id);
+   }
+   get isLastDisplayedElement(): boolean {
+      return this.$store.getters.isLastDisplayedElement(this.id);
    }
    get getLangueItems(): Array<ListProvider> {
       return this.$store.state.blocLangue._candidates;
@@ -140,34 +143,34 @@ export default class ComponentLangue extends Vue {
    }
 
    removeItemLangue(value: ListProvider): void {
-     let index: number = this.langueEntered.indexOf(value.id);
-     if (index == -1) {
-       throw new ValueError('Language selected ' + value + ' not found');
-     }
-     this.langueEntered.splice(index, 1);
+      let index: number = this.langueEntered.indexOf(value.id);
+      if (index == -1) {
+         throw new ValueError('Language selected ' + value + ' not found');
+      }
+      this.langueEntered.splice(index, 1);
 
-     index = this.langueItems.findIndex((x) => x.id === value.id);
-     if (index == -1) {
-       throw new ValueError('Language ' + value + ' not found');
-     }
-     this.langueItems[index].value = false;
+      index = this.langueItems.findIndex((x) => x.id === value.id);
+      if (index == -1) {
+         throw new ValueError('Language ' + value + ' not found');
+      }
+      this.langueItems[index].value = false;
 
-     this.$store.dispatch('updateSelectedPays', this.langueItems).catch((err) => {
-       Logger.error(err);
-     });
+      this.$store.dispatch('updateSelectedPays', this.langueItems).catch((err) => {
+         Logger.error(err);
+      });
    }
 
    updateArrayBlocLangue(items: Array<string>): void {
-     for (let value of items) {
-       const index = this.langueItems.findIndex((x) => x.id === value);
-       if (index == -1) {
-         throw new ValueError('Language ' + value + ' not found');
-       }
-       this.langueItems[index].value = true;
-     }
-     this.$store.dispatch('updateSelectedLangue', this.langueItems).catch((err) => {
-       Logger.error(err);
-     });
+      for (let value of items) {
+         const index = this.langueItems.findIndex((x) => x.id === value);
+         if (index == -1) {
+            throw new ValueError('Language ' + value + ' not found');
+         }
+         this.langueItems[index].value = true;
+      }
+      this.$store.dispatch('updateSelectedLangue', this.langueItems).catch((err) => {
+         Logger.error(err);
+      });
    }
 
    //Events v-select
@@ -188,6 +191,7 @@ export default class ComponentLangue extends Vue {
       this.$store.dispatch('switchElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      this.$emit('onChange'); // On notifie le composant parent
    }
    moveUpPanel() {
       const action: PanelMovementProvider = {

@@ -12,12 +12,12 @@
       </v-row>
       <v-row>
          <v-col>
-            <component-liste-de-choix @onChange="renderPanelList"></component-liste-de-choix>
+            <component-liste-de-choix @onChange="renderPanelList" ref="listeChoix"></component-liste-de-choix>
          </v-col>
       </v-row>
       <v-row>
          <v-col>
-            <v-expansion-panels v-for="i in panel" :key="i.position" >
+            <v-expansion-panels v-for="i in panel" :key="i.position">
                <component-ppn v-if="i.id === 0 && i.displayed === true" @onChange="renderPanelList"></component-ppn>
                <component-issn v-if="i.id === 1 && i.displayed === true" @onChange="renderPanelList"></component-issn>
                <component-rcr v-if="i.id === 2 && i.displayed === true" @onChange="renderPanelList"></component-rcr>
@@ -53,8 +53,8 @@ import ComponentPays from '@/components/recherche/criteres/v2/BlocPays.vue';
 import ComponentPlanConservationRegions from '@/components/recherche/criteres/v2/BlocPlanConservationRegions.vue';
 import ComponentRequeteEnregistree from '@/components/recherche/criteres/v2/BlocRequeteEnregistree.vue';
 import ComponentBoutonsRecherche from '@/components/recherche/BoutonsRecherche.vue';
-import {Logger} from "@/store/utils/Logger";
-import {PanelProvider} from "@/store/recherche/ComposantInterfaces";
+import {Logger} from '@/store/utils/Logger';
+import {PanelProvider} from '@/store/recherche/ComposantInterfaces';
 
 @Component({
    components: {
@@ -91,7 +91,8 @@ export default class RechercheAvance extends Vue {
    }
 
    renderPanelList() {
-     this.panel = this.getPanel;
-  }
+      this.panel = this.getPanel;
+      this.$refs.listeChoix.updateList(); // On update la liste de choix
+   }
 }
 </script>
