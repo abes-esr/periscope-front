@@ -3,7 +3,6 @@ import {AxiosResponse} from 'axios';
 
 class HoldingsDataService {
    callHoldingsDataServiceForThisNotice(ppn: string): Promise<AxiosResponse> {
-      console.log("earz");
       return http.get(`/${ppn}`);
    }
 }
