@@ -339,7 +339,8 @@ export default new Vuex.Store({
 
       //Poc
       fetchStateCollectionForOnePpn(state) {
-         console.log(AxiosTraitements.useMock());
+         const jsonGetByHolding = AxiosTraitements.useMock();
+         console.log(jsonGetByHolding);
       },
    },
    actions: {
