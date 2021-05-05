@@ -1,6 +1,8 @@
 /**
  * Représente une notice
  */
+import {VisualisationInterface} from '@/store/interfaces/VisualisationInterface';
+
 export class Notice {
    /**
     * Construit un objet Notice à partir d'un objet générique JSON
@@ -10,7 +12,11 @@ export class Notice {
       this.ppn = obj.ppn;
       this.issn = obj.issn;
       obj.pcpList.forEach((element: string) => this.pcpList.push(element + ' '));
-      if(obj.rcrList == null){this.rcrList = []}else{this.rcrList = obj.rcrList}
+      if (obj.rcrList == null) {
+         this.rcrList = [];
+      } else {
+         this.rcrList = obj.rcrList;
+      }
       this.editor = obj.editeur;
       this.keyTitle = obj.titre_cle;
       this.keyShortedTitle = obj.titre_court;
@@ -23,6 +29,10 @@ export class Notice {
       this.continiousType = obj.type;
       this.startDate = obj.date_debut;
       this.endDate = obj.date_fin;
+   }
+
+   feedCollectionState(json: string) {
+      console.log(json);
    }
 
    ppn: number;
@@ -41,5 +51,11 @@ export class Notice {
    continiousType: string;
    startDate: string;
    endDate: string;
+   //State of collection (get by holdings service)
+   frequency: string;
+   support: string;
+   codecontenu181: string;
+   codecontenu182: string;
+   collectionState: VisualisationInterface;
 }
 export default Notice;
