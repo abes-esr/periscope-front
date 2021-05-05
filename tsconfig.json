@@ -13,6 +13,9 @@
     "strictPropertyInitialization": false,
     "sourceMap": true,
     "baseUrl": ".",
+    //JSON as imports in class files
+    "resolveJsonModule": true,
+    //-
     "types": [
       "webpack-env",
       "mocha",
@@ -36,6 +39,5 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "node_modules"
   ],
 }

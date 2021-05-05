@@ -6,6 +6,7 @@ import RechercheAvance from '@/views/RechercheAvance.vue';
 import ConditionsGenerales from '@/views/ConditionsGenerales.vue';
 import MentionsLegales from '@/views/MentionsLegales.vue';
 import HistoriqueRequetes from "@/views/HistoriqueRequetes.vue";
+import ProofOfConcept from "@/views/ProofOfConcept.vue";
 
 Vue.use(VueRouter);
 
@@ -44,6 +45,11 @@ const routes: Array<RouteConfig> = [
       path: '/historiqueRequetes',
       name: 'HistoriqueRequetes',
       component: HistoriqueRequetes,
+   },
+   {
+      path: '/poc',
+      name: 'ProofOfConcept',
+      component: ProofOfConcept,
    }
 ];
 

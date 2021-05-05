@@ -20,6 +20,7 @@ import router from '@/router/index.ts';
 import {BlocTri} from '@/store/classes/blocsDeRecherche/BlocTri';
 import {Pagination} from '@/store/classes/resultatsDeRecherche/Pagination';
 import {BlocRequeteEnregistree} from '@/store/classes/blocsDeRecherche/BlocRequeteEnregistree';
+import {JsonReaderForTests} from '@/store/classes/appelsBackEnd/JsonReaderForTests';
 
 Vue.use(Vuex);
 
@@ -522,6 +523,12 @@ export default new Vuex.Store({
       //Modification de la pagination
       newNumberOfNoticesAskedForNewCallAction(context, value: number) {
          context.commit('newNumberOfNoticesAskedForNewCallMutation', value);
+      },
+
+      //POC
+      //Appel du service holdings pour construction de l'état de collection
+      testHolding(context) {
+         JsonReaderForTests.test();
       },
    },
    getters: {
