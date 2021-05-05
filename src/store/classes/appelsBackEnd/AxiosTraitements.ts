@@ -1,6 +1,7 @@
 import {JsonGlobalSearchRequest} from '@/store/interfaces/JsonInterfaces';
 import PeriscopeDataService from '@/axios/services/PeriscopeDataService';
 import {AxiosResponse} from 'axios';
+import MockDataService from '@/axios/services/MockDataService';
 
 export class AxiosTraitements {
   static findNoticeByCriteriaByPageAndSize(jsonObject: JsonGlobalSearchRequest, page: number, size:number): Promise<AxiosResponse[]> {
@@ -21,5 +22,9 @@ export class AxiosTraitements {
         return arrayError;
         //pour placer des données de retour -> analyser -> return JSON.parse(JSON.stringify(err);
       });
+  }
+
+  static useMock(): string {
+     return MockDataService.holdingsDataServiceReturnForPpn039226859();
   }
 }

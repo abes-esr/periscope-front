@@ -336,6 +336,11 @@ export default new Vuex.Store({
       newNumberOfNoticesAskedForNewCallMutation(state, element: number) {
          state.pagination._sizeWanted = element;
       },
+
+      //Poc
+      fetchStateCollectionForOnePpn(state) {
+         console.log(AxiosTraitements.useMock());
+      },
    },
    actions: {
       //Bloc de recherche PcpRegions
@@ -528,7 +533,7 @@ export default new Vuex.Store({
       //POC
       //Appel du service holdings pour construction de l'état de collection
       testHolding(context) {
-         JsonReaderForTests.test();
+         context.commit('fetchStateCollectionForOnePpn');
       },
    },
    getters: {

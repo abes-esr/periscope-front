@@ -1,8 +1,7 @@
-import json from './foo.json';
+import json from './039226859.json';
 
 export class JsonReaderForTests {
-   static test(): void {
-      console.log(typeof json);
-      console.log(JSON.stringify(json));
+   static getHoldingJsonReturnedForPpn039226859(): string {
+      return JSON.stringify(json);
    }
 }
