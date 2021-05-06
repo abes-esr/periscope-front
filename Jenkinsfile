@@ -7,8 +7,7 @@ node {
     def gitURL = "https://github.com/abes-esr/periscope-front.git"
     def gitCredentials = ''
     def jsDir = "dist/"
-    //def htmlBaseDir = "/var/www/html/periscope/" // Pour Aphylantes
-    def htmlBaseDir = "/var/www/html/periscope2/" // Pour raiponce
+    def htmlBaseDir = "/var/www/html/periscope/"
     def slackChannel = "#notif-periscope"
 
     // Variables globales
@@ -62,14 +61,11 @@ node {
             }
 
             if (ENV == 'DEV') {
-                //serverHostnames.add('hostname.server-frontAphyl-1-dev')
-                //serverHostnames.add('hostname.server-frontAphyl-2-dev')
-                serverHostnames.add('hostname.server-front-1-dev')
-                serverHostnames.add('hostname.server-front-2-dev')
+                serverHostnames.add('hostname.server-frontAphyl-1-dev')
+                serverHostnames.add('hostname.server-frontAphyl-2-dev')
             } else if (ENV == 'TEST') {
                 serverHostnames.add('hostname.server-frontAphyl-1-test')
                 serverHostnames.add('hostname.server-frontAphyl-2-test')
-
             } else if (ENV == 'PROD') {
                 serverHostnames.add('hostname.server-frontAphyl-1-prod')
                 serverHostnames.add('hostname.server-frontAphyl-2-prod')

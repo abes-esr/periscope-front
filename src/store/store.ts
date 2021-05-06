@@ -1259,7 +1259,7 @@ export default new Vuex.Store({
       resetBlocRequeteDirecte(context) {
          context.commit('resetRequeteDirecte');
       },
-      resetAllBlocs(context) {
+      resetAllBlocs() {
          this.dispatch('resetBlocPcpRegions').catch((err) => {
             Logger.error(err);
          });
