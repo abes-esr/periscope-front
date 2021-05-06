@@ -1184,7 +1184,7 @@ export default new Vuex.Store({
       mutationNotices(state, lotNoticesReceived) {
          Logger.debug('Mutation des Notices');
          //Contient les notices brutes
-         lotNoticesReceived.forEach((obj) => state.lotNotices._lotNotices.push(new Notice(obj)));
+         lotNoticesReceived.forEach((obj:any) => state.lotNotices._lotNotices.push(new Notice(obj)));
 
          //Contient les notices avec un formatage des données
          state.lotNotices._lotNotices.forEach((element) => {
@@ -1489,7 +1489,7 @@ export default new Vuex.Store({
          }
       },
       isLastPage: (state) => () => {
-         if (state.pagination._currentPage == this.pagination._maxPage) {
+         if (state.pagination._currentPage == state.pagination._maxPage) {
             return true;
          } else {
             return false;

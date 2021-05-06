@@ -34,7 +34,7 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
        * - Si un autre choix est sélectionné alors on désactive la recherche par historique
        * - Si un choix est déjà selectionné alors on le désactive
        */
-      const index = pannels.findIndex((x) => x.id === PanelType.HISTORY);
+      const index = pannels.findIndex((x:PanelProvider) => x.id === PanelType.HISTORY);
       if (index == -1 || pannels[index].available) {
          let i: number;
          i = 0;

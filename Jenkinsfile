@@ -7,15 +7,12 @@ node {
     def gitURL = "https://github.com/abes-esr/periscope-front.git"
     def gitCredentials = ''
     def jsDir = "dist/"
-    def htmlBaseDir = "/var/www/html/periscope2/"
-    def baseUrl = "https://thesesinterfacebatchs.v212.abes.fr"
-    def apiUrlDev = "http://cirse1-dev.v3.abes.fr:8131"
-    def apiUrlTest = "http://cirse1-test.v3.abes.fr:8131"
-    def apiUrlProd = "http://cirse1-prod.v3.abes.fr:8131"
+    def htmlBaseDir = "/var/www/html/periscope/"
     def slackChannel = "#notif-periscope"
 
     // Variables globales
     def ENV
+    def serverHostnames = []
 
     // Configuration du job Jenkins
     // On garde les 5 derniers builds par branche
@@ -63,6 +60,19 @@ node {
                 echo "Target environnement =  ${ENV}"
             }
 
+            if (ENV == 'DEV') {
+                serverHostnames.add('hostname.server-frontAphyl-1-dev')
+                serverHostnames.add('hostname.server-frontAphyl-2-dev')
+
+            } else if (ENV == 'TEST') {
+                serverHostnames.add('hostname.server-frontAphyl-1-test')
+                serverHostnames.add('hostname.server-frontAphyl-2-test')
+
+            } else if (ENV == 'PROD') {
+                serverHostnames.add('hostname.server-frontAphyl-1-prod')
+                serverHostnames.add('hostname.server-frontAphyl-2-prod')
+            }
+
         } catch (e) {
             currentBuild.result = hudson.model.Result.NOT_BUILT.toString()
             notifySlack(slackChannel,e.getLocalizedMessage())
@@ -100,32 +110,50 @@ node {
         }
     }
 
-    /*stage('Config') {
-       if (ENV == 'DEV') {
-           sh 'export NODE_ENV=development'
-           sh 'export VUE_APP_BASE_URL="${baseUrl}"'
-           sh 'export VUE_APP_CIRSE_URL="${apiUrlDev}"'
-           sh 'export outputDir=dist-dev/'
-           sh 'npm run build:development'
-           jsDir = "dist-dev/"
-       }
-       if (ENV == 'TEST') {
-           sh 'export NODE_ENV=staging'
-           sh 'export VUE_APP_BASE_URL="${baseUrl}"'
-           sh 'export VUE_APP_CIRSE_URL="${apiUrlTest}"'
-           sh 'export outputDir=dist-test/'
-           sh 'npm run build:staging'
-           jsDir = "dist-test/"
-       }
-       if (ENV == 'PROD') {
-           sh 'export NODE_ENV=production'
-           sh 'export VUE_APP_BASE_URL="${baseUrl}"'
-           sh 'export VUE_APP_CIRSE_URL="${apiUrlProd}"'
-           sh 'export outputDir=dist-prod/'
-           sh 'npm run build:production'
-           jsDir = "dist-prod/"
-       }
-    }*/
+    stage("Edit .env file...") {
+          try {
+            echo "Edit .env file..."
+
+            if (ENV == 'DEV') {
+                withCredentials([
+                  string(credentialsId: "url-api-periscope-dev", variable: 'url')
+                ]) {
+                    original = readFile ".env.development"
+                    newconfig = original
+                    newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}")
+                    writeFile file: ".env.development", text: "${newconfig}"
+                    echo "texte = ${newconfig}"
+                }
+
+            } else if (ENV == 'TEST') {
+                withCredentials([
+                  string(credentialsId: "url-api-periscope-test", variable: 'url')
+                ]) {
+                     original = readFile ".env.test"
+                     newconfig = original
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}")
+                     writeFile file: ".env.test", text: "${newconfig}"
+                     echo "texte = ${newconfig}"
+                }
+
+            } else if (ENV == 'PROD') {
+                withCredentials([
+                  string(credentialsId: "url-api-periscope-prod", variable: 'url')
+                ]) {
+                     original = readFile ".env.production"
+                     newconfig = original
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}")
+                     writeFile file: ".env.production", text: "${newconfig}"
+                     echo "texte = ${newconfig}"
+                }
+            }
+
+          } catch (e) {
+            currentBuild.result = hudson.model.Result.FAILURE.toString()
+            notifySlack(slackChannel, "Failed to edit .env file : " + e.getLocalizedMessage())
+            throw e
+          }
+    }
 
     stage('Dependencies') {
         try {
@@ -139,7 +167,15 @@ node {
 
     stage('Build') {
         try {
-            sh 'npm run build'
+         if (ENV == 'DEV') {
+            sh 'npm run build -- --mode development'
+        } else if (ENV == 'TEST') {
+            sh 'npm run build -- --mode test'
+
+        } else if (ENV == 'PROD') {
+            sh 'npm run build -- --mode production'
+        }
+
         } catch (e) {
             currentBuild.result = hudson.model.Result.FAILURE.toString()
             notifySlack(slackChannel,e.getLocalizedMessage())
@@ -147,64 +183,25 @@ node {
         }
     }
 
-    stage ('deploy to raiponce'){
-        try {
-            if (ENV == 'DEV') {
-                echo 'deployment on raiponce1-dev'
-                sshagent(credentials: ['raiponce1-dev-ssh-key']) {
-                    withCredentials([usernamePassword(credentialsId: 'develuser', passwordVariable: 'pass', usernameVariable: 'username')]) {
-                        sh "ssh -tt devel@raiponce1-dev.v3.abes.fr \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
-                        sh "scp -r ${jsDir}* raiponce1-dev.v3.abes.fr:${htmlBaseDir}"
-                    }
-                }
+ stage ('deploy to front servers...'){
+        for (int i = 0; i < serverHostnames.size(); i++) { //Pour chaque serveur
+            try {
 
-                echo 'deployment on raiponce2-dev'
-                sshagent(credentials: ['raiponce2-dev-ssh-key']) {
-                    withCredentials([usernamePassword(credentialsId: 'develuser', passwordVariable: 'pass', usernameVariable: 'username')]) {
-                        sh "ssh -tt devel@raiponce2-dev.v3.abes.fr \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
-                        sh "scp -r ${jsDir}* raiponce2-dev.v3.abes.fr:${htmlBaseDir}"
-                    }
-                }
+             withCredentials([usernamePassword(credentialsId: 'develuser', passwordVariable: 'pass', usernameVariable: 'username'),
+             string(credentialsId: "${serverHostnames[i]}", variable: 'hostname')
+             ]) {
+
+                echo "Deploy to ${serverHostnames[i]}"
+                echo "--------------------------"
+                sh "ssh -tt ${username}@${hostname} \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
+                sh "scp -r ${jsDir}* ${username}@${hostname}:${htmlBaseDir}"
+             }
+
+            } catch(e) {
+                currentBuild.result = hudson.model.Result.FAILURE.toString()
+                notifySlack(slackChannel,e.getLocalizedMessage())
+                throw e
             }
-            if (ENV == 'TEST') {
-                echo 'deployment on raiponce1-test'
-                sshagent(credentials: ['raiponce1-test-ssh-key']) {
-                    withCredentials([usernamePassword(credentialsId: 'develuser', passwordVariable: 'pass', usernameVariable: 'username')]) {
-                        sh "ssh -tt devel@raiponce1-test.v3.abes.fr \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
-                        sh "scp -r ${jsDir}* devel@raiponce1-test.v3.abes.fr:${htmlBaseDir}"
-                    }
-                }
-
-                echo 'deployment on raiponce2-test'
-                sshagent(credentials: ['raiponce2-test-ssh-key']) {
-                    withCredentials([usernamePassword(credentialsId: 'develuser', passwordVariable: 'pass', usernameVariable: 'username')]) {
-                        sh "ssh -tt devel@raiponce2-test.v3.abes.fr \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
-                        sh "scp -r ${jsDir}* devel@raiponce2-test.v3.abes.fr:${htmlBaseDir}"
-                    }
-                }
-            }
-            if (ENV == 'PROD') {
-                echo 'deployment on raiponce1-prod'
-                sshagent(credentials: ['raiponce1-prod-ssh-key']) {
-                    withCredentials([usernamePassword(credentialsId: 'develuser', passwordVariable: 'pass', usernameVariable: 'username')]) {
-                        sh "ssh -tt devel@raiponce1.v3.abes.fr \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
-                        sh "scp -r ${jsDir}* devel@raiponce1.v3.abes.fr:${htmlBaseDir}"
-                    }
-                }
-
-                echo 'deployment on raiponce2-prod'
-                sshagent(credentials: ['raiponce2-prod-ssh-key']) {
-                    withCredentials([usernamePassword(credentialsId: 'develuser', passwordVariable: 'pass', usernameVariable: 'username')]) {
-                        sh "ssh -tt devel@raiponce2.v3.abes.fr \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
-                        sh "scp -r ${jsDir}* devel@raiponce2.v3.abes.fr:${htmlBaseDir}"
-                    }
-                }
-            }
-
-        } catch(e) {
-            currentBuild.result = hudson.model.Result.FAILURE.toString()
-            notifySlack(slackChannel,e.getLocalizedMessage())
-            throw e
         }
     }
 

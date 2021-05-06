@@ -78,7 +78,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    comboboxLabel: string;
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];
-   currentValue: string;
+   currentValue: any;
 
    constructor() {
       super();
@@ -133,7 +133,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
          Logger.error(err);
       });
    }
-   private addItem(value): boolean {
+   private addItem(value: string): boolean {
       if (this.comboboxArrayTyped.length >= 15) {
          this.currentValue = null;
          this.comboboxAlert.push('Maximum 15 PPN');

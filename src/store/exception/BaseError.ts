@@ -1,5 +1,5 @@
 export class BaseError {
-   constructor(...args) {
+   constructor(...args: []) {
       Error.apply(this, args);
    }
 }

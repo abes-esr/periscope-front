@@ -92,7 +92,7 @@ export default class RechercheAvance extends Vue {
 
    renderPanelList() {
       this.panel = this.getPanel;
-      this.$refs.listeChoix.updateList(); // On update la liste de choix
+     (this.$refs.listeChoix as ComponentListeDeChoix).updateList(); // On update la liste de choix
    }
 }
 </script>
