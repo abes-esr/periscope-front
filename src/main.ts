@@ -24,9 +24,15 @@ vue.$store.dispatch('loadCandidatesValue',true).catch((err) => {
    Logger.error(err);
 });
 
-/*vue.$store.dispatch('resetSearchPanel').catch((err) => {
+vue.$store.dispatch('resetSearchPanel').catch((err) => {
    Logger.error(err);
-});*/
+});
+vue.$store.dispatch('resetNotices').catch((err) => {
+   Logger.error(err);
+});
+vue.$store.dispatch('resetPage').catch((err) => {
+   Logger.error(err);
+});
 
 
 

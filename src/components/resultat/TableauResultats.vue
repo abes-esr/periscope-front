@@ -9,12 +9,12 @@
                <v-btn class="outlined-app" style="margin-top: -2em" outlined small @click="sortColumns"><v-icon>mdi-sync</v-icon>Tri</v-btn>
             </v-col>
             <v-col cols="4">
-              <v-btn icon color="primary" style="margin-top: -1.8em" @click="previousPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
+               <v-btn icon color="primary" style="margin-top: -1.8em" @click="previousPage" :disabled="isFirstPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
                <v-chip color="primary" outlined style="margin-top: -1.7em">
                   <v-icon left>mdi-file-document-outline</v-icon>
                   Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }} sur ?????
                </v-chip>
-              <v-btn icon color="primary" style="margin-top: -1.8em" @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
+               <v-btn icon color="primary" style="margin-top: -1.8em" @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
             </v-col>
             <v-col style="margin-top: -2em" cols="6">
                <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details></v-text-field>
@@ -75,14 +75,14 @@
       <v-container>
          <v-row justify="end" align="center">
             <v-col cols="1">
-               <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="previousPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
+               <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="previousPage" :disabled="isFirstPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
             </v-col>
             <v-col cols="1">
                <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
             </v-col>
-           <v-col cols="1">
-             <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage"><v-icon>mdi-arrow-up</v-icon></v-btn>
-           </v-col>
+            <v-col cols="1">
+               <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage"><v-icon>mdi-arrow-up</v-icon></v-btn>
+            </v-col>
          </v-row>
       </v-container>
       <v-navigation-drawer v-model="drawer" absolute temporary width="400">
@@ -104,22 +104,22 @@
                   </v-row>
                </v-expansion-panel-content>
             </v-expansion-panel>
-           <v-expansion-panel>
-             <v-expansion-panel-header> Support </v-expansion-panel-header>
-             <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
-               <v-row style="max-height: 2em">
-                 <v-checkbox label="Imprimé"></v-checkbox>
-               </v-row>
-               <v-row style="max-height: 2em">
-                 <v-checkbox label="Electronique"></v-checkbox>
-               </v-row>
-               <v-row>
-                 <v-checkbox label="Autre"></v-checkbox>
-               </v-row>
-             </v-expansion-panel-content>
-           </v-expansion-panel>
+            <v-expansion-panel>
+               <v-expansion-panel-header> Support </v-expansion-panel-header>
+               <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Imprimé"></v-checkbox>
+                  </v-row>
+                  <v-row style="max-height: 2em">
+                     <v-checkbox label="Electronique"></v-checkbox>
+                  </v-row>
+                  <v-row>
+                     <v-checkbox label="Autre"></v-checkbox>
+                  </v-row>
+               </v-expansion-panel-content>
+            </v-expansion-panel>
          </v-expansion-panels>
-        <v-btn block elevation="0">Réinitialiser les filtres</v-btn>
+         <v-btn block elevation="0">Réinitialiser les filtres</v-btn>
       </v-navigation-drawer>
    </v-container>
 </template>
@@ -127,7 +127,7 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {ContentHeader, TableHeader} from '@/store/resultat/TableInterfaces';
-import {Logger} from "@/store/utils/Logger";
+import {Logger} from '@/store/utils/Logger';
 //Permet de faire patienter un certain nombre de secondes avant l'exécution d'une fonction dans le code avec async await
 const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
@@ -149,7 +149,6 @@ export default class TableauResultats extends Vue {
 
    constructor() {
       super();
-      Logger.debug("CTOR");
       this.totalNotices = 0;
       this.headers = this.getHeaders;
       this.notices = this.getNotices;
@@ -163,7 +162,6 @@ export default class TableauResultats extends Vue {
       this.orderBooleans = this.getOrderSortBooleans;
       this.orderLabels = this.getOrderSortLabels;
       this.numberOfNoticesAskedForNewCall = this.getNumberOfNoticesAskedForNewCall;
-      Logger.debug(this.$store.getters.getRequestLaunchedToBackEnd);
    }
 
    get getOrderSortBooleans(): Array<boolean> {
@@ -234,32 +232,85 @@ export default class TableauResultats extends Vue {
    get getNumberOfNoticesAskedForNewCall(): number {
       return this.$store.state.pagination._sizeWanted;
    }
+  get isFirstPage(): boolean {
+    return this.$store.getters.isFirstPage();
+  }
+  get isLastPage(): boolean {
+    return this.$store.getters.isLastPage();
+  }
 
    //Lorsque l'utilisateur clique sur le bouton d'actualisation du tri
-   sortColumns() {
-      this.$store.dispatch('resetNoticesAndPaginationAction').catch(err => {Logger.error(err)});
-      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
+   async sortColumns() {
+      this.loading = true;
+      this.$store.dispatch('resetPage').catch((err) => {
+         Logger.error(err);
+      });
+      await this.$store
+         .dispatch('callPeriscopeAPI')
+         .then((res) => {
+            this.notices = this.getNotices;
+            this.loading = false;
+         })
+         .catch((err) => {
+            Logger.error(err);
+         });
    }
 
-   previousPage() {
-      this.$store.dispatch('previousPageDecrementPaginationAction').catch(err => {Logger.error(err)});
-      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
+   async previousPage() {
+      this.loading = true;
+      this.$store.dispatch('previousPage').catch((err) => {
+         Logger.error(err);
+      });
+
+      await this.$store
+         .dispatch('callPeriscopeAPI')
+         .then((res) => {
+            this.notices = this.getNotices;
+            this.loading = false;
+         })
+         .catch((err) => {
+            Logger.error(err);
+         });
    }
 
-   nextPage() {
-      this.$store.dispatch('resetNoticesAction').catch(err => {Logger.error(err)});
-      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
+   async nextPage() {
+      this.loading = true;
+     this.$store.dispatch('nextPage').catch((err) => {
+         Logger.error(err);
+      });
+      await this.$store
+         .dispatch('callPeriscopeAPI')
+         .then((res) => {
+            this.notices = this.getNotices;
+            this.loading = false;
+         })
+         .catch((err) => {
+            Logger.error(err);
+         });
    }
 
-   goToTopOfPage(){
-     scroll(0,0);
+   goToTopOfPage() {
+      scroll(0, 0);
    }
 
    //Lorsque l'utilisateur modifie le nombre de résultats voulus par page
-   getItemPerPage(val: number) {
-      this.$store.dispatch('resetNoticesAndPaginationAction').catch(err => {Logger.error(err)});
-      this.$store.dispatch('changeNumberOfElementsParPageAction', val).catch(err => {Logger.error(err)});
-      this.$store.dispatch('callPeriscopeAPI', 'current').catch(err => {Logger.error(err)});
+   async getItemPerPage(val: number) {
+      this.loading = true;
+      this.$store.dispatch('resetPage').catch((err) => {
+         Logger.error(err);
+      });
+      this.$store.dispatch('updatePageSize', val).catch((err) => {
+         Logger.error(err);
+      });
+      await this.$store
+         .dispatch('callPeriscopeAPI')
+         .then((res) => {
+            this.notices = this.getNotices;
+            this.loading = false;
+         })
+         .catch((err) => {
+            Logger.error(err);
+         });
       this.numberOfNoticesAskedForNewCall = val;
    }
 
@@ -274,9 +325,13 @@ export default class TableauResultats extends Vue {
          }
       }
       //Envoi des critères de tri dans le bloc de tri
-      this.$store.dispatch('updateSelectedTri', arrayToSentAtStore);
+      this.$store.dispatch('updateSelectedTri', arrayToSentAtStore).catch((err) => {
+         Logger.error(err);
+      });
       //Reconstruction du JSON à envoyer
-      this.$store.dispatch('constructJsonAction');
+      this.$store.dispatch('constructJsonAction').catch((err) => {
+         Logger.error(err);
+      });
       return items;
    }
 }

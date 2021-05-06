@@ -5,7 +5,6 @@ export class BlocTri {
    _array: Array<TriTableauInterface> = [];
 
    static updateArray(blocTri: BlocTri, elements: Array<string>): void {
-      Logger.debug(JSON.stringify(elements));
       blocTri._array = [];
       for (let i = 0; i < elements.length / 2; i++) {
          blocTri._array.push({sort: elements[i * 2], order: elements[i * 2 + 1]});

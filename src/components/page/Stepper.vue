@@ -53,10 +53,10 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
             this.$store.dispatch('constructJsonAction').catch((err) => {
                Logger.error(err);
             });
-            this.$store.dispatch('resetNoticesAndPaginationAction').catch((err) => {
+            this.$store.dispatch('resetPage').catch((err) => {
                Logger.error(err);
             });
-            this.$store.dispatch('callPeriscopeAPI', 'Resultats').catch((err) => {
+            this.$store.dispatch('callPeriscopeAPI', 'Resultat').catch((err) => {
                Logger.error(err);
             });
             break;

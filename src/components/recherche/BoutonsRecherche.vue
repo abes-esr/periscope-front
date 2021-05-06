@@ -17,6 +17,7 @@ import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
 import {PanelType} from "@/store/recherche/ComposantInterfaces";
 import {Ensemble, OperatorProvider} from "@/store/recherche/BlocInterfaces";
+import router from "@/router";
 
 @Component
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
@@ -43,16 +44,18 @@ export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
       return false
     }
   }
-   clickSearch() {
+   async clickSearch() {
       this.$store.dispatch('constructJsonAction').catch((err) => {
          Logger.error(err);
       });
-      this.$store.dispatch('resetNoticesAndPaginationAction').catch((err) => {
+      this.$store.dispatch('resetPage').catch((err) => {
          Logger.error(err);
       });
-      this.$store.dispatch('callPeriscopeAPI', 'Resultats').catch((err) => {
-         Logger.error(err);
-      });
+     await this.$store.dispatch('callPeriscopeAPI').then((res) => {
+       router.push("Resultat").catch((err) => {
+         throw new Error(err);
+       });
+     }).catch(err => {Logger.error(err)});
    }
 
    resetSearch() {
