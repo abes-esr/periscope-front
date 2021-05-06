@@ -160,7 +160,7 @@ export default class ComponentPlanConservationRegions extends Vue {
    }
 
    //Events v-btn
-   removePanel() {
+   removePanel(): void {
       this.clearSelectedValues();
       const action: PanelDisplaySwitchProvider = {
          panelId: this.id,
@@ -171,7 +171,7 @@ export default class ComponentPlanConservationRegions extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-   moveUpPanel() {
+   moveUpPanel(): void {
       const action: PanelMovementProvider = {
          panelId: this.id,
          value: Movement.UP,
@@ -182,7 +182,7 @@ export default class ComponentPlanConservationRegions extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-   moveDownPanel() {
+   moveDownPanel(): void {
       const action: PanelMovementProvider = {
          panelId: this.id,
          value: Movement.DOWN,
@@ -192,7 +192,7 @@ export default class ComponentPlanConservationRegions extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-   selectAll() {
+   selectAll(): void {
       if (this.switchAllSelected) {
          this.switchAllSelected = false;
          this.regions.forEach((x: CheckboxesProvider) => (x.value = false));
@@ -204,14 +204,14 @@ export default class ComponentPlanConservationRegions extends Vue {
          Logger.error(err);
       });
    }
-   clearSelectedValues() {
+   clearSelectedValues(): void {
       this.switchAllSelected = false;
       this.$store.dispatch('resetBlocPcpRegions').catch((err) => {
          Logger.error(err);
       });
       this.reloadFromStore();
    }
-   reloadFromStore() {
+   reloadFromStore(): void {
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;

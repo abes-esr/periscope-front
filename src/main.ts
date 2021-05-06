@@ -20,10 +20,12 @@ const vue = new Vue({
    render: (h) => h(App),
 }).$mount('#app');
 
-vue.$store.dispatch('loadCandidatesValue',true).catch((err) => {
+vue.$store.dispatch('loadCandidatesValue', false).catch((err) => {
    Logger.error(err);
 });
 
+/*
+//Reset Total du store
 vue.$store.dispatch('resetSearchPanel').catch((err) => {
    Logger.error(err);
 });
@@ -33,6 +35,4 @@ vue.$store.dispatch('resetNotices').catch((err) => {
 vue.$store.dispatch('resetPage').catch((err) => {
    Logger.error(err);
 });
-
-
-
+*/

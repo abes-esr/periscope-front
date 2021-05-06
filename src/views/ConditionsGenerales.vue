@@ -30,6 +30,7 @@ import ComponentFooter from '@/components/page/Footer.vue';
 import ComponentStepper from '@/components/page/Stepper.vue';
 
 import {Component, Vue} from 'vue-property-decorator';
+
 @Component({
    components: {ComponentHeader, ComponentStepper, ComponentFooter, ComponentCgu},
 })

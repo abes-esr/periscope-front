@@ -7,12 +7,9 @@ import {PeriscopeApi} from '@/store/api/periscope/PeriscopeApi';
 import {LotNotices} from '@/store/resultat/LotNotices';
 import Notice from '@/store/entity/Notice';
 import {Composants} from './recherche/Composants';
-import router from '@/router/index.ts';
 import {Pagination} from '@/store/resultat/Pagination';
 import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
 import {Logger} from '@/store/utils/Logger';
-import {RouterError} from '@/store/exception/RouterError';
-import {HttpRequestError} from '@/store/exception/HttpRequestError';
 import {BlocTri} from '@/store/recherche/criteres/BlocTri';
 import {BlocMotDuTitre} from '@/store/recherche/criteres/BlocMotDuTitre';
 import {BlocIssn} from '@/store/recherche/criteres/BlocIssn';
@@ -23,7 +20,13 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
+import {
+   DisplaySwitch,
+   Movement,
+   PanelDisplaySwitchProvider,
+   PanelMovementProvider,
+   PanelType
+} from '@/store/recherche/ComposantInterfaces';
 
 Vue.use(Vuex);
 
@@ -1184,7 +1187,7 @@ export default new Vuex.Store({
       mutationNotices(state, lotNoticesReceived) {
          Logger.debug('Mutation des Notices');
          //Contient les notices brutes
-         lotNoticesReceived.forEach((obj:any) => state.lotNotices._lotNotices.push(new Notice(obj)));
+         lotNoticesReceived.forEach((obj: any) => state.lotNotices._lotNotices.push(new Notice(obj)));
 
          //Contient les notices avec un formatage des données
          state.lotNotices._lotNotices.forEach((element) => {
@@ -1427,10 +1430,10 @@ export default new Vuex.Store({
          context.commit('mutationPageSize', nbElements);
       },
       nextPage(context) {
-         context.commit('mutationCurrentPage',context.state.pagination._nextPage);
+         context.commit('mutationCurrentPage', context.state.pagination._nextPage);
       },
       previousPage(context) {
-         context.commit('mutationCurrentPage',context.state.pagination._previousPage);
+         context.commit('mutationCurrentPage', context.state.pagination._previousPage);
       },
 
       //******************

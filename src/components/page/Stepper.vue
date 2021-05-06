@@ -24,6 +24,7 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '../../mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
+import router from '@/router';
 
 @Component
 export default class Stepper extends Mixins(GlobalPropertiesMixin) {
@@ -36,7 +37,7 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
    }
 
    //Event
-   changePage(stepNumber: number): void {
+   async changePage(stepNumber: number): Promise<boolean> {
       switch (stepNumber) {
          case 1:
             this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
@@ -56,9 +57,16 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
             this.$store.dispatch('resetPage').catch((err) => {
                Logger.error(err);
             });
-            this.$store.dispatch('callPeriscopeAPI', 'Resultat').catch((err) => {
-               Logger.error(err);
-            });
+            await this.$store
+               .dispatch('callPeriscopeAPI')
+               .then(() => {
+                  router.push('Resultat').catch((err) => {
+                     throw new Error(err);
+                  });
+               })
+               .catch((err) => {
+                  Logger.error(err);
+               });
             break;
          case 3:
             this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
@@ -85,6 +93,8 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
             });
             break;
       }
+
+      return true;
    }
 }
 </script>

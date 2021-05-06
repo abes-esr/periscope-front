@@ -55,7 +55,7 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
+import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 import {Logger} from '@/store/utils/Logger';
 
 @Component
@@ -78,7 +78,7 @@ export default class ComponentRequeteEnregistree extends Vue {
    }
 
    //Events v-btn
-   removePanel() {
+   removePanel(): void {
       this.clearSelectedValues();
       const action: PanelDisplaySwitchProvider = {
          panelId: this.id,
@@ -89,34 +89,13 @@ export default class ComponentRequeteEnregistree extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-   moveUpPanel() {
-      const action: PanelMovementProvider = {
-         panelId: this.id,
-         value: Movement.UP,
-      };
-
-      this.$store.dispatch('moveElementPanel', action).catch((err) => {
-         Logger.error(err);
-      });
-      this.$emit('onChange'); // On notifie le composant parent
-   }
-   moveDownPanel() {
-      const action: PanelMovementProvider = {
-         panelId: this.id,
-         value: Movement.DOWN,
-      };
-      this.$store.dispatch('moveElementPanel', action).catch((err) => {
-         Logger.error(err);
-      });
-      this.$emit('onChange'); // On notifie le composant parent
-   }
-   clearSelectedValues() {
+   clearSelectedValues(): void {
       this.$store.dispatch('resetBlocRequeteDirecte').catch((err) => {
          Logger.error(err);
       });
       this.reloadFromStore();
    }
-   reloadFromStore() {
+   reloadFromStore(): void {
       this.requeteEntered = this.getRequeteEntered;
    }
 }

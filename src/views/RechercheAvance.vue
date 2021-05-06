@@ -53,7 +53,6 @@ import ComponentPays from '@/components/recherche/criteres/v2/BlocPays.vue';
 import ComponentPlanConservationRegions from '@/components/recherche/criteres/v2/BlocPlanConservationRegions.vue';
 import ComponentRequeteEnregistree from '@/components/recherche/criteres/v2/BlocRequeteEnregistree.vue';
 import ComponentBoutonsRecherche from '@/components/recherche/BoutonsRecherche.vue';
-import {Logger} from '@/store/utils/Logger';
 import {PanelProvider} from '@/store/recherche/ComposantInterfaces';
 
 @Component({
@@ -90,9 +89,9 @@ export default class RechercheAvance extends Vue {
       return this.$store.state.composants._panel;
    }
 
-   renderPanelList() {
+   renderPanelList(): void {
       this.panel = this.getPanel;
-     (this.$refs.listeChoix as ComponentListeDeChoix).updateList(); // On update la liste de choix
+      (this.$refs.listeChoix as ComponentListeDeChoix).updateList(); // On update la liste de choix
    }
 }
 </script>

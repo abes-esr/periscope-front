@@ -27,7 +27,7 @@
             <component-footer></component-footer>
          </v-col>
       </v-row>
-     <component-snackbar></component-snackbar>
+      <component-snackbar></component-snackbar>
    </v-container>
 </template>
 
@@ -38,7 +38,7 @@ import ComponentRecherche from '@/components/recherche/Recherche.vue';
 import ComponentFooter from '@/components/page/Footer.vue';
 import ComponentStepper from '@/components/page/Stepper.vue';
 import ComponentSnackbar from '@/components/page/autres/Alerte.vue';
-import {Logger} from "@/store/utils/Logger";
+import {Logger} from '@/store/utils/Logger';
 
 @Component({
    components: {

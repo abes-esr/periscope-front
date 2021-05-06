@@ -12,7 +12,6 @@ import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
 import {DisplaySwitch, PanelDisplaySwitchProvider, PanelProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
-import {ValueError} from '@/store/exception/ValueError';
 
 @Component
 export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
@@ -34,7 +33,7 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
        * - Si un autre choix est sélectionné alors on désactive la recherche par historique
        * - Si un choix est déjà selectionné alors on le désactive
        */
-      const index = pannels.findIndex((x:PanelProvider) => x.id === PanelType.HISTORY);
+      const index = pannels.findIndex((x: PanelProvider) => x.id === PanelType.HISTORY);
       if (index == -1 || pannels[index].available) {
          let i: number;
          i = 0;
@@ -52,7 +51,7 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
       }
    }
 
-   updatePanel() {
+   updatePanel(): void {
       const action: PanelDisplaySwitchProvider = {
          panelId: this.panelSelected,
          value: DisplaySwitch.ON,
@@ -64,7 +63,7 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
       this.$emit('onChange'); // On notifie le composant parent
    }
 
-   updateList() {
+   updateList(): void {
       this.items = this.getPanel; // On update la liste de choix
    }
 }

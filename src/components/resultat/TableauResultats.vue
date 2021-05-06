@@ -128,8 +128,6 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {ContentHeader, TableHeader} from '@/store/resultat/TableInterfaces';
 import {Logger} from '@/store/utils/Logger';
-//Permet de faire patienter un certain nombre de secondes avant l'exécution d'une fonction dans le code avec async await
-const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
 
 @Component
 export default class TableauResultats extends Vue {
@@ -232,31 +230,33 @@ export default class TableauResultats extends Vue {
    get getNumberOfNoticesAskedForNewCall(): number {
       return this.$store.state.pagination._sizeWanted;
    }
-  get isFirstPage(): boolean {
-    return this.$store.getters.isFirstPage();
-  }
-  get isLastPage(): boolean {
-    return this.$store.getters.isLastPage();
-  }
+   get isFirstPage(): boolean {
+      return this.$store.getters.isFirstPage();
+   }
+   get isLastPage(): boolean {
+      return this.$store.getters.isLastPage();
+   }
 
    //Lorsque l'utilisateur clique sur le bouton d'actualisation du tri
-   async sortColumns() {
+   async sortColumns(): Promise<boolean> {
       this.loading = true;
       this.$store.dispatch('resetPage').catch((err) => {
          Logger.error(err);
       });
       await this.$store
          .dispatch('callPeriscopeAPI')
-         .then((res) => {
+         .then(() => {
             this.notices = this.getNotices;
             this.loading = false;
          })
          .catch((err) => {
             Logger.error(err);
          });
+
+      return !this.loading;
    }
 
-   async previousPage() {
+   async previousPage(): Promise<boolean> {
       this.loading = true;
       this.$store.dispatch('previousPage').catch((err) => {
          Logger.error(err);
@@ -264,37 +264,41 @@ export default class TableauResultats extends Vue {
 
       await this.$store
          .dispatch('callPeriscopeAPI')
-         .then((res) => {
+         .then(() => {
             this.notices = this.getNotices;
             this.loading = false;
          })
          .catch((err) => {
             Logger.error(err);
          });
+
+      return !this.loading;
    }
 
-   async nextPage() {
+   async nextPage(): Promise<boolean> {
       this.loading = true;
-     this.$store.dispatch('nextPage').catch((err) => {
+      this.$store.dispatch('nextPage').catch((err) => {
          Logger.error(err);
       });
       await this.$store
          .dispatch('callPeriscopeAPI')
-         .then((res) => {
+         .then(() => {
             this.notices = this.getNotices;
             this.loading = false;
          })
          .catch((err) => {
             Logger.error(err);
          });
+
+      return !this.loading;
    }
 
-   goToTopOfPage() {
+   goToTopOfPage(): void {
       scroll(0, 0);
    }
 
    //Lorsque l'utilisateur modifie le nombre de résultats voulus par page
-   async getItemPerPage(val: number) {
+   async getItemPerPage(val: number): Promise<boolean> {
       this.loading = true;
       this.$store.dispatch('resetPage').catch((err) => {
          Logger.error(err);
@@ -304,17 +308,19 @@ export default class TableauResultats extends Vue {
       });
       await this.$store
          .dispatch('callPeriscopeAPI')
-         .then((res) => {
+         .then(() => {
             this.notices = this.getNotices;
+            this.numberOfNoticesAskedForNewCall = val;
             this.loading = false;
          })
          .catch((err) => {
             Logger.error(err);
          });
-      this.numberOfNoticesAskedForNewCall = val;
+
+      return !this.loading;
    }
 
-   customSort(items: Array<TableHeader>, index: Array<string>, isDesc: Array<boolean>) {
+   customSort(items: Array<TableHeader>, index: Array<string>, isDesc: Array<boolean>): Array<TableHeader> {
       const arrayToSentAtStore: Array<string> = [];
       for (let i = 0; i < index.length; i++) {
          arrayToSentAtStore.push(index[i]);

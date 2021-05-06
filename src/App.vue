@@ -31,6 +31,4 @@
    background-color: white;
    max-height: 3.5em;
 }
-
-
 </style>

@@ -143,7 +143,7 @@ export default class ComponentMotsDuTitre extends Vue {
    }
 
    //Events v-btn
-   removePanel() {
+   removePanel(): void {
       this.clearSelectedValues();
       const action: PanelDisplaySwitchProvider = {
          panelId: this.id,
@@ -154,7 +154,7 @@ export default class ComponentMotsDuTitre extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-   moveUpPanel() {
+   moveUpPanel(): void {
       const action: PanelMovementProvider = {
          panelId: this.id,
          value: Movement.UP,
@@ -165,7 +165,7 @@ export default class ComponentMotsDuTitre extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-   moveDownPanel() {
+   moveDownPanel(): void {
       const action: PanelMovementProvider = {
          panelId: this.id,
          value: Movement.DOWN,
@@ -175,13 +175,13 @@ export default class ComponentMotsDuTitre extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-   clearSelectedValues() {
+   clearSelectedValues(): void {
       this.$store.dispatch('resetBlocMotDuTitre').catch((err) => {
          Logger.error(err);
       });
       this.reloadFromStore();
    }
-   reloadFromStore() {
+   reloadFromStore(): void {
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;

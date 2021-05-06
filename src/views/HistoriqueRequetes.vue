@@ -16,9 +16,9 @@
                <v-row align="center">
                   <v-col cols="12">Requetes Enregistrées</v-col>
                   <v-col cols="12">
-                    <ul v-for="i in requestsHistory" v-bind:key="i">
-                      <li>{{ i }}</li>
-                    </ul>
+                     <ul v-for="i in requestsHistory" v-bind:key="i">
+                        <li>{{ i }}</li>
+                     </ul>
                   </v-col>
                </v-row>
             </v-container>
