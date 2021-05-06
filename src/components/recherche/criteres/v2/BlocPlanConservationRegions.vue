@@ -83,6 +83,7 @@ export default class ComponentPlanConservationRegions extends Vue {
    external_operator_selected: Ensemble;
    internal_operator_selected: Ensemble;
    regions: Array<CheckboxesProvider>;
+   switchAllSelected: boolean;
 
    constructor() {
       super();
@@ -93,6 +94,7 @@ export default class ComponentPlanConservationRegions extends Vue {
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.regions = this.getRegions;
+      this.switchAllSelected = false;
    }
 
    get getExternalOperatorList(): Array<OperatorProvider> {
@@ -191,12 +193,19 @@ export default class ComponentPlanConservationRegions extends Vue {
       this.$emit('onChange'); // On notifie le composant parent
    }
    selectAll() {
-      this.regions.forEach((x: CheckboxesProvider) => (x.value = true));
+      if (this.switchAllSelected) {
+         this.switchAllSelected = false;
+         this.regions.forEach((x: CheckboxesProvider) => (x.value = false));
+      } else {
+         this.switchAllSelected = true;
+         this.regions.forEach((x: CheckboxesProvider) => (x.value = true));
+      }
       this.$store.dispatch('updateSelectedPcpRegions', this.regions).catch((err) => {
          Logger.error(err);
       });
    }
    clearSelectedValues() {
+      this.switchAllSelected = false;
       this.$store.dispatch('resetBlocPcpRegions').catch((err) => {
          Logger.error(err);
       });

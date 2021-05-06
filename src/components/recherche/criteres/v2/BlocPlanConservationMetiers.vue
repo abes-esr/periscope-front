@@ -83,6 +83,7 @@ export default class ComponentPlanConservationMetiers extends Vue {
    external_operator_selected: Ensemble;
    internal_operator_selected: Ensemble;
    metiers: Array<CheckboxesProvider>;
+   switchAllSelected: boolean;
 
    constructor() {
       super();
@@ -93,6 +94,7 @@ export default class ComponentPlanConservationMetiers extends Vue {
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.metiers = this.getMetiers;
+      this.switchAllSelected = false;
    }
 
    get getExternalOperatorList(): Array<OperatorProvider> {
@@ -190,12 +192,19 @@ export default class ComponentPlanConservationMetiers extends Vue {
       this.$emit('onChange'); // On notifie le composant parent
    }
    selectAll() {
-      this.metiers.forEach((x: CheckboxesProvider) => (x.value = true));
+      if (this.switchAllSelected) {
+         this.switchAllSelected = false;
+         this.metiers.forEach((x: CheckboxesProvider) => (x.value = false));
+      } else {
+         this.switchAllSelected = true;
+         this.metiers.forEach((x: CheckboxesProvider) => (x.value = true));
+      }
       this.$store.dispatch('updateSelectedPcpMetiers', this.metiers).catch((err) => {
          Logger.error(err);
       });
    }
    clearSelectedValues() {
+      this.switchAllSelected = false;
       this.$store.dispatch('resetBlocPcpMetiers').catch((err) => {
          Logger.error(err);
       });

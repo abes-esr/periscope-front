@@ -5,7 +5,7 @@
             <v-btn @click="resetSearch()" color="#E53935" dark large>Réinitialiser<v-icon dark right> mdi-cancel </v-icon></v-btn>
          </v-col>
          <v-col xs="6" sm="3">
-            <v-btn @click="clickSearch()" color="#4CAF50" dark large>Recherche<v-icon dark right> mdi-checkbox-marked-circle</v-icon></v-btn>
+            <v-btn :disabled="isSelectionEmpty" @click="clickSearch()" color="#4CAF50" class="white--text" large >Recherche<v-icon right> mdi-checkbox-marked-circle</v-icon></v-btn>
          </v-col>
       </v-row>
    </v-container>
@@ -15,9 +15,34 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
+import {PanelType} from "@/store/recherche/ComposantInterfaces";
+import {Ensemble, OperatorProvider} from "@/store/recherche/BlocInterfaces";
 
 @Component
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
+  selectionEmpty: boolean;
+
+  constructor() {
+    super();
+    this.selectionEmpty = this.isSelectionEmpty;
+  }
+
+  get isSelectionEmpty(): boolean {
+    if (this.$store.state.blocPays._selected.length == 0
+        && this.$store.state.blocLangue._selected == 0
+        && this.$store.state.blocPcpRegions._selected.length == 0
+        && this.$store.state.blocEditeur._selected.length == 0
+        && this.$store.state.blocPcpMetiers._selected.length == 0
+        && this.$store.state.blocIssn._selected.length ==0
+        && this.$store.state.blocRcr._selected.length == 0
+        && this.$store.state.blocMotsDuTitre._selected.length == 0
+        && this.$store.state.blocPpn._selected.length == 0
+        && this.$store.state.blocRequeteDirecte._directRequest.length == 0 ) {
+      return true;
+    } else {
+      return false
+    }
+  }
    clickSearch() {
       this.$store.dispatch('constructJsonAction').catch((err) => {
          Logger.error(err);

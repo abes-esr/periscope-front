@@ -24,7 +24,7 @@
                <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-combobox @change="addItem" @blur="addItem" @keyup.enter="addItem" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
+                     <v-combobox :search-input.sync="currentValue" @keyup="checkValues()" @keydown="checkValues()" @blur="checkValues()" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
                         <template v-slot:selection="{item}">
                            <v-chip close @click:close="removeItem(item)">
                               <span class="pr-2">{{ item }}</span>
@@ -78,6 +78,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    comboboxLabel: string;
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];
+   currentValue: string;
 
    constructor() {
       super();
@@ -90,6 +91,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
       this.comboboxArrayTyped = this.getComboboxArrayTyped;
       this.comboboxLabel = 'PPN saisis';
       this.comboboxPlaceholder = 'Saisir des n° de PPN';
+      this.currentValue = null;
    }
 
    get getExternalOperatorList(): Array<OperatorProvider> {
@@ -125,36 +127,85 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
    get isLastDisplayedElement(): boolean {
       return this.$store.getters.isLastDisplayedElement(this.id);
    }
-
-   //Events v-combobox
-   private addItem(): void {
-      if (this.comboboxArrayTyped.length !== 0) {
-         const lastElement: string = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
-         if (lastElement.match('^\\d{8,9}X?$')) {
-            this.$store.dispatch('updateSelectedPpn', this.comboboxArrayTyped).catch((err) => {
-               Logger.error(err);
-            });
-            this.comboboxAlert = [];
-         } else {
-            this.removeItem(lastElement);
-            this.comboboxAlert.push("Le PPN est constitué de 8 ou 9 chiffres suivis ou pas d'un X");
-         }
-      }
+   // Method
+   private updateStore(): void {
+      this.$store.dispatch('updateSelectedPpn', this.comboboxArrayTyped).catch((err) => {
+         Logger.error(err);
+      });
    }
-
+   private addItem(value): boolean {
+      if (this.comboboxArrayTyped.length >= 15) {
+         this.currentValue = null;
+         this.comboboxAlert.push('Maximum 15 PPN');
+         return false;
+      }
+      this.comboboxArrayTyped.push(value.trim());
+      this.updateStore();
+      return true;
+   }
    private removeItem(item: string): void {
       const index: number = this.comboboxArrayTyped.indexOf(item);
       if (index > -1) {
          this.comboboxArrayTyped.splice(index, 1);
       }
+      this.updateStore();
    }
-
    private returnItem(): string {
       let chain = '';
       this.comboboxArrayTyped.forEach((element) => {
          chain += element + ', ';
       });
       return chain;
+   }
+
+   //Events v-combobox
+   private checkValues(): void {
+      //Logger.debug('----- DEBUT CHECK VALUES -----');
+      //Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
+      //Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
+
+      if (this.currentValue != null && this.comboboxArrayTyped.length >= 15) {
+         this.currentValue = null;
+         this.comboboxAlert.push('Maximum 15 PPN');
+      } else if (this.currentValue != null) {
+         for (let value of this.currentValue.trim().split(/\s+/)) {
+            if (value.trim().match('^\\d{8,9}X?$')) {
+               if (this.addItem(value.trim())) {
+                  this.comboboxAlert = [];
+               } else {
+                  //Logger.debug('------- BREAK --------');
+                  return;
+               }
+            } else {
+               this.currentValue = value;
+               if (this.comboboxAlert.length === 0) {
+                  this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
+               }
+               //Logger.debug('------- BREAK --------');
+               return;
+            }
+         }
+         if (this.comboboxAlert.length === 0) {
+            this.currentValue = null;
+         }
+      } else if (this.comboboxArrayTyped.length !== 0 && !this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1].match('^\\d{8,9}X?$')) {
+         this.currentValue = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
+         this.removeItem(this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1]);
+         if (this.comboboxAlert.length === 0) {
+            this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
+         }
+      } else if (this.currentValue == null || (this.currentValue != null && this.currentValue.trim().length == 0)) {
+         this.currentValue = null;
+         this.comboboxAlert = [];
+         this.updateStore();
+      } else {
+         if (this.comboboxAlert.length === 0) {
+            this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
+         }
+      }
+      //Logger.debug(JSON.stringify('Search value AFTER validation: ' + this.currentValue));
+      //Logger.debug(JSON.stringify('Values AFTER validation : ' + JSON.stringify(this.comboboxArrayTyped)));
+      //Logger.debug('----- FIN CHECK VALUES -----');
    }
 
    //Events v-select

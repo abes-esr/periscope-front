@@ -141,9 +141,6 @@ export default class ComponentEditeur extends Vue {
 
    //Event combobox
    eventUpdateBlocEditeur(): void {
-      if (this.editeurEntered.length > 1) {
-         this.editeurEntered.pop();
-      }
       this.$store.dispatch('updateSelectedEditeur', this.editeurEntered).catch((err) => {
          Logger.error(err);
       });

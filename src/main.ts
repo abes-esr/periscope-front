@@ -20,7 +20,7 @@ const vue = new Vue({
    render: (h) => h(App),
 }).$mount('#app');
 
-vue.$store.dispatch('loadCandidatesValue',false).catch((err) => {
+vue.$store.dispatch('loadCandidatesValue',true).catch((err) => {
    Logger.error(err);
 });
 
