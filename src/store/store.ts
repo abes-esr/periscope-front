@@ -20,13 +20,7 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {
-   DisplaySwitch,
-   Movement,
-   PanelDisplaySwitchProvider,
-   PanelMovementProvider,
-   PanelType
-} from '@/store/recherche/ComposantInterfaces';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 
 Vue.use(Vuex);
 
