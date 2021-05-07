@@ -119,7 +119,7 @@ node {
                     original = readFile ".env.development"
                     newconfig = original
                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
-                    newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v2/")
+                    newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
                     writeFile file: ".env.development", text: "${newconfig}"
                     echo "texte = ${newconfig}"
                 }
@@ -131,7 +131,7 @@ node {
                      original = readFile ".env.test"
                      newconfig = original
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
-                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v2/")
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
                      writeFile file: ".env.test", text: "${newconfig}"
                      echo "texte = ${newconfig}"
                 }
@@ -143,7 +143,7 @@ node {
                      original = readFile ".env.production"
                      newconfig = original
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
-                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v2/")
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
                      writeFile file: ".env.production", text: "${newconfig}"
                      echo "texte = ${newconfig}"
                 }
