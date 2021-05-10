@@ -24,7 +24,7 @@
                <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-combobox :search-input.sync="currentValue" @keyup="checkValues()" @keydown="checkValues()" @blur="checkValues()" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
+                     <v-combobox :search-input.sync="currentValue" @keyup.enter="checkValues()" @blur="checkValues()" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
                         <template v-slot:selection="{item}">
                            <v-chip close @click:close="removeItem(item)">
                               <span class="pr-2">{{ item }}</span>

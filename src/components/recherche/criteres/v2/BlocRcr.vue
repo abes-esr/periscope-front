@@ -169,7 +169,7 @@ export default class ComponentRcr extends Vue {
          this.comboboxAlert.push('Maximum 15 RCR');
       } else if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{8}$')) {
+            if (value.trim().match('^\\d{9}$')) {
                if (this.addItem(value.trim())) {
                   this.comboboxAlert = [];
                } else {
@@ -179,7 +179,7 @@ export default class ComponentRcr extends Vue {
             } else {
                this.currentValue = value;
                if (this.comboboxAlert.length === 0) {
-                  this.comboboxAlert.push('Un RCR doit être constitué de 8 chiffres : XXXXXXXX');
+                  this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
                }
                //Logger.debug('------- BREAK --------');
                return;
@@ -188,11 +188,11 @@ export default class ComponentRcr extends Vue {
          if (this.comboboxAlert.length === 0) {
             this.currentValue = null;
          }
-      } else if (this.comboboxArrayTyped.length !== 0 && !this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1].match('^\\d{8}$')) {
+      } else if (this.comboboxArrayTyped.length !== 0 && !this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1].match('^\\d{9}$')) {
          this.currentValue = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
          this.removeItem(this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1]);
          if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push('Un RCR doit être constitué de 8 chiffres : XXXXXXXX');
+            this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
          }
       } else if (this.currentValue == null || (this.currentValue != null && this.currentValue.trim().length == 0)) {
          this.currentValue = null;
@@ -200,7 +200,7 @@ export default class ComponentRcr extends Vue {
          this.updateStore();
       } else {
          if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push('Un RCR doit être constitué de 8 chiffres : XXXXXXXX');
+            this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
          }
       }
 
