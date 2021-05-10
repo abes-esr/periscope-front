@@ -1,8 +1,14 @@
 <template>
-   <v-container class="ma-0 pa-0 outlined-app">
+   <v-container class="ma-0 pa-0 outlined-app" fluid>
       <v-row :align="getVerticalAlignValue(1)">
          <v-col cols="4">Ajouter un bloc de recherche </v-col>
-         <v-col cols="8"><v-select dense outlined :items="items" item-value="id" item-text="label" label="Choisissez votre bloc de recherche" style="margin: 0.5em 0.5em -1.1em 0" v-model="panelSelected" @change="updatePanel()" @input="updatePanel"></v-select></v-col>
+         <v-col cols="6">
+            <v-card class="d-flex flex-wrap" flat>
+               <div v-for="item in items" :key="item.id">
+                  <v-switch class="ma-4" v-model="item.displayed" :label="item.label" :value="item.displayed" :disabled="!item.available" @change="updatePanel(item.id, item.displayed)"></v-switch>
+               </div>
+            </v-card>
+         </v-col>
       </v-row>
    </v-container>
 </template>
@@ -17,6 +23,7 @@ import {DisplaySwitch, PanelDisplaySwitchProvider, PanelProvider, PanelType} fro
 export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
    panelSelected: PanelType;
    items: Array<PanelProvider>;
+   sortedItems: Array<PanelProvider>;
 
    constructor() {
       super();
@@ -25,36 +32,24 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
    }
 
    get getPanel(): Array<PanelProvider> {
-      const pannels = this.$store.state.composants._panel;
-
-      /**
-       * On vérifie affiche les choix selon les critères suivants :
-       * - si la recherche par historique est selectionné alors on désactive tous les autres choix
-       * - Si un autre choix est sélectionné alors on désactive la recherche par historique
-       * - Si un choix est déjà selectionné alors on le désactive
-       */
-      const index = pannels.findIndex((x: PanelProvider) => x.id === PanelType.HISTORY);
-      if (index == -1 || pannels[index].available) {
-         let i: number;
-         i = 0;
-         while (i < pannels.length && (pannels[i].available || !pannels[index].available)) {
-            i++;
+      // On fait une copie avant de trier par id
+      return Array.prototype.slice.call(this.$store.state.composants._panel).sort((obj1: PanelProvider, obj2: PanelProvider) => {
+         if (obj1.id > obj2.id) {
+            return 1;
          }
 
-         if (i >= pannels.length) {
-            return pannels.filter((x: {available: boolean}) => x.available);
-         } else {
-            return pannels.filter((x: {id: PanelType; available: boolean}) => x.available && x.id != PanelType.HISTORY);
+         if (obj1.id < obj2.id) {
+            return -1;
          }
-      } else {
-         return pannels.filter((x: {available: boolean}) => x.available);
-      }
+
+         return 0;
+      });
    }
 
-   updatePanel(): void {
+   updatePanel(id: number, value: any): void {
       const action: PanelDisplaySwitchProvider = {
-         panelId: this.panelSelected,
-         value: DisplaySwitch.ON,
+         panelId: id,
+         value: value ? DisplaySwitch.ON : DisplaySwitch.OFF,
       };
 
       this.$store.dispatch('switchElementPanel', action).catch((err) => {

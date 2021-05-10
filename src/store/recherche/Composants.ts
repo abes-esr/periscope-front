@@ -86,6 +86,15 @@ export class Composants {
       //Logger.debug('Nouvelles positions :' + JSON.stringify(panel));
    }
 
+   /**
+    * Active ou désactive l'affichage d'un panneau de recherche
+    * On vérifie l'affichage selon les critères suivants :
+    * - si la recherche par historique est selectionné alors on désactive tous les autres choix
+    * - Si un autre choix est sélectionné alors on désactive la recherche par historique
+    * @param id
+    * @param panel
+    * @param value
+    */
    static switchPanelDisplay(id: PanelType, panel: Array<PanelProvider>, value: DisplaySwitch) {
       const index = panel.findIndex((x) => x.id === id);
 
@@ -96,27 +105,29 @@ export class Composants {
       switch (value) {
          case DisplaySwitch.ON:
             panel[index].displayed = true;
-            panel[index].available = false;
-
-            if (panel[index].id === PanelType.HISTORY) {
-               panel.forEach(function (part, index, theArray) {
-                  theArray[index].available = false;
-               });
-            }
             break;
          case DisplaySwitch.OFF:
             panel[index].displayed = false;
-            panel[index].available = true;
-
-            if (panel[index].id === PanelType.HISTORY) {
-               panel.forEach(function (part, index, theArray) {
-                  theArray[index].available = true;
-               });
-            }
             break;
          default:
             throw new ValueError('Unable to decode panel display ' + value);
             break;
+      }
+
+      const indexPanelHistory = panel.findIndex((x: PanelProvider) => x.id === PanelType.HISTORY);
+      if (indexPanelHistory == -1) {
+         throw new ValueError('Panel HISTORY not found');
+      }
+
+      if (panel[indexPanelHistory].displayed) {
+         // La recherche par historique est selectionné alors on désactive tous les autres choix
+         panel.forEach((x: {id: PanelType; displayed: boolean; available: boolean}) => (x.id != PanelType.HISTORY ? (x.available = !panel[indexPanelHistory].displayed) : ''));
+      } else if (panel.filter((x: {displayed: boolean}) => x.displayed).length == 0) {
+         //Aucun choix n'est sélectionné, on ré-active tout
+         panel.forEach((x: {id: PanelType; displayed: boolean; available: boolean}) => (x.available = true));
+      } else {
+         // Un autre choix est sélectionné alors on désactive la recherche par historique
+         panel[indexPanelHistory].available = false;
       }
    }
 
