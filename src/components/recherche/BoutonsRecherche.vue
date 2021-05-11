@@ -15,7 +15,6 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
-import router from '@/router';
 
 @Component
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
@@ -27,49 +26,17 @@ export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
    }
 
    get isSelectionEmpty(): boolean {
-      if (
-         this.$store.state.blocPays._selected.length == 0 &&
-         this.$store.state.blocLangue._selected == 0 &&
-         this.$store.state.blocPcpRegions._selected.length == 0 &&
-         this.$store.state.blocEditeur._selected.length == 0 &&
-         this.$store.state.blocPcpMetiers._selected.length == 0 &&
-         this.$store.state.blocIssn._selected.length == 0 &&
-         this.$store.state.blocRcr._selected.length == 0 &&
-         this.$store.state.blocMotsDuTitre._selected.length == 0 &&
-         this.$store.state.blocPpn._selected.length == 0 &&
-         this.$store.state.blocRequeteDirecte._directRequest.length == 0
-      ) {
-         return true;
-      } else {
-         return false;
-      }
+      return this.$store.getters.isSelectionEmpty;
    }
-   async clickSearch(): Promise<boolean> {
-      this.$store.dispatch('constructJsonAction').catch((err) => {
-         Logger.error(err);
-      });
-      this.$store.dispatch('resetPage').catch((err) => {
-         Logger.error(err);
-      });
-      await this.$store
-         .dispatch('callPeriscopeAPI')
-         .then(() => {
-            router.push('Resultat').catch((err) => {
-               throw new Error(err);
-            });
-         })
-         .catch((err) => {
-            Logger.error(err);
-         });
 
-      return true;
+   clickSearch(): void {
+      this.$store.dispatch('doSearch').catch((err) => {
+         Logger.error(err);
+      });
    }
 
    resetSearch(): void {
-      this.$store.dispatch('resetAllBlocs').catch((err) => {
-         Logger.error(err);
-      });
-      this.$store.dispatch('resetSearchPanel').catch((err) => {
+      this.$store.dispatch('resetSearchForm').catch((err) => {
          Logger.error(err);
       });
       this.$emit('onChange'); // On notifie le composant parent

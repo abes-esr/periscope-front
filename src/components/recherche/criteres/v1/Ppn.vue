@@ -7,7 +7,7 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-combobox @click="eventUpdatePpn()" @change="eventUpdatePpn()" @blur="eventUpdatePpn()" @keyup.enter="eventUpdatePpn()" :rules="ppnAlert" multiple outlined small-chips label="PPN" class="style2" placeholder="saisir un n° PPN" v-model="ppnEntered" clearable>
+            <v-combobox @click="eventUpdatePpn()" @change="eventUpdatePpn()" @blur="eventUpdatePpn()" @keyup.enter="eventUpdatePpn()" :rules="ppnAlert" multiple outlined small-chips label="ppn" class="style2" placeholder="saisir un n° ppn" v-model="ppnEntered" clearable>
                <template v-slot:selection="{item}">
                   <v-chip close @click:close="removeItemPpn(item)">
                      <span class="pr-2">{{ item }}</span>
@@ -16,7 +16,7 @@
             </v-combobox>
          </v-col>
          <v-col>
-            <v-combobox @click="eventUpdateIssn()" @change="eventUpdateIssn()" @blur="eventUpdateIssn()" @keyup.enter="eventUpdateIssn()" :rules="issnAlert" multiple outlined small-chips label="ISSN" class="style2" placeholder="saisir un n° ISSN" v-model="issnEntered" clearable>
+            <v-combobox @click="eventUpdateIssn()" @change="eventUpdateIssn()" @blur="eventUpdateIssn()" @keyup.enter="eventUpdateIssn()" :rules="issnAlert" multiple outlined small-chips label="issn" class="style2" placeholder="saisir un n° issn" v-model="issnEntered" clearable>
                <template v-slot:selection="{item}">
                   <v-chip close @click:close="removeItemIssn(item)">
                      <span class="pr-2">{{ item }}</span>
@@ -228,7 +228,7 @@ export default class VuePpn extends Vue {
       this.ppnEntered.forEach((element) => {
          if (!element.match('^\\d{8,9}X?$')) {
             this.ppnEntered.pop();
-            this.ppnAlert.push("Un PPN Contient 8 ou 9 chiffres suivis ou pas d'un X");
+            this.ppnAlert.push("Un ppn Contient 8 ou 9 chiffres suivis ou pas d'un X");
          } else {
             this.$store.dispatch('updateSelectedPpn', this.ppnEntered).catch((err) => {
                Logger.error(err);
@@ -260,7 +260,7 @@ export default class VuePpn extends Vue {
       this.issnEntered.forEach((element) => {
          if (!element.match('^\\d{4}-\\d{4}$')) {
             this.issnEntered.pop();
-            this.issnAlert.push("Un ISSN contient 4 chiffres suivi d'un - et 4 chiffres");
+            this.issnAlert.push("Un issn contient 4 chiffres suivi d'un - et 4 chiffres");
          } else {
             this.$store.dispatch('updateSelectedIssn', this.issnEntered).catch((err) => {
                Logger.error(err);

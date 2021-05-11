@@ -44,7 +44,7 @@
             <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
                <v-icon>mdi-cancel</v-icon>
             </v-btn>
-            <v-btn :disabled="isFirstDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
+            <v-btn :disabled="!isMoveUpAvailable" small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
                <v-icon>mdi-arrow-up</v-icon>
             </v-btn>
             <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
@@ -125,6 +125,9 @@ export default class ComponentRcr extends Vue {
    }
    get isLastDisplayedElement(): boolean {
       return this.$store.getters.isLastDisplayedElement(this.id);
+   }
+   get isMoveUpAvailable(): boolean {
+      return this.$store.getters.isMoveUpAvailable(this.id);
    }
    // Method
    private updateStore(): void {

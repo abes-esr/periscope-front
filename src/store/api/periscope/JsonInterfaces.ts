@@ -9,8 +9,8 @@ export interface JsonTri {
 }
 
 export interface JsonGlobalSearchRequest {
-   criteres: object,
-   tri: object,
+   criteres: Array<object>,
+   tri: Array<object>,
 }
 
 export interface JsonPcpBlocProvider {

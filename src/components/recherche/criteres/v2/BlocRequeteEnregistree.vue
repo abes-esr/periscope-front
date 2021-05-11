@@ -69,12 +69,18 @@ export default class ComponentRequeteEnregistree extends Vue {
    }
 
    get getRequeteEntered(): string {
-      let requete = '';
-      return requete;
+      return JSON.stringify(this.$store.state.blocRequeteDirecte._directRequest);
    }
 
    eventUpdateBlocRequete(): void {
-      this.$store.dispatch('updateSelectedRequeteDirecte', this.requeteEntered);
+      try {
+         const json = JSON.parse(this.requeteEntered);
+         this.$store.dispatch('updateSelectedRequeteDirecte', json).catch((err) => {
+            Logger.error(err);
+         });
+      } catch (err) {
+         Logger.error(err.message);
+      }
    }
 
    //Events v-btn

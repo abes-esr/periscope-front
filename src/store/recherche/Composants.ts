@@ -88,9 +88,6 @@ export class Composants {
 
    /**
     * Active ou désactive l'affichage d'un panneau de recherche
-    * On vérifie l'affichage selon les critères suivants :
-    * - si la recherche par historique est selectionné alors on désactive tous les autres choix
-    * - Si un autre choix est sélectionné alors on désactive la recherche par historique
     * @param id
     * @param panel
     * @param value
@@ -113,22 +110,6 @@ export class Composants {
             throw new ValueError('Unable to decode panel display ' + value);
             break;
       }
-
-      const indexPanelHistory = panel.findIndex((x: PanelProvider) => x.id === PanelType.HISTORY);
-      if (indexPanelHistory == -1) {
-         throw new ValueError('Panel HISTORY not found');
-      }
-
-      if (panel[indexPanelHistory].displayed) {
-         // La recherche par historique est selectionné alors on désactive tous les autres choix
-         panel.forEach((x: {id: PanelType; displayed: boolean; available: boolean}) => (x.id != PanelType.HISTORY ? (x.available = !panel[indexPanelHistory].displayed) : ''));
-      } else if (panel.filter((x: {displayed: boolean}) => x.displayed).length == 0) {
-         //Aucun choix n'est sélectionné, on ré-active tout
-         panel.forEach((x: {id: PanelType; displayed: boolean; available: boolean}) => (x.available = true));
-      } else {
-         // Un autre choix est sélectionné alors on désactive la recherche par historique
-         panel[indexPanelHistory].available = false;
-      }
    }
 
    static isFirstDisplayedElement(id: PanelType, panel: Array<PanelProvider>): boolean {
@@ -143,7 +124,7 @@ export class Composants {
          return false;
       }
 
-      Logger.debug('First displayed pannel is ' + panel[firstDisplayedIndex].label);
+      //Logger.debug('First displayed pannel is ' + panel[firstDisplayedIndex].label);
 
       if (panel[firstDisplayedIndex].id === id) {
          return true;
@@ -164,12 +145,45 @@ export class Composants {
          return false;
       }
 
-      Logger.debug('Last displayed pannel is ' + panel[lastDisplayedIndex].label);
+      //Logger.debug('Last displayed pannel is ' + panel[lastDisplayedIndex].label);
 
       if (panel[lastDisplayedIndex].id === id) {
          return true;
       } else {
          return false;
       }
+   }
+
+   static isMoveUpAvailable(id: PanelType, panel: Array<PanelProvider>): boolean {
+      // On cherche le premier
+      let firstDisplayedIndex: number;
+      firstDisplayedIndex = 0;
+      while (firstDisplayedIndex < panel.length && !panel[firstDisplayedIndex].displayed) {
+         firstDisplayedIndex++;
+      }
+      if (firstDisplayedIndex >= panel.length) {
+         Logger.warn('No displayed panel found');
+         return true;
+      }
+
+      if (panel[firstDisplayedIndex].id === PanelType.HISTORY) {
+         // Si le premier est l'historique, on cherche le deuxième
+         let secondDisplayedIndex: number;
+         secondDisplayedIndex = firstDisplayedIndex + 1;
+         while (secondDisplayedIndex < panel.length && !panel[secondDisplayedIndex].displayed) {
+            secondDisplayedIndex++;
+         }
+
+         if (secondDisplayedIndex >= panel.length) {
+            Logger.warn('No displayed panel found');
+            return true;
+         } else if (panel[secondDisplayedIndex].id === id) {
+            return false;
+         }
+         return true;
+      } else if (panel[firstDisplayedIndex].id === id) {
+         return false;
+      }
+      return true;
    }
 }

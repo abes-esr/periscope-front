@@ -47,6 +47,60 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
    }
 
    updatePanel(id: number, value: any): void {
+      if (!value) {
+         switch (id) {
+            case PanelType.PPN:
+               this.$store.dispatch('resetBlocPpn').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.ISSN:
+               this.$store.dispatch('resetBlocIssn').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.REGIONS:
+               this.$store.dispatch('resetBlocPcpRegions').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.METIERS:
+               this.$store.dispatch('resetBlocPcpMetiers').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.RCR:
+               this.$store.dispatch('resetBlocRcr').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.COUNTRY:
+               this.$store.dispatch('resetBlocPays').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.LANG:
+               this.$store.dispatch('resetBlocLangue').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.EDITOR:
+               this.$store.dispatch('resetBlocEditeur').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.WORDS:
+               this.$store.dispatch('resetBlocMotDuTitre').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.HISTORY:
+               this.$store.dispatch('resetBlocRequeteDirecte').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+         }
+      }
       const action: PanelDisplaySwitchProvider = {
          panelId: id,
          value: value ? DisplaySwitch.ON : DisplaySwitch.OFF,

@@ -36,22 +36,7 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
    }
 
    get isSelectionEmpty(): boolean {
-      if (
-         this.$store.state.blocPays._selected.length == 0 &&
-         this.$store.state.blocLangue._selected == 0 &&
-         this.$store.state.blocPcpRegions._selected.length == 0 &&
-         this.$store.state.blocEditeur._selected.length == 0 &&
-         this.$store.state.blocPcpMetiers._selected.length == 0 &&
-         this.$store.state.blocIssn._selected.length == 0 &&
-         this.$store.state.blocRcr._selected.length == 0 &&
-         this.$store.state.blocMotsDuTitre._selected.length == 0 &&
-         this.$store.state.blocPpn._selected.length == 0 &&
-         this.$store.state.blocRequeteDirecte._directRequest.length == 0
-      ) {
-         return true;
-      } else {
-         return false;
-      }
+      return this.$store.getters.isSelectionEmpty;
    }
 
    get getStepCurrentNumber(): number {
@@ -74,22 +59,9 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
                this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
                   Logger.error(err);
                });
-               this.$store.dispatch('constructJsonAction').catch((err) => {
+               this.$store.dispatch('doSearch').catch((err) => {
                   Logger.error(err);
                });
-               this.$store.dispatch('resetPage').catch((err) => {
-                  Logger.error(err);
-               });
-               await this.$store
-                  .dispatch('callPeriscopeAPI')
-                  .then(() => {
-                     router.push('Resultat').catch((err) => {
-                        throw new Error(err);
-                     });
-                  })
-                  .catch((err) => {
-                     Logger.error(err);
-                  });
             } else {
                //
             }

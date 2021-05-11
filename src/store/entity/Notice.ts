@@ -33,6 +33,12 @@ export class Notice {
       this.continiousType = obj.type;
       this.startDate = obj.date_debut;
       this.endDate = obj.date_fin;
+      if (obj.link) {
+         this.linkSudoc = obj.link;
+      }
+      if (obj.nb_location) {
+         this.nbLoc = obj.nb_location;
+      }
    }
 
    ppn: number;
@@ -51,5 +57,7 @@ export class Notice {
    continiousType: string;
    startDate: string;
    endDate: string;
+   linkSudoc: string;
+   nbLoc: number;
 }
 export default Notice;

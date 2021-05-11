@@ -1,7 +1,7 @@
 export class Pagination {
-   _currentPage = 1;
-   _previousPage = 0;
-   _nextPage = 2;
+   _currentPage = 0;
+   _previousPage = -1;
+   _nextPage = 1;
    _sizeWanted = 25;
    _maxPage = 0;
 }

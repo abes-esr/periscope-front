@@ -126,14 +126,16 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {ContentHeader, TableHeader} from '@/store/resultat/TableInterfaces';
+import {TableHeader} from '@/store/resultat/TableInterfaces';
 import {Logger} from '@/store/utils/Logger';
+import {OrderType, TriInterface, TriType} from '@/store/recherche/TriInterface';
+import Notice from '@/store/entity/Notice';
 
 @Component
 export default class TableauResultats extends Vue {
    totalNotices = 0;
    headers: Array<TableHeader>;
-   notices: Array<ContentHeader>;
+   notices: Array<Notice>;
    loading: boolean;
    singleExpand: false;
    singleSelect: boolean;
@@ -144,6 +146,7 @@ export default class TableauResultats extends Vue {
    orderBooleans: Array<boolean>;
    orderLabels: Array<string>;
    numberOfNoticesAskedForNewCall: number;
+   mappingLabelTri: {[key: string]: TriType} = {};
 
    constructor() {
       super();
@@ -160,6 +163,7 @@ export default class TableauResultats extends Vue {
       this.orderBooleans = this.getOrderSortBooleans;
       this.orderLabels = this.getOrderSortLabels;
       this.numberOfNoticesAskedForNewCall = this.getNumberOfNoticesAskedForNewCall;
+      this.mappingLabelTri = this.getMappingLabel;
    }
 
    get getOrderSortBooleans(): Array<boolean> {
@@ -174,49 +178,74 @@ export default class TableauResultats extends Vue {
       return [
          {
             text: 'PPN',
-            value: 'ppn',
+            value: TriType[TriType.ppn],
+            sortable: true,
          },
          {
             text: 'Type',
-            value: 'continiousType',
+            value: TriType[TriType.continiousType],
+            sortable: true,
          },
          {
             text: 'ISSN',
-            value: 'issn',
+            value: TriType[TriType.issn],
+            sortable: true,
          },
          {
             text: 'Titre',
-            value: 'keyTitle',
+            value: TriType[TriType.keyTitle],
+            sortable: true,
          },
          {
             text: 'Editeur',
-            value: 'editor',
+            value: TriType[TriType.editor],
+            sortable: true,
          },
          {
             text: 'Date début',
-            value: 'startDate',
+            value: TriType[TriType.startDate],
+            sortable: true,
          },
          {
             text: 'Date de fin',
-            value: 'endDate',
+            value: TriType[TriType.endDate],
+            sortable: true,
          },
          {
             text: 'Code PCP',
-            value: 'pcpList',
+            value: TriType[TriType.pcpList],
+            sortable: true,
          },
          {
             text: 'Localisations',
-            value: 'rcrLength',
+            value: TriType[TriType.nbLoc],
+            sortable: true,
          },
          {
-            text: 'Lien sudoc',
-            value: 'sudocLink',
+            text: 'Lien Sudoc',
+            value: TriType[TriType.linkSudoc],
+            sortable: false,
          },
       ];
    }
 
-   get getNotices(): Array<ContentHeader> {
-      return this.$store.state.lotNotices._resultArrayContentNotices;
+   get getMappingLabel(): {[key: string]: TriType} {
+      return {
+         ppn: TriType.ppn,
+         continiousType: TriType.continiousType,
+         issn: TriType.issn,
+         keyTitle: TriType.keyTitle,
+         editor: TriType.editor,
+         startDate: TriType.startDate,
+         endDate: TriType.endDate,
+         pcpList: TriType.pcpList,
+         nbLoc: TriType.nbLoc,
+         linkSudoc: TriType.linkSudoc,
+      };
+   }
+
+   get getNotices(): Array<Notice> {
+      return this.$store.state.lotNotices._notices;
    }
 
    get getCurrentPositionNoticesStartedDisplayed(): number {
@@ -321,19 +350,20 @@ export default class TableauResultats extends Vue {
    }
 
    customSort(items: Array<TableHeader>, index: Array<string>, isDesc: Array<boolean>): Array<TableHeader> {
-      const arrayToSentAtStore: Array<string> = [];
+      const arrayToSentAtStore: Array<TriInterface> = [];
       for (let i = 0; i < index.length; i++) {
-         arrayToSentAtStore.push(index[i]);
-         if (!isDesc[i]) {
-            arrayToSentAtStore.push('ASC');
-         } else {
-            arrayToSentAtStore.push('DESC');
-         }
+         const tri: TriInterface = {
+            sort: this.mappingLabelTri[index[i]],
+            order: !isDesc[i] ? OrderType.ASC : OrderType.DESC,
+         };
+         arrayToSentAtStore.push(tri);
       }
+
       //Envoi des critères de tri dans le bloc de tri
       this.$store.dispatch('updateSelectedTri', arrayToSentAtStore).catch((err) => {
          Logger.error(err);
       });
+
       //Reconstruction du JSON à envoyer
       this.$store.dispatch('constructJsonAction').catch((err) => {
          Logger.error(err);

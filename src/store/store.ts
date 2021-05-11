@@ -21,6 +21,9 @@ import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
+import {TriInterface} from '@/store/recherche/TriInterface';
+import {JsonGlobalSearchRequest} from '@/store/api/periscope/JsonInterfaces';
+import router from '@/router';
 
 Vue.use(Vuex);
 
@@ -1101,25 +1104,43 @@ export default new Vuex.Store({
       },
 
       //Bloc de requete directe
-      mutationRequeteDirecte(state, element: string) {
+      mutationRequeteDirecte(state, element: JsonGlobalSearchRequest) {
          Logger.debug('Mutation des requetes directes');
          state.blocRequeteDirecte._directRequest = element;
       },
       resetRequeteDirecte(state) {
          Logger.debug('Reset des requetes directes');
-         state.blocRequeteDirecte._directRequest = '';
+         state.blocRequeteDirecte._directRequest = {criteres: [], tri: []};
       },
-      mutationRequeteDirecteAddRequestToHistory(state, element: string) {
+      mutationRequeteDirecteAddRequestToHistory(state, element: JsonGlobalSearchRequest) {
          state.blocRequeteDirecte._historyOfAllRequests.push(element);
       },
       mutationSearchRequest(state) {
-         state.jsonTraitements._jsonSearchRequest = SearchRequest.constructJsonGlobalRequest(state.blocPcpRegions, state.blocPcpMetiers, state.blocRcr, state.blocPpn, state.blocIssn, state.blocMotsDuTitre, state.blocEditeur, state.blocLangue, state.blocPays, state.blocRequeteDirecte, state.blocTri);
+         Logger.debug('Mutation requête JSON');
+         state.jsonTraitements._jsonSearchRequest = SearchRequest.constructJsonGlobalRequest(
+            state.composants._panel,
+            state.blocPcpRegions,
+            state.blocPcpMetiers,
+            state.blocRcr,
+            state.blocPpn,
+            state.blocIssn,
+            state.blocMotsDuTitre,
+            state.blocEditeur,
+            state.blocLangue,
+            state.blocPays,
+            state.blocRequeteDirecte,
+            state.blocTri
+         );
       },
 
       //Tri multiples sur le tableau de résultats
-      mutationTri(state, element: Array<string>) {
+      mutationTri(state, value: Array<TriInterface>) {
          Logger.debug('Mutation des tris');
-         BlocTri.updateArray(state.blocTri, element);
+         state.blocTri._array = value;
+      },
+      resetTri(state) {
+         Logger.debug('Reset des tris');
+         state.blocTri._array = [];
       },
 
       //Actions liées aux composants
@@ -1140,17 +1161,27 @@ export default new Vuex.Store({
       resetSearchPanel(state) {
          Logger.debug('Reset des panneaux de recherche');
          state.composants._panel = [
-            {id: PanelType.PPN, position: 2, displayed: false, available: true, label: 'PPN'},
-            {id: PanelType.ISSN, position: 3, displayed: false, available: true, label: 'ISSN'},
-            {id: PanelType.RCR, position: 4, displayed: false, available: true, label: 'RCR'},
-            {id: PanelType.REGIONS, position: 0, displayed: false, available: true, label: 'PCP Régions'},
+            {id: PanelType.PPN, position: 3, displayed: false, available: true, label: 'PPN'},
+            {id: PanelType.ISSN, position: 4, displayed: false, available: true, label: 'ISSN'},
+            {id: PanelType.RCR, position: 5, displayed: false, available: true, label: 'RCR'},
+            {id: PanelType.REGIONS, position: 2, displayed: false, available: true, label: 'PCP Régions'},
             {id: PanelType.METIERS, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
-            {id: PanelType.WORDS, position: 5, displayed: false, available: true, label: 'Mots du Titre'},
-            {id: PanelType.EDITOR, position: 6, displayed: false, available: true, label: 'Editeur'},
-            {id: PanelType.LANG, position: 7, displayed: false, available: true, label: 'Langue'},
-            {id: PanelType.COUNTRY, position: 8, displayed: false, available: true, label: 'Pays'},
-            {id: PanelType.HISTORY, position: 9, displayed: false, available: true, label: 'Requête enregistrée'},
-         ];
+            {id: PanelType.WORDS, position: 6, displayed: false, available: true, label: 'Mots du Titre'},
+            {id: PanelType.EDITOR, position: 7, displayed: false, available: true, label: 'Editeur'},
+            {id: PanelType.LANG, position: 8, displayed: false, available: true, label: 'Langue'},
+            {id: PanelType.COUNTRY, position: 9, displayed: false, available: true, label: 'Pays'},
+            {id: PanelType.HISTORY, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
+         ].sort((n1, n2) => {
+            if (n1.position > n2.position) {
+               return 1;
+            }
+
+            if (n1.position < n2.position) {
+               return -1;
+            }
+
+            return 0;
+         });
       },
 
       //Modification de la pagination
@@ -1160,10 +1191,10 @@ export default new Vuex.Store({
       },
       mutationCurrentPage(state, page: number) {
          Logger.debug('Mutation de la pagination');
-         if (page == 0) {
-            state.pagination._currentPage = 1;
-            state.pagination._previousPage = 0;
-            state.pagination._nextPage = 2;
+         if (page <= -1) {
+            state.pagination._currentPage = 0;
+            state.pagination._previousPage = -1;
+            state.pagination._nextPage = 1;
          } else {
             state.pagination._currentPage = page;
             state.pagination._previousPage = state.pagination._currentPage - 1;
@@ -1172,39 +1203,20 @@ export default new Vuex.Store({
       },
       resetPage(state) {
          Logger.debug('Reset de la pagination');
-         state.pagination._currentPage = 1;
-         state.pagination._previousPage = 0;
-         state.pagination._nextPage = 2;
+         state.pagination._currentPage = 0;
+         state.pagination._previousPage = -1;
+         state.pagination._nextPage = 1;
       },
 
       // Notices
       mutationNotices(state, lotNoticesReceived) {
          Logger.debug('Mutation des Notices');
          //Contient les notices brutes
-         lotNoticesReceived.forEach((obj: any) => state.lotNotices._lotNotices.push(new Notice(obj)));
-
-         //Contient les notices avec un formatage des données
-         state.lotNotices._lotNotices.forEach((element) => {
-            state.lotNotices._resultArrayContentNotices.push({
-               ppn: element.ppn,
-               continiousType: element.continiousType,
-               issn: element.issn,
-               keyTitle: element.keyTitle,
-               editor: element.editor,
-               startDate: element.startDate,
-               endDate: element.endDate,
-               pcpList: element.pcpList,
-               rcrLength: element.rcrList.length,
-               titleComplement: element.titleComplement,
-               keyTitleQualifer: element.keyTitleQualifer,
-               rcrList: element.rcrList,
-            });
-         });
+         lotNoticesReceived.forEach((obj: any) => state.lotNotices._notices.push(new Notice(obj)));
       },
       resetNotices(state) {
          Logger.debug('Reset des Notices');
-         state.lotNotices._lotNotices = [];
-         state.lotNotices._resultArrayContentNotices = [];
+         state.lotNotices._notices = [];
       },
    },
    actions: {
@@ -1299,6 +1311,9 @@ export default new Vuex.Store({
       },
       resetSearchPanel(context) {
          context.commit('resetSearchPanel');
+      },
+      resetTri(context) {
+         context.commit('resetTri');
       },
 
       //******************
@@ -1440,12 +1455,19 @@ export default new Vuex.Store({
          context.commit('loadCandidatesPays', force);
       },
       constructJsonAction(context) {
-         context.commit('mutationSearchRequest');
+         return new Promise((resolve, reject) => {
+            try {
+               context.commit('mutationSearchRequest');
+               resolve(true);
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
       },
       callPeriscopeAPI(context) {
          Logger.debug('PAGE:' + context.state.pagination._currentPage + '|SIZE:' + context.state.pagination._sizeWanted + '|REQUEST:' + JSON.stringify(context.state.jsonTraitements._jsonSearchRequest));
          //On place dans l'historique la requête qui va être envoyée au back-end
-         context.state.blocRequeteDirecte._historyOfAllRequests.push(JSON.stringify(context.state.jsonTraitements._jsonSearchRequest).replace(/\\/g, ''));
+         context.state.blocRequeteDirecte._historyOfAllRequests.push(context.state.jsonTraitements._jsonSearchRequest);
          //On envoie la requête au back-end
          return PeriscopeApi.findNoticeByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
             .then((res) => {
@@ -1460,6 +1482,41 @@ export default new Vuex.Store({
                window.alert(err.message + ' : ' + err.debugMessage);
             });
       },
+      doSearch(context) {
+         this.dispatch('constructJsonAction')
+            .then((ele) => {
+               this.dispatch('resetPage').catch((err) => {
+                  Logger.error(err);
+                  return false;
+               });
+               this.dispatch('callPeriscopeAPI')
+                  .then(() => {
+                     router.push('Resultat').catch((err) => {
+                        throw new Error(err);
+                     });
+                  })
+                  .catch((err) => {
+                     Logger.error(err);
+                     return false;
+                  });
+            })
+            .catch((err) => {
+               Logger.error(err);
+               return false;
+            });
+         return true;
+      },
+      resetSearchForm(context) {
+         this.dispatch('resetAllBlocs').catch((err) => {
+            Logger.error(err);
+         });
+         this.dispatch('resetSearchPanel').catch((err) => {
+            Logger.error(err);
+         });
+         this.dispatch('resetTri').catch((err) => {
+            Logger.error(err);
+         });
+      },
 
       //******************
       //       Debug
@@ -1469,6 +1526,24 @@ export default new Vuex.Store({
       },
    },
    getters: {
+      isSelectionEmpty: (state) => {
+         if (
+            state.blocPays._selected.length == 0 &&
+            state.blocLangue._selected.length == 0 &&
+            state.blocPcpRegions._selected.length == 0 &&
+            state.blocEditeur._selected.length == 0 &&
+            state.blocPcpMetiers._selected.length == 0 &&
+            state.blocIssn._selected.length == 0 &&
+            state.blocRcr._selected.length == 0 &&
+            state.blocMotsDuTitre._selected.length == 0 &&
+            state.blocPpn._selected.length == 0 &&
+            state.blocRequeteDirecte._directRequest.criteres.length == 0
+         ) {
+            return true;
+         } else {
+            return false;
+         }
+      },
       getCurrentPage: (state) => () => {
          return state.pagination._currentPage;
       },
@@ -1478,8 +1553,11 @@ export default new Vuex.Store({
       isLastDisplayedElement: (state) => (id: PanelType) => {
          return Composants.isLastDisplayedElement(id, state.composants._panel);
       },
+      isMoveUpAvailable: (state) => (id: PanelType) => {
+         return Composants.isMoveUpAvailable(id, state.composants._panel);
+      },
       isFirstPage: (state) => () => {
-         if (state.pagination._currentPage == 1) {
+         if (state.pagination._currentPage == 0) {
             return true;
          } else {
             return false;
@@ -1500,9 +1578,6 @@ export default new Vuex.Store({
       },
       orderSortArrayResultBooleanElements: (state) => {
          return BlocTri.getBooleanElements(state.blocTri);
-      },
-      getRequestLaunchedToBackEnd: (state) => {
-         return 'request launched => PAGE:' + (state.pagination._nextPage - 1) + '|SIZE:' + state.pagination._sizeWanted + '|REQUEST:' + JSON.stringify(state.jsonTraitements._jsonSearchRequest);
       },
       getCurrentPositionNoticesStartedDisplayed: (state) => {
          return (state.pagination._nextPage - 1) * state.pagination._sizeWanted + 1;
