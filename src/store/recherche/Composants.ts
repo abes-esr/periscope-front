@@ -92,7 +92,7 @@ export class Composants {
     * @param panel
     * @param value
     */
-   static switchPanelDisplay(id: PanelType, panel: Array<PanelProvider>, value: DisplaySwitch) {
+   static switchPanelDisplay(id: PanelType, panel: Array<PanelProvider>, value: DisplaySwitch): void {
       const index = panel.findIndex((x) => x.id === id);
 
       if (index == -1) {

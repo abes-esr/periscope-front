@@ -6,8 +6,8 @@ import fr from 'vuetify/src/locale/fr';
 Vue.use(Vuetify);
 
 export default new Vuetify({
-  lang: {
-    locales: {fr},
-    current: 'fr',
-  }
+   lang: {
+      locales: {fr},
+      current: 'fr',
+   },
 });

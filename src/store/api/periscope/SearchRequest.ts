@@ -48,7 +48,9 @@ export class SearchRequest {
       if (blocRequeteDirecte._directRequest.criteres.length !== 0) {
          //On retourne la chaîne directement
          blocRequeteDirecte._directRequest.criteres.forEach((element: any) => criteria.push(element));
-         blocRequeteDirecte._directRequest.tri.forEach((element: any) => sort.push(element));
+         // Les tris sont appliqués à la saisie de la requête
+         // store -> action 'updateSelectedRequeteDirecte'
+         //blocRequeteDirecte._directRequest.tri.forEach((element: any) => sort.push(element));
       }
 
       for (let i = 0; i < panel.length; i++) {
@@ -63,8 +65,8 @@ export class SearchRequest {
                   blocPcpRegions._selected.forEach((element) => pcpRegionsAndMetiersList.push(element));
                   blocPcpMetiers._selected.forEach((element) => pcpRegionsAndMetiersList.push(element));
                   const pcpRegionsAndMetiersInternalOperators: Array<string> = [];
-                  blocPcpRegions._selected.forEach((element) => pcpRegionsAndMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpRegions._internalBlocOperator)));
-                  blocPcpMetiers._selected.forEach((element) => pcpRegionsAndMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpMetiers._internalBlocOperator)));
+                  blocPcpRegions._selected.forEach(() => pcpRegionsAndMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpRegions._internalBlocOperator)));
+                  blocPcpMetiers._selected.forEach(() => pcpRegionsAndMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpMetiers._internalBlocOperator)));
 
                   const pcpBlocJson: JsonPcpBlocProvider = {
                      type: 'CriterionPcp',
@@ -198,6 +200,31 @@ export class SearchRequest {
             throw new ValueError('No converter found for sort ' + TriType[tri] + '');
          default:
             throw new ValueError('No converter found for sort ' + TriType[tri] + '');
+      }
+   }
+
+   static labelConverterFromBackToFront(tri: string): TriType {
+      switch (tri) {
+         case 'PPN':
+            return TriType.ppn;
+         case 'CONTINIOUS_TYPE':
+            return TriType.continiousType;
+         case 'ISSN':
+            return TriType.issn;
+         case 'KEY_TITLE':
+            return TriType.keyTitle;
+         case 'EDITOR':
+            return TriType.editor;
+         case 'START_YEAR':
+            return TriType.startDate;
+         case 'END_YEAR':
+            return TriType.endDate;
+         case 'PCP_LIST':
+            return TriType.pcpList;
+         case 'NB_LOC':
+            return TriType.nbLoc;
+         default:
+            throw new ValueError('No converter found for sort ' + tri + '');
       }
    }
 

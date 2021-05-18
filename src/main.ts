@@ -6,12 +6,15 @@ import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 import {Logger} from '@/store/utils/Logger';
+import VueClipboard from 'vue-clipboard2';
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = ['Regions'];
 
 // Handle all Vue errors
 Vue.config.errorHandler = (error) => Logger.error(error.message, error.constructor.name);
+
+Vue.use(VueClipboard); // Plugin pour l'historique
 
 const vue = new Vue({
    router,

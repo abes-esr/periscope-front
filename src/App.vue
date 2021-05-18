@@ -31,4 +31,12 @@
    background-color: white;
    max-height: 3.5em;
 }
+
+.tabResultatSmallWidth {
+   width: 20vw;
+}
+
+.tabResultatFullWidth {
+   width: 100vw;
+}
 </style>

@@ -6,11 +6,13 @@ export interface JsonCriteres {
 }
 
 export interface JsonTri {
+   sort: string,
+   order: string
 }
 
 export interface JsonGlobalSearchRequest {
-   criteres: Array<object>,
-   tri: Array<object>,
+   criteres: Array<JsonCriteres>,
+   tri: Array<JsonTri>,
 }
 
 export interface JsonPcpBlocProvider {

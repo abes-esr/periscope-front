@@ -69,7 +69,11 @@ export default class ComponentRequeteEnregistree extends Vue {
    }
 
    get getRequeteEntered(): string {
-      return JSON.stringify(this.$store.state.blocRequeteDirecte._directRequest);
+      if (this.$store.state.blocRequeteDirecte._directRequest.criteres.length == 0) {
+         return '';
+      } else {
+         return JSON.stringify(this.$store.state.blocRequeteDirecte._directRequest);
+      }
    }
 
    eventUpdateBlocRequete(): void {

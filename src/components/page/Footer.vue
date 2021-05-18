@@ -26,10 +26,10 @@ import GlobalPropertiesMixin from '@/mixins/globalProperties';
 @Component
 export default class Footer extends Mixins(GlobalPropertiesMixin) {
    //Events
-   conditionsGenerales() {
+   conditionsGenerales(): void {
       this.$router.replace('conditions-generales');
    }
-   mentionsLegales() {
+   mentionsLegales(): void {
       this.$router.replace('mentions-legales');
    }
 }

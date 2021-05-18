@@ -24,7 +24,6 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '../../mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
-import router from '@/router';
 
 @Component
 export default class Stepper extends Mixins(GlobalPropertiesMixin) {

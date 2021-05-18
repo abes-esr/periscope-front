@@ -5,7 +5,7 @@ import Resultats from '@/views/Resultats.vue';
 import RechercheAvance from '@/views/RechercheAvance.vue';
 import ConditionsGenerales from '@/views/ConditionsGenerales.vue';
 import MentionsLegales from '@/views/MentionsLegales.vue';
-import HistoriqueRequetes from "@/views/HistoriqueRequetes.vue";
+import HistoriqueRequetes from '@/views/HistoriqueRequetes.vue';
 
 Vue.use(VueRouter);
 
@@ -14,37 +14,44 @@ const routes: Array<RouteConfig> = [
       path: '/',
       name: '/accueil',
       component: RechercheAvance,
+      meta: {title: 'Periscope - Recherche'},
    },
    {
       path: '/recherche',
       name: 'Recherche',
       component: RechercheAvance,
+      meta: {title: 'Periscope - Recherche'},
    },
    {
       path: '/conditions-generales',
       name: 'ConditionsGenerales',
       component: ConditionsGenerales,
+      meta: {title: 'Periscope - Conditions générales'},
    },
    {
       path: '/mentions-legales',
       name: 'MentionsLegales',
       component: MentionsLegales,
+      meta: {title: 'Periscope - Mentions légales'},
    },
    {
       path: '/resultat',
       name: 'Resultats',
       component: Resultats,
+      meta: {title: 'Periscope - Résultats'},
    },
    {
       path: '/v1',
       name: 'AncienneRecherche',
       component: Recherche,
+      meta: {title: 'Periscope - Recherche'},
    },
    {
       path: '/historiqueRequetes',
       name: 'HistoriqueRequetes',
       component: HistoriqueRequetes,
-   }
+      meta: {title: 'Periscope - Historique'},
+   },
 ];
 
 const router = new VueRouter({
@@ -53,6 +60,13 @@ const router = new VueRouter({
    routes,
 });
 
-//this.$router.push({}).catch((err) => { throw new RouterError(err); });
+const DEFAULT_TITLE = 'Periscope v2.0';
+router.afterEach((to, from) => {
+   // Use next tick to handle router history correctly
+   // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
+   Vue.nextTick(() => {
+      document.title = to.meta.title || DEFAULT_TITLE;
+   });
+});
 
 export default router;

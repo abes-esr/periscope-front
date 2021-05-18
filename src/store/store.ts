@@ -21,7 +21,7 @@ import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
-import {TriInterface} from '@/store/recherche/TriInterface';
+import {OrderType, TriInterface} from '@/store/recherche/TriInterface';
 import {JsonGlobalSearchRequest} from '@/store/api/periscope/JsonInterfaces';
 import router from '@/router';
 
@@ -1108,15 +1108,21 @@ export default new Vuex.Store({
          Logger.debug('Mutation des requetes directes');
          state.blocRequeteDirecte._directRequest = element;
       },
+      addRequeteDirecteToHistory(state, element: JsonGlobalSearchRequest) {
+         Logger.debug("Ajout requete dans l'historique");
+         state.blocRequeteDirecte._historyOfAllRequests.push(element);
+      },
       resetRequeteDirecte(state) {
          Logger.debug('Reset des requetes directes');
          state.blocRequeteDirecte._directRequest = {criteres: [], tri: []};
       },
-      mutationRequeteDirecteAddRequestToHistory(state, element: JsonGlobalSearchRequest) {
-         state.blocRequeteDirecte._historyOfAllRequests.push(element);
+      resetRequeteHistory(state) {
+         Logger.debug("Reset de l'historique");
+         state.blocRequeteDirecte._historyOfAllRequests = [];
       },
+
       mutationSearchRequest(state) {
-         Logger.debug('Mutation requête JSON');
+         Logger.debug('Construction de la requête JSON');
          state.jsonTraitements._jsonSearchRequest = SearchRequest.constructJsonGlobalRequest(
             state.composants._panel,
             state.blocPcpRegions,
@@ -1315,6 +1321,9 @@ export default new Vuex.Store({
       resetTri(context) {
          context.commit('resetTri');
       },
+      resetRequeteHistory(context) {
+         context.commit('resetRequeteHistory');
+      },
 
       //******************
       //       Update
@@ -1406,8 +1415,22 @@ export default new Vuex.Store({
       updateSelectedPays(context, arraySent: Array<ListProvider>) {
          context.commit('mutationPays', arraySent);
       },
-      updateSelectedRequeteDirecte(context, element: string) {
+      updateSelectedRequeteDirecte(context, element: JsonGlobalSearchRequest) {
          context.commit('mutationRequeteDirecte', element);
+
+         //Conversion des critères de tri dans le bloc de tri
+         const arrayTriStore: Array<TriInterface> = [];
+         for (let i = 0; i < element.tri.length; i++) {
+            const tri: TriInterface = {
+               sort: SearchRequest.labelConverterFromBackToFront(element.tri[i].sort),
+               order: !element.tri[i].order ? OrderType.ASC : OrderType.DESC,
+            };
+            arrayTriStore.push(tri);
+         }
+         context.commit('mutationTri', arrayTriStore);
+      },
+      addRequeteHistory(context, element: JsonGlobalSearchRequest) {
+         context.commit('addRequeteDirecteToHistory', element);
       },
       updateSelectedTri(context, value: Array<string>) {
          context.commit('mutationTri', value);
@@ -1467,7 +1490,9 @@ export default new Vuex.Store({
       callPeriscopeAPI(context) {
          Logger.debug('PAGE:' + context.state.pagination._currentPage + '|SIZE:' + context.state.pagination._sizeWanted + '|REQUEST:' + JSON.stringify(context.state.jsonTraitements._jsonSearchRequest));
          //On place dans l'historique la requête qui va être envoyée au back-end
-         context.state.blocRequeteDirecte._historyOfAllRequests.push(context.state.jsonTraitements._jsonSearchRequest);
+         this.dispatch('addRequeteHistory', context.state.jsonTraitements._jsonSearchRequest).catch((err) => {
+            Logger.error(err);
+         });
          //On envoie la requête au back-end
          return PeriscopeApi.findNoticeByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
             .then((res) => {
@@ -1482,9 +1507,9 @@ export default new Vuex.Store({
                window.alert(err.message + ' : ' + err.debugMessage);
             });
       },
-      doSearch(context) {
+      doSearch() {
          this.dispatch('constructJsonAction')
-            .then((ele) => {
+            .then(() => {
                this.dispatch('resetPage').catch((err) => {
                   Logger.error(err);
                   return false;
@@ -1506,7 +1531,7 @@ export default new Vuex.Store({
             });
          return true;
       },
-      resetSearchForm(context) {
+      resetSearchForm() {
          this.dispatch('resetAllBlocs').catch((err) => {
             Logger.error(err);
          });
