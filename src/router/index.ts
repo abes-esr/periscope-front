@@ -41,16 +41,17 @@ const routes: Array<RouteConfig> = [
       meta: {title: 'Periscope - Résultats'},
    },
    {
-      path: '/v1',
-      name: 'AncienneRecherche',
-      component: Recherche,
-      meta: {title: 'Periscope - Recherche'},
-   },
-   {
       path: '/historiqueRequetes',
       name: 'HistoriqueRequetes',
       component: HistoriqueRequetes,
       meta: {title: 'Periscope - Historique'},
+   },
+   {
+      // Redirection vers la page de recherche
+      path: '*',
+      name: 'Redirection Recherche',
+      component: RechercheAvance,
+      meta: {title: 'Periscope - Recherche'},
    },
 ];
 

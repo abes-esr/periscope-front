@@ -1516,7 +1516,7 @@ export default new Vuex.Store({
                });
                this.dispatch('callPeriscopeAPI')
                   .then(() => {
-                     router.push('Resultat').catch((err) => {
+                     router.push('/Resultat').catch((err) => {
                         throw new Error(err);
                      });
                   })

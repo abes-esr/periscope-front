@@ -59,20 +59,36 @@ export class SearchRequest {
 
          switch (panel[i].id) {
             case PanelType.REGIONS:
-               //Construction de la partie pcpList Regions et Metiers en JSON
-               if (blocPcpRegions._selected.length !== 0 || blocPcpMetiers._selected.length !== 0) {
-                  const pcpRegionsAndMetiersList: Array<string> = [];
-                  blocPcpRegions._selected.forEach((element) => pcpRegionsAndMetiersList.push(element));
-                  blocPcpMetiers._selected.forEach((element) => pcpRegionsAndMetiersList.push(element));
-                  const pcpRegionsAndMetiersInternalOperators: Array<string> = [];
-                  blocPcpRegions._selected.forEach(() => pcpRegionsAndMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpRegions._internalBlocOperator)));
-                  blocPcpMetiers._selected.forEach(() => pcpRegionsAndMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpMetiers._internalBlocOperator)));
+               //Construction de la partie pcpList Regions en JSON
+               if (blocPcpRegions._selected.length !== 0) {
+                  const pcpRegionsList: Array<string> = [];
+                  blocPcpRegions._selected.forEach((element) => pcpRegionsList.push(element));
+                  const pcpRegionsInternalOperators: Array<string> = [];
+                  blocPcpRegions._selected.forEach(() => pcpRegionsInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpRegions._internalBlocOperator)));
 
                   const pcpBlocJson: JsonPcpBlocProvider = {
                      type: 'CriterionPcp',
                      bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPcpRegions._externalBlocOperator),
-                     pcp: pcpRegionsAndMetiersList,
-                     pcp_operator: pcpRegionsAndMetiersInternalOperators,
+                     pcp: pcpRegionsList,
+                     pcp_operator: pcpRegionsInternalOperators,
+                  };
+
+                  criteria.push(pcpBlocJson);
+               }
+               break;
+            case PanelType.METIERS:
+               //Construction de la partie pcpList Metiers en JSON
+               if (blocPcpMetiers._selected.length !== 0) {
+                  const pcpMetiersList: Array<string> = [];
+                  blocPcpMetiers._selected.forEach((element) => pcpMetiersList.push(element));
+                  const pcpMetiersInternalOperators: Array<string> = [];
+                  blocPcpMetiers._selected.forEach(() => pcpMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpMetiers._internalBlocOperator)));
+
+                  const pcpBlocJson: JsonPcpBlocProvider = {
+                     type: 'CriterionPcp',
+                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPcpRegions._externalBlocOperator),
+                     pcp: pcpMetiersList,
+                     pcp_operator: pcpMetiersInternalOperators,
                   };
 
                   criteria.push(pcpBlocJson);

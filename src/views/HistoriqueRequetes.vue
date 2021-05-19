@@ -19,8 +19,18 @@
                      <div v-for="(i, index) in requestsHistory" :key="index">
                         <v-input
                            >{{ i }}
-                           <button type="button" v-clipboard:copy="JSON.stringify(i)" v-clipboard:success="onCopy" v-clipboard:error="onError"><v-icon>mdi-checkbox-marked-circle</v-icon></button>
-                           <button type="button" v-clipboard:copy="JSON.stringify(i)" v-clipboard:success="onCopyAndRestore" v-clipboard:error="onError"><v-icon>mdi-backup-restore</v-icon></button>
+                           <v-tooltip top open-delay="700">
+                              <template v-slot:activator="{on}">
+                                 <button type="button" v-clipboard:copy="JSON.stringify(i)" v-clipboard:success="onCopy" v-clipboard:error="onError" v-on="on"><v-icon>mdi-content-paste </v-icon></button>
+                              </template>
+                              <span>Copier dans le presse papier</span>
+                           </v-tooltip>
+                           <v-tooltip top open-delay="700">
+                              <template v-slot:activator="{on}">
+                                 <v-btn icon @click="restoreToSearchForm(JSON.stringify(i))" v-on="on"><v-icon>mdi-file-restore</v-icon></v-btn>
+                              </template>
+                              <span>Restaurer dans le formulaire de recherche</span>
+                           </v-tooltip>
                         </v-input>
                      </div>
                   </v-col>
@@ -62,14 +72,13 @@ export default class HistoriqueRequetes extends Vue {
       return this.$store.state.blocRequeteDirecte._historyOfAllRequests.reverse();
    }
 
-   onCopyAndRestore(e: any): void {
+   restoreToSearchForm(jsonString: string): void {
       this.$store.dispatch('resetSearchForm').catch((err) => {
          Logger.error(err);
       });
 
       try {
-         const json = JSON.parse(e.text);
-
+         const json = JSON.parse(jsonString);
          //TODO test la conformité du JSON
 
          this.$store
@@ -91,11 +100,11 @@ export default class HistoriqueRequetes extends Vue {
       }
    }
 
-   onCopy(e: any): void {
+   onCopy(): void {
       Logger.debug('Copy to clipboard successfull');
    }
 
-   onError(e: any): void {
+   onError(): void {
       Logger.error('Copy to clipboard has failed');
    }
 

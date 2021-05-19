@@ -1,72 +1,110 @@
 <template>
-   <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
+   <v-expansion-panel class="outlined-app blocPanel">
       <v-row align="center">
          <!--External Operator-->
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstDisplayedElement">
-            <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator"></v-select>
+         <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="!isFirstDisplayedElement">
+            <v-tooltip top max-width="20vw" open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator" v-on="on"></v-select>
+               </template>
+               <span>Cet opérateur logique permet de connecter ce bloc de recherche avec le bloc préccédent</span>
+            </v-tooltip>
          </v-col>
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="isFirstDisplayedElement"></v-col>
+         <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="isFirstDisplayedElement"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par RCR </v-col>
+                     <v-col xs="12" sm="4" lg="3"> Recherche par PPN </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de RCR d'une Bibliothèque</span>
-                           <span v-else key="1"> {{ returnItem() + ' | Entre RCR: ' + getInternalOperatorSelectedInString }} </span>
+                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de PPN </span>
+                           <span v-else key="1"> {{ returnItem() + ' | Entre PPN: ' + getInternalOperatorSelectedInString }} </span>
                         </v-fade-transition>
                      </v-col>
                   </v-row>
                </template>
             </v-expansion-panel-header>
-            <v-expansion-panel-content>
-               <v-row justify="center" style="height: 20em">
+            <v-expansion-panel-content class="expansionPanelContent">
+               <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-combobox :search-input.sync="currentValue" @keyup="checkValues()" @keydown="checkValues()" @blur="checkValues()" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped">
-                        <template v-slot:selection="{item}">
-                           <v-chip close @click:close="removeItem(item)">
-                              <span class="pr-2">{{ item }}</span>
-                           </v-chip>
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <v-combobox :search-input.sync="currentValue" @keyup.enter="checkValues()" @blur="checkValues()" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
+                              <template v-slot:selection="{item}">
+                                 <v-chip close @click:close="removeItem(item)">
+                                    <span class="pr-2">{{ item }}</span>
+                                 </v-chip>
+                              </template>
+                           </v-combobox>
                         </template>
-                     </v-combobox>
+                        <span>Saisir un numéro PPN puis valider avec la touche "Entrer". Vous pouvez saisir plusieurs numéros PPN à la suite ou copier/coller une liste de PPN. Attention, les doublons seront automatiquement ignorés</span>
+                     </v-tooltip>
+                  </v-col>
+                  <v-col sm="2" class="internalOperator">
                      <!--Internal Operator-->
-                  </v-col>
-                  <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em">
-                     <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
-                  </v-col>
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator" v-on="on"></v-select>
+                        </template>
+                        <span>Cet opérateur logique permet de connecter les PPN entre eux</span>
+                     </v-tooltip></v-col
+                  >
                </v-row>
-               <v-alert dense outlined type="warning"> Au dela de <strong>15 RCR</strong>, nous vous recommandons pour des raisons d'affichage de <strong>charger une liste de RCR</strong> </v-alert>
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
-               <v-icon>mdi-cancel</v-icon>
-            </v-btn>
-            <v-btn :disabled="!isMoveUpAvailable" small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
-               <v-icon>mdi-arrow-up</v-icon>
-            </v-btn>
-            <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
-               <v-icon>mdi-arrow-down</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
-               <v-icon>mdi-close</v-icon>
-            </v-btn>
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()" v-on="on">
+                     <v-icon>mdi-cancel</v-icon>
+                  </v-btn>
+               </template>
+               <span>Réinitialiser le bloc</span>
+            </v-tooltip>
+
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn :disabled="!isMoveUpAvailable" small icon class="ma-0" fab color="teal" @click="moveUpPanel()" v-on="on">
+                     <v-icon>mdi-arrow-up</v-icon>
+                  </v-btn>
+               </template>
+               <span>Déplacer le bloc vers le haut</span>
+            </v-tooltip>
+
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()" v-on="on">
+                     <v-icon>mdi-arrow-down</v-icon>
+                  </v-btn>
+               </template>
+               <span>Déplacer le bloc vers le bas</span>
+            </v-tooltip>
+
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()" v-on="on">
+                     <v-icon>mdi-close</v-icon>
+                  </v-btn>
+               </template>
+               <span>Supprimer le bloc</span>
+            </v-tooltip>
          </v-col>
       </v-row>
    </v-expansion-panel>
 </template>
 
 <script lang="ts">
-import {Component, Vue} from 'vue-property-decorator';
+import {Component, Mixins} from 'vue-property-decorator';
+import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Ensemble, OperatorProvider} from '@/store/recherche/BlocInterfaces';
 import {Logger} from '@/store/utils/Logger';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 
 @Component
-export default class ComponentRcr extends Vue {
-   id: PanelType = PanelType.RCR;
+export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
+   id: PanelType = PanelType.PPN;
    external_operator_label: string;
    internal_operator_label: string;
    list_external_operator_to_select: Array<OperatorProvider>;
@@ -82,25 +120,25 @@ export default class ComponentRcr extends Vue {
    constructor() {
       super();
       this.external_operator_label = '';
-      this.internal_operator_label = 'Entre RCR';
+      this.internal_operator_label = 'Entre PPN';
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.comboboxArrayTyped = this.getComboboxArrayTyped;
-      this.comboboxLabel = 'RCR saisis';
-      this.comboboxPlaceholder = 'Saisir des n° de RCR';
+      this.comboboxLabel = 'ex : 17877166X';
+      this.comboboxPlaceholder = 'Saisir des n° de PPN';
       this.currentValue = null;
    }
 
    get getExternalOperatorList(): Array<OperatorProvider> {
-      return this.$store.state.blocRcr._externalBlocOperatorListToSelect;
+      return this.$store.state.blocPpn._externalBlocOperatorListToSelect;
    }
    get getInternalOperatorList(): Array<OperatorProvider> {
-      return this.$store.state.blocRcr._internalBlocOperatorListToSelect;
+      return this.$store.state.blocPpn._internalBlocOperatorListToSelect;
    }
    get getInternalOperatorSelected(): Ensemble {
-      return this.$store.state.blocRcr._internalBlocOperator;
+      return this.$store.state.blocPpn._internalBlocOperator;
    }
    get getInternalOperatorSelectedInString(): string {
       switch (this.internal_operator_selected) {
@@ -115,10 +153,10 @@ export default class ComponentRcr extends Vue {
       }
    }
    get getExternalOperatorSelected(): Ensemble {
-      return this.$store.state.blocRcr._externalBlocOperator;
+      return this.$store.state.blocPpn._externalBlocOperator;
    }
    get getComboboxArrayTyped(): Array<string> {
-      return this.$store.state.blocRcr._selected;
+      return this.$store.state.blocPpn._selected;
    }
    get isFirstDisplayedElement(): boolean {
       return this.$store.getters.isFirstDisplayedElement(this.id);
@@ -131,16 +169,11 @@ export default class ComponentRcr extends Vue {
    }
    // Method
    private updateStore(): void {
-      this.$store.dispatch('updateSelectedRcr', this.comboboxArrayTyped).catch((err) => {
+      this.$store.dispatch('updateSelectedPpn', this.comboboxArrayTyped).catch((err) => {
          Logger.error(err);
       });
    }
    private addItem(value: string): boolean {
-      if (this.comboboxArrayTyped.length >= 15) {
-         this.currentValue = null;
-         this.comboboxAlert.push('Maximum 15 RCR');
-         return false;
-      }
       this.comboboxArrayTyped.push(value.trim());
       this.updateStore();
       return true;
@@ -152,7 +185,6 @@ export default class ComponentRcr extends Vue {
       }
       this.updateStore();
    }
-
    private returnItem(): string {
       let chain = '';
       this.comboboxArrayTyped.forEach((element) => {
@@ -167,12 +199,9 @@ export default class ComponentRcr extends Vue {
       //Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
       //Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
 
-      if (this.currentValue != null && this.comboboxArrayTyped.length >= 15) {
-         this.currentValue = null;
-         this.comboboxAlert.push('Maximum 15 RCR');
-      } else if (this.currentValue != null) {
+      if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{9}$')) {
+            if (value.trim().match('^\\d{8,9}X?$')) {
                if (this.addItem(value.trim())) {
                   this.comboboxAlert = [];
                } else {
@@ -182,7 +211,7 @@ export default class ComponentRcr extends Vue {
             } else {
                this.currentValue = value;
                if (this.comboboxAlert.length === 0) {
-                  this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
+                  this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
                }
                //Logger.debug('------- BREAK --------');
                return;
@@ -191,11 +220,29 @@ export default class ComponentRcr extends Vue {
          if (this.comboboxAlert.length === 0) {
             this.currentValue = null;
          }
-      } else if (this.comboboxArrayTyped.length !== 0 && !this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1].match('^\\d{9}$')) {
+      } else if (this.comboboxArrayTyped.length !== 0) {
          this.currentValue = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
-         this.removeItem(this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1]);
+         this.comboboxArrayTyped.pop();
+
+         for (let value of this.currentValue.trim().split(/\s+/)) {
+            if (value.trim().match('^\\d{8,9}X?$')) {
+               if (this.addItem(value.trim())) {
+                  this.comboboxAlert = [];
+               } else {
+                  //Logger.debug('------- BREAK --------');
+                  return;
+               }
+            } else {
+               this.currentValue = value;
+               if (this.comboboxAlert.length === 0) {
+                  this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
+               }
+               //Logger.debug('------- BREAK --------');
+               return;
+            }
+         }
          if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
+            this.currentValue = null;
          }
       } else if (this.currentValue == null || (this.currentValue != null && this.currentValue.trim().length == 0)) {
          this.currentValue = null;
@@ -203,10 +250,9 @@ export default class ComponentRcr extends Vue {
          this.updateStore();
       } else {
          if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
+            this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
          }
       }
-
       //Logger.debug(JSON.stringify('Search value AFTER validation: ' + this.currentValue));
       //Logger.debug(JSON.stringify('Values AFTER validation : ' + JSON.stringify(this.comboboxArrayTyped)));
       //Logger.debug('----- FIN CHECK VALUES -----');
@@ -214,13 +260,13 @@ export default class ComponentRcr extends Vue {
 
    //Events v-select
    eventUpdateBlocExternalOperator(): void {
-      this.$store.dispatch('updateSelectedExternalRcrOperator', this.external_operator_selected).catch((err) => {
+      this.$store.dispatch('updateSelectedExternalPpnOperator', this.external_operator_selected).catch((err) => {
          Logger.error(err);
       });
    }
 
    eventUpdateBlocInternalOperator(): void {
-      this.$store.dispatch('updateSelectedInternalRcrOperator', this.internal_operator_selected).catch((err) => {
+      this.$store.dispatch('updateSelectedInternalPpnOperator', this.internal_operator_selected).catch((err) => {
          Logger.error(err);
       });
    }
@@ -259,7 +305,7 @@ export default class ComponentRcr extends Vue {
       this.$emit('onChange'); // On notifie le composant parent
    }
    clearSelectedValues(): void {
-      this.$store.dispatch('resetBlocRcr').catch((err) => {
+      this.$store.dispatch('resetBlocPpn').catch((err) => {
          Logger.error(err);
       });
       this.reloadFromStore();

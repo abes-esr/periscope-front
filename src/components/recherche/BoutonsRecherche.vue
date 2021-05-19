@@ -2,10 +2,20 @@
    <v-container>
       <v-row :justify="getHorizontalJustifyValue(3)">
          <v-col xs="6" sm="3">
-            <v-btn @click="resetSearch()" color="#E53935" dark large>Réinitialiser<v-icon dark right> mdi-cancel </v-icon></v-btn>
+            <v-tooltip top max-width="20vw" open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn @click="resetSearch()" color="#E53935" dark large v-on="on">Réinitialiser<v-icon dark right> mdi-cancel </v-icon></v-btn>
+               </template>
+               <span>Réinitialiser le formulaire de recherche. Tous les blocs seront vidés et supprimés</span>
+            </v-tooltip>
          </v-col>
          <v-col xs="6" sm="3">
-            <v-btn :disabled="isSelectionEmpty" @click="clickSearch()" color="#4CAF50" class="white--text" large>Recherche<v-icon right> mdi-checkbox-marked-circle</v-icon></v-btn>
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn :disabled="isSelectionEmpty" @click="clickSearch()" color="#4CAF50" class="white--text" large v-on="on">Recherche<v-icon right>mdi-magnify</v-icon></v-btn>
+               </template>
+               <span>Lancer la recherche</span>
+            </v-tooltip>
          </v-col>
       </v-row>
    </v-container>

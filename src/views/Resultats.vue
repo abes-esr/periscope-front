@@ -17,11 +17,6 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-btn v-on:click="clickVisualisation">Data Visualisation in console</v-btn>
-         </v-col>
-      </v-row>
-      <v-row>
-         <v-col>
             <component-footer></component-footer>
          </v-col>
       </v-row>

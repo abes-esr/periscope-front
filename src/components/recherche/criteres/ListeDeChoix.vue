@@ -1,11 +1,18 @@
 <template>
-   <v-container class="ma-0 pa-0 outlined-app" fluid>
+   <v-container class="ma-0 pa-0 outlined-app blocPanel" fluid>
       <v-row :align="getVerticalAlignValue(1)">
          <v-col cols="4">Ajouter un bloc de recherche </v-col>
          <v-col cols="6">
             <v-card class="d-flex flex-wrap" flat>
                <div v-for="item in items" :key="item.id">
-                  <v-switch class="ma-4" v-model="item.displayed" :label="item.label" :value="item.displayed" :disabled="!item.available" @change="updatePanel(item.id, item.displayed)"></v-switch>
+                  <v-tooltip top max-width="20vw" open-delay="700">
+                     <template v-slot:activator="{on}">
+                        <div v-on="on">
+                           <v-switch class="ma-4" v-model="item.displayed" :label="item.label" :value="item.displayed" :disabled="!item.available" @change="updatePanel(item.id, item.displayed)"></v-switch>
+                        </div>
+                     </template>
+                     <span>Activer / Désactiver le bloc de recherche par {{ item.label }}</span>
+                  </v-tooltip>
                </div>
             </v-card>
          </v-col>

@@ -1,11 +1,16 @@
 <template>
-   <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
+   <v-expansion-panel class="outlined-app blocPanel">
       <v-row align="center">
          <!--External Operator-->
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="!isFirstDisplayedElement">
-            <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator"></v-select>
+         <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="!isFirstDisplayedElement">
+            <v-tooltip top max-width="20vw" open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="eventUpdateBlocExternalOperator" v-on="on"></v-select>
+               </template>
+               <span>Cet opérateur logique permet de connecter ce bloc de recherche avec le bloc préccédent</span>
+            </v-tooltip>
          </v-col>
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em" v-if="isFirstDisplayedElement"></v-col>
+         <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="isFirstDisplayedElement"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
@@ -38,30 +43,64 @@
                            <v-checkbox @change="eventOnArrayCheckboxes()" v-for="m in 5" :key="m" v-model="metiers[m + 11].value" :label="metiers[m + 11].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                      </v-row>
-                     <!--Internal Operator--> </v-col
-                  ><!--bug-->
-                  <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em">
-                     <v-select disabled dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator"></v-select>
-                     <v-btn small icon class="ma-0" fab color="teal" @click="selectAll()">
-                        <v-icon>mdi-expand-all</v-icon>
-                     </v-btn>
+                     <!--Internal Operator-->
+                  </v-col>
+                  <v-col sm="2" class="internalOperator">
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="eventUpdateBlocInternalOperator" v-on="on"></v-select>
+                        </template>
+                        <span>Cet opérateur logique permet de connecter les plans de conservation entre eux</span>
+                     </v-tooltip>
+
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <v-btn small icon class="ma-0" fab color="teal" @click="selectAll()" v-on="on">
+                              <v-icon>mdi-checkbox-multiple-marked-outline</v-icon>
+                           </v-btn>
+                        </template>
+                        <span>Selection / Déselection tous les plans de conservation</span>
+                     </v-tooltip>
                   </v-col>
                </v-row>
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
-               <v-icon>mdi-cancel</v-icon>
-            </v-btn>
-            <v-btn :disabled="!isMoveUpAvailable" small icon class="ma-0" fab color="teal" @click="moveUpPanel()">
-               <v-icon>mdi-arrow-up</v-icon>
-            </v-btn>
-            <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()">
-               <v-icon>mdi-arrow-down</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
-               <v-icon>mdi-close</v-icon>
-            </v-btn>
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()" v-on="on">
+                     <v-icon>mdi-cancel</v-icon>
+                  </v-btn>
+               </template>
+               <span>Réinitialiser le bloc</span>
+            </v-tooltip>
+
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn :disabled="!isMoveUpAvailable" small icon class="ma-0" fab color="teal" @click="moveUpPanel()" v-on="on">
+                     <v-icon>mdi-arrow-up</v-icon>
+                  </v-btn>
+               </template>
+               <span>Déplacer le bloc vers le haut</span>
+            </v-tooltip>
+
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()" v-on="on">
+                     <v-icon>mdi-arrow-down</v-icon>
+                  </v-btn>
+               </template>
+               <span>Déplacer le bloc vers le bas</span>
+            </v-tooltip>
+
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()" v-on="on">
+                     <v-icon>mdi-close</v-icon>
+                  </v-btn>
+               </template>
+               <span>Supprimer le bloc</span>
+            </v-tooltip>
          </v-col>
       </v-row>
    </v-expansion-panel>

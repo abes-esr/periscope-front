@@ -2,7 +2,7 @@
    <v-expansion-panel class="outlined-app" style="padding: 0.5em 0.5em 0.5em 0.5em; margin: 0.5em 0 0.5em 0">
       <v-row align="center">
          <!--External Operator-->
-         <v-col xs="2" sm="2" lg="2" style="margin-right: -2em"></v-col>
+         <v-col xs="2" sm="2" lg="2" class="externalOperator"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
@@ -20,34 +20,51 @@
                <v-row justify="center">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-text-field
-                        @change="eventUpdateBlocRequete"
-                        @blur="eventUpdateBlocRequete"
-                        @keyup.enter="eventUpdateBlocRequete"
-                        outlined
-                        small-chips
-                        label="Requête au format JSON"
-                        placeholder="collez une requête à partir de l'historique ou d'un fichier"
-                        class="style2"
-                        v-model="requeteEntered"
-                     ></v-text-field>
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <v-text-field
+                              @change="eventUpdateBlocRequete"
+                              @blur="eventUpdateBlocRequete"
+                              @keyup.enter="eventUpdateBlocRequete"
+                              outlined
+                              small-chips
+                              label="Requête au format JSON"
+                              placeholder="collez une requête à partir de l'historique ou d'un fichier"
+                              class="style2"
+                              v-model="requeteEntered"
+                              v-on="on"
+                           ></v-text-field>
+                        </template>
+                        <span>Saisir une requête de recherche au format JSON puis valider avec la touche "Entrer". Vous pouvez restaurer une requête depuis l'onglet historique</span>
+                     </v-tooltip>
                      <v-chip class="ma-2" outlined pill>
                         <v-icon left> mdi-book-open-page-variant-outline </v-icon>
                         L'annuaire des clés est disponible ici (lien à mettre)
                      </v-chip>
                      <!--Internal Operator-->
                   </v-col>
-                  <v-col sm="2" style="padding-left: 0.5em; padding-top: 0.5em"> </v-col>
+                  <v-col sm="2" class="internalOperator"> </v-col>
                </v-row>
             </v-expansion-panel-content>
          </v-col>
          <v-col xs="2" sm="2" lg="2">
-            <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()">
-               <v-icon>mdi-cancel</v-icon>
-            </v-btn>
-            <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()">
-               <v-icon>mdi-close</v-icon>
-            </v-btn>
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn small icon class="ma-0" fab color="teal" @click="clearSelectedValues()" v-on="on">
+                     <v-icon>mdi-cancel</v-icon>
+                  </v-btn>
+               </template>
+               <span>Réinitialiser le bloc</span>
+            </v-tooltip>
+
+            <v-tooltip top open-delay="700">
+               <template v-slot:activator="{on}">
+                  <v-btn small icon class="ma-0" fab color="red lighten-1" @click="removePanel()" v-on="on">
+                     <v-icon>mdi-close</v-icon>
+                  </v-btn>
+               </template>
+               <span>Supprimer le bloc</span>
+            </v-tooltip>
          </v-col>
       </v-row>
    </v-expansion-panel>

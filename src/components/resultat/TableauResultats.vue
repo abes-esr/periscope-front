@@ -3,19 +3,19 @@
       <v-container style="padding: 5px; text-align: left">
          <v-row align-content="center" class="justify-space-between">
             <v-col cols="2">
-               <v-tooltip top>
+               <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app" outlined small @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
+                     <v-btn class="outlined-app" outlined small :disabled="true" @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
                   </template>
                   <span>Afficher / Cacher les facettes</span>
                </v-tooltip>
-               <v-tooltip top>
+               <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app" outlined small @click="clearSelection" v-on="on"><v-icon>mdi-cancel</v-icon></v-btn>
+                     <v-btn class="outlined-app" outlined small @click="clearSelection" v-on="on"><v-icon>mdi-checkbox-blank-off-outline</v-icon></v-btn>
                   </template>
                   <span>Vider la sélection</span>
                </v-tooltip>
-               <v-tooltip top>
+               <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
                      <v-btn class="outlined-app" outlined small @click="sortColumns" v-on="on"><v-icon>mdi-sync</v-icon></v-btn>
                   </template>
@@ -23,12 +23,22 @@
                </v-tooltip>
             </v-col>
             <v-col cols="3">
-               <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
+               <v-tooltip top open-delay="700">
+                  <template v-slot:activator="{on}">
+                     <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPage" v-on="on"><v-icon>mdi-arrow-left</v-icon></v-btn>
+                  </template>
+                  <span>Aller à la page précédente</span>
+               </v-tooltip>
                <v-chip color="primary" outlined>
                   <v-icon left>mdi-file-document-outline</v-icon>
                   Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }} sur ?????
                </v-chip>
-               <v-btn icon color="primary" @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
+               <v-tooltip top open-delay="700">
+                  <template v-slot:activator="{on}">
+                     <v-btn icon color="primary" @click="nextPage" v-on="on"><v-icon>mdi-arrow-right</v-icon></v-btn>
+                  </template>
+                  <span>Aller à la page suivante</span>
+               </v-tooltip>
             </v-col>
             <v-col cols="6">
                <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details style="margin: 0 !important; padding: 0 !important"></v-text-field>
@@ -127,18 +137,38 @@
          <v-container>
             <v-row align-content="center" class="justify-space-between">
                <v-col cols="2">
-                  <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage"><v-icon>mdi-arrow-up</v-icon></v-btn>
+                  <v-tooltip top open-delay="700">
+                     <template v-slot:activator="{on}">
+                        <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
+                     </template>
+                     <span>Aller en haut de la page</span>
+                  </v-tooltip>
                </v-col>
                <v-col cols="3">
-                  <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPage"><v-icon>mdi-arrow-left</v-icon></v-btn>
+                  <v-tooltip top open-delay="700">
+                     <template v-slot:activator="{on}">
+                        <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPage" v-on="on"><v-icon>mdi-arrow-left</v-icon></v-btn>
+                     </template>
+                     <span>Aller à la page précédente</span>
+                  </v-tooltip>
                   <v-chip color="primary" outlined>
                      <v-icon left>mdi-file-document-outline</v-icon>
                      Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }} sur ?????
                   </v-chip>
-                  <v-btn icon color="primary" @click="nextPage"><v-icon>mdi-arrow-right</v-icon></v-btn>
+                  <v-tooltip top open-delay="700">
+                     <template v-slot:activator="{on}">
+                        <v-btn icon color="primary" @click="nextPage" v-on="on"><v-icon>mdi-arrow-right</v-icon></v-btn>
+                     </template>
+                     <span>Aller à la page suivante</span>
+                  </v-tooltip>
                </v-col>
                <v-col cols="6" align-content="end">
-                  <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage"><v-icon>mdi-arrow-up</v-icon></v-btn>
+                  <v-tooltip top open-delay="700">
+                     <template v-slot:activator="{on}">
+                        <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
+                     </template>
+                     <span>Aller en haut de la page</span>
+                  </v-tooltip>
                </v-col>
             </v-row>
          </v-container>

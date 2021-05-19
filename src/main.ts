@@ -37,5 +37,5 @@ vue.$store.dispatch('resetNotices').catch((err) => {
 });
 vue.$store.dispatch('resetPage').catch((err) => {
    Logger.error(err);
-});
-*/
+});*/
+

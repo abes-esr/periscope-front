@@ -31,29 +31,37 @@
             </v-expansion-panels>
          </v-col>
       </v-row>
-      <v-container>
-         <component-boutons-recherche @onChange="renderPanelList"></component-boutons-recherche>
-      </v-container>
+      <v-row>
+         <v-col>
+            <component-boutons-recherche @onChange="renderPanelList"></component-boutons-recherche>
+         </v-col>
+      </v-row>
+      <v-row>
+         <v-col>
+            <component-footer></component-footer>
+         </v-col>
+      </v-row>
    </v-container>
 </template>
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import ComponentPpn from '@/components/recherche/criteres/v2/BlocPpn.vue';
+import ComponentPpn from '@/components/recherche/criteres/BlocPpn.vue';
 import ComponentHeader from '@/components/page/Header.vue';
 import ComponentStepper from '@/components/page/Stepper.vue';
-import ComponentListeDeChoix from '@/components/recherche/criteres/v2/ListeDeChoix.vue';
-import ComponentIssn from '@/components/recherche/criteres/v2/BlocIssn.vue';
-import ComponentRcr from '@/components/recherche/criteres/v2/BlocRcr.vue';
-import ComponentPlanConservationMetiers from '@/components/recherche/criteres/v2/BlocPlanConservationMetiers.vue';
-import ComponentMotsDuTitre from '@/components/recherche/criteres/v2/BlocMotsDuTitre.vue';
-import ComponentEditeur from '@/components/recherche/criteres/v2/BlocEditeur.vue';
-import ComponentLangue from '@/components/recherche/criteres/v2/BlocLangue.vue';
-import ComponentPays from '@/components/recherche/criteres/v2/BlocPays.vue';
-import ComponentPlanConservationRegions from '@/components/recherche/criteres/v2/BlocPlanConservationRegions.vue';
-import ComponentRequeteEnregistree from '@/components/recherche/criteres/v2/BlocRequeteEnregistree.vue';
+import ComponentListeDeChoix from '@/components/recherche/criteres/ListeDeChoix.vue';
+import ComponentIssn from '@/components/recherche/criteres/BlocIssn.vue';
+import ComponentRcr from '@/components/recherche/criteres/BlocRcr.vue';
+import ComponentPlanConservationMetiers from '@/components/recherche/criteres/BlocPlanConservationMetiers.vue';
+import ComponentMotsDuTitre from '@/components/recherche/criteres/BlocMotsDuTitre.vue';
+import ComponentEditeur from '@/components/recherche/criteres/BlocEditeur.vue';
+import ComponentLangue from '@/components/recherche/criteres/BlocLangue.vue';
+import ComponentPays from '@/components/recherche/criteres/BlocPays.vue';
+import ComponentPlanConservationRegions from '@/components/recherche/criteres/BlocPlanConservationRegions.vue';
+import ComponentRequeteEnregistree from '@/components/recherche/criteres/BlocRequeteEnregistree.vue';
 import ComponentBoutonsRecherche from '@/components/recherche/BoutonsRecherche.vue';
 import {PanelProvider} from '@/store/recherche/ComposantInterfaces';
+import ComponentFooter from '@/components/page/Footer.vue';
 
 @Component({
    components: {
@@ -71,6 +79,7 @@ import {PanelProvider} from '@/store/recherche/ComposantInterfaces';
       ComponentPays,
       ComponentRequeteEnregistree,
       ComponentBoutonsRecherche,
+      ComponentFooter,
    },
 })
 export default class RechercheAvance extends Vue {
