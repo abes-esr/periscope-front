@@ -25,6 +25,7 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
+import {HttpRequestError} from '@/store/exception/HttpRequestError';
 
 @Component
 export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
@@ -41,7 +42,17 @@ export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
 
    clickSearch(): void {
       this.$store.dispatch('doSearch').catch((err) => {
-         Logger.error(err);
+         Logger.error(err.message);
+         if (err instanceof HttpRequestError) {
+            Logger.debug('Erreur API : ' + err.debugMessage);
+            this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+               Logger.error(err);
+            });
+         } else {
+            this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+               Logger.error(err);
+            });
+         }
       });
    }
 

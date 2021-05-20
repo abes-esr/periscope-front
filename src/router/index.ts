@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import Recherche from '@/views/Recherche.vue';
 import Resultats from '@/views/Resultats.vue';
 import RechercheAvance from '@/views/RechercheAvance.vue';
 import ConditionsGenerales from '@/views/ConditionsGenerales.vue';

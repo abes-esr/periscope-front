@@ -5,13 +5,19 @@
             <img src="@/assets/periscope.png" :style="autoResizeImage" />
          </v-col>
       </v-row>
+      <component-alerte></component-alerte>
    </v-container>
 </template>
 
 <script lang="ts">
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import ComponentAlerte from '@/components/page/autres/Alerte.vue';
 
-@Component
+@Component({
+   components: {
+      ComponentAlerte,
+   },
+})
 export default class Header extends Mixins(GlobalPropertiesMixin) {}
 </script>

@@ -1415,19 +1415,32 @@ export default new Vuex.Store({
       updateSelectedPays(context, arraySent: Array<ListProvider>) {
          context.commit('mutationPays', arraySent);
       },
-      updateSelectedRequeteDirecte(context, element: JsonGlobalSearchRequest) {
-         context.commit('mutationRequeteDirecte', element);
+      updateSelectedRequeteDirecte(context, value: string): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            const returnMsg: string = SearchRequest.checkJSON(value);
 
-         //Conversion des critères de tri dans le bloc de tri
-         const arrayTriStore: Array<TriInterface> = [];
-         for (let i = 0; i < element.tri.length; i++) {
-            const tri: TriInterface = {
-               sort: SearchRequest.labelConverterFromBackToFront(element.tri[i].sort),
-               order: !element.tri[i].order ? OrderType.ASC : OrderType.DESC,
-            };
-            arrayTriStore.push(tri);
-         }
-         context.commit('mutationTri', arrayTriStore);
+            if (returnMsg) {
+               const json: JsonGlobalSearchRequest = JSON.parse(value);
+               context.commit('mutationRequeteDirecte', json);
+
+               if (json.tri) {
+                  //Conversion des critères de tri dans le bloc de tri
+                  const arrayTriStore: Array<TriInterface> = [];
+                  for (let i = 0; i < json.tri.length; i++) {
+                     const tri: TriInterface = {
+                        sort: SearchRequest.labelConverterFromBackToFront(json.tri[i].sort),
+                        order: !json.tri[i].order ? OrderType.ASC : OrderType.DESC,
+                     };
+                     arrayTriStore.push(tri);
+                  }
+                  context.commit('mutationTri', arrayTriStore);
+               }
+
+               resolve(true);
+            } else {
+               reject(returnMsg);
+            }
+         });
       },
       addRequeteHistory(context, element: JsonGlobalSearchRequest) {
          context.commit('addRequeteDirecteToHistory', element);
@@ -1442,11 +1455,20 @@ export default new Vuex.Store({
       changeStepAction(context, stepSent: number) {
          context.commit('mutationStep', stepSent);
       },
-      closeSnackBarAction(context, value: boolean) {
-         context.commit('mutationSnackBarDisplay', value);
+      openInfoSnackBar(context, value: string) {
+         context.state.composants._snackBarText = value;
+         context.state.composants._snackBarDisplay = true;
+         context.state.composants._snackBarSticky = false;
+         context.state.composants._snackBarColor = 'info';
       },
-      displayElementPanelAction(context, value: PanelDisplaySwitchProvider) {
-         context.commit('displayElementPanelMutation', value);
+      openErrorSnackBar(context, value: string) {
+         context.state.composants._snackBarText = value;
+         context.state.composants._snackBarDisplay = true;
+         context.state.composants._snackBarSticky = true;
+         context.state.composants._snackBarColor = 'error';
+      },
+      updateSnackBarDisplay(context, value: boolean) {
+         context.commit('mutationSnackBarDisplay', value);
       },
       moveElementPanel(context, value: PanelMovementProvider) {
          context.commit('mutationPanelMovement', value);
@@ -1477,7 +1499,7 @@ export default new Vuex.Store({
          context.commit('loadCandidatesLangue', force);
          context.commit('loadCandidatesPays', force);
       },
-      constructJsonAction(context) {
+      constructJsonAction(context): Promise<boolean> {
          return new Promise((resolve, reject) => {
             try {
                context.commit('mutationSearchRequest');
@@ -1487,49 +1509,58 @@ export default new Vuex.Store({
             }
          });
       },
-      callPeriscopeAPI(context) {
+      callPeriscopeAPI(context): Promise<boolean> {
          Logger.debug('PAGE:' + context.state.pagination._currentPage + '|SIZE:' + context.state.pagination._sizeWanted + '|REQUEST:' + JSON.stringify(context.state.jsonTraitements._jsonSearchRequest));
+
          //On place dans l'historique la requête qui va être envoyée au back-end
          this.dispatch('addRequeteHistory', context.state.jsonTraitements._jsonSearchRequest).catch((err) => {
             Logger.error(err);
          });
-         //On envoie la requête au back-end
-         return PeriscopeApi.findNoticeByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
-            .then((res) => {
-               context.commit('resetNotices');
-               context.commit('mutationNotices', res);
-            })
-            .catch((err) => {
-               //Si une erreur avec le ws est jetée, on affiche un message d'erreur
-               Logger.error(err.message + ' : ' + err.debugMessage, err.constructor.name);
-               context.state.composants._snackBarText = err.message + ' : ' + err.debugMessage;
-               context.state.composants._snackBarDisplay = true;
-               window.alert(err.message + ' : ' + err.debugMessage);
-            });
-      },
-      doSearch() {
-         this.dispatch('constructJsonAction')
-            .then(() => {
-               this.dispatch('resetPage').catch((err) => {
-                  Logger.error(err);
-                  return false;
+         return new Promise((resolve, reject) => {
+            //On envoie la requête au back-end
+            PeriscopeApi.findNoticeByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
+               .then((res) => {
+                  context.commit('resetNotices');
+                  context.commit('mutationNotices', res);
+                  resolve(true);
+               })
+               .catch((err) => {
+                  //Si une erreur avec le ws est jetée, on affiche un message d'erreur
+                  reject(err);
                });
-               this.dispatch('callPeriscopeAPI')
-                  .then(() => {
-                     router.push('/Resultat').catch((err) => {
-                        throw new Error(err);
-                     });
-                  })
-                  .catch((err) => {
-                     Logger.error(err);
-                     return false;
+         });
+      },
+      doSearch(): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            this.dispatch('constructJsonAction')
+               .then(() => {
+                  this.dispatch('resetPage').catch((err) => {
+                     reject(err);
                   });
-            })
-            .catch((err) => {
-               Logger.error(err);
-               return false;
-            });
-         return true;
+                  this.dispatch('callPeriscopeAPI')
+                     .then(() => {
+                        router
+                           .push('/Resultat')
+                           .then(() => {
+                              resolve(true);
+                           })
+                           .catch((err) => {
+                              if (err.name == 'NavigationDuplicated') {
+                                 // On ignore cette erreur
+                                 resolve(true);
+                              } else {
+                                 reject(err);
+                              }
+                           });
+                     })
+                     .catch((err) => {
+                        reject(err);
+                     });
+               })
+               .catch((err) => {
+                  reject(err);
+               });
+         });
       },
       resetSearchForm() {
          this.dispatch('resetAllBlocs').catch((err) => {

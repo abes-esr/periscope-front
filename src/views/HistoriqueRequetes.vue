@@ -16,30 +16,44 @@
                <v-row align="center">
                   <v-col cols="12">Requetes Enregistrées</v-col>
                   <v-col cols="12">
-                     <div v-for="(i, index) in requestsHistory" :key="index">
-                        <v-input
-                           >{{ i }}
-                           <v-tooltip top open-delay="700">
-                              <template v-slot:activator="{on}">
-                                 <button type="button" v-clipboard:copy="JSON.stringify(i)" v-clipboard:success="onCopy" v-clipboard:error="onError" v-on="on"><v-icon>mdi-content-paste </v-icon></button>
-                              </template>
-                              <span>Copier dans le presse papier</span>
-                           </v-tooltip>
-                           <v-tooltip top open-delay="700">
-                              <template v-slot:activator="{on}">
-                                 <v-btn icon @click="restoreToSearchForm(JSON.stringify(i))" v-on="on"><v-icon>mdi-file-restore</v-icon></v-btn>
-                              </template>
-                              <span>Restaurer dans le formulaire de recherche</span>
-                           </v-tooltip>
-                        </v-input>
-                     </div>
+                     <v-timeline dense>
+                        <v-timeline-item v-for="(i, index) in requestsHistory" :key="index" small fill-dot>
+                           <v-input>
+                              <div class="requestHistoryWrapper">
+                                 <h4>Critères</h4>
+                                 <span class="requestHistoryItem" v-for="c in i.criteres" :key="c">{{ c.type }}</span>
+                              </div>
+                              <div class="requestHistoryWrapper">
+                                 <h4>Tris</h4>
+                                 <span v-if="i.tri.length == 0" class="requestHistoryItem">Aucun</span>
+                                 <span class="requestHistoryItem" v-for="t in i.tri" :key="t">{{ t.sort }}</span>
+                              </div>
+                              <div class="requestHistoryItem">
+                                 <h4>Requête JSON</h4>
+                                 <span class="requestHistoryRequest">{{ i }}</span>
+                              </div>
+                              <v-tooltip top open-delay="700">
+                                 <template v-slot:activator="{on}">
+                                    <button type="button" v-clipboard:copy="JSON.stringify(i)" v-clipboard:success="onCopy" v-clipboard:error="onError" v-on="on"><v-icon>mdi-content-paste </v-icon></button>
+                                 </template>
+                                 <span>Copier dans le presse papier</span>
+                              </v-tooltip>
+                              <v-tooltip top open-delay="700">
+                                 <template v-slot:activator="{on}">
+                                    <v-btn icon @click="restoreToSearchForm(JSON.stringify(i))" v-on="on"><v-icon>mdi-file-restore</v-icon></v-btn>
+                                 </template>
+                                 <span>Restaurer dans le formulaire de recherche</span>
+                              </v-tooltip>
+                           </v-input>
+                        </v-timeline-item>
+                     </v-timeline>
                   </v-col>
                </v-row>
             </v-container>
          </v-col>
       </v-row>
       <v-row>
-         <v-col xs="6" sm="3">
+         <v-col>
             <v-btn @click="clearHistory()" color="#E53935" dark large>Vider l'historique<v-icon dark right> mdi-cancel </v-icon></v-btn>
          </v-col>
       </v-row>
@@ -53,6 +67,7 @@ import ComponentStepper from '../components/page/Stepper.vue';
 import {JsonGlobalSearchRequest} from '@/store/api/periscope/JsonInterfaces';
 import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 import {Logger} from '@/store/utils/Logger';
+import {HttpRequestError} from '@/store/exception/HttpRequestError';
 
 @Component({
    components: {
@@ -78,11 +93,8 @@ export default class HistoriqueRequetes extends Vue {
       });
 
       try {
-         const json = JSON.parse(jsonString);
-         //TODO test la conformité du JSON
-
          this.$store
-            .dispatch('updateSelectedRequeteDirecte', json)
+            .dispatch('updateSelectedRequeteDirecte', jsonString)
             .then(() => {
                const action: PanelDisplaySwitchProvider = {
                   panelId: PanelType.HISTORY,
@@ -91,9 +103,15 @@ export default class HistoriqueRequetes extends Vue {
                this.$store.dispatch('switchElementPanel', action).catch((err) => {
                   Logger.error(err);
                });
+               this.$store.dispatch('openInfoSnackBar', 'Requête restaurée avec succès').catch((err) => {
+                  Logger.error(err);
+               });
             })
             .catch((err) => {
                Logger.error(err);
+               this.$store.dispatch('openErrorSnackBar', 'Impossible de restaurer la requête. \n Erreur : ' + err.message).catch((err) => {
+                  Logger.error(err);
+               });
             });
       } catch (err) {
          Logger.error(err.message);
@@ -102,10 +120,16 @@ export default class HistoriqueRequetes extends Vue {
 
    onCopy(): void {
       Logger.debug('Copy to clipboard successfull');
+      this.$store.dispatch('openInfoSnackBar', 'Copy to clipboard successfull').catch((err) => {
+         Logger.error(err);
+      });
    }
 
    onError(): void {
       Logger.error('Copy to clipboard has failed');
+      this.$store.dispatch('openErrorSnackBar', 'Copy to clipboard has failed').catch((err) => {
+         Logger.error(err);
+      });
    }
 
    clearHistory(): void {
@@ -113,6 +137,9 @@ export default class HistoriqueRequetes extends Vue {
          Logger.error(err);
       });
       this.requestsHistory = this.getHistoryRequests;
+      this.$store.dispatch('openInfoSnackBar', 'Historique vidé').catch((err) => {
+         Logger.error(err);
+      });
    }
 }
 </script>

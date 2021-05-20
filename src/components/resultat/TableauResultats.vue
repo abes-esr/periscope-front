@@ -2,22 +2,28 @@
    <v-container class="outlined-app">
       <v-container style="padding: 5px; text-align: left">
          <v-row align-content="center" class="justify-space-between">
-            <v-col cols="2">
+            <v-col cols="3">
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app" outlined small :disabled="true" @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
+                     <v-btn class="outlined-app btnTableau" outlined small :disabled="true" @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
                   </template>
                   <span>Afficher / Cacher les facettes</span>
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app" outlined small @click="clearSelection" v-on="on"><v-icon>mdi-checkbox-blank-off-outline</v-icon></v-btn>
+                     <v-btn class="outlined-app btnTableau" outlined small @click="clearSelection" v-on="on"><v-icon>mdi-checkbox-blank-off-outline</v-icon></v-btn>
                   </template>
                   <span>Vider la sélection</span>
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app" outlined small @click="sortColumns" v-on="on"><v-icon>mdi-sync</v-icon></v-btn>
+                     <v-btn class="outlined-app btnTableau" outlined small @click="clearSort" v-on="on"><v-icon>mdi-cancel</v-icon></v-btn>
+                  </template>
+                  <span>Réinitialiser les tris</span>
+               </v-tooltip>
+               <v-tooltip top open-delay="700">
+                  <template v-slot:activator="{on}">
+                     <v-btn class="outlined-app btnTableau" outlined small @click="sortColumns" v-on="on">Appliquer les tris</v-btn>
                   </template>
                   <span>Appliquer les tris</span>
                </v-tooltip>
@@ -102,6 +108,7 @@
                show-select
                show-expand
                :items-per-page="getNumberOfNoticesAskedForNewCall"
+               @click:row="clickOnRow"
                @update:items-per-page="getItemPerPage"
                :footer-props="{
                   disablePagination: true,
@@ -115,11 +122,21 @@
                   nextIcon: '',
                }"
             >
+               <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}">
+                  <v-tooltip top v-bind:key="h.value" max-width="15vw" open-delay="700">
+                     <template v-slot:activator="{on}">
+                        <span v-on="on">{{ h.text }}</span>
+                     </template>
+                     <span>Cliquez sur la colonne pour trier par {{ h.text }} puis cliquez sur 'Appliquer les tris'</span>
+                  </v-tooltip>
+               </template>
                <template v-slot:expanded-item="{item}">
-                  <td :colspan="headers.length" style="text-align: left; padding-left: 9em">
-                     Complément de titre : {{ item.titleComplement }}<br />
-                     Qualifieur de titre : {{ item.keyTitleQualifer }}<br />
-                     Liste des établissements : {{ item.rcrList }}<br />
+                  <td :colspan="headers.length">
+                     <div class="v-data-table_line">
+                        Complément de titre : {{ item.titleComplement }}<br />
+                        Qualifieur de titre : {{ item.keyTitleQualifer }}<br />
+                        Liste des établissements : {{ item.rcrList }}<br />
+                     </div>
                   </td>
                </template>
                <template v-slot:footer>
@@ -136,7 +153,7 @@
          </v-card>
          <v-container>
             <v-row align-content="center" class="justify-space-between">
-               <v-col cols="2">
+               <v-col cols="3">
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
                         <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
@@ -182,6 +199,7 @@ import {TableHeader} from '@/store/resultat/TableInterfaces';
 import {Logger} from '@/store/utils/Logger';
 import {OrderType, TriInterface, TriType} from '@/store/recherche/TriInterface';
 import Notice from '@/store/entity/Notice';
+import {HttpRequestError} from '@/store/exception/HttpRequestError';
 
 @Component
 export default class TableauResultats extends Vue {
@@ -191,8 +209,8 @@ export default class TableauResultats extends Vue {
    loading: boolean;
    singleExpand: false;
    singleSelect: boolean;
-   expanded: [];
-   selected: [];
+   expanded: Array<Notice>;
+   selected: Array<Notice>;
    search: string;
    drawer: any;
    orderBooleans: Array<boolean>;
@@ -320,60 +338,94 @@ export default class TableauResultats extends Vue {
       return this.$store.getters.isLastPage();
    }
 
+   //Event
+   clickOnRow(value: Notice): void {
+      const index: number = this.expanded.indexOf(value);
+      if (index > -1) {
+         this.expanded.splice(index, 1);
+      } else {
+         this.expanded.push(value);
+      }
+   }
+
    //Lorsque l'utilisateur clique sur le bouton d'actualisation du tri
-   async sortColumns(): Promise<boolean> {
+   sortColumns(): void {
       this.loading = true;
-      this.$store.dispatch('resetPage').catch((err) => {
-         Logger.error(err);
-      });
-      await this.$store
-         .dispatch('callPeriscopeAPI')
+      this.$store
+         .dispatch('doSearch')
          .then(() => {
             this.notices = this.getNotices;
             this.loading = false;
          })
          .catch((err) => {
-            Logger.error(err);
+            this.loading = false;
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+               Logger.debug('Erreur API : ' + err.debugMessage);
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                  Logger.error(err);
+               });
+            } else {
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                  Logger.error(err);
+               });
+            }
          });
-
-      return !this.loading;
    }
 
-   async previousPage(): Promise<boolean> {
+   previousPage(): void {
       this.loading = true;
       this.$store.dispatch('previousPage').catch((err) => {
          Logger.error(err);
       });
 
-      await this.$store
+      this.$store
          .dispatch('callPeriscopeAPI')
          .then(() => {
             this.notices = this.getNotices;
             this.loading = false;
          })
          .catch((err) => {
-            Logger.error(err);
+            this.loading = false;
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+               Logger.debug('Erreur API : ' + err.debugMessage);
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                  Logger.error(err);
+               });
+            } else {
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                  Logger.error(err);
+               });
+            }
          });
-
-      return !this.loading;
    }
 
-   async nextPage(): Promise<boolean> {
+   nextPage(): void {
       this.loading = true;
       this.$store.dispatch('nextPage').catch((err) => {
          Logger.error(err);
       });
-      await this.$store
+      this.$store
          .dispatch('callPeriscopeAPI')
          .then(() => {
             this.notices = this.getNotices;
             this.loading = false;
          })
          .catch((err) => {
-            Logger.error(err);
+            this.loading = false;
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+               Logger.debug('Erreur API : ' + err.debugMessage);
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                  Logger.error(err);
+               });
+            } else {
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                  Logger.error(err);
+               });
+            }
          });
-
-      return !this.loading;
    }
 
    goToTopOfPage(): void {
@@ -381,26 +433,32 @@ export default class TableauResultats extends Vue {
    }
 
    //Lorsque l'utilisateur modifie le nombre de résultats voulus par page
-   async getItemPerPage(val: number): Promise<boolean> {
+   getItemPerPage(val: number): void {
       this.loading = true;
-      this.$store.dispatch('resetPage').catch((err) => {
-         Logger.error(err);
-      });
       this.$store.dispatch('updatePageSize', val).catch((err) => {
          Logger.error(err);
       });
-      await this.$store
-         .dispatch('callPeriscopeAPI')
+      this.$store
+         .dispatch('doSearch')
          .then(() => {
             this.notices = this.getNotices;
             this.numberOfNoticesAskedForNewCall = val;
             this.loading = false;
          })
          .catch((err) => {
-            Logger.error(err);
+            this.loading = false;
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+               Logger.debug('Erreur API : ' + err.debugMessage);
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                  Logger.error(err);
+               });
+            } else {
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                  Logger.error(err);
+               });
+            }
          });
-
-      return !this.loading;
    }
 
    customSort(items: Array<TableHeader>, index: Array<string>, isDesc: Array<boolean>): Array<TableHeader> {
@@ -417,16 +475,21 @@ export default class TableauResultats extends Vue {
       this.$store.dispatch('updateSelectedTri', arrayToSentAtStore).catch((err) => {
          Logger.error(err);
       });
-
-      //Reconstruction du JSON à envoyer
-      this.$store.dispatch('constructJsonAction').catch((err) => {
-         Logger.error(err);
-      });
       return items;
    }
 
    clearSelection(): void {
       this.selected = [];
+   }
+
+   clearSort(): void {
+      this.$store.dispatch('resetTri').catch((err) => {
+         Logger.error(err);
+      });
+
+      this.orderBooleans = this.getOrderSortBooleans;
+      this.orderLabels = this.getOrderSortLabels;
+      this.sortColumns();
    }
 }
 </script>

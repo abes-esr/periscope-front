@@ -254,4 +254,24 @@ export class SearchRequest {
             throw new ValueError('No converter found for order ' + OrderType[order] + '');
       }
    }
+
+   static checkJSON(value: string): string {
+      try {
+         const json: JsonGlobalSearchRequest = JSON.parse(value);
+
+         if (!json.criteres) {
+            return 'La propriété "criteres" est obligatoire';
+         } else if (!Array.isArray(json.criteres)) {
+            return 'La propriété "criteres" doit être un tableau de critères';
+         }
+
+         if (json.tri && !Array.isArray(json.tri)) {
+            return 'La propriété "tri" doit être un tableau de tris';
+         }
+
+         return 'OK';
+      } catch (err) {
+         return 'Impossible de décoder le JSON : ' + err.message;
+      }
+   }
 }

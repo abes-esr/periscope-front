@@ -22,6 +22,7 @@
 import {Component, Mixins} from 'vue-property-decorator';
 import GlobalPropertiesMixin from '../../mixins/globalProperties';
 import {Logger} from '@/store/utils/Logger';
+import {HttpRequestError} from '@/store/exception/HttpRequestError';
 
 @Component
 export default class Stepper extends Mixins(GlobalPropertiesMixin) {
@@ -37,7 +38,7 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
    }
 
    //Event
-   async changePage(stepNumber: number): Promise<boolean> {
+   changePage(stepNumber: number): void {
       switch (stepNumber) {
          case 1:
             this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
@@ -53,7 +54,17 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
                   Logger.error(err);
                });
                this.$store.dispatch('doSearch').catch((err) => {
-                  Logger.error(err);
+                  Logger.debug('Erreur API : ' + err.debugMessage);
+                  Logger.error(err.message);
+                  if (err instanceof HttpRequestError) {
+                     this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                        Logger.error(err);
+                     });
+                  } else if (err.name !== 'NavigationDuplicated') {
+                     this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                        Logger.error(err);
+                     });
+                  }
                });
             }
             break;
@@ -82,7 +93,6 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
             });
             break;
       }
-      return true;
    }
 }
 </script>

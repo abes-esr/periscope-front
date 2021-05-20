@@ -23,7 +23,7 @@
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
                            <v-text-field
-                              @change="eventUpdateBlocRequete"
+                              :rules="rules"
                               @blur="eventUpdateBlocRequete"
                               @keyup.enter="eventUpdateBlocRequete"
                               outlined
@@ -74,15 +74,18 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 import {Logger} from '@/store/utils/Logger';
+import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 
 @Component
 export default class ComponentRequeteEnregistree extends Vue {
    id: PanelType = PanelType.HISTORY;
    requeteEntered: string;
+   rules: any;
 
    constructor() {
       super();
       this.requeteEntered = this.getRequeteEntered;
+      this.rules = [this.checkValues];
    }
 
    get getRequeteEntered(): string {
@@ -94,14 +97,24 @@ export default class ComponentRequeteEnregistree extends Vue {
    }
 
    eventUpdateBlocRequete(): void {
-      try {
-         const json = JSON.parse(this.requeteEntered);
-         this.$store.dispatch('updateSelectedRequeteDirecte', json).catch((err) => {
+      if (this.checkValues(this.requeteEntered)) {
+         this.$store.dispatch('updateSelectedRequeteDirecte', this.requeteEntered).catch((err) => {
             Logger.error(err);
          });
-      } catch (err) {
-         Logger.error(err.message);
       }
+   }
+
+   checkValues(value: string): any {
+      if (value) {
+         const returnMsg: string = SearchRequest.checkJSON(value);
+         if (returnMsg != 'OK') {
+            return returnMsg;
+         }
+      } else {
+         return 'Le champs ne peut pas être null';
+      }
+
+      return true;
    }
 
    //Events v-btn

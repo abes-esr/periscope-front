@@ -8,7 +8,9 @@ import {Logger} from '@/store/utils/Logger';
 export class Composants {
    _stepperCurrentValue = 1;
    _snackBarDisplay = false;
+   _snackBarSticky = false;
    _snackBarMultiline = true;
+   _snackBarColor = 'info';
    _snackBarText = '';
    _panel: Array<PanelProvider> = [];
 
