@@ -2,7 +2,7 @@
    <v-container class="outlined-app">
       <v-container style="padding: 5px; text-align: left">
          <v-row align-content="center" class="justify-space-between">
-            <v-col cols="3">
+            <v-col cols="4">
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
                      <v-btn class="outlined-app btnTableau" outlined small :disabled="true" @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
@@ -20,6 +20,12 @@
                      <v-btn class="outlined-app btnTableau" outlined small @click="clearSort" v-on="on"><v-icon>mdi-cancel</v-icon></v-btn>
                   </template>
                   <span>Réinitialiser les tris</span>
+               </v-tooltip>
+               <v-tooltip top open-delay="700">
+                  <template v-slot:activator="{on}">
+                     <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on"><download-csv :data="selected" name="periscope-export.csv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
+                  </template>
+                  <span>Exporter la sélection au format CSV</span>
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
@@ -46,7 +52,7 @@
                   <span>Aller à la page suivante</span>
                </v-tooltip>
             </v-col>
-            <v-col cols="6">
+            <v-col cols="5">
                <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details style="margin: 0 !important; padding: 0 !important"></v-text-field>
             </v-col>
          </v-row>
@@ -139,21 +145,11 @@
                      </div>
                   </td>
                </template>
-               <template v-slot:footer>
-                  <div style="position: absolute" class="pa-0 pt-4 pl-2 ml-16">
-                     <span style="font-size: 0.9em">Exporter de la notice n° </span>
-                     <label for="exportNumberStart"></label>
-                     <input style="max-width: 3em" class="outlined-app" type="text" id="exportNumberStart" name="name" required minlength="4" maxlength="8" size="10" />
-                     <span style="font-size: 0.9em"> à </span>
-                     <label for="exportNumberEnd"></label>
-                     <input style="max-width: 3em" class="outlined-app" type="text" id="exportNumberEnd" name="name" required minlength="4" maxlength="8" size="10" />
-                  </div>
-               </template>
             </v-data-table>
          </v-card>
          <v-container>
             <v-row align-content="center" class="justify-space-between">
-               <v-col cols="3">
+               <v-col cols="4">
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
                         <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
@@ -179,7 +175,7 @@
                      <span>Aller à la page suivante</span>
                   </v-tooltip>
                </v-col>
-               <v-col cols="6" align-content="end">
+               <v-col cols="5" align-content="end">
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
                         <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
@@ -336,6 +332,16 @@ export default class TableauResultats extends Vue {
    }
    get isLastPage(): boolean {
       return this.$store.getters.isLastPage();
+   }
+   get isSelectionEmpty(): boolean {
+      if (this.selected.length == 0) {
+         return true;
+      } else {
+         return false;
+      }
+   }
+   get getFieldsToExport(): Array<string> {
+      return ['ppn', 'issn', 'continiousType', 'editor', 'keyTitle', 'startDate', 'endDate', 'nbLoc'];
    }
 
    //Event

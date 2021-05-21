@@ -67,7 +67,6 @@ import ComponentStepper from '../components/page/Stepper.vue';
 import {JsonGlobalSearchRequest} from '@/store/api/periscope/JsonInterfaces';
 import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 import {Logger} from '@/store/utils/Logger';
-import {HttpRequestError} from '@/store/exception/HttpRequestError';
 
 @Component({
    components: {

@@ -7,6 +7,7 @@ import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
 import {Logger} from '@/store/utils/Logger';
 import VueClipboard from 'vue-clipboard2';
+import JsonCSV from 'vue-json-csv';
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = ['Regions'];
@@ -15,6 +16,7 @@ Vue.config.ignoredElements = ['Regions'];
 Vue.config.errorHandler = (error) => Logger.error(error.message, error.constructor.name);
 
 Vue.use(VueClipboard); // Plugin pour l'historique
+Vue.component('downloadCsv', JsonCSV); // Plugin d'export au format CSV
 
 const vue = new Vue({
    router,
@@ -38,4 +40,3 @@ vue.$store.dispatch('resetNotices').catch((err) => {
 vue.$store.dispatch('resetPage').catch((err) => {
    Logger.error(err);
 });
-
