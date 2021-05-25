@@ -3,12 +3,6 @@ import {JsonTraitements} from '@/store/classes/traitements/JsonTraitements';
 import {EndInterval, Interval} from '@/store/interfaces/VisualisationInterface';
 //https://visjs.github.io/vis-timeline/examples/timeline/groups/nestedThreeLevels.html
 
-interface Nom {
-   exemplaires: any;
-   datamin: any;
-   datamax: any;
-}
-
 /**
  * Classe permettant d'alimenter l'état de collection d'une notice
  */
