@@ -1,7 +1,7 @@
 /**
  * Représente une notice
  */
-import {VisualisationInterface} from '@/store/interfaces/VisualisationInterface';
+import {Exemplaire} from '@/store/interfaces/VisualisationInterface';
 
 export class Notice {
    /**
@@ -31,10 +31,6 @@ export class Notice {
       this.endDate = obj.date_fin;
    }
 
-   feedCollectionState(json: string) {
-      console.log(json);
-   }
-
    ppn: number;
    issn: number;
    pcpList: Array<string> = [];
@@ -56,6 +52,6 @@ export class Notice {
    support: string;
    codecontenu181: string;
    codecontenu182: string;
-   collectionState: VisualisationInterface;
+   exemplaires: Array<Exemplaire>
 }
 export default Notice;

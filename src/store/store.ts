@@ -21,6 +21,8 @@ import {BlocTri} from '@/store/classes/blocsDeRecherche/BlocTri';
 import {Pagination} from '@/store/classes/resultatsDeRecherche/Pagination';
 import {BlocRequeteEnregistree} from '@/store/classes/blocsDeRecherche/BlocRequeteEnregistree';
 import {JsonReaderForTests} from '@/store/classes/appelsBackEnd/JsonReaderForTests';
+import MockDataService from '@/axios/services/MockDataService';
+import {HoldingsTraitements} from '@/store/classes/traitements/HoldingsTraitements';
 
 Vue.use(Vuex);
 
@@ -339,8 +341,48 @@ export default new Vuex.Store({
 
       //Poc
       fetchStateCollectionForOnePpn(state) {
-         const jsonGetByHolding = AxiosTraitements.useMock();
-         console.log(jsonGetByHolding);
+         const json = AxiosTraitements.useMock();
+
+         //Récupération de la liste des exemplaires rattaché à ce PPN, sous forme numéro RCR:EPN
+         const exemplairesInArray = JsonTraitements.jsonParserAndReturnFirstLevelOnlyInArray(json['holdings'], '":"","');
+
+         //Sur chaque numéro RCR:EPN
+         exemplairesInArray.forEach((rcr_epn) => {
+            console.log('RCR:' + rcr_epn);
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            console.log(JSON.parse(JSON.stringify(json['holdings'][rcr_epn]['intervals'])));
+
+            //Parcours des périodes détenues (intervals), et informations complémentaires de chaque intervale
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            HoldingsTraitements.constructionOfIntervalsPartInJson(json['holdings'][rcr_epn]['intervals']);
+
+
+            //Parcours des lacunes (missings), et information complémentaires de chaque lacune
+         });
+         //HoldingsTraitements.recursiveJsonParsing(json, 1, '', '');
+
+         /*CODE THOMAS
+         const newjson = { //transform response to match DataTables-1.8.2 expectations
+            //"sEcho": json.responseHeader.params.sEcho,
+            'iTotalRecords': json.numFound,
+            //"aaData": json.response.docs
+            //"aaData": json.records
+            'titre': json.title,
+            'issn': json.issn,
+            'ppn': json.ppn,
+            'editor': json.publisher,
+            'frequency': json.frequency,
+            'pubyearstart': json.startDate,
+            'pubyearend': json.endDate,
+            'supporttype': json.support,
+            'codecontenu181' : json.codecontenu181,
+            'codemediation182' : json.codemediation182,
+            'aaData': json.holdings
+         };
+         let result = buildDataModel(newjson);
+         */
       },
    },
    actions: {

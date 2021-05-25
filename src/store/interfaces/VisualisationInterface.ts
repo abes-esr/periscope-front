@@ -1,20 +1,29 @@
-export interface VisualisationInterface {
-   association: string;
+export interface Exemplaire {
+   epn: string;
    rcr: string;
-   gap_lacunes: string;
-   intervals: Array<Intervals>;
-   missings: Array<Intervals>;
+   lacunes_text_format: string;
+   comments: string;
+   periodes_detenues_intervals: Array<Interval>;
+   periodes_manquantes_missings: Array<Interval>;
    missings959r: string;
 }
 
-export interface Intervals {
-   startYear: number;
-   startYearDetails: Array<YearDetails>;
-   endYear: number;
-   endYearDetails: Array<YearDetails>;
+export interface Interval {
+   startYear: string;
+   endYear: string;
+   startNo: string;
+   startMonth: string;
+   startDay: string;
+   startVol: string;
+   endNo: string;
+   endMonth: string;
+   endDay: string;
+   endVol: string;
+   endYears: Array<EndInterval>;
 }
 
-export interface YearDetails {
+export interface EndInterval {
+   endYear: string;
    startNo: string;
    startMonth: string;
    startDay: string;

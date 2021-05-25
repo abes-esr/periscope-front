@@ -129,4 +129,46 @@ export class JsonTraitements {
       const jsonToReturn: JsonGlobalSearchRequest = {criteres: criteres, tri: blocTri._array};
       return jsonToReturn;
    }
+
+   static recursiveJsonParsing(obj: any): void {
+      let objectName = '';
+      for (const key in obj) {
+         //console.log(key);
+         //console.log('key TYPE' + typeof obj[key]);
+         //console.log(obj[key]);
+
+         //Si la clé n'est pas typée objet, c'est un attribut à ranger dans la notice
+         if (typeof obj[key] !== 'object') {
+            //On détermine que contient la clé typée objet
+            //TODO reprendre ici
+            console.log('2key' + key);
+            console.log('2obj[key]' + obj[key]);
+         }
+
+         //Si la clé est typée objet, on stocke la valeur dans objectName pour ensuite
+         // placer les attributs dans la condition du dessus
+         if (typeof obj[key] === 'object') {
+            console.log('1key' + key);
+            console.log('1obj[key]' + obj[key]);
+            objectName = key;
+            JsonTraitements.recursiveJsonParsing(obj[key]);
+         }
+      }
+   }
+
+   /**
+    * Méthode permettant de retourner sous forme de tableau de chaîne de caractères les
+    * éléments d'un JSON de premier niveau, sans rentrer dans les elements enfants, de type objet
+    * @param jsonTopLevelElementToParse json à parser
+    * @param separatorToSplitBetweenElementsInJson normalement mettre ',' car les éléments du json sont séparés par des parenthèses
+    */
+   static jsonParserAndReturnFirstLevelOnlyInArray(jsonTopLevelElementToParse: any, separatorToSplitBetweenElementsInJson: string) : string[] {
+      let jsonInString = JSON.stringify(jsonTopLevelElementToParse, function (k, v) { return k && v && typeof v === "object" ? '' : v; }); // will expose arrays as strings.
+      jsonInString = jsonInString.slice(0, -1);
+      jsonInString = jsonInString.slice(1, -1);
+      const arrayStrings: string[] = jsonInString.split(separatorToSplitBetweenElementsInJson);
+      //Specific line to holdings for the first epn below
+      arrayStrings[0] = arrayStrings[0].slice(1, arrayStrings[0].length); //Clean the first element
+      return arrayStrings;
+   }
 }

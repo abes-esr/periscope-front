@@ -24,7 +24,8 @@ export class AxiosTraitements {
       });
   }
 
-  static useMock(): string {
+  static useMock() {
      return MockDataService.holdingsDataServiceReturnForPpn039226859();
   }
+
 }
