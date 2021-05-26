@@ -1168,7 +1168,7 @@ export default new Vuex.Store({
          Composants.switchPanelDisplay(action.panelId, state.composants._panel, action.value);
       },
       resetSearchPanel(state, force?: boolean) {
-         if (force || state.blocPcpRegions._candidates.length == 0) {
+         if (force || state.composants._panel.length == 0) {
             Logger.debug('Reset des panneaux de recherche');
             state.composants._panel = [
                {id: PanelType.PPN, position: 3, displayed: false, available: true, label: 'PPN'},
