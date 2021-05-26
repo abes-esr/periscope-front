@@ -29,12 +29,15 @@ const vue = new Vue({
 vue.$store.dispatch('loadCandidatesValue', false).catch((err) => {
    Logger.error(err);
 });
-
-//Reset Total du store
-vue.$store.dispatch('resetSearchPanel').catch((err) => {
+// Reset du panneau de recherche
+vue.$store.dispatch('resetSearchPanel', false).catch((err) => {
    Logger.error(err);
 });
+
 vue.$store.dispatch('resetNotices').catch((err) => {
+   Logger.error(err);
+});
+vue.$store.dispatch('resetFacettes').catch((err) => {
    Logger.error(err);
 });
 vue.$store.dispatch('resetPage').catch((err) => {

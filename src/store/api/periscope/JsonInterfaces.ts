@@ -1,18 +1,19 @@
 /**
  * Représente les interfaces pour l'intégration avec VueJS
  */
+import Notice from '@/store/entity/Notice';
 
-export interface JsonCriteres {
-}
+export interface JsonCriteres {}
 
 export interface JsonTri {
-   sort: string,
-   order: string
+   sort: string;
+   order: string;
 }
 
 export interface JsonGlobalSearchRequest {
-   criteres: Array<JsonCriteres>,
-   tri: Array<JsonTri>,
+   criteres: Array<JsonCriteres>;
+   tri: Array<JsonTri>;
+   facettes: Array<JsonFacetteRequest>;
 }
 
 export interface JsonPcpBlocProvider {
@@ -81,8 +82,17 @@ export interface JsonTriProvider {
    order: string;
 }
 
-export interface JsonSent {
-   one: Array<JsonGlobalSearchRequest>;
-   two: number;
-   three: number;
+export interface APIResponse {
+   notice: Array<Notice>;
+   facettes: Array<string>;
+   nbPages: number;
+}
+
+export interface JsonFacetteRequest {
+   zone: string;
+}
+
+export interface JsonFacetteItem {
+   key: string;
+   occurrence: number;
 }

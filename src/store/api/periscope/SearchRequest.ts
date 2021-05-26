@@ -1,4 +1,18 @@
-import {JsonCriteres, JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider, JsonTri, JsonTriProvider} from '@/store/api/periscope/JsonInterfaces';
+import {
+   JsonCriteres,
+   JsonEditeurProvider,
+   JsonFacetteRequest,
+   JsonGlobalSearchRequest,
+   JsonIssnBlocProvider,
+   JsonLanguesProvider,
+   JsonMotsDuTitreProvider,
+   JsonPaysProvider,
+   JsonPcpBlocProvider,
+   JsonPpnBlocProvider,
+   JsonRcrBlocProvider,
+   JsonTri,
+   JsonTriProvider,
+} from '@/store/api/periscope/JsonInterfaces';
 import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
@@ -43,6 +57,7 @@ export class SearchRequest {
       //Les blocs ne sont rajoutés que si il contiennent des données
       const criteria: Array<JsonCriteres> = [];
       const sort: Array<JsonTri> = [];
+      const facettes: Array<JsonFacetteRequest> = [];
 
       //Construction d'une requête en cas de saisie directe de requête
       if (blocRequeteDirecte._directRequest.criteres.length !== 0) {
@@ -188,7 +203,27 @@ export class SearchRequest {
          sort.push(triJson);
       }
 
-      const jsonToReturn: JsonGlobalSearchRequest = {criteres: criteria, tri: sort};
+      let facetJson: JsonFacetteRequest = {
+         zone: 'DOCUMENT_TYPE',
+      };
+      facettes.push(facetJson);
+
+      facetJson = {
+         zone: 'support_type',
+      };
+      facettes.push(facetJson);
+
+      facetJson = {
+         zone: 'country',
+      };
+      facettes.push(facetJson);
+
+      facetJson = {
+         zone: 'language',
+      };
+      facettes.push(facetJson);
+
+      const jsonToReturn: JsonGlobalSearchRequest = {criteres: criteria, tri: sort, facettes: facettes};
       return jsonToReturn;
    }
 
@@ -197,11 +232,11 @@ export class SearchRequest {
          case TriType.ppn:
             return 'PPN';
          case TriType.continiousType:
-            return 'CONTINIOUS_TYPE';
+            return 'DOCUMENT_TYPE';
          case TriType.issn:
             return 'ISSN';
-         case TriType.keyTitle:
-            return 'KEY_TITLE';
+         case TriType.title:
+            return 'TITLE';
          case TriType.editor:
             return 'EDITOR';
          case TriType.startDate:
@@ -223,12 +258,12 @@ export class SearchRequest {
       switch (tri) {
          case 'PPN':
             return TriType.ppn;
-         case 'CONTINIOUS_TYPE':
+         case 'DOCUMENT_TYPE':
             return TriType.continiousType;
          case 'ISSN':
             return TriType.issn;
-         case 'KEY_TITLE':
-            return TriType.keyTitle;
+         case 'TITLE':
+            return TriType.title;
          case 'EDITOR':
             return TriType.editor;
          case 'START_YEAR':

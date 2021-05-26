@@ -57,7 +57,7 @@ export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
    }
 
    resetSearch(): void {
-      this.$store.dispatch('resetSearchForm').catch((err) => {
+      this.$store.dispatch('resetSearchForm', true).catch((err) => {
          Logger.error(err);
       });
       this.$emit('onChange'); // On notifie le composant parent

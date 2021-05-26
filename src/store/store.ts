@@ -22,8 +22,10 @@ import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
 import {OrderType, TriInterface} from '@/store/recherche/TriInterface';
-import {JsonGlobalSearchRequest} from '@/store/api/periscope/JsonInterfaces';
+import {APIResponse, JsonGlobalSearchRequest} from '@/store/api/periscope/JsonInterfaces';
 import router from '@/router';
+import {LotFacettes} from '@/store/resultat/LotFacettes';
+import Facet from '@/store/entity/Facet';
 
 Vue.use(Vuex);
 
@@ -42,6 +44,7 @@ export default new Vuex.Store({
       blocRequeteDirecte: new BlocRequeteEnregistree(),
       //Resultats de recherche
       lotNotices: new LotNotices(),
+      lotFacettes: new LotFacettes(),
       //Composants
       composants: new Composants(),
       //Méthodes pour construire JSON à envoyer au back-end
@@ -1114,7 +1117,7 @@ export default new Vuex.Store({
       },
       resetRequeteDirecte(state) {
          Logger.debug('Reset des requetes directes');
-         state.blocRequeteDirecte._directRequest = {criteres: [], tri: []};
+         state.blocRequeteDirecte._directRequest = {criteres: [], tri: [], facettes: []};
       },
       resetRequeteHistory(state) {
          Logger.debug("Reset de l'historique");
@@ -1164,30 +1167,32 @@ export default new Vuex.Store({
          Logger.debug('Mutation Panel Display switch : ' + PanelType[action.panelId] + ' ' + DisplaySwitch[action.value]);
          Composants.switchPanelDisplay(action.panelId, state.composants._panel, action.value);
       },
-      resetSearchPanel(state) {
-         Logger.debug('Reset des panneaux de recherche');
-         state.composants._panel = [
-            {id: PanelType.PPN, position: 3, displayed: false, available: true, label: 'PPN'},
-            {id: PanelType.ISSN, position: 4, displayed: false, available: true, label: 'ISSN'},
-            {id: PanelType.RCR, position: 5, displayed: false, available: true, label: 'RCR'},
-            {id: PanelType.REGIONS, position: 2, displayed: false, available: true, label: 'PCP Régions'},
-            {id: PanelType.METIERS, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
-            {id: PanelType.WORDS, position: 6, displayed: false, available: true, label: 'Mots du Titre'},
-            {id: PanelType.EDITOR, position: 7, displayed: false, available: true, label: 'Editeur'},
-            {id: PanelType.LANG, position: 8, displayed: false, available: true, label: 'Langue'},
-            {id: PanelType.COUNTRY, position: 9, displayed: false, available: true, label: 'Pays'},
-            {id: PanelType.HISTORY, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
-         ].sort((n1, n2) => {
-            if (n1.position > n2.position) {
-               return 1;
-            }
+      resetSearchPanel(state, force?: boolean) {
+         if (force || state.blocPcpRegions._candidates.length == 0) {
+            Logger.debug('Reset des panneaux de recherche');
+            state.composants._panel = [
+               {id: PanelType.PPN, position: 3, displayed: false, available: true, label: 'PPN'},
+               {id: PanelType.ISSN, position: 4, displayed: false, available: true, label: 'ISSN'},
+               {id: PanelType.RCR, position: 5, displayed: false, available: true, label: 'RCR'},
+               {id: PanelType.REGIONS, position: 2, displayed: false, available: true, label: 'PCP Régions'},
+               {id: PanelType.METIERS, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
+               {id: PanelType.WORDS, position: 6, displayed: false, available: true, label: 'Mots du Titre'},
+               {id: PanelType.EDITOR, position: 7, displayed: false, available: true, label: 'Editeur'},
+               {id: PanelType.LANG, position: 8, displayed: false, available: true, label: 'Langue'},
+               {id: PanelType.COUNTRY, position: 9, displayed: false, available: true, label: 'Pays'},
+               {id: PanelType.HISTORY, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
+            ].sort((n1, n2) => {
+               if (n1.position > n2.position) {
+                  return 1;
+               }
 
-            if (n1.position < n2.position) {
-               return -1;
-            }
+               if (n1.position < n2.position) {
+                  return -1;
+               }
 
-            return 0;
-         });
+               return 0;
+            });
+         }
       },
 
       //Modification de la pagination
@@ -1207,6 +1212,10 @@ export default new Vuex.Store({
             state.pagination._nextPage = state.pagination._currentPage + 1;
          }
       },
+      mutationMaxPage(state, element: number) {
+         Logger.debug('Mutation maximum page');
+         state.pagination._maxPage = element;
+      },
       resetPage(state) {
          Logger.debug('Reset de la pagination');
          state.pagination._currentPage = 0;
@@ -1217,12 +1226,21 @@ export default new Vuex.Store({
       // Notices
       mutationNotices(state, lotNoticesReceived) {
          Logger.debug('Mutation des Notices');
-         //Contient les notices brutes
          lotNoticesReceived.forEach((obj: any) => state.lotNotices._notices.push(new Notice(obj)));
       },
       resetNotices(state) {
          Logger.debug('Reset des Notices');
          state.lotNotices._notices = [];
+      },
+
+      // Facettes
+      mutationFacettes(state, values) {
+         Logger.debug('Mutation des Facettes');
+         values.forEach((obj: any) => state.lotFacettes._facettes.push(new Facet(obj)));
+      },
+      resetFacettes(state) {
+         Logger.debug('Reset des Facettes');
+         state.lotFacettes._facettes = [];
       },
    },
    actions: {
@@ -1315,8 +1333,11 @@ export default new Vuex.Store({
       resetNotices(context) {
          context.commit('resetNotices');
       },
-      resetSearchPanel(context) {
-         context.commit('resetSearchPanel');
+      resetFacettes(context) {
+         context.commit('resetFacettes');
+      },
+      resetSearchPanel(context, force?: boolean) {
+         context.commit('resetSearchPanel', force);
       },
       resetTri(context) {
          context.commit('resetTri');
@@ -1518,14 +1539,18 @@ export default new Vuex.Store({
          });
          return new Promise((resolve, reject) => {
             //On envoie la requête au back-end
-            PeriscopeApi.findNoticeByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
+            PeriscopeApi.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
+                  const response: APIResponse = (res as unknown) as APIResponse;
                   context.commit('resetNotices');
-                  context.commit('mutationNotices', res);
+                  context.commit('mutationNotices', response.notice);
+                  context.commit('resetFacettes');
+                  context.commit('mutationFacettes', response.facettes);
+                  context.commit('mutationMaxPage', response.nbPages);
                   resolve(true);
                })
                .catch((err) => {
-                  //Si une erreur avec le ws est jetée, on affiche un message d'erreur
+                  //Si une erreur avec le ws est jetée, on lève un message d'erreur
                   reject(err);
                });
          });
@@ -1562,14 +1587,17 @@ export default new Vuex.Store({
                });
          });
       },
-      resetSearchForm() {
+      resetSearchForm(context, force?: boolean) {
          this.dispatch('resetAllBlocs').catch((err) => {
             Logger.error(err);
          });
-         this.dispatch('resetSearchPanel').catch((err) => {
+         this.dispatch('resetSearchPanel', force).catch((err) => {
             Logger.error(err);
          });
          this.dispatch('resetTri').catch((err) => {
+            Logger.error(err);
+         });
+         this.dispatch('resetFacettes').catch((err) => {
             Logger.error(err);
          });
       },
@@ -1600,9 +1628,6 @@ export default new Vuex.Store({
             return false;
          }
       },
-      getCurrentPage: (state) => () => {
-         return state.pagination._currentPage;
-      },
       isFirstDisplayedElement: (state) => (id: PanelType) => {
          return Composants.isFirstDisplayedElement(id, state.composants._panel);
       },
@@ -1620,26 +1645,17 @@ export default new Vuex.Store({
          }
       },
       isLastPage: (state) => () => {
-         if (state.pagination._currentPage == state.pagination._maxPage) {
+         if (state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0) {
             return true;
          } else {
             return false;
          }
-      },
-      getArrayRegions: (state) => {
-         return state.blocPcpRegions._candidates;
       },
       orderSortArrayResultLabelElements: (state) => {
          return BlocTri.getLabelElements(state.blocTri);
       },
       orderSortArrayResultBooleanElements: (state) => {
          return BlocTri.getBooleanElements(state.blocTri);
-      },
-      getCurrentPositionNoticesStartedDisplayed: (state) => {
-         return (state.pagination._nextPage - 1) * state.pagination._sizeWanted + 1;
-      },
-      getCurrentPositionNoticesEndedDisplayed: (state) => {
-         return state.pagination._nextPage * state.pagination._sizeWanted;
       },
       getCurrentArrayPcpRegionsElementsChecked: (state) => {
          const arrayReturned: Array<string> = [];

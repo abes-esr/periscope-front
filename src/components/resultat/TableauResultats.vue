@@ -5,7 +5,7 @@
             <v-col cols="4">
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app btnTableau" outlined small :disabled="true" @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
+                     <v-btn class="outlined-app btnTableau" outlined small @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
                   </template>
                   <span>Afficher / Cacher les facettes</span>
                </v-tooltip>
@@ -43,11 +43,11 @@
                </v-tooltip>
                <v-chip color="primary" outlined>
                   <v-icon left>mdi-file-document-outline</v-icon>
-                  Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }} sur ?????
+                  Page {{ getCurrentPage }} sur {{ getMaxPage }}
                </v-chip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn icon color="primary" @click="nextPage" v-on="on"><v-icon>mdi-arrow-right</v-icon></v-btn>
+                     <v-btn icon color="primary" @click="nextPage" :disabled="isLastPage" v-on="on"><v-icon>mdi-arrow-right</v-icon></v-btn>
                   </template>
                   <span>Aller à la page suivante</span>
                </v-tooltip>
@@ -60,39 +60,17 @@
       <v-row style="margin-top: 10px" class="align-start justify-space-around">
          <v-navigation-drawer v-model="drawer" permanent style="margin-right: 1rem" v-bind:class="[displayDrawer ? 'd-flex' : 'd-none']">
             <v-expansion-panels multiple accordion>
-               <v-expansion-panel>
-                  <v-expansion-panel-header> Type </v-expansion-panel-header>
-                  <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
-                     <v-row style="max-height: 2em">
-                        <v-checkbox label="Périodiques"></v-checkbox>
-                     </v-row>
-                     <v-row style="max-height: 2em">
-                        <v-checkbox label="Collections"></v-checkbox>
-                     </v-row>
-                     <v-row style="max-height: 2em">
-                        <v-checkbox label="Blogs"></v-checkbox>
-                     </v-row>
-                     <v-row>
-                        <v-checkbox label="Journaux"></v-checkbox>
-                     </v-row>
-                  </v-expansion-panel-content>
-               </v-expansion-panel>
-               <v-expansion-panel>
-                  <v-expansion-panel-header> Support </v-expansion-panel-header>
-                  <v-expansion-panel-content style="padding-left: 2em; margin-top: -0.5em">
-                     <v-row style="max-height: 2em">
-                        <v-checkbox label="Imprimé"></v-checkbox>
-                     </v-row>
-                     <v-row style="max-height: 2em">
-                        <v-checkbox label="Electronique"></v-checkbox>
-                     </v-row>
-                     <v-row>
-                        <v-checkbox label="Autre"></v-checkbox>
-                     </v-row>
+               <v-expansion-panel v-for="f in facettes" :key="f.zone">
+                  <v-expansion-panel-header>
+                     {{ f.zone }}
+                  </v-expansion-panel-header>
+                  <v-expansion-panel-content style="padding-left: 0.5em; margin-top: -0.5em">
+                     <v-container fluid v-for="(val, i) in f.valeurs" :key="i" style="max-height: 2em; padding: 0">
+                        <v-checkbox :disabled="true" :label="val.key + '(' + val.occurrence + ')'"></v-checkbox>
+                     </v-container>
                   </v-expansion-panel-content>
                </v-expansion-panel>
             </v-expansion-panels>
-            <v-btn block elevation="0">Réinitialiser les filtres</v-btn>
          </v-navigation-drawer>
 
          <v-card class="d-flex flex-grow-1 flex-shrink-1" v-bind:class="[displayDrawer ? 'tabResultatSmallWidth' : 'tabResultatFullWidth']">
@@ -138,11 +116,7 @@
                </template>
                <template v-slot:expanded-item="{item}">
                   <td :colspan="headers.length">
-                     <div class="v-data-table_line">
-                        Complément de titre : {{ item.titleComplement }}<br />
-                        Qualifieur de titre : {{ item.keyTitleQualifer }}<br />
-                        Liste des établissements : {{ item.rcrList }}<br />
-                     </div>
+                     <div class="v-data-table_line">Liste des établissements : {{ item.rcrList }}<br /></div>
                   </td>
                </template>
             </v-data-table>
@@ -166,11 +140,11 @@
                   </v-tooltip>
                   <v-chip color="primary" outlined>
                      <v-icon left>mdi-file-document-outline</v-icon>
-                     Notices n° {{ getCurrentPositionNoticesStartedDisplayed }} à {{ getCurrentPositionNoticesEndedDisplayed }} sur ?????
+                     Page {{ getCurrentPage }} sur {{ getMaxPage }}
                   </v-chip>
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
-                        <v-btn icon color="primary" @click="nextPage" v-on="on"><v-icon>mdi-arrow-right</v-icon></v-btn>
+                        <v-btn icon color="primary" @click="nextPage" :disabled="isLastPage" v-on="on"><v-icon>mdi-arrow-right</v-icon></v-btn>
                      </template>
                      <span>Aller à la page suivante</span>
                   </v-tooltip>
@@ -196,12 +170,14 @@ import {Logger} from '@/store/utils/Logger';
 import {OrderType, TriInterface, TriType} from '@/store/recherche/TriInterface';
 import Notice from '@/store/entity/Notice';
 import {HttpRequestError} from '@/store/exception/HttpRequestError';
+import Facet from '@/store/entity/Facet';
 
 @Component
 export default class TableauResultats extends Vue {
    totalNotices = 0;
    headers: Array<TableHeader>;
    notices: Array<Notice>;
+   facettes: Array<Facet>;
    loading: boolean;
    singleExpand: false;
    singleSelect: boolean;
@@ -220,6 +196,7 @@ export default class TableauResultats extends Vue {
       this.totalNotices = 0;
       this.headers = this.getHeaders;
       this.notices = this.getNotices;
+      this.facettes = this.getFacettes;
       this.loading = false;
       this.singleExpand = false;
       this.singleSelect = false;
@@ -231,7 +208,7 @@ export default class TableauResultats extends Vue {
       this.orderLabels = this.getOrderSortLabels;
       this.numberOfNoticesAskedForNewCall = this.getNumberOfNoticesAskedForNewCall;
       this.mappingLabelTri = this.getMappingLabeltoTriType;
-      this.displayDrawer = false;
+      this.displayDrawer = true;
    }
 
    get getOrderSortBooleans(): Array<boolean> {
@@ -261,7 +238,7 @@ export default class TableauResultats extends Vue {
          },
          {
             text: 'Titre',
-            value: TriType[TriType.keyTitle],
+            value: TriType[TriType.title],
             sortable: true,
          },
          {
@@ -282,7 +259,7 @@ export default class TableauResultats extends Vue {
          {
             text: 'Code PCP',
             value: TriType[TriType.pcpList],
-            sortable: true,
+            sortable: false,
          },
          {
             text: 'Localisations',
@@ -302,7 +279,7 @@ export default class TableauResultats extends Vue {
          ppn: TriType.ppn,
          continiousType: TriType.continiousType,
          issn: TriType.issn,
-         keyTitle: TriType.keyTitle,
+         title: TriType.title,
          editor: TriType.editor,
          startDate: TriType.startDate,
          endDate: TriType.endDate,
@@ -315,17 +292,18 @@ export default class TableauResultats extends Vue {
    get getNotices(): Array<Notice> {
       return this.$store.state.lotNotices._notices;
    }
-
-   get getCurrentPositionNoticesStartedDisplayed(): number {
-      return this.$store.getters.getCurrentPositionNoticesStartedDisplayed;
-   }
-
-   get getCurrentPositionNoticesEndedDisplayed(): number {
-      return this.$store.getters.getCurrentPositionNoticesEndedDisplayed;
+   get getFacettes(): Array<Facet> {
+      return this.$store.state.lotFacettes._facettes;
    }
 
    get getNumberOfNoticesAskedForNewCall(): number {
       return this.$store.state.pagination._sizeWanted;
+   }
+   get getCurrentPage(): number {
+      return this.$store.state.pagination._currentPage + 1;
+   }
+   get getMaxPage(): number {
+      return this.$store.state.pagination._maxPage;
    }
    get isFirstPage(): boolean {
       return this.$store.getters.isFirstPage();
@@ -341,7 +319,7 @@ export default class TableauResultats extends Vue {
       }
    }
    get getFieldsToExport(): Array<string> {
-      return ['ppn', 'issn', 'continiousType', 'editor', 'keyTitle', 'startDate', 'endDate', 'nbLoc'];
+      return ['ppn', 'issn', 'continiousType', 'editor', 'title', 'startDate', 'endDate', 'nbLoc'];
    }
 
    //Event

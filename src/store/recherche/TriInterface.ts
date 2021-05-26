@@ -12,7 +12,7 @@ export enum TriType {
    nbLoc, // => Notice.nbLoc
    startDate, // => Notice.startDate
    endDate, // => Notice.endDate
-   keyTitle, // => Notice.keyTitle
+   title, // => Notice.title
    editor, // => Notice.editor
    linkSudoc, // => Notice.linkSudoc
    continiousType, // => Notice.continiousType
