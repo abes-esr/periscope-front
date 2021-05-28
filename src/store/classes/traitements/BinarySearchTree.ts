@@ -1,8 +1,8 @@
-import {Intervalle} from '@/store/interfaces/VisualisationInterface';
 import {Node} from '@/store/classes/traitements/Node';
+import {Intervalle} from "@/store/classes/traitements/Intervalle";
 
 export class BinarySearchTree {
-   private root: Node;
+   public root: Node;
 
    /**
     * Méthode d'insertion d'un noeud dans l'arbre binaire

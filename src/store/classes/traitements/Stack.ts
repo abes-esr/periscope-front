@@ -1,18 +1,18 @@
-import {Node} from '@/store/classes/traitements/Node';
+import {Slice} from '@/store/classes/traitements/Slice';
 
 export class Stack {
    private count: number;
-   private storage: Array<Node>;
+   private storage: Array<Slice>;
 
-   push(value: Node): void {
+   push(value: Slice): void {
       this.storage[this.count] = value;
       this.count++;
    }
 
-   pop(): Node | undefined {
+   pop(): Slice | null {
       // Check to see if the stack is empty
       if (this.count === 0) {
-         return undefined;
+         return null;
       }
       this.count--;
       const result = this.storage[this.count];
@@ -28,16 +28,11 @@ export class Stack {
       return this.count === 0;
    }
 
-   peek(): Node | undefined {
-      if (this.count === 0) {
-         return undefined;
-      }
-
-      const result = this.storage[this.count - 1];
-      return result;
+   peek(): Slice {
+      return this.storage[this.count - 1];
    }
 
-   toArray(): Array<Node> {
+   toArray(): Array<Slice> {
       const result = [];
 
       for (let j = 1; j <= this.count; j++) {
@@ -45,5 +40,22 @@ export class Stack {
       }
 
       return result;
+   }
+
+   /**
+    *
+    * @param stack a Stack
+    * @param slice an object whose first member [0] is debut time and second [1] end time
+    * @returns
+    */
+   mergeReduce(slice: Slice) {
+      // +1 year for joining consecutive years
+      if (this.isEmpty() || this.peek().fin + 1 < slice.debut) this.push(slice);
+      else {
+         const prev = this.pop();
+         if (prev !== null) {
+            this.push(new Slice(prev.debut, Math.max(prev.fin, slice.fin), slice.lac));
+         }
+      }
    }
 }

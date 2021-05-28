@@ -1,4 +1,5 @@
-import {Intervalle} from '@/store/interfaces/VisualisationInterface';
+import {Intervalle} from "@/store/classes/traitements/Intervalle";
+
 
 export class Node {
    constructor(interval: Intervalle) {
