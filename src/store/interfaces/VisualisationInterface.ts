@@ -33,3 +33,10 @@ export interface EndInterval {
    endDay: string;
    endVol: string;
 }
+
+
+
+export interface Intervalle {
+   minimum: number;
+   maximum: number;
+}

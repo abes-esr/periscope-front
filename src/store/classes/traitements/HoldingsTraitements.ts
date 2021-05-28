@@ -2,6 +2,7 @@ import Notice from '@/store/classes/resultatsDeRecherche/Notice';
 import {JsonTraitements} from '@/store/classes/traitements/JsonTraitements';
 import {EndInterval, Interval} from '@/store/interfaces/VisualisationInterface';
 import _ from 'lodash';
+import {Slice} from "@/store/classes/traitements/Slice";
 //https://visjs.github.io/vis-timeline/examples/timeline/groups/nestedThreeLevels.html
 
 /**
@@ -14,11 +15,15 @@ export class HoldingsTraitements {
     * @param jsonDataHoldings Json with contains all RcrEpn at the top level and the associated sub-information
     */
    static buildCollectionStateForAllRcrEpnOfNotice(arrayOfRcrEpn: any, jsonDataHoldings: any) {
-      const myHashTable = {};
+      let myHashTable = {};
+      let dataMin = Number.POSITIVE_INFINITY;
+      let noStartDate = {};
 
       for (const oneRcrEpnElement in arrayOfRcrEpn) {
-         let indexOfIdInFinalObjects = 1;
-         const processed = HoldingsTraitements.buildCollectionStateForOneRcrEpn(jsonDataHoldings[oneRcrEpnElement], oneRcrEpnElement, myHashTable, indexOfIdInFinalObjects);
+         const processed = HoldingsTraitements.buildCollectionStateForOneRcrEpn(jsonDataHoldings[oneRcrEpnElement], oneRcrEpnElement, myHashTable, dataMin, noStartDate);
+         myHashTable = processed['myHashTable'];
+         dataMin = processed['dataMin'];
+         noStartDate = processed['noStartDate'];
       }
    }
 
@@ -28,7 +33,7 @@ export class HoldingsTraitements {
     * @param jsonKey the Rcr:Epn in string (= 1 exemplaire)
     * @param indexOfIdInFinalObjects numero de l'id des éléments envoyés à la librairie de visualisation de timeline
     */
-   static buildCollectionStateForOneRcrEpn(subJsonOfOneRcrEpn: any, jsonKey: string, myHashTable: any, indexOfIdInFinalObjects: number) {
+   static buildCollectionStateForOneRcrEpn(subJsonOfOneRcrEpn: any, jsonKey: string, myHashTable: any, datamin: number, noStartDate: any) {
       let blue;
       let start;
       const debut = Number.NEGATIVE_INFINITY;
@@ -95,30 +100,16 @@ export class HoldingsTraitements {
             }
 
             let newSlice;
-            const className = lacuneIntraYear ? 'blue' : 'red';
-
             if (endDate === '2147483647') {
-               newSlice = new Object({
-                  'id' : indexOfIdInFinalObjects++,
-                  'start': debut.toString() + '-01-01',
-                  'end': '2147483647',
-                  'className': className,
-                  'type': 'range',
-               });
+               newSlice = new Slice(debut, 2147483647, lacuneIntraYear);
             } else {
-               newSlice = new Object({
-                  'id' : indexOfIdInFinalObjects++,
-                  'start': debut.toString() + '-01-01',
-                  'end': endDate + '-12-31',
-                  'className': className,
-                  'type': 'range',
-               });
+               newSlice = new Slice(debut, Number.parseInt(endDate),lacuneIntraYear);
             }
 
             periodes.push(newSlice);
             if (newSlice['lac'] === true) {
                //console.log('intra lacune '+newSlice['d']+'-'+newSlice['f'])
-               intras[newSlice['d']] = 1;
+               intras[newSlice.debut] = 1;
 
             }
 
@@ -126,7 +117,7 @@ export class HoldingsTraitements {
          }
          if (debut === Number.NEGATIVE_INFINITY) {
             //stocker la cle5 pour examen en fin de boucle
-            noStartDate.push(cle5);
+            noStartDate.push(jsonKey);
          }
          //updates known limits
          if (debut < datamin) {
@@ -134,21 +125,29 @@ export class HoldingsTraitements {
          }
 
 
-         if (myHashtable.hasOwnProperty(cle5)) {
-            myHashtable[cle5]['periodes'] = periodes;
-            myHashtable[cle5]['fullacune'] = fullacune;
+         if (myHashTable.hasOwnProperty(jsonKey)) {
+            myHashTable[jsonKey]['periodes'] = periodes;
+            myHashTable[jsonKey]['fullacune'] = fullacune;
          } else {
-            myHashtable[cle5] = new Object({
+            myHashTable[jsonKey] = new Object({
                periodes: periodes,
                textetatcollection: '',
                fullacune: fullacune,
-               pcp: aaData['pcp'],
-               papc: aaData['papc']
+               pcp: subJsonOfOneRcrEpn['pcp'],
+               papc: subJsonOfOneRcrEpn['papc']
             });
             g_element_count++;
          }
 
       });
+
+      const processed = {};
+      processed['myHashTable'] = myHashTable;
+      processed['datamin'] = datamin;
+      processed['noStartDate'] = noStartDate;
+
+      return processed;
+      
    }
 
    /**

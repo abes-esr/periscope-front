@@ -7,11 +7,20 @@ import {BlocMotDuTitre} from '@/store/classes/blocsDeRecherche/BlocMotDuTitre';
 import {BlocEditeur} from '@/store/classes/blocsDeRecherche/BlocEditeur';
 import {BlocLangue} from '@/store/classes/blocsDeRecherche/BlocLangue';
 import {BlocPays} from '@/store/classes/blocsDeRecherche/BlocPays';
-import {JsonEditeurProvider, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider} from '@/store/interfaces/JsonInterfaces';
+import {
+   JsonEditeurProvider,
+   JsonGlobalSearchRequest,
+   JsonIssnBlocProvider,
+   JsonLanguesProvider,
+   JsonMotsDuTitreProvider,
+   JsonPaysProvider,
+   JsonPcpBlocProvider,
+   JsonPpnBlocProvider,
+   JsonRcrBlocProvider
+} from '@/store/interfaces/JsonInterfaces';
 import {BlocAbstract} from '@/store/classes/blocsDeRecherche/BlocAbstract';
-import { TriTableauInterface } from "@/store/interfaces/TriTableauInterface";
-import { BlocTri } from "@/store/classes/blocsDeRecherche/BlocTri";
-import { BlocRequeteEnregistree } from "@/store/classes/blocsDeRecherche/BlocRequeteEnregistree";
+import {BlocTri} from "@/store/classes/blocsDeRecherche/BlocTri";
+import {BlocRequeteEnregistree} from "@/store/classes/blocsDeRecherche/BlocRequeteEnregistree";
 
 export class JsonTraitements {
    /**
