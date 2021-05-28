@@ -341,13 +341,15 @@ export default new Vuex.Store({
 
       //Poc
       fetchStateCollectionForOnePpn(state) {
+         //Appel de holdings et récupération du JSON rattaché à une notice, contenant la liste des RCR:EPN
          const json = AxiosTraitements.useMock();
-
          //Récupération de la liste des exemplaires rattaché à ce PPN, sous forme numéro RCR:EPN
          const exemplairesInArray = JsonTraitements.jsonParserAndReturnFirstLevelOnlyInArray(json['holdings'], '":"","');
+         console.log(typeof exemplairesInArray);
+         //tableau d'erreurs
 
          //Sur chaque numéro RCR:EPN
-         exemplairesInArray.forEach((rcr_epn) => {
+         /*exemplairesInArray.forEach((rcr_epn) => {
             console.log('RCR:' + rcr_epn);
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -360,13 +362,13 @@ export default new Vuex.Store({
 
 
             //Parcours des lacunes (missings), et information complémentaires de chaque lacune
-         });
+         });*/
          //HoldingsTraitements.recursiveJsonParsing(json, 1, '', '');
 
          /*CODE THOMAS
          const newjson = { //transform response to match DataTables-1.8.2 expectations
             //"sEcho": json.responseHeader.params.sEcho,
-            'iTotalRecords': json.numFound,
+            'iTotalRecords': json.numFound, //NOMBRE DE NOTICES
             //"aaData": json.response.docs
             //"aaData": json.records
             'titre': json.title,
