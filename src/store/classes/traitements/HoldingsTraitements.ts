@@ -4,6 +4,8 @@ import {Stack} from '@/store/classes/traitements/Stack';
 import {BinarySearchTree} from '@/store/classes/traitements/BinarySearchTree';
 import {Collection} from '@/store/classes/traitements/Collection';
 import {Intervalle} from '@/store/classes/traitements/Intervalle';
+import json = Mocha.reporters.json;
+import {EtatCollection} from '@/store/classes/traitements/EtatCollection';
 
 //https://visjs.github.io/vis-timeline/examples/timeline/groups/nestedThreeLevels.html
 
@@ -17,7 +19,7 @@ export class HoldingsTraitements {
     * @param jsonDataHoldings Json with contains all RcrEpn at the top level and the associated sub-information
     */
    static buildCollectionStateForAllRcrEpnOfNotice(arrayOfRcrEpn: any, jsonDataHoldings: any) {
-      let myHashTable = {};
+      let myHashTable: any[] = [];
       let dataMin = Number.POSITIVE_INFINITY;
       let noStartDate = {};
       const g_element_count = 0;
@@ -37,26 +39,19 @@ export class HoldingsTraitements {
     * @param indexOfIdInFinalObjects numero de l'id des éléments envoyés à la librairie de visualisation de timeline
     */
    static buildCollectionStateForOneRcrEpn(subJsonOfOneRcrEpn: any, jsonKey: string, myHashTable: any, datamin: number, noStartDate: any, g_element_count: number) {
-      let start: string;
       let lacuneIntraYear = false; //Lacunes sur une année donnée
       let auMoinsUneLacIntra = false;
 
       let periodes: Slice[] = []; //Tableau des periodes pour un exemplaire
       let finalTextInInfobulle = '';
 
-      const g_currentTime = new Date();
-      const g_currentYear = g_currentTime.getFullYear();
-      const overrideOfOneRcrEpn = subJsonOfOneRcrEpn['override']; //TODO tmx, a quoi correspond override
-      const missings959rOfOneRcrEpn = subJsonOfOneRcrEpn['missings959r']; //Aggregation des sous zones de la 959 UNMA au format texte de signalement de lacunes
-      const loc316aOfOneRcrEpn = subJsonOfOneRcrEpn['loc316a']; //Zone de lacunes, au format texte, récupérée directement depuis le webservices Holdings (note sur l'exemplaire, à titre exceptionnel)
       //Booleen a adapter en typescript
-      let fullacuneOfOneRcrEpn = 'gap' in subJsonOfOneRcrEpn; //Zone de saisie libre au format texte de signalement de lacunes en %
-      const commentsOfOneRcrEpn = subJsonOfOneRcrEpn['comments']; //Zone de saisie libre, commentaire sur la collection
+      const fullacuneOfOneRcrEpn = 'gap' in subJsonOfOneRcrEpn; //Zone de saisie libre au format texte de signalement de lacunes en %
 
       const arrayOfstartYearsInIntervalOfOneRcrEpnRaw = Object.keys(subJsonOfOneRcrEpn['intervals']); //Récupération de toutes les dates de début de la rubrique interval d'un Rcr:epn du json
       const arrayOfstartYearsInIntervalOfOneRcrEpnSorted = arrayOfstartYearsInIntervalOfOneRcrEpnRaw.sort(); //Tri des dates de début par ordre croissant
 
-      const intras: any[] = [];
+      const intras: number[] = [];
 
       const arrayWhichContainsErrorMessagesForDates = [];
 
@@ -75,7 +70,7 @@ export class HoldingsTraitements {
          //Si la table qui stocke les périodes de intervals d'un exemplaire possède déja la période en cours de parcours
          if (startYearSingleElement in myHashTable) {
             //période deja existant dans la table, on lui rajoute la nouvelle période
-            periodes = myHashTable[startYearSingleElement]['periodes'];
+            periodes = myHashTable[startYearSingleElement].getPeriodes();
          } else {
             //période non présente dans la table, on crée un nouveau tableau pour représenter cette période
             periodes = [];
@@ -123,23 +118,25 @@ export class HoldingsTraitements {
          }
 
          if (jsonKey in myHashTable) {
-            myHashTable[jsonKey]['periodes'] = periodes;
-            myHashTable[jsonKey]['fullacune'] = fullacuneOfOneRcrEpn;
+            myHashTable[jsonKey].setPeriodes(periodes);
+            myHashTable[jsonKey].setFulLacunes(fullacuneOfOneRcrEpn);
          } else {
-            myHashTable[jsonKey] = new Object({
-               periodes: periodes,
-               textetatcollection: '',
-               fullacune: fullacuneOfOneRcrEpn,
-               pcp: subJsonOfOneRcrEpn['pcp'],
-               papc: subJsonOfOneRcrEpn['papc'],
-            });
+            myHashTable[jsonKey] = new EtatCollection(periodes, '', fullacuneOfOneRcrEpn, subJsonOfOneRcrEpn['pcp'], subJsonOfOneRcrEpn['papc']);
             g_element_count++;
          }
       });
 
-      /**
-       * DEBUT DE PRISE EN COMPTE DES EVENTUELLES 959
-       */
+      HoldingsTraitements.calculLacunes(jsonKey, periodes, auMoinsUneLacIntra, subJsonOfOneRcrEpn, myHashTable, fullacuneOfOneRcrEpn, intras);
+
+      finalTextInInfobulle = finalTextInInfobulle + HoldingsTraitements.constructInfoBulleLacunes(jsonKey, myHashTable, subJsonOfOneRcrEpn);
+
+      return new Collection(myHashTable, datamin, noStartDate);
+   }
+
+   static calculLacunes(jsonKey: string, periodes: Slice[], auMoinsUneLacIntra: boolean, subJsonOfOneRcrEpn: any, myHashTable: any, fullacuneOfOneRcrEpn: any, intras: any): void {
+      let start: string;
+      const g_currentTime = new Date();
+      const g_currentYear = g_currentTime.getFullYear();
       let stack = new Stack();
       periodes.reduce(this.mergeReduce, stack);
 
@@ -149,7 +146,7 @@ export class HoldingsTraitements {
 
       if (fullacuneOfOneRcrEpn === false) {
          //if not fulllacune and exists 959, use stack to list maximum intervals, in ordered array and build balanced BST with createMinHeightBST().
-         // Then we can repopulate "periodes" array with (maximized 959 + intra year gap)=orange and searchRange of BST between 2 consecutide 959=blue
+         // Then we can repopulate "periodes" array with (maximized 959 + intra year gap)=orange and searchRange of BST between 2 consecutive 959=blue
 
          const noverlap = stack.toArray();
 
@@ -232,19 +229,29 @@ export class HoldingsTraitements {
                }
             }
          }
-
          /**
-          * !!! mettre à jour !!!
+          * mise à jour du tableau de résultat avec les nouvelles données calculées
           */
          if (jsonKey in myHashTable) {
-            myHashTable[jsonKey]['periodes'] = periodes;
-            myHashTable[jsonKey]['fullacune'] = false;
+            myHashTable[jsonKey].setPeriodes(periodes);
+            myHashTable[jsonKey].setFulLacunes(false);
          }
       }
+   }
 
-      /**
-       * Création de la chaine finale à destination de la popup
-       */
+   /**
+    * Méthode de construction de la chaine représentant les lacunes dans l'infobulle
+    * @param jsonKey clé rcr/epn
+    * @param myHashTable tableau de résultat des informations à récupérer
+    * @param subJsonOfOneRcrEpn données sources sur lesquelles récupérer les informations à mettre dans l'infobulle
+    */
+   static constructInfoBulleLacunes(jsonKey: string, myHashTable: any, subJsonOfOneRcrEpn: any): string {
+      const overrideOfOneRcrEpn = subJsonOfOneRcrEpn['override']; //TODO tmx, a quoi correspond override
+      const missings959rOfOneRcrEpn = subJsonOfOneRcrEpn['missings959r']; //Aggregation des sous zones de la 959 UNMA au format texte de signalement de lacunes
+      const loc316aOfOneRcrEpn = subJsonOfOneRcrEpn['loc316a']; //Zone de lacunes, au format texte, récupérée directement depuis le webservices Holdings (note sur l'exemplaire, à titre exceptionnel)
+      const commentsOfOneRcrEpn = subJsonOfOneRcrEpn['comments']; //Zone de saisie libre, commentaire sur la collection
+      let finalTextInInfobulle = '';
+
       if (jsonKey in myHashTable) {
          if (commentsOfOneRcrEpn) {
             finalTextInInfobulle = finalTextInInfobulle + '[' + commentsOfOneRcrEpn + ']';
@@ -255,24 +262,23 @@ export class HoldingsTraitements {
          }
 
          if (overrideOfOneRcrEpn) {
-            myHashTable[jsonKey]['textetatcollection'] = overrideOfOneRcrEpn;
+            myHashTable[jsonKey].setTextEtatCollection(overrideOfOneRcrEpn);
          } else {
-            myHashTable[jsonKey]['textetatcollection'] = finalTextInInfobulle;
+            myHashTable[jsonKey].setTextEtatCollection(finalTextInInfobulle);
          }
 
          if (missings959rOfOneRcrEpn) {
-            finalTextInInfobulle = myHashTable[jsonKey]['textetatcollection'];
+            finalTextInInfobulle = myHashTable[jsonKey].getEtatCollection();
             finalTextInInfobulle = finalTextInInfobulle + '</br><font color="#D2691E">[ Lacunes signal&eacute;es : ' + missings959rOfOneRcrEpn + ' ]</font>';
-            myHashTable[jsonKey]['textetatcollection'] = finalTextInInfobulle;
+            myHashTable[jsonKey].setTextEtatCollection(finalTextInInfobulle);
          }
 
          if (loc316aOfOneRcrEpn) {
-            myHashTable[jsonKey]['textE316'] = loc316aOfOneRcrEpn;
-            myHashTable[jsonKey]['fullacune'] = true;
+            myHashTable[jsonKey].setTextE316(loc316aOfOneRcrEpn);
+            myHashTable[jsonKey].setFulLacunes(true);
          }
       }
-
-      return new Collection(myHashTable, datamin, noStartDate);
+      return finalTextInInfobulle;
    }
 
    /**
@@ -319,15 +325,14 @@ export class HoldingsTraitements {
          if (timeSlice instanceof Array) {
             //TMX bugfix with new DB table autorites.V_NOTICESBIBIO_TRI no respect 955 "natural" see ppn 037577409 year 1975 examplar 341292301:41252988201
             let sortedTimeSlice = []; //Tableau des dates de fin trié
-            //TODO risque d'erreur sur la librairie utilisant cette fonction anonyme
             //Tri des élements d'un tableau de dates de fin par le startNo qui compose chacun des éléments Date de fin
             sortedTimeSlice = _.sortBy(timeSlice, function (o: {[x: string]: string}) {
                if (o['startNo'] !== undefined) {
                   return parseInt(o['startNo']);
                } else return 0;
             });
-            for (let index = 0; index < sortedTimeSlice.length; index++) {
-               collectionStatusOfItem = collectionStatusOfItem + HoldingsTraitements.timeSliceFormatHelper(startYearElement, end, sortedTimeSlice[index], true);
+            for (const value of sortedTimeSlice) {
+               collectionStatusOfItem = collectionStatusOfItem + HoldingsTraitements.timeSliceFormatHelper(startYearElement, end, value, true);
             }
          } else {
             //Sinon si la structure sous la date de fin est directement un objet
@@ -338,7 +343,7 @@ export class HoldingsTraitements {
    }
 
    /**
-    * Fonction qui constuit la chaine de l'état de collection utilisée dans une info-bulle
+    * Fonction qui constuit la chaine de l'état de collection utilisée dans une info-bulle (sans les lacunes)
     * @param start date de debut d'un intervalle
     * @param end date de fin d'un intervalle
     * @param timeslice La structure située sous une date de fin, qui est ici obligatoirement un objet, contenant les précisions type startVOl, endVol
