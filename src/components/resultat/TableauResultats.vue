@@ -62,11 +62,11 @@
             <v-expansion-panels multiple accordion>
                <v-expansion-panel v-for="f in facettes" :key="f.zone">
                   <v-expansion-panel-header>
-                     {{ f.zone }}
+                     {{ mappingLabelFacet[f.zone] }}
                   </v-expansion-panel-header>
                   <v-expansion-panel-content style="padding-left: 0.5em; margin-top: -0.5em">
                      <v-container fluid v-for="(val, i) in f.valeurs" :key="i" style="max-height: 2em; padding: 0">
-                        <v-checkbox :disabled="true" :label="val.key + '(' + val.occurrence + ')'"></v-checkbox>
+                        <v-checkbox :disabled="true" :label="convertLabelFacette(f.zone, val.key) + ' (' + val.occurrence + ')'"></v-checkbox>
                      </v-container>
                   </v-expansion-panel-content>
                </v-expansion-panel>
@@ -171,6 +171,9 @@ import {OrderType, TriInterface, TriType} from '@/store/recherche/TriInterface';
 import Notice from '@/store/entity/Notice';
 import {HttpRequestError} from '@/store/exception/HttpRequestError';
 import Facet from '@/store/entity/Facet';
+import {ListProvider} from '@/store/recherche/BlocInterfaces';
+import {BlocLangue} from '@/store/recherche/criteres/BlocLangue';
+import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 
 @Component
 export default class TableauResultats extends Vue {
@@ -189,6 +192,7 @@ export default class TableauResultats extends Vue {
    orderLabels: Array<string>;
    numberOfNoticesAskedForNewCall: number;
    mappingLabelTri: {[key: string]: TriType} = {};
+   mappingLabelFacet: {[key: string]: string} = {};
    displayDrawer: boolean;
 
    constructor() {
@@ -208,6 +212,7 @@ export default class TableauResultats extends Vue {
       this.orderLabels = this.getOrderSortLabels;
       this.numberOfNoticesAskedForNewCall = this.getNumberOfNoticesAskedForNewCall;
       this.mappingLabelTri = this.getMappingLabeltoTriType;
+      this.mappingLabelFacet = this.getFacetLabelMapping;
       this.displayDrawer = true;
    }
 
@@ -242,7 +247,7 @@ export default class TableauResultats extends Vue {
             sortable: true,
          },
          {
-            text: 'Editeur',
+            text: 'Éditeur',
             value: TriType[TriType.editor],
             sortable: true,
          },
@@ -289,6 +294,14 @@ export default class TableauResultats extends Vue {
       };
    }
 
+   get getFacetLabelMapping(): {[key: string]: string} {
+      return {
+         document_type: 'Type de document',
+         support_type: 'Type de support',
+         country: 'Pays',
+         language: 'Langue',
+      };
+   }
    get getNotices(): Array<Notice> {
       return this.$store.state.lotNotices._notices;
    }
@@ -320,6 +333,16 @@ export default class TableauResultats extends Vue {
    }
    get getFieldsToExport(): Array<string> {
       return ['ppn', 'issn', 'continiousType', 'editor', 'title', 'startDate', 'endDate', 'nbLoc'];
+   }
+
+   convertLabelFacette(zone: string, key: string): string {
+      if (zone === 'language') {
+         return BlocLangue.getItemLabel(this.$store.state.blocLangue._candidates, key);
+      } else if (zone === 'country') {
+         return BlocPays.getItemLabel(this.$store.state.blocPays._candidates, key);
+      } else {
+         return key;
+      }
    }
 
    //Event

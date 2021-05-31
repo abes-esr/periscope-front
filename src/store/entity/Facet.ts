@@ -9,7 +9,7 @@ export class Facet {
     * @param obj Objet provenant du JSON, les champs peuvent être nuls
     */
    constructor(obj: any = {}) {
-      this.zone = obj.zone;
+      this.zone = obj.zone.toLowerCase();
 
       if (obj.valeurs == null) {
          this.valeurs = [];
