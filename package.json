@@ -21,6 +21,7 @@
     "cosmiconfig": "^7.0.0",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
+    "n_": "^3.0.0",
     "reinstall": "^2.0.0",
     "roboto-fontface": "*",
     "tslib": "^2.1.0",

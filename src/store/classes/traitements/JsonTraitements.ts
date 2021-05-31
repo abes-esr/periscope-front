@@ -178,6 +178,7 @@ export class JsonTraitements {
       const arrayStrings: string[] = jsonInString.split(separatorToSplitBetweenElementsInJson);
       //Specific line to holdings for the first epn below
       arrayStrings[0] = arrayStrings[0].slice(1, arrayStrings[0].length); //Clean the first element
+      arrayStrings[arrayStrings.length - 1] = arrayStrings[arrayStrings.length - 1].slice(0, -3); //Clean the last element
       return arrayStrings;
    }
 }

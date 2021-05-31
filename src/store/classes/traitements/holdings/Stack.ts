@@ -1,8 +1,8 @@
-import {Slice} from '@/store/classes/traitements/Slice';
+import {Slice} from '@/store/classes/traitements/holdings/Slice';
 
 export class Stack {
-   private count: number;
-   private storage: Array<Slice>;
+   private count = 0;
+   private storage: Array<Slice> = [];
 
    push(value: Slice): void {
       this.storage[this.count] = value;

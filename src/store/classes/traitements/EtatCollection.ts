@@ -1,4 +1,4 @@
-import {Slice} from "@/store/classes/traitements/Slice";
+import {Slice} from "@/store/classes/traitements/holdings/Slice";
 
 export class EtatCollection {
    private periodes: Slice[];

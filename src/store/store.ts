@@ -345,46 +345,9 @@ export default new Vuex.Store({
          const json = AxiosTraitements.useMock();
          //Récupération de la liste des exemplaires rattaché à ce PPN, sous forme numéro RCR:EPN
          const exemplairesInArray = JsonTraitements.jsonParserAndReturnFirstLevelOnlyInArray(json['holdings'], '":"","');
-         console.log(typeof exemplairesInArray);
-         //tableau d'erreurs
 
-         //Sur chaque numéro RCR:EPN
-         /*exemplairesInArray.forEach((rcr_epn) => {
-            console.log('RCR:' + rcr_epn);
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            console.log(JSON.parse(JSON.stringify(json['holdings'][rcr_epn]['intervals'])));
+         const objectReturned = HoldingsTraitements.buildCollectionStateForAllRcrEpnOfNotice(exemplairesInArray, json['holdings']);
 
-            //Parcours des périodes détenues (intervals), et informations complémentaires de chaque intervale
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            HoldingsTraitements.constructionOfIntervalsPartInJson(json['holdings'][rcr_epn]['intervals']);
-
-
-            //Parcours des lacunes (missings), et information complémentaires de chaque lacune
-         });*/
-         //HoldingsTraitements.recursiveJsonParsing(json, 1, '', '');
-
-         /*CODE THOMAS
-         const newjson = { //transform response to match DataTables-1.8.2 expectations
-            //"sEcho": json.responseHeader.params.sEcho,
-            'iTotalRecords': json.numFound, //NOMBRE DE NOTICES
-            //"aaData": json.response.docs
-            //"aaData": json.records
-            'titre': json.title,
-            'issn': json.issn,
-            'ppn': json.ppn,
-            'editor': json.publisher,
-            'frequency': json.frequency,
-            'pubyearstart': json.startDate,
-            'pubyearend': json.endDate,
-            'supporttype': json.support,
-            'codecontenu181' : json.codecontenu181,
-            'codemediation182' : json.codemediation182,
-            'aaData': json.holdings
-         };
-         let result = buildDataModel(newjson);
-         */
       },
    },
    actions: {

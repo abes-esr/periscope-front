@@ -15,7 +15,3 @@ export default class Visualisation extends Vue {
    }
 };
 </script>
-
-<style scoped>
-
-</style>

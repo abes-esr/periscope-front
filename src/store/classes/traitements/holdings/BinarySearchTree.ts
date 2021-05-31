@@ -1,5 +1,5 @@
-import {Node} from '@/store/classes/traitements/Node';
-import {Intervalle} from "@/store/classes/traitements/Intervalle";
+import {Node} from '@/store/classes/traitements/holdings/Node';
+import {Intervalle} from "@/store/classes/traitements/holdings/Intervalle";
 
 export class BinarySearchTree {
    public root: Node;

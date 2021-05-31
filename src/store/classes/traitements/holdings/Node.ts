@@ -1,4 +1,4 @@
-import {Intervalle} from "@/store/classes/traitements/Intervalle";
+import {Intervalle} from "@/store/classes/traitements/holdings/Intervalle";
 
 
 export class Node {

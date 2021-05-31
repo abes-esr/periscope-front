@@ -1,11 +1,12 @@
-import {Slice} from '@/store/classes/traitements/Slice';
-import {Stack} from '@/store/classes/traitements/Stack';
-import {BinarySearchTree} from '@/store/classes/traitements/BinarySearchTree';
-import {Collection} from '@/store/classes/traitements/Collection';
-import {Intervalle} from '@/store/classes/traitements/Intervalle';
+import {Slice} from '@/store/classes/traitements/holdings/Slice';
+import {Stack} from '@/store/classes/traitements/holdings/Stack';
+import {BinarySearchTree} from '@/store/classes/traitements/holdings/BinarySearchTree';
+import {Collection} from '@/store/classes/traitements/holdings/Collection';
+import {Intervalle} from '@/store/classes/traitements/holdings/Intervalle';
 import {EtatCollection} from '@/store/classes/traitements/EtatCollection';
 
 //https://visjs.github.io/vis-timeline/examples/timeline/groups/nestedThreeLevels.html
+
 
 /**
  * Classe permettant d'alimenter l'état de collection d'une notice
@@ -22,12 +23,16 @@ export class HoldingsTraitements {
       let noStartDate = {};
       const g_element_count = 0;
 
-      for (const oneRcrEpnElement in arrayOfRcrEpn) {
-         const processed = HoldingsTraitements.buildCollectionStateForOneRcrEpn(jsonDataHoldings[oneRcrEpnElement], oneRcrEpnElement, myHashTable, dataMin, noStartDate, g_element_count);
+      //Boucle sur chacun des couple RCR:EPN
+      arrayOfRcrEpn.some(function(rcrEpnElement: string) {
+         const processed = HoldingsTraitements.buildCollectionStateForOneRcrEpn(jsonDataHoldings[rcrEpnElement], rcrEpnElement, myHashTable, dataMin, noStartDate, g_element_count);
          myHashTable = processed.myHashTable;
          dataMin = processed.dataMin;
          noStartDate = processed.noStartDate;
-      }
+      })
+
+      console.log(myHashTable);
+
    }
 
    /**
@@ -115,6 +120,7 @@ export class HoldingsTraitements {
             datamin = debut;
          }
 
+         //Si la clé est deja présente dans la table que l'on remplit, on accède à l'élement et on l'alimente
          if (jsonKey in myHashTable) {
             myHashTable[jsonKey].setPeriodes(periodes);
             myHashTable[jsonKey].setFulLacunes(fullacuneOfOneRcrEpn);
