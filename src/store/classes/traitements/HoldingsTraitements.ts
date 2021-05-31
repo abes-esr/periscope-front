@@ -1,10 +1,8 @@
-import _ from 'lodash';
 import {Slice} from '@/store/classes/traitements/Slice';
 import {Stack} from '@/store/classes/traitements/Stack';
 import {BinarySearchTree} from '@/store/classes/traitements/BinarySearchTree';
 import {Collection} from '@/store/classes/traitements/Collection';
 import {Intervalle} from '@/store/classes/traitements/Intervalle';
-import json = Mocha.reporters.json;
 import {EtatCollection} from '@/store/classes/traitements/EtatCollection';
 
 //https://visjs.github.io/vis-timeline/examples/timeline/groups/nestedThreeLevels.html
@@ -326,7 +324,7 @@ export class HoldingsTraitements {
             //TMX bugfix with new DB table autorites.V_NOTICESBIBIO_TRI no respect 955 "natural" see ppn 037577409 year 1975 examplar 341292301:41252988201
             let sortedTimeSlice = []; //Tableau des dates de fin trié
             //Tri des élements d'un tableau de dates de fin par le startNo qui compose chacun des éléments Date de fin
-            sortedTimeSlice = _.sortBy(timeSlice, function (o: {[x: string]: string}) {
+            sortedTimeSlice = timeSlice.sort(function (o: {[x: string]: string}) {
                if (o['startNo'] !== undefined) {
                   return parseInt(o['startNo']);
                } else return 0;
