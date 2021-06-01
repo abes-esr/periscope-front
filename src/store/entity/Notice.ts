@@ -25,7 +25,13 @@ export class Notice {
       this.title = obj.titre;
       this.continiousType = obj.typeDocument;
       this.startDate = obj.date_debut;
-      this.endDate = obj.date_fin;
+
+      if (this.endDate == null) {
+         this.endDate = '-';
+      } else {
+         this.endDate = obj.date_fin;
+      }
+
       if (obj.link) {
          this.linkSudoc = obj.link;
       }

@@ -66,6 +66,9 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
                      });
                   }
                });
+               this.$store.dispatch('openStickyInfoSnackBar', 'Recherche en cours...').catch((err) => {
+                  Logger.error(err);
+               });
             }
             break;
          case 3:

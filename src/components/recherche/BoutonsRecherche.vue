@@ -54,6 +54,9 @@ export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
             });
          }
       });
+      this.$store.dispatch('openStickyInfoSnackBar', 'Recherche en cours...').catch((err) => {
+         Logger.error(err);
+      });
    }
 
    resetSearch(): void {

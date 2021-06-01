@@ -1228,6 +1228,10 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Notices');
          lotNoticesReceived.forEach((obj: any) => state.lotNotices._notices.push(new Notice(obj)));
       },
+      mutationMaxNotice(state, element: number) {
+         Logger.debug('Mutation maximum notice');
+         state.lotNotices._maxNotice = element;
+      },
       resetNotices(state) {
          Logger.debug('Reset des Notices');
          state.lotNotices._notices = [];
@@ -1241,6 +1245,10 @@ export default new Vuex.Store({
       resetFacettes(state) {
          Logger.debug('Reset des Facettes');
          state.lotFacettes._facettes = [];
+      },
+      mutationExecutionTime(state, element: number) {
+         Logger.debug('Mutation temps de requête');
+         state.lotNotices._executionTime = element;
       },
    },
    actions: {
@@ -1482,6 +1490,12 @@ export default new Vuex.Store({
          context.state.composants._snackBarSticky = false;
          context.state.composants._snackBarColor = 'info';
       },
+      openStickyInfoSnackBar(context, value: string) {
+         context.state.composants._snackBarText = value;
+         context.state.composants._snackBarDisplay = true;
+         context.state.composants._snackBarSticky = true;
+         context.state.composants._snackBarColor = 'info';
+      },
       openErrorSnackBar(context, value: string) {
          context.state.composants._snackBarText = value;
          context.state.composants._snackBarDisplay = true;
@@ -1539,6 +1553,7 @@ export default new Vuex.Store({
          });
          return new Promise((resolve, reject) => {
             //On envoie la requête au back-end
+            const start = Date.now();
             PeriscopeApi.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
                   const response: APIResponse = (res as unknown) as APIResponse;
@@ -1547,6 +1562,10 @@ export default new Vuex.Store({
                   context.commit('resetFacettes');
                   context.commit('mutationFacettes', response.facettes);
                   context.commit('mutationMaxPage', response.nbPages);
+                  context.commit('mutationMaxNotice', response.nbNotices);
+                  const millis = Date.now() - start;
+                  context.commit('mutationExecutionTime', Math.floor(millis / 1000));
+
                   resolve(true);
                })
                .catch((err) => {
@@ -1564,6 +1583,7 @@ export default new Vuex.Store({
                   });
                   this.dispatch('callPeriscopeAPI')
                      .then(() => {
+                        this.dispatch('updateSnackBarDisplay', false);
                         router
                            .push('/Resultat')
                            .then(() => {

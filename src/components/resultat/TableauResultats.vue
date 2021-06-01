@@ -56,6 +56,9 @@
                <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details style="margin: 0 !important; padding: 0 !important"></v-text-field>
             </v-col>
          </v-row>
+         <v-row class="secondary-line">
+            <v-col>Requête : {{ getMaxNotice }} notices ({{ getExecutionTime }} secondes)</v-col>
+         </v-row>
       </v-container>
       <v-row style="margin-top: 10px" class="align-start justify-space-around">
          <v-navigation-drawer v-model="drawer" permanent style="margin-right: 1rem" v-bind:class="[displayDrawer ? 'd-flex' : 'd-none']">
@@ -123,7 +126,7 @@
          </v-card>
          <v-container>
             <v-row align-content="center" class="justify-space-between">
-               <v-col cols="4">
+               <v-col cols="3">
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
                         <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
@@ -171,7 +174,6 @@ import {OrderType, TriInterface, TriType} from '@/store/recherche/TriInterface';
 import Notice from '@/store/entity/Notice';
 import {HttpRequestError} from '@/store/exception/HttpRequestError';
 import Facet from '@/store/entity/Facet';
-import {ListProvider} from '@/store/recherche/BlocInterfaces';
 import {BlocLangue} from '@/store/recherche/criteres/BlocLangue';
 import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 
@@ -304,6 +306,12 @@ export default class TableauResultats extends Vue {
    }
    get getNotices(): Array<Notice> {
       return this.$store.state.lotNotices._notices;
+   }
+   get getMaxNotice(): number {
+      return this.$store.state.lotNotices._maxNotice;
+   }
+   get getExecutionTime(): number {
+      return this.$store.state.lotNotices._executionTime;
    }
    get getFacettes(): Array<Facet> {
       return this.$store.state.lotFacettes._facettes;

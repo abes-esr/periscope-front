@@ -86,6 +86,7 @@ export interface APIResponse {
    notice: Array<Notice>;
    facettes: Array<string>;
    nbPages: number;
+   nbNotices: number;
 }
 
 export interface JsonFacetteRequest {
