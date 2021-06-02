@@ -1,15 +1,15 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import {CheckboxesProvider, Ensemble, ListProvider} from '@/store/recherche/BlocInterfaces';
+import {CheckboxItem, Operator, ListItem} from '@/store/recherche/BlocDefinition';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
-import {PeriscopeApi} from '@/store/api/periscope/PeriscopeApi';
+import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
 import {LotNotices} from '@/store/resultat/LotNotices';
 import Notice from '@/store/entity/Notice';
-import {Composants} from './recherche/Composants';
+import {Composants} from './composant/Composants';
 import {Pagination} from '@/store/resultat/Pagination';
 import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
-import {Logger} from '@/store/utils/Logger';
+import {Logger} from '@/utils/Logger';
 import {BlocTri} from '@/store/recherche/criteres/BlocTri';
 import {BlocMotDuTitre} from '@/store/recherche/criteres/BlocMotDuTitre';
 import {BlocIssn} from '@/store/recherche/criteres/BlocIssn';
@@ -20,27 +20,30 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
-import {OrderType, TriInterface} from '@/store/recherche/TriInterface';
-import {APIResponse, JsonGlobalSearchRequest} from '@/store/api/periscope/JsonInterfaces';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
+import {APIResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
 import router from '@/router';
 import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
 
 Vue.use(Vuex);
 
+/**
+ * Représente le store de l'application
+ */
 export default new Vuex.Store({
    state: {
       //Requete de recherche
-      blocPcpRegions: new BlocPcpRegions(Ensemble.Ou),
-      blocPcpMetiers: new BlocPcpMetiers(Ensemble.Ou),
-      blocRcr: new BlocRcr(Ensemble.Ou),
-      blocPpn: new BlocPpn(Ensemble.Ou),
-      blocIssn: new BlocIssn(Ensemble.Ou),
-      blocMotsDuTitre: new BlocMotDuTitre(Ensemble.Ou),
-      blocEditeur: new BlocEditeur(Ensemble.Ou),
-      blocLangue: new BlocLangue(Ensemble.Ou),
-      blocPays: new BlocPays(Ensemble.Ou),
+      blocPcpRegions: new BlocPcpRegions(Operator.Ou),
+      blocPcpMetiers: new BlocPcpMetiers(Operator.Ou),
+      blocRcr: new BlocRcr(Operator.Ou),
+      blocPpn: new BlocPpn(Operator.Ou),
+      blocIssn: new BlocIssn(Operator.Ou),
+      blocMotsDuTitre: new BlocMotDuTitre(Operator.Ou),
+      blocEditeur: new BlocEditeur(Operator.Ou),
+      blocLangue: new BlocLangue(Operator.Ou),
+      blocPays: new BlocPays(Operator.Ou),
       blocRequeteDirecte: new BlocRequeteEnregistree(),
       //Resultats de recherche
       lotNotices: new LotNotices(),
@@ -61,7 +64,7 @@ export default new Vuex.Store({
       },
       resetExternalPcpRegionsOperator(state) {
          Logger.debug('Reset Operateur externe des Pcp Regions');
-         state.blocPcpRegions._externalBlocOperator = Ensemble.Ou;
+         state.blocPcpRegions._externalBlocOperator = Operator.Ou;
       },
       mutationInternalPcpRegionsOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Pcp Regions');
@@ -69,9 +72,9 @@ export default new Vuex.Store({
       },
       resetInternalPcpRegionsOperator(state) {
          Logger.debug('Reset Operateur interne des Pcp Regions');
-         state.blocPcpRegions._internalBlocOperator = Ensemble.Et;
+         state.blocPcpRegions._internalBlocOperator = Operator.Et;
       },
-      mutationPcpRegions(state, arraySent: Array<CheckboxesProvider>) {
+      mutationPcpRegions(state, arraySent: Array<CheckboxItem>) {
          Logger.debug('Mutation des Pcp Regions');
          state.blocPcpRegions._candidates = arraySent;
          state.blocPcpRegions._selected = [];
@@ -119,7 +122,7 @@ export default new Vuex.Store({
       },
       resetExternalPcpMetiersOperator(state) {
          Logger.debug('Reset Operateur externe des Pcp Metiers');
-         state.blocPcpMetiers._externalBlocOperator = Ensemble.Ou;
+         state.blocPcpMetiers._externalBlocOperator = Operator.Ou;
       },
       mutationInternalPcpMetiersOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Pcp Metiers');
@@ -127,9 +130,9 @@ export default new Vuex.Store({
       },
       resetInternalPcpMetiersOperator(state) {
          Logger.debug('Reset Operateur interne des Pcp Metiers');
-         state.blocPcpMetiers._internalBlocOperator = Ensemble.Et;
+         state.blocPcpMetiers._internalBlocOperator = Operator.Et;
       },
-      mutationPcpMetiers(state, arraySent: Array<CheckboxesProvider>) {
+      mutationPcpMetiers(state, arraySent: Array<CheckboxItem>) {
          Logger.debug('Mutation des Pcp Metiers');
          state.blocPcpMetiers._candidates = arraySent;
          state.blocPcpMetiers._selected = [];
@@ -174,7 +177,7 @@ export default new Vuex.Store({
       },
       resetExternalRcrOperator(state) {
          Logger.debug('Reset Operateur externe des Rcr');
-         state.blocRcr._externalBlocOperator = Ensemble.Ou;
+         state.blocRcr._externalBlocOperator = Operator.Ou;
       },
       mutationInternalRcrOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Rcr');
@@ -182,7 +185,7 @@ export default new Vuex.Store({
       },
       resetInternalRcrOperator(state) {
          Logger.debug('Reset Operateur interne des Rcr');
-         state.blocRcr._internalBlocOperator = Ensemble.Et;
+         state.blocRcr._internalBlocOperator = Operator.Et;
       },
       mutationRcr(state, arraySent: Array<string>) {
          Logger.debug('Mutation des Rcr');
@@ -200,7 +203,7 @@ export default new Vuex.Store({
       },
       resetExternalPpnOperator(state) {
          Logger.debug('Reset Operateur externe des Ppn');
-         state.blocPpn._externalBlocOperator = Ensemble.Ou;
+         state.blocPpn._externalBlocOperator = Operator.Ou;
       },
       mutationInternalPpnOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Ppn');
@@ -208,7 +211,7 @@ export default new Vuex.Store({
       },
       resetInternalPpnOperator(state) {
          Logger.debug('Reset Operateur interne des Ppn');
-         state.blocPpn._internalBlocOperator = Ensemble.Et;
+         state.blocPpn._internalBlocOperator = Operator.Et;
       },
       mutationPpn(state, arraySent: Array<string>) {
          Logger.debug('Mutation des Ppn');
@@ -226,7 +229,7 @@ export default new Vuex.Store({
       },
       resetExternalIssnOperator(state) {
          Logger.debug('Reset Operateur externe des Issn');
-         state.blocIssn._externalBlocOperator = Ensemble.Ou;
+         state.blocIssn._externalBlocOperator = Operator.Ou;
       },
       mutationInternalIssnOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Issn');
@@ -234,7 +237,7 @@ export default new Vuex.Store({
       },
       resetInternalIssnOperator(state) {
          Logger.debug('Reset Operateur interne des Issn');
-         state.blocIssn._internalBlocOperator = Ensemble.Et;
+         state.blocIssn._internalBlocOperator = Operator.Et;
       },
       mutationIssn(state, arraySent: Array<string>) {
          Logger.debug('Mutation des Issn');
@@ -252,7 +255,7 @@ export default new Vuex.Store({
       },
       resetExternalMotsDuTitreOperator(state) {
          Logger.debug('Reset Operateur externe des Mots du titre');
-         state.blocMotsDuTitre._externalBlocOperator = Ensemble.Ou;
+         state.blocMotsDuTitre._externalBlocOperator = Operator.Ou;
       },
       mutationInternalMotsDuTitreOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Mots du titre');
@@ -260,7 +263,7 @@ export default new Vuex.Store({
       },
       resetInternalMotsDuTitreOperator(state) {
          Logger.debug('Reset Operateur interne des Mots du titre');
-         state.blocMotsDuTitre._internalBlocOperator = Ensemble.Et;
+         state.blocMotsDuTitre._internalBlocOperator = Operator.Et;
       },
       mutationMotsDuTitre(state, stringEntered: string) {
          Logger.debug('Mutation des Mots du titre');
@@ -285,7 +288,7 @@ export default new Vuex.Store({
       },
       resetExternalEditeurOperator(state) {
          Logger.debug('Reset Operateur externe des Editeurs');
-         state.blocEditeur._externalBlocOperator = Ensemble.Ou;
+         state.blocEditeur._externalBlocOperator = Operator.Ou;
       },
       mutationInternalEditeurOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Editeurs');
@@ -293,7 +296,7 @@ export default new Vuex.Store({
       },
       resetInternalEditeurOperator(state) {
          Logger.debug('Reset Operateur interne des Editeurs');
-         state.blocEditeur._internalBlocOperator = Ensemble.Et;
+         state.blocEditeur._internalBlocOperator = Operator.Et;
       },
       mutationEditeur(state, arraySent: Array<string>) {
          Logger.debug('Mutation des Editeurs');
@@ -311,7 +314,7 @@ export default new Vuex.Store({
       },
       resetExternalLangueOperator(state) {
          Logger.debug('Reset Operateur externe des Langues');
-         state.blocLangue._externalBlocOperator = Ensemble.Ou;
+         state.blocLangue._externalBlocOperator = Operator.Ou;
       },
       mutationInternalLangueOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Langues');
@@ -319,9 +322,9 @@ export default new Vuex.Store({
       },
       resetInternalLangueOperator(state) {
          Logger.debug('Reset Operateur interne des Langues');
-         state.blocLangue._internalBlocOperator = Ensemble.Et;
+         state.blocLangue._internalBlocOperator = Operator.Et;
       },
-      mutationLangue(state, arraySent: Array<ListProvider>) {
+      mutationLangue(state, arraySent: Array<ListItem>) {
          Logger.debug('Mutation des Langues');
          state.blocLangue._candidates = arraySent;
          state.blocLangue._selected = [];
@@ -823,7 +826,7 @@ export default new Vuex.Store({
       },
       resetExternalPaysOperator(state) {
          Logger.debug('Reset Operateur externe des Pays');
-         state.blocPays._externalBlocOperator = Ensemble.Ou;
+         state.blocPays._externalBlocOperator = Operator.Ou;
       },
       mutationInternalPaysOperator(state, operator: number) {
          Logger.debug('Mutation Operateur interne des Pays');
@@ -831,9 +834,9 @@ export default new Vuex.Store({
       },
       resetInternalPaysOperator(state) {
          Logger.debug('Reset Operateur interne des Pays');
-         state.blocPays._internalBlocOperator = Ensemble.Et;
+         state.blocPays._internalBlocOperator = Operator.Et;
       },
-      mutationPays(state, arraySent: Array<ListProvider>) {
+      mutationPays(state, arraySent: Array<ListItem>) {
          Logger.debug('Mutation des Pays');
          state.blocPays._candidates = arraySent;
          state.blocPays._selected = [];
@@ -1143,7 +1146,7 @@ export default new Vuex.Store({
       },
 
       //Tri multiples sur le tableau de résultats
-      mutationTri(state, value: Array<TriInterface>) {
+      mutationTri(state, value: Array<TriDefinition>) {
          Logger.debug('Mutation des tris');
          state.blocTri._array = value;
       },
@@ -1363,7 +1366,7 @@ export default new Vuex.Store({
       updateSelectedInternalPcpRegionsOperator(context, operator: number) {
          context.commit('mutationInternalPcpRegionsOperator', operator);
       },
-      updateCandidatesPcpRegions(context, arraySent: Array<CheckboxesProvider>) {
+      updateCandidatesPcpRegions(context, arraySent: Array<CheckboxItem>) {
          context.commit('mutationPcpRegions', arraySent);
       },
       updateSelectedPcpRegions(context, arraySent: Array<string>) {
@@ -1375,10 +1378,10 @@ export default new Vuex.Store({
       updateSelectedInternalPcpMetiersOperator(context, operator: number) {
          context.commit('mutationInternalPcpMetiersOperator', operator);
       },
-      updateCandidatesPcpMetiers(context, arraySent: Array<CheckboxesProvider>) {
+      updateCandidatesPcpMetiers(context, arraySent: Array<CheckboxItem>) {
          context.commit('mutationPcpMetiers', arraySent);
       },
-      updateSelectedPcpMetiers(context, arraySent: Array<CheckboxesProvider>) {
+      updateSelectedPcpMetiers(context, arraySent: Array<CheckboxItem>) {
          context.commit('mutationPcpMetiers', arraySent);
       },
       updateSelectedExternalRcrOperator(context, operator: number) {
@@ -1432,7 +1435,7 @@ export default new Vuex.Store({
       updateSelectedInternalLangueOperator(context, internalOperator: number) {
          context.commit('mutationInternalLangueOperator', internalOperator);
       },
-      updateSelectedLangue(context, arraySent: Array<ListProvider>) {
+      updateSelectedLangue(context, arraySent: Array<ListItem>) {
          context.commit('mutationLangue', arraySent);
       },
       updateSelectedExternalPaysOperator(context, externalOperator: number) {
@@ -1441,12 +1444,12 @@ export default new Vuex.Store({
       updateSelectedInternalPaysOperator(context, internalOperator: number) {
          context.commit('mutationInternalPaysOperator', internalOperator);
       },
-      updateSelectedPays(context, arraySent: Array<ListProvider>) {
+      updateSelectedPays(context, arraySent: Array<ListItem>) {
          context.commit('mutationPays', arraySent);
       },
       updateSelectedRequeteDirecte(context, value: string): Promise<boolean> {
          return new Promise((resolve, reject) => {
-            const returnMsg: string = SearchRequest.checkJSON(value);
+            const returnMsg: string = SearchRequest.checkJsonIntegrity(value);
 
             if (returnMsg) {
                const json: JsonGlobalSearchRequest = JSON.parse(value);
@@ -1454,10 +1457,10 @@ export default new Vuex.Store({
 
                if (json.tri) {
                   //Conversion des critères de tri dans le bloc de tri
-                  const arrayTriStore: Array<TriInterface> = [];
+                  const arrayTriStore: Array<TriDefinition> = [];
                   for (let i = 0; i < json.tri.length; i++) {
-                     const tri: TriInterface = {
-                        sort: SearchRequest.labelConverterFromBackToFront(json.tri[i].sort),
+                     const tri: TriDefinition = {
+                        sort: SearchRequest.convertLabeltoTri(json.tri[i].sort),
                         order: !json.tri[i].order ? OrderType.ASC : OrderType.DESC,
                      };
                      arrayTriStore.push(tri);
@@ -1554,7 +1557,7 @@ export default new Vuex.Store({
          return new Promise((resolve, reject) => {
             //On envoie la requête au back-end
             const start = Date.now();
-            PeriscopeApi.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
+            PeriscopeApiAxios.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
                   const response: APIResponse = (res as unknown) as APIResponse;
                   context.commit('resetNotices');
@@ -1672,10 +1675,10 @@ export default new Vuex.Store({
          }
       },
       orderSortArrayResultLabelElements: (state) => {
-         return BlocTri.getLabelElements(state.blocTri);
+         return BlocTri.getTriLabels(state.blocTri);
       },
       orderSortArrayResultBooleanElements: (state) => {
-         return BlocTri.getBooleanElements(state.blocTri);
+         return BlocTri.getTriOrderBooleans(state.blocTri);
       },
       getCurrentArrayPcpRegionsElementsChecked: (state) => {
          const arrayReturned: Array<string> = [];

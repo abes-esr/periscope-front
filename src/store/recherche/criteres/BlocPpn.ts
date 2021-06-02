@@ -1,8 +1,11 @@
-import {Ensemble} from '@/store/recherche/BlocInterfaces';
+import {Operator} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 
+/**
+ * Représente un bloc de recherche par numéro PPN
+ */
 export class BlocPpn extends BlocAbstract {
-   _internalBlocOperator = Ensemble.Ou; // ET / OU / SAUF entre les RCR
+   _internalBlocOperator = Operator.Ou;
    _selected: Array<string> = [];
 
    constructor(externalBlocOperator: number) {

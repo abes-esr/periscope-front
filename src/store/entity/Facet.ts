@@ -1,7 +1,7 @@
 /**
  * Représente une facette
  */
-import {JsonFacetteItem} from '@/store/api/periscope/JsonInterfaces';
+import {JsonFacetteItem} from '@/service/periscope/PeriscopeJsonDefinition';
 
 export class Facet {
    /**

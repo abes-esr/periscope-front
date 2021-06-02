@@ -1,8 +1,11 @@
-import {Ensemble} from '@/store/recherche/BlocInterfaces';
+import {Operator} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 
+/**
+ * Représente un bloc de recherche par mot du titre
+ */
 export class BlocMotDuTitre extends BlocAbstract {
-   _internalBlocOperator = Ensemble.Et; // ET / OU / SAUF entre les RCR
+   _internalBlocOperator = Operator.Et;
    _selected: Array<string> = [];
 
    constructor(externalBlocOperator: number) {

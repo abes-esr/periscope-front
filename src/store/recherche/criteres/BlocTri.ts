@@ -1,9 +1,17 @@
-import {OrderType, TriInterface, TriType} from '@/store/recherche/TriInterface';
+import {OrderType, TriDefinition, TriType} from '@/store/recherche/TriDefinition';
 
+/**
+ * Représente un tri
+ */
 export class BlocTri {
-   _array: Array<TriInterface> = [];
+   _array: Array<TriDefinition> = [];
 
-   static getLabelElements(blocTri: BlocTri): Array<string> {
+   /**
+    * Construit une liste des labels du tri passé en paramètre
+    * @param blocTri Tri à convertir
+    * @return Liste de chaîne de caractères
+    */
+   static getTriLabels(blocTri: BlocTri): Array<string> {
       const arrayToReturn: Array<string> = [];
       for (let i = 0; i < blocTri._array.length; i++) {
          arrayToReturn.push(TriType[blocTri._array[i].sort]);
@@ -11,7 +19,12 @@ export class BlocTri {
       return arrayToReturn;
    }
 
-   static getBooleanElements(blocTri: BlocTri): Array<boolean> {
+   /**
+    * Construit une liste de booléen des ordre du tri passé en paramètre
+    * @param blocTri Tri à convertir
+    * @return Liste de chaîne de booléens
+    */
+   static getTriOrderBooleans(blocTri: BlocTri): Array<boolean> {
       const arrayToReturn: Array<boolean> = [];
       for (let i = 0; i < blocTri._array.length; i++) {
          if (blocTri._array[i].order === OrderType.ASC) {

@@ -1,21 +1,30 @@
-import {Ensemble, ListProvider} from '@/store/recherche/BlocInterfaces';
+import {Operator, ListItem} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
-import {ValueError} from '@/store/exception/ValueError';
+import {ValueError} from '@/exception/ValueError';
 
+/**
+ * Représente un bloc de recherche par Pays
+ */
 export class BlocPays extends BlocAbstract {
-   _internalBlocOperator: Ensemble = Ensemble.Ou; //Operateur interne entre les pays
+   _internalBlocOperator: Operator = Operator.Ou; //Operateur interne entre les pays
    _selected: Array<string> = [];
-   _candidates: Array<ListProvider> = [];
+   _candidates: Array<ListItem> = [];
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
    }
 
-   static getItemLabel(candidates: Array<ListProvider>, key: string): string {
+   /**
+    * Retourne le label du pays passé en paramètre
+    * @param candidates Liste des pays
+    * @param key Identifiant du pays
+    * @return Chaîne de caractère du label du pays
+    */
+   static getItemLabel(candidates: Array<ListItem>, key: string): string {
       const index = candidates.findIndex((x) => x.id === key.toUpperCase());
 
       if (index == -1) {
-         throw new ValueError('Language ' + key + ' not found');
+         throw new ValueError('Country ' + key + ' not found');
       }
 
       return candidates[index].text;

@@ -1,11 +1,13 @@
-import {CheckboxesProvider, Ensemble} from '@/store/recherche/BlocInterfaces';
+import {CheckboxItem, Operator} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 
+/**
+ * Représente un bloc de recherche par PCP Métiers
+ */
 export class BlocPcpMetiers extends BlocAbstract {
-   _internalBlocOperator = Ensemble.Et; // ET / Ou entre les PCP
+   _internalBlocOperator = Operator.Et;
    _selected: Array<string> = []; //Tableau des codes PCP cochés / séléctionnés
-   //Tableau des métiers, avec leur état coché non coché persistant
-   _candidates: Array<CheckboxesProvider> = [];
+   _candidates: Array<CheckboxItem> = []; //Tableau des métiers disponibles
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);

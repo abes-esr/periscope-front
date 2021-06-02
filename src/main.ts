@@ -5,7 +5,7 @@ import store from './store/store';
 import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
 import '@mdi/font/css/materialdesignicons.css';
-import {Logger} from '@/store/utils/Logger';
+import {Logger} from '@/utils/Logger';
 import VueClipboard from 'vue-clipboard2';
 import JsonCSV from 'vue-json-csv';
 

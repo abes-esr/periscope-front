@@ -1,10 +1,10 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import Resultats from '@/views/Resultats.vue';
-import RechercheAvance from '@/views/RechercheAvance.vue';
-import ConditionsGenerales from '@/views/ConditionsGenerales.vue';
-import MentionsLegales from '@/views/MentionsLegales.vue';
-import HistoriqueRequetes from '@/views/HistoriqueRequetes.vue';
+import Resultats from '@/views/page/Resultats.vue';
+import RechercheAvance from '@/views/page/RechercheAvance.vue';
+import ConditionsGenerales from '@/views/page/ConditionsGenerales.vue';
+import MentionsLegales from '@/views/page/MentionsLegales.vue';
+import HistoriqueRequetes from '@/views/page/HistoriqueRequetes.vue';
 
 Vue.use(VueRouter);
 

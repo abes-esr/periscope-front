@@ -12,7 +12,7 @@ import {
    JsonRcrBlocProvider,
    JsonTri,
    JsonTriProvider,
-} from '@/store/api/periscope/JsonInterfaces';
+} from '@/service/periscope/PeriscopeJsonDefinition';
 import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
@@ -25,20 +25,20 @@ import {BlocLangue} from '@/store/recherche/criteres/BlocLangue';
 import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocTri} from '@/store/recherche/criteres/BlocTri';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
-import {OrderType, TriType} from '@/store/recherche/TriInterface';
-import {ValueError} from '@/store/exception/ValueError';
-import {PanelProvider, PanelType} from '@/store/recherche/ComposantInterfaces';
+import {OrderType, TriType} from '@/store/recherche/TriDefinition';
+import {ValueError} from '@/exception/ValueError';
+import {PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
 
 /**
  * Représente une requête de recherche pour l'API Periscope
  */
 export class SearchRequest {
    /**
-    * Objet Json contenant les critères de recherche, a envoyer dans les requêtes au back
+    * Objet Json contenant les critères de recherche, les tris et les facettes à envoyer dans les requêtes au back
     */
    _jsonSearchRequest: JsonGlobalSearchRequest;
    /**
-    * Construit un objet JSON à partir des données des blocs de recherche pour envoi au back-end
+    * Construit un objet JSON à partir des données du store
     */
    static constructJsonGlobalRequest(
       panel: Array<PanelProvider>,
@@ -54,22 +54,22 @@ export class SearchRequest {
       blocRequeteDirecte: BlocRequeteEnregistree,
       blocTri: BlocTri
    ): JsonGlobalSearchRequest {
-      //Les blocs ne sont rajoutés que si il contiennent des données
       const criteria: Array<JsonCriteres> = [];
       const sort: Array<JsonTri> = [];
       const facettes: Array<JsonFacetteRequest> = [];
 
       //Construction d'une requête en cas de saisie directe de requête
       if (blocRequeteDirecte._directRequest.criteres.length !== 0) {
-         //On retourne la chaîne directement
          blocRequeteDirecte._directRequest.criteres.forEach((element: any) => criteria.push(element));
-         // Les tris sont appliqués à la saisie de la requête
+
+         // Les tris contenus dans la requête ont été appliqués à la saisie dans le formulaire. cf :
          // store -> action 'updateSelectedRequeteDirecte'
+         // Inutile donc de remplir les tris avec les tris contenus dans la requête
          //blocRequeteDirecte._directRequest.tri.forEach((element: any) => sort.push(element));
       }
 
       for (let i = 0; i < panel.length; i++) {
-         // On respecte l'ordre choisit par l'utilisateur
+         // On respecte l'ordre des panneaux choisit par l'utilisateur
          //Logger.debug("Ordre "+i+ " : "+PanelType[panel[i].id])
 
          switch (panel[i].id) {
@@ -79,11 +79,11 @@ export class SearchRequest {
                   const pcpRegionsList: Array<string> = [];
                   blocPcpRegions._selected.forEach((element) => pcpRegionsList.push(element));
                   const pcpRegionsInternalOperators: Array<string> = [];
-                  blocPcpRegions._selected.forEach(() => pcpRegionsInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpRegions._internalBlocOperator)));
+                  blocPcpRegions._selected.forEach(() => pcpRegionsInternalOperators.push(BlocAbstract.convertBlocOperatorToLabel(blocPcpRegions._internalBlocOperator)));
 
                   const pcpBlocJson: JsonPcpBlocProvider = {
                      type: 'CriterionPcp',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPcpRegions._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocPcpRegions._externalBlocOperator),
                      pcp: pcpRegionsList,
                      pcp_operator: pcpRegionsInternalOperators,
                   };
@@ -97,11 +97,11 @@ export class SearchRequest {
                   const pcpMetiersList: Array<string> = [];
                   blocPcpMetiers._selected.forEach((element) => pcpMetiersList.push(element));
                   const pcpMetiersInternalOperators: Array<string> = [];
-                  blocPcpMetiers._selected.forEach(() => pcpMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorInString(blocPcpMetiers._internalBlocOperator)));
+                  blocPcpMetiers._selected.forEach(() => pcpMetiersInternalOperators.push(BlocAbstract.convertBlocOperatorToLabel(blocPcpMetiers._internalBlocOperator)));
 
                   const pcpBlocJson: JsonPcpBlocProvider = {
                      type: 'CriterionPcp',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPcpRegions._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocPcpRegions._externalBlocOperator),
                      pcp: pcpMetiersList,
                      pcp_operator: pcpMetiersInternalOperators,
                   };
@@ -114,7 +114,7 @@ export class SearchRequest {
                if (blocRcr._selected.length !== 0) {
                   const rcrBlocJson: JsonRcrBlocProvider = {
                      type: 'CriterionRcr',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocRcr._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocRcr._externalBlocOperator),
                      rcr: blocRcr._selected,
                      rcr_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocRcr._internalBlocOperator, blocRcr._selected.length),
                   };
@@ -126,7 +126,7 @@ export class SearchRequest {
                if (blocPpn._selected.length !== 0) {
                   const ppnBlocJson: JsonPpnBlocProvider = {
                      type: 'CriterionPpn',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPpn._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocPpn._externalBlocOperator),
                      ppn: blocPpn._selected,
                   };
                   criteria.push(ppnBlocJson);
@@ -137,7 +137,7 @@ export class SearchRequest {
                if (blocIssn._selected.length !== 0) {
                   const issnBlocJson: JsonIssnBlocProvider = {
                      type: 'CriterionIssn',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocIssn._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocIssn._externalBlocOperator),
                      issn: blocIssn._selected,
                   };
                   criteria.push(issnBlocJson);
@@ -148,7 +148,7 @@ export class SearchRequest {
                if (blocMotsDuTitre._selected.length !== 0) {
                   const titleWordsBlocJson: JsonMotsDuTitreProvider = {
                      type: 'CriterionTitleWords',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocMotsDuTitre._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocMotsDuTitre._externalBlocOperator),
                      title_words: blocMotsDuTitre._selected,
                      title_words_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocMotsDuTitre._internalBlocOperator, blocMotsDuTitre._selected.length),
                   };
@@ -160,7 +160,7 @@ export class SearchRequest {
                if (blocEditeur._selected.length !== 0) {
                   const editorBlocJson: JsonEditeurProvider = {
                      type: 'CriterionEditor',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocEditeur._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocEditeur._externalBlocOperator),
                      editors: blocEditeur._selected,
                      editors_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocEditeur._internalBlocOperator, blocEditeur._selected.length),
                   };
@@ -172,7 +172,7 @@ export class SearchRequest {
                if (blocPays._selected.length !== 0) {
                   const paysBlocJson: JsonPaysProvider = {
                      type: 'CriterionCountry',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocPays._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocPays._externalBlocOperator),
                      countries: blocPays._selected,
                      countries_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocPays._internalBlocOperator, blocPays._selected.length),
                   };
@@ -184,7 +184,7 @@ export class SearchRequest {
                if (blocLangue._selected.length !== 0) {
                   const langueBlocJson: JsonLanguesProvider = {
                      type: 'CriterionLanguage',
-                     bloc_operator: BlocAbstract.convertBlocOperatorInString(blocLangue._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocLangue._externalBlocOperator),
                      language: blocLangue._selected,
                      language_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocLangue._internalBlocOperator, blocLangue._selected.length),
                   };
@@ -197,12 +197,13 @@ export class SearchRequest {
       //Construction des tris
       for (let i = 0; i < blocTri._array.length; i++) {
          const triJson: JsonTriProvider = {
-            sort: SearchRequest.labelConverterFromFrontToBack(blocTri._array[i].sort),
-            order: SearchRequest.converterTriFromFrontToBack(blocTri._array[i].order),
+            sort: SearchRequest.convertTriToLabel(blocTri._array[i].sort),
+            order: SearchRequest.convertTriOrderToLabel(blocTri._array[i].order),
          };
          sort.push(triJson);
       }
 
+      // Construction des facettes
       let facetJson: JsonFacetteRequest = {
          zone: 'DOCUMENT_TYPE',
       };
@@ -227,7 +228,13 @@ export class SearchRequest {
       return jsonToReturn;
    }
 
-   static labelConverterFromFrontToBack(tri: TriType): string {
+   /**
+    * Converti un tri en chaîne de caractère pour l'API
+    * @param tri Tri à convertir en chaîne de caractère
+    * @return Chaîne de caractère
+    * @throws ValueError si le tri n'est pas reconnu
+    */
+   static convertTriToLabel(tri: TriType): string {
       switch (tri) {
          case TriType.ppn:
             return 'PPN';
@@ -254,7 +261,13 @@ export class SearchRequest {
       }
    }
 
-   static labelConverterFromBackToFront(tri: string): TriType {
+   /**
+    * Converti une chaîne de caractère du tri en objet TriType
+    * @param tri chaîne de caractère à convertir
+    * @return Objet TriType
+    * @throws ValueError si la chaîne de caractère du tri n'est pas reconnue
+    */
+   static convertLabeltoTri(tri: string): TriType {
       switch (tri) {
          case 'PPN':
             return TriType.ppn;
@@ -279,7 +292,13 @@ export class SearchRequest {
       }
    }
 
-   static converterTriFromFrontToBack(order: OrderType): string {
+   /**
+    * Converti l'ordre de tri en chaîne de caractère
+    * @param order: Objet OrderType à convertir
+    * @return Chaîne de caractère de l'ordre du tri
+    * @throws ValueError si l'ordre du tri n'est pas reconnue
+    */
+   static convertTriOrderToLabel(order: OrderType): string {
       switch (order) {
          case OrderType.ASC:
             return 'ASC';
@@ -290,7 +309,12 @@ export class SearchRequest {
       }
    }
 
-   static checkJSON(value: string): string {
+   /**
+    * Vérifie l'intégrité d'un JSON en chaîne de caractère
+    * @param value Chaîne de caractère du JSON
+    * @return la valeur 'OK' ou le message d'erreur
+    */
+   static checkJsonIntegrity(value: string): string {
       try {
          const json: JsonGlobalSearchRequest = JSON.parse(value);
 
