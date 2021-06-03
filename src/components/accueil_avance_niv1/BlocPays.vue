@@ -44,7 +44,7 @@
          </v-col>
          <v-col xs="2" sm="2" lg="2">
            <v-btn small icon class="ma-0" fab color="teal" @click="clearBloc()">
-             <v-icon>mdi-cancel</v-icon>
+               <v-icon>mdi-cancel</v-icon>
            </v-btn>
             <v-btn small icon class="ma-0" fab color="teal" @click="moveUpPanel('COUNTRY')">
                <v-icon>mdi-arrow-up</v-icon>

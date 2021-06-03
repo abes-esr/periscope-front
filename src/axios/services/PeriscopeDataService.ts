@@ -1,11 +1,10 @@
 import http from '../config/http-common';
-import {AxiosResponse} from "axios";
+import {AxiosResponse} from 'axios';
 
 /**
  * Couche de service pour les appels à l'API Periscope
  */
 class PeriscopeDataService {
-
    /**
     * Récupère les notices à partir des critères multiple de recherche
     * @param page Numéro de la page à récupérer

@@ -3,7 +3,7 @@
 #Options to configure : https://prettier.io/docs/en/options.html (API override)
 #https://developer.mozilla.org/fr/docs/Web/JavaScript/Reference/Virgules_finales
 #final commas in arrays, objects, functions
-trailingComma: 'es5'
+trailingComma: all
 #tabulation space
 tabWidth: 3
 #max width of one line, if over, all elements of line will be break into multiple lines
@@ -18,3 +18,5 @@ bracketSpacing: false
 #don’t indent to save an indentation level, but this might break code folding in your editor
 #For vue project, put false.
 vueIndentScriptAndStyle: false
+#https://developpaper.com/solution-to-delete-%E2%90%8Deslint-prettier-prettier-error/
+"endOfLine": "auto"

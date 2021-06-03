@@ -36,6 +36,5 @@
     "src/**/*.vue",
     "tests/**/*.ts",
     "tests/**/*.tsx",
-    "node_modules"
   ],
 }
