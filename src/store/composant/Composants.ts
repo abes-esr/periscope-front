@@ -78,7 +78,6 @@ export class Composants {
             break;
          default:
             throw new ValueError('Unable to decode panel movement ' + movement);
-            break;
       }
 
       // On tri le tableau en fonction des nouvelles positions
@@ -118,7 +117,6 @@ export class Composants {
             break;
          default:
             throw new ValueError('Unable to decode panel display ' + value);
-            break;
       }
    }
 
@@ -143,11 +141,7 @@ export class Composants {
 
       //Logger.debug('First displayed pannel is ' + panel[firstDisplayedIndex].label);
 
-      if (panel[firstDisplayedIndex].id === id) {
-         return true;
-      } else {
-         return false;
-      }
+      return panel[firstDisplayedIndex].id === id;
    }
 
    /**
@@ -171,11 +165,7 @@ export class Composants {
 
       //Logger.debug('Last displayed pannel is ' + panel[lastDisplayedIndex].label);
 
-      if (panel[lastDisplayedIndex].id === id) {
-         return true;
-      } else {
-         return false;
-      }
+      return panel[lastDisplayedIndex].id === id;
    }
 
    /**

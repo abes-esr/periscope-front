@@ -1366,9 +1366,6 @@ export default new Vuex.Store({
       updateSelectedInternalPcpRegionsOperator(context, operator: number) {
          context.commit('mutationInternalPcpRegionsOperator', operator);
       },
-      updateCandidatesPcpRegions(context, arraySent: Array<CheckboxItem>) {
-         context.commit('mutationPcpRegions', arraySent);
-      },
       updateSelectedPcpRegions(context, arraySent: Array<string>) {
          context.commit('mutationPcpRegions', arraySent);
       },
@@ -1377,9 +1374,6 @@ export default new Vuex.Store({
       },
       updateSelectedInternalPcpMetiersOperator(context, operator: number) {
          context.commit('mutationInternalPcpMetiersOperator', operator);
-      },
-      updateCandidatesPcpMetiers(context, arraySent: Array<CheckboxItem>) {
-         context.commit('mutationPcpMetiers', arraySent);
       },
       updateSelectedPcpMetiers(context, arraySent: Array<CheckboxItem>) {
          context.commit('mutationPcpMetiers', arraySent);
@@ -1634,7 +1628,7 @@ export default new Vuex.Store({
    },
    getters: {
       isSelectionEmpty: (state) => {
-         if (
+         return (
             state.blocPays._selected.length == 0 &&
             state.blocLangue._selected.length == 0 &&
             state.blocPcpRegions._selected.length == 0 &&
@@ -1645,11 +1639,7 @@ export default new Vuex.Store({
             state.blocMotsDuTitre._selected.length == 0 &&
             state.blocPpn._selected.length == 0 &&
             state.blocRequeteDirecte._directRequest.criteres.length == 0
-         ) {
-            return true;
-         } else {
-            return false;
-         }
+         );
       },
       isFirstDisplayedElement: (state) => (id: PanelType) => {
          return Composants.isFirstDisplayedElement(id, state.composants._panel);
@@ -1661,18 +1651,10 @@ export default new Vuex.Store({
          return Composants.isMoveUpAvailable(id, state.composants._panel);
       },
       isFirstPage: (state) => () => {
-         if (state.pagination._currentPage == 0) {
-            return true;
-         } else {
-            return false;
-         }
+         return state.pagination._currentPage == 0;
       },
       isLastPage: (state) => () => {
-         if (state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0) {
-            return true;
-         } else {
-            return false;
-         }
+         return state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0;
       },
       orderSortArrayResultLabelElements: (state) => {
          return BlocTri.getTriLabels(state.blocTri);

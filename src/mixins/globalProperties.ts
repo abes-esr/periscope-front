@@ -30,8 +30,6 @@ class GlobalPropertiesMixin extends Vue {
       {id: 0, value: 'height: 150px'},
    ];
 
-   private autoResizeImage = 'max-width: 100%; max-height: 100%;';
-
    public getVerticalAlignValue(numberId: number): string {
       return this.alignments[numberId].value;
    }

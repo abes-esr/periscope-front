@@ -224,8 +224,7 @@ export class SearchRequest {
       };
       facettes.push(facetJson);
 
-      const jsonToReturn: JsonGlobalSearchRequest = {criteres: criteria, tri: sort, facettes: facettes};
-      return jsonToReturn;
+      return {criteres: criteria, tri: sort, facettes: facettes};
    }
 
    /**

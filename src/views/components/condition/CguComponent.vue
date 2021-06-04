@@ -53,15 +53,9 @@
             <v-col>
                <p>L'éditeur n'est responsable que du contenu qu'il a lui-même édité. L'éditeur n'est pas responsable :</p>
                <ul>
-                  <li>
-                     en cas de problèmes ou défaillances techniques, informatiques ou de compatibilité du site avec un matériel ou logiciel quel qu'il soit ;
-                  </li>
-                  <li>
-                     des dommages directs ou indirects, matériels ou immatériels, prévisibles ou imprévisibles résultant de l'utilisation ou des difficultés d'utilisation du site ou de ses services ;
-                  </li>
-                  <li>
-                     des caractéristiques intrinsèques de l'Internet, notamment celles relatives au manque de fiabilité et au défaut de sécurisation des informations y circulant ;
-                  </li>
+                  <li>en cas de problèmes ou défaillances techniques, informatiques ou de compatibilité du site avec un matériel ou logiciel quel qu'il soit ;</li>
+                  <li>des dommages directs ou indirects, matériels ou immatériels, prévisibles ou imprévisibles résultant de l'utilisation ou des difficultés d'utilisation du site ou de ses services ;</li>
+                  <li>des caractéristiques intrinsèques de l'Internet, notamment celles relatives au manque de fiabilité et au défaut de sécurisation des informations y circulant ;</li>
                   <li>
                      des contenus ou activités illicites utilisant son site et ce, sans qu'il en ait pris dûment connaissance au sens de la Loi n° 2004-575 du 21 juin 2004 pour la confiance dans l'économie numérique et du Règlement Général européen sur la Protection des Données (RGPD) relative à la
                      protection des personnes physiques à l'égard de traitement de données à caractère personnel.
@@ -71,39 +65,36 @@
             </v-col>
          </v-row>
       </v-container>
-     <v-divider></v-divider>
-     <v-container>
-       <v-row>
-         <v-col>
-           <h4>Liens hypertextes</h4>
-         </v-col>
-       </v-row>
-       <v-row>
-         <v-col>
-           <p>
-             Le site peut contenir des liens hypertextes pointant vers d'autres sites internet sur lesquels periscope.sudoc.fr n'exerce pas de contrôle. Malgré les vérifications préalables et régulières réalisées par l'éditeur, celui-ci décline tout responsabilité quant aux contenus qu'il est possible de trouver sur ces sites.
-             L'éditeur autorise la mise en place de liens hypertextes vers toute page ou document de son site.
-             Sont exclus de cette autorisation les sites diffusant des informations à caractère illicite, violent, polémique, pornographique, xénophobe ou pouvant porter atteinte à la sensibilité du plus grand nombre.
-             Enfin, periscope.sudoc.fr se réserve le droit de faire supprimer à tout moment un lien hypertexte pointant vers son site, si le site l'estime non conforme à sa politique éditoriale.
-           </p>
-         </v-col>
-       </v-row>
-     </v-container>
-     <v-divider></v-divider>
-     <v-container>
-       <v-row>
-         <v-col>
-           <h4>Loi applicable et juridiction compétente</h4>
-         </v-col>
-       </v-row>
-       <v-row>
-         <v-col>
-           <p>
-             Les présentes Conditions Générales d'Utilisation sont régies par la loi française. En cas de différend et à défaut d'accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur.
-           </p>
-         </v-col>
-       </v-row>
-     </v-container>
+      <v-divider></v-divider>
+      <v-container>
+         <v-row>
+            <v-col>
+               <h4>Liens hypertextes</h4>
+            </v-col>
+         </v-row>
+         <v-row>
+            <v-col>
+               <p>
+                  Le site peut contenir des liens hypertextes pointant vers d'autres sites internet sur lesquels periscope.sudoc.fr n'exerce pas de contrôle. Malgré les vérifications préalables et régulières réalisées par l'éditeur, celui-ci décline tout responsabilité quant aux contenus qu'il est
+                  possible de trouver sur ces sites. L'éditeur autorise la mise en place de liens hypertextes vers toute page ou document de son site. Sont exclus de cette autorisation les sites diffusant des informations à caractère illicite, violent, polémique, pornographique, xénophobe ou pouvant
+                  porter atteinte à la sensibilité du plus grand nombre. Enfin, periscope.sudoc.fr se réserve le droit de faire supprimer à tout moment un lien hypertexte pointant vers son site, si le site l'estime non conforme à sa politique éditoriale.
+               </p>
+            </v-col>
+         </v-row>
+      </v-container>
+      <v-divider></v-divider>
+      <v-container>
+         <v-row>
+            <v-col>
+               <h4>Loi applicable et juridiction compétente</h4>
+            </v-col>
+         </v-row>
+         <v-row>
+            <v-col>
+               <p>Les présentes Conditions Générales d'Utilisation sont régies par la loi française. En cas de différend et à défaut d'accord amiable, le litige sera porté devant les tribunaux français conformément aux règles de compétence en vigueur.</p>
+            </v-col>
+         </v-row>
+      </v-container>
    </v-container>
 </template>
 
