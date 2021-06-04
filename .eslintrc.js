@@ -27,7 +27,9 @@ module.exports = {
         // disable rule for no explicity any
         '@typescript-eslint/no-explicit-any': ["off", { "ignoreRestArgs": true }],
         // disable rule for obligation to have a return type
-        "@typescript-eslint/explicit-module-boundary-types": "off",
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        // disable rule for empty interfaces
+        '@typescript-eslint/no-empty-interface': 'off',
       },
     },
   ],
