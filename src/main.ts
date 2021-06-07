@@ -45,9 +45,9 @@ vue.$store.dispatch('resetPage').catch((err) => {
 });
 
 if (vue.$route.query.ppnviewed) {
-   Logger.debug("PPN= "+vue.$route.query.ppnviewed)
-   Logger.debug("OrderBy= "+vue.$route.query.orderby)
-   Logger.debug("Collection= "+vue.$route.query.collectionStatus)
-   Logger.debug("Tree= "+vue.$route.query. tree)
-   router.push('/Resultat')
+   Logger.debug('PPN= ' + vue.$route.query.ppnviewed);
+   Logger.debug('OrderBy= ' + vue.$route.query.orderby);
+   Logger.debug('Collection= ' + vue.$route.query.collectionStatus);
+   Logger.debug('Tree= ' + vue.$route.query.tree);
+   index.push('/Resultat');
 }
