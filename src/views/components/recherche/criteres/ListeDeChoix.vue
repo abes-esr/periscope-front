@@ -1,6 +1,6 @@
 <template>
    <v-container class="ma-0 pa-0 outlined-app blocPanel" fluid>
-      <v-row :align="getVerticalAlignValue(1)">
+      <v-row align="center">
          <v-col cols="4">Ajouter un bloc de recherche </v-col>
          <v-col cols="6">
             <v-card class="d-flex flex-wrap" flat>
@@ -21,13 +21,12 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 import {Logger} from '@/utils/Logger';
 import {DisplaySwitch, PanelDisplaySwitchProvider, PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
 
 @Component
-export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
+export default class ListeDeChoix extends Vue {
    panelSelected: PanelType;
    items: Array<PanelProvider>;
    sortedItems: Array<PanelProvider>;
@@ -136,5 +135,3 @@ export default class ListeDeChoix extends Mixins(GlobalPropertiesMixin) {
    }
 }
 </script>
-
-<style scoped></style>

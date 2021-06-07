@@ -1,8 +1,8 @@
 <template>
    <v-container class="ma-0 pa-0" style="margin-bottom: 1em">
-      <v-row style="max-height: 6em" :align="getVerticalAlignValue(1)" :justify="getHorizontalJustifyValue(1)" no-gutters :style="getHeightsCssValue(0)">
+      <v-row style="max-height: 6em; height: 150px" align="center" justify="center" no-gutters>
          <v-col xs="12" sm="6">
-            <img src="@/assets/periscope.png" :style="autoResizeImage" />
+            <img src="@/assets/periscope.png" style="max-width: 100%; max-height: 100%" alt="logo periscope" />
          </v-col>
       </v-row>
       <component-alerte></component-alerte>
@@ -10,8 +10,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 import ComponentAlerte from '@/views/components/Alerte.vue';
 
 @Component({
@@ -19,5 +18,5 @@ import ComponentAlerte from '@/views/components/Alerte.vue';
       ComponentAlerte,
    },
 })
-export default class Header extends Mixins(GlobalPropertiesMixin) {}
+export default class Header extends Vue {}
 </script>

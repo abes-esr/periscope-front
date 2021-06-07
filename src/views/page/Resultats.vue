@@ -29,7 +29,6 @@ import ComponentStepper from '@/views/components/Stepper.vue';
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentFooter from '@/views/components/Footer.vue';
 import ComponentTableauResultats from '@/views/components/resultat/TableauResultats.vue';
-import {Logger} from '@/utils/Logger';
 
 @Component({
    components: {

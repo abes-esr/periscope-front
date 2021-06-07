@@ -19,14 +19,14 @@
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
                            <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de PPN </span>
-                           <span v-else key="1"> {{ returnItem() + ' | Entre PPN: ' + getInternalOperatorSelectedInString }} </span>
+                           <span v-else key="1"> {{ returnItem + ' | Entre PPN: ' + getInternalOperatorSelectedInString }} </span>
                         </v-fade-transition>
                      </v-col>
                   </v-row>
                </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
-               <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
+               <v-row justify="center" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
@@ -96,8 +96,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 import {Operator, BlocOperator} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
@@ -105,7 +104,7 @@ import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
 
 @Component
-export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
+export default class ComponentPpn extends Vue {
    id: PanelType = PanelType.PPN;
    external_operator_label: string;
    internal_operator_label: string;
@@ -339,7 +338,7 @@ export default class ComponentPpn extends Mixins(GlobalPropertiesMixin) {
          if (this.comboboxAlert.length === 0) {
             this.currentValue = null;
          }
-      } else if (this.currentValue == null || (this.currentValue != null && this.currentValue.trim().length == 0)) {
+      } else if (this.currentValue == null || this.currentValue == undefined) {
          this.currentValue = null;
          this.comboboxAlert = [];
          this.updateStore();

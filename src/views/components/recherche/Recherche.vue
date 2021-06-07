@@ -20,8 +20,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 import ComponentPpn from '@/views/components/recherche/criteres/v1/Ppn.vue';
 import ComponentRcr from '@/views/components/recherche/criteres/v1/Rcr.vue';
 import ComponentBoutonsRecherche from '@/views/components/recherche/BoutonsRecherche.vue';
@@ -35,5 +34,5 @@ import ComponentPlanDeConservation from '@/views/components/recherche/criteres/v
       ComponentPlanDeConservation,
    },
 })
-export default class Recherche extends Mixins(GlobalPropertiesMixin) {}
+export default class Recherche extends Vue {}
 </script>

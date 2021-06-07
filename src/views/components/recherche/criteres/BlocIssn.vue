@@ -1,6 +1,6 @@
 <template>
    <v-expansion-panel class="outlined-app blocPanel">
-      <v-row :align="getVerticalAlignValue(1)">
+      <v-row align="center">
          <!--External BlocOperator-->
          <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="!isFirstDisplayedElement">
             <v-tooltip top max-width="20vw" open-delay="700">
@@ -26,7 +26,7 @@
                </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
-               <v-row :justify="getHorizontalJustifyValue(1)" style="height: 20em">
+               <v-row justify="center" style="height: 20em">
                   <v-col sm="10">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
@@ -110,8 +110,7 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 import {Operator, BlocOperator} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
@@ -119,7 +118,7 @@ import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
 
 @Component
-export default class ComponentIssn extends Mixins(GlobalPropertiesMixin) {
+export default class ComponentIssn extends Vue {
    id: PanelType = PanelType.ISSN;
    external_operator_label: string;
    internal_operator_label: string;
@@ -340,7 +339,7 @@ export default class ComponentIssn extends Mixins(GlobalPropertiesMixin) {
          if (this.comboboxAlert.length === 0) {
             this.comboboxAlert.push("L'ISSN doit être constitué de 4 chiffres suivis d'un - et de 4 chiffres : XXXX-XXXX");
          }
-      } else if (this.currentValue == null || (this.currentValue != null && this.currentValue.trim().length == 0)) {
+      } else if (this.currentValue == null || this.currentValue.trim().length == 0) {
          this.currentValue = null;
          this.comboboxAlert = [];
          this.updateSelectedIssn();

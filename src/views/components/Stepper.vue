@@ -1,6 +1,6 @@
 <template>
    <v-container class="ma-0 pa-0">
-      <v-row :align="getVerticalAlignValue(1)" :justify="getHorizontalJustifyValue(1)" no-gutters dense>
+      <v-row align="center" justify="center" no-gutters dense>
          <v-col>
             <v-stepper>
                <v-stepper-header>
@@ -19,13 +19,12 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '../../mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 import {Logger} from '@/utils/Logger';
 import {HttpRequestError} from '@/exception/HttpRequestError';
 
 @Component
-export default class Stepper extends Mixins(GlobalPropertiesMixin) {
+export default class Stepper extends Vue {
    selectionEmpty: boolean;
 
    constructor() {
@@ -102,5 +101,3 @@ export default class Stepper extends Mixins(GlobalPropertiesMixin) {
    }
 }
 </script>
-
-<style scoped></style>

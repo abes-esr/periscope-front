@@ -166,10 +166,10 @@ export default class ComponentPlanConservationMetiers extends Vue {
       return this.$store.state.blocPcpMetiers._externalBlocOperator;
    }
 
-  /**
-   * Retourne les PCP Métiers candidats
-   * @return Liste des PCP Métiers
-   */
+   /**
+    * Retourne les PCP Métiers candidats
+    * @return Liste des PCP Métiers
+    */
    get getMetiers(): Array<CheckboxItem> {
       let arrayReturned = this.$store.state.blocPcpMetiers._candidates;
       if (arrayReturned.length === 0) {
@@ -177,10 +177,10 @@ export default class ComponentPlanConservationMetiers extends Vue {
       }
       return arrayReturned;
    }
-  /**
-   * Retourne les PCP Métiers sélectionnées
-   * @return Liste des PCP Métiers
-   */
+   /**
+    * Retourne les PCP Métiers sélectionnées
+    * @return Liste des PCP Métiers
+    */
    get getMetiersChecked(): Array<CheckboxItem> {
       return this.$store.getters.getCurrentArrayPcpMetiersElementsChecked;
    }

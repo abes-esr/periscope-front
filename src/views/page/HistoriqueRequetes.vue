@@ -25,7 +25,7 @@
                               </div>
                               <div class="requestHistoryWrapper">
                                  <h4>Tris</h4>
-                                 <span v-if="i.tri.length == 0" class="requestHistoryItem">Aucun</span>
+                                 <span v-if="i.tri.length === 0" class="requestHistoryItem">Aucun</span>
                                  <span class="requestHistoryItem" v-for="t in i.tri" :key="t">{{ t.sort }}</span>
                               </div>
                               <div class="requestHistoryItem">
@@ -142,5 +142,3 @@ export default class HistoriqueRequetes extends Vue {
    }
 }
 </script>
-
-<style scoped></style>

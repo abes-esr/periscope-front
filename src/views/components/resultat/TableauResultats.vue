@@ -345,11 +345,7 @@ export default class TableauResultats extends Vue {
       return this.$store.getters.isLastPage();
    }
    get isSelectionEmpty(): boolean {
-      if (this.selected.length == 0) {
-         return true;
-      } else {
-         return false;
-      }
+      return this.selected.length == 0;
    }
    get getFieldsToExport(): Array<string> {
       return ['ppn', 'issn', 'continiousType', 'editor', 'title', 'startDate', 'endDate', 'nbLoc'];

@@ -1,11 +1,11 @@
 <template>
    <v-container fluid>
-      <v-row :justify="getHorizontalJustifyValue(1)">
+      <v-row justify="center">
          <v-col xs="6" sm="6">
-            <img src="@/assets/logoABES.jpg" />
+            <img src="@/assets/logoABES.jpg" alt="logo abes" />
          </v-col>
       </v-row>
-      <v-row :justify="getHorizontalJustifyValue(1)">
+      <v-row justify="center">
          <v-col xs="6" sm="3">
             <a @click="conditionsGenerales()">Conditions générales d'utilisation</a>
          </v-col>
@@ -20,11 +20,10 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 
 @Component
-export default class Footer extends Mixins(GlobalPropertiesMixin) {
+export default class Footer extends Vue {
    //Events
    conditionsGenerales(): void {
       this.$router.replace('conditions-generales');

@@ -19,7 +19,7 @@
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
                            <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de RCR d'une Bibliothèque</span>
-                           <span v-else key="1"> {{ returnItem() + ' | Entre RCR: ' + getInternalOperatorSelectedInString }} </span>
+                           <span v-else key="1"> {{ returnItem + ' | Entre RCR: ' + getInternalOperatorSelectedInString }} </span>
                         </v-fade-transition>
                      </v-col>
                   </v-row>
@@ -332,7 +332,7 @@ export default class ComponentRcr extends Vue {
          if (this.comboboxAlert.length === 0) {
             this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
          }
-      } else if (this.currentValue == null || (this.currentValue != null && this.currentValue.trim().length == 0)) {
+      } else if (this.currentValue == null) {
          this.currentValue = null;
          this.comboboxAlert = [];
          this.updateStore();

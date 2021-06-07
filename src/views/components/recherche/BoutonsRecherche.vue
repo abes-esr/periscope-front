@@ -1,6 +1,6 @@
 <template>
    <v-container>
-      <v-row :justify="getHorizontalJustifyValue(3)">
+      <v-row justify="space-around">
          <v-col xs="6" sm="3">
             <v-tooltip top max-width="20vw" open-delay="700">
                <template v-slot:activator="{on}">
@@ -22,13 +22,12 @@
 </template>
 
 <script lang="ts">
-import {Component, Mixins} from 'vue-property-decorator';
-import GlobalPropertiesMixin from '@/mixins/globalProperties';
+import {Component, Vue} from 'vue-property-decorator';
 import {Logger} from '@/utils/Logger';
 import {HttpRequestError} from '@/exception/HttpRequestError';
 
 @Component
-export default class BoutonsRecherche extends Mixins(GlobalPropertiesMixin) {
+export default class BoutonsRecherche extends Vue {
    selectionEmpty: boolean;
 
    constructor() {

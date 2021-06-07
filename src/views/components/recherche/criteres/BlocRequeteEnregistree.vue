@@ -166,5 +166,3 @@ export default class ComponentRequeteEnregistree extends Vue {
    }
 }
 </script>
-
-<style scoped></style>
