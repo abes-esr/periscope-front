@@ -43,3 +43,11 @@ vue.$store.dispatch('resetFacettes').catch((err) => {
 vue.$store.dispatch('resetPage').catch((err) => {
    Logger.error(err);
 });
+
+if (vue.$route.query.ppnviewed) {
+   Logger.debug("PPN= "+vue.$route.query.ppnviewed)
+   Logger.debug("OrderBy= "+vue.$route.query.orderby)
+   Logger.debug("Collection= "+vue.$route.query.collectionStatus)
+   Logger.debug("Tree= "+vue.$route.query. tree)
+   router.push('/Resultat')
+}
