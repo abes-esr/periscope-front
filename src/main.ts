@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import App from './App.vue';
-import router from './router';
+import index from './router';
 import store from './store/store';
 import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
@@ -19,7 +19,7 @@ Vue.use(VueClipboard); // Plugin pour l'historique
 Vue.component('downloadCsv', JsonCSV); // Plugin d'export au format CSV
 
 const vue = new Vue({
-   router,
+   router: index,
    store,
    vuetify,
    render: (h) => h(App),

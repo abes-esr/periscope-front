@@ -54,19 +54,19 @@ const routes: Array<RouteConfig> = [
    },
 ];
 
-const router = new VueRouter({
+const index = new VueRouter({
    mode: 'history',
    base: process.env.BASE_URL,
    routes,
 });
 
 const DEFAULT_TITLE = 'Periscope v2.0';
-router.afterEach((to) => {
-   // Use next tick to handle router history correctly
+index.afterEach((to) => {
+   // Use next tick to handle index history correctly
    // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
    Vue.nextTick(() => {
       document.title = to.meta.title || DEFAULT_TITLE;
    });
 });
 
-export default router;
+export default index;

@@ -1,18 +1,4 @@
-import {
-   JsonCriteres,
-   JsonEditeurProvider,
-   JsonFacetteRequest,
-   JsonGlobalSearchRequest,
-   JsonIssnBlocProvider,
-   JsonLanguesProvider,
-   JsonMotsDuTitreProvider,
-   JsonPaysProvider,
-   JsonPcpBlocProvider,
-   JsonPpnBlocProvider,
-   JsonRcrBlocProvider,
-   JsonTri,
-   JsonTriProvider,
-} from '@/service/periscope/PeriscopeJsonDefinition';
+import {JsonEditeurProvider, JsonFacetteRequest, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider, JsonTri, JsonTriProvider} from '@/service/periscope/PeriscopeJsonDefinition';
 import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
@@ -54,7 +40,7 @@ export class SearchRequest {
       blocRequeteDirecte: BlocRequeteEnregistree,
       blocTri: BlocTri
    ): JsonGlobalSearchRequest {
-      const criteria: Array<JsonCriteres> = [];
+      const criteria: any = [];
       const sort: Array<JsonTri> = [];
       const facettes: Array<JsonFacetteRequest> = [];
 

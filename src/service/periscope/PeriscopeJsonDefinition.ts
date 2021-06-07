@@ -2,16 +2,13 @@
  * Définitions des formats Json utilisés par l'API Periscope
  */
 import Notice from '@/store/entity/Notice';
-
-export interface JsonCriteres {}
-
 export interface JsonTri {
    sort: string;
    order: string;
 }
 
 export interface JsonGlobalSearchRequest {
-   criteres: Array<JsonCriteres>;
+   criteres: [];
    tri: Array<JsonTri>;
    facettes: Array<JsonFacetteRequest>;
 }

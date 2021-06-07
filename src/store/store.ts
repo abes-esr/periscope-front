@@ -23,7 +23,7 @@ import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
 import {APIResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
-import router from '@/router';
+import index from '@/router';
 import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
 
@@ -1581,7 +1581,7 @@ export default new Vuex.Store({
                   this.dispatch('callPeriscopeAPI')
                      .then(() => {
                         this.dispatch('updateSnackBarDisplay', false);
-                        router
+                        index
                            .push('/Resultat')
                            .then(() => {
                               resolve(true);
