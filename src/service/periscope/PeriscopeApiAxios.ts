@@ -24,6 +24,8 @@ export class PeriscopeApiAxios {
          })
          .catch((err) => {
             if (err.response) {
+               //TODO modifier le throw pour ajouter le membre method et url de err afin de voir mieux l'erreur, puis supprimer le console.log une fois fait
+               console.log(JSON.parse(JSON.stringify(err)));
                throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
             } else {
                throw new HttpRequestError(err.status, err.message);
