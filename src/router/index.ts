@@ -5,6 +5,7 @@ import RechercheAvance from '@/views/page/RechercheAvance.vue';
 import ConditionsGenerales from '@/views/page/ConditionsGenerales.vue';
 import MentionsLegales from '@/views/page/MentionsLegales.vue';
 import HistoriqueRequetes from '@/views/page/HistoriqueRequetes.vue';
+import Visualisation from '@/views/page/Visualisation.vue';
 
 Vue.use(VueRouter);
 
@@ -51,6 +52,13 @@ const routes: Array<RouteConfig> = [
       name: 'Redirection Recherche',
       component: RechercheAvance,
       meta: {title: 'Periscope - Recherche'},
+   },
+   {
+      //Redirection vers la visualisation
+      path: '/visualisation',
+      name: 'Visualisation',
+      component: Visualisation,
+      meta: {title: 'Periscope - Visualisation'},
    },
 ];
 
