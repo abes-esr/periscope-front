@@ -5,18 +5,17 @@
             <component-header></component-header>
          </v-col>
       </v-row>
-      <v-row>
+      <v-row style="margin-bottom: 1em">
          <v-col>
             <component-stepper></component-stepper>
          </v-col>
       </v-row>
-      <v-row>
-         <v-col>
-            <v-container class="ma-0 pa-0 outlined-app">
-               <v-row align="center">
-                  <v-col cols="12">Visualisation</v-col>
-               </v-row>
-            </v-container>
+      <v-row class="ma-0 pa-0 outlined-app">
+         <v-col xs="2" sm="2" lg="2">
+            <p>qsfe</p>
+         </v-col>
+         <v-col xs="10" sm="10" lg="10">
+            <p>qsfe</p>
          </v-col>
       </v-row>
    </v-container>

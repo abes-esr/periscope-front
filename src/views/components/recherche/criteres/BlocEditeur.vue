@@ -7,7 +7,7 @@
                <template v-slot:activator="{on}">
                   <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="updateBlocExternalOperator" v-on="on"></v-select>
                </template>
-               <span>Cet opérateur logique permet de connecter ce bloc de recherche avec le bloc préccédent</span>
+               <span>Cet opérateur logique permet de connecter ce bloc de recherche avec le bloc précédent</span>
             </v-tooltip>
          </v-col>
          <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="isFirstDisplayedElement"></v-col>
