@@ -101,3 +101,7 @@
 .requestHistoryRequest {
    font-size: 1em;
 }
+
+.visualisationBloc {
+   height: 100%;
+}

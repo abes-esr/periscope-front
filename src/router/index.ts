@@ -41,6 +41,12 @@ const routes: Array<RouteConfig> = [
       meta: {title: 'Periscope - Résultats'},
    },
    {
+      path: '/visualisation',
+      name: 'Visualisation',
+      component: Visualisation,
+      meta: {title: 'Periscope - Visualisation'},
+   },
+   {
       path: '/historiqueRequetes',
       name: 'HistoriqueRequetes',
       component: HistoriqueRequetes,
@@ -48,17 +54,11 @@ const routes: Array<RouteConfig> = [
    },
    {
       // Redirection vers la page de recherche
+      // /!\ Doit obligatoirement être en dernière position /!\
       path: '*',
       name: 'Redirection Recherche',
       component: RechercheAvance,
       meta: {title: 'Periscope - Recherche'},
-   },
-   {
-      //Redirection vers la visualisation
-      path: '/visualisation',
-      name: 'Visualisation',
-      component: Visualisation,
-      meta: {title: 'Periscope - Visualisation'},
    },
 ];
 
