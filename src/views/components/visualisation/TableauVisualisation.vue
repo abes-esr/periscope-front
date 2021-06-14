@@ -36,7 +36,6 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentTimeline from '@/views/components/visualisation/timeline/Timeline.vue';
-import {Logger} from '@/utils/Logger';
 
 @Component({
    components: {
@@ -134,9 +133,8 @@ export default class TableauVisualisation extends Vue {
             end: '2018-12-31',
             className: 'yellow',
             type: 'range',
-         }
+         },
       ];
    }
-
 }
 </script>
