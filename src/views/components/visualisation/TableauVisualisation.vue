@@ -12,7 +12,7 @@
             </v-col>
          </v-row>
       </v-container>
-      <v-container style="padding: 5px; text-align: left">
+      <v-container style="border: 1px solid black">
          <!-- <v-navigation-drawer v-model="drawer" permanent style="margin-right: 1rem" v-bind:class="[displayDrawer ? 'd-flex' : 'd-none']">
             <v-expansion-panels multiple accordion>
                <v-expansion-panel   v-for="(item,i) in 3"
@@ -29,7 +29,7 @@
                </v-expansion-panel>
             </v-expansion-panels>
          </v-navigation-drawer>-->
-         <component-timeline v-bind:items="items" v-bind:groups="groups"></component-timeline>
+         <component-timeline v-bind:items="items" v-bind:groups="groups" style="border: 1px solid grey"></component-timeline>
       </v-container>
    </v-container>
 </template>
@@ -59,18 +59,19 @@ export default class TableauVisualisation extends Vue {
             title: 'general',
             content: 'general',
             treeLevel: 1,
+            classname: 'test'
          },
          {
             id: 2,
             title: '123456789',
             content: 'RCR 123456789',
-            treeLevel: 1,
+            treeLevel: 2,
          },
          {
             id: 3,
             title: '987654321',
             content: 'RCR 987654321',
-            treeLevel: 1,
+            treeLevel: 2,
          },
       ];
 
@@ -138,3 +139,25 @@ export default class TableauVisualisation extends Vue {
    }
 }
 </script>
+
+<style>
+div.vis-group{
+   max-height: 1.8em;
+}
+div.vis-label.vis-nested-group.vis-group-level-1{
+   background-color: white;
+   border: 1px solid black;
+   font-max-size: 6px;
+}
+div.vis-label.vis-nested-group.vis-group-level-2{
+   background-color: white;
+   border: 1px solid black;
+}
+div.vis-label.vis-nested-group.vis-group-level-3{
+   background-color: white;
+   border: 1px solid black;
+}
+div.vis-inner{
+   font-size: small;
+}
+</style>

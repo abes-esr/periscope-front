@@ -5,6 +5,7 @@
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {DataGroup, DataSet, Timeline} from 'vis-timeline/standalone';
+import {TimelineOptions} from 'vis-timeline';
 
 @Component
 export default class ComponentTimeline extends Vue {
@@ -22,7 +23,21 @@ export default class ComponentTimeline extends Vue {
          const container: any = document.getElementById('visualization');
          if (container != null) {
             // Configuration for the Timeline
-            const options = {};
+            let options: TimelineOptions = {
+               align: 'left',
+               autoResize: true,
+               groupHeightMode: 'fitItems',
+               showCurrentTime: false,
+               locale: 'fr',
+               showTooltips: true,
+               //max: '2022-01-01', //TODO recupérer la date du jour ici (date max)
+               min: '0000-01-01',
+               horizontalScroll: true,
+               zoomKey: 'ctrlKey',
+               orientation: 'both',
+               zoomMin: 1000,
+               stack: false,
+            };
             // Create a Timeline
             this.timeline = new Timeline(container, this.items, this.groups, options);
             this.timeline.on('rangechanged', (e) => {
@@ -33,3 +48,9 @@ export default class ComponentTimeline extends Vue {
    }
 }
 </script>
+
+<style scoped>
+.vis-item{
+   background-color: red;
+}
+</style>
