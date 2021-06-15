@@ -35,7 +35,7 @@
 </template>
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import ComponentTimeline from '@/views/components/visualisation/timeline/Timeline.vue';
+import ComponentTimeline from '@/views/components/visualisation/timeline/ComponentTimeline.vue';
 
 @Component({
    components: {

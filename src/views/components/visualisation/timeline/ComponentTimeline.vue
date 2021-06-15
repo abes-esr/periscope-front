@@ -49,8 +49,9 @@ export default class ComponentTimeline extends Vue {
 }
 </script>
 
-<style scoped>
-.vis-item{
-   background-color: red;
+<style>
+div.vis-item-overflow{
+   border: 1px solid black;
+   border-radius: 0px;
 }
 </style>
