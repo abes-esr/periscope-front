@@ -10,8 +10,6 @@
                   <v-stepper-step v-if="isSelectionEmpty" color="grey lighten-2" complete complete-icon="mdi-table" step="2">Résultats</v-stepper-step>
                   <v-stepper-step v-else color="grey lighten-2" complete editable edit-icon="mdi-table" step="2" @click="changePage(2)">Résultats</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step color="grey lighten-2" complete editable edit-icon="mdi-table" step="3" @click="changePage(3)">Visualisation</v-stepper-step>
-                  <v-divider></v-divider>
                   <v-stepper-step color="grey lighten-2" complete editable edit-icon="mdi-history" step="5" @click="changePage(5)">Historique</v-stepper-step>
                </v-stepper-header>
             </v-stepper>
@@ -74,22 +72,6 @@ export default class Stepper extends Vue {
                   Logger.error(err);
                });
             }
-            break;
-         case 3:
-            this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
-               Logger.error(err);
-            });
-            this.$router.replace('/Visualisation').catch((err) => {
-               Logger.error(err);
-            });
-            break;
-         case 4:
-            this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
-               Logger.error(err);
-            });
-            this.$router.replace('/Export').catch((err) => {
-               Logger.error(err);
-            });
             break;
          case 5:
             this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
