@@ -1,6 +1,5 @@
 .vs-btn-group {
     position: relative;
-    display: -webkit-inline-box;
     display: -ms-inline-flexbox;
     display: inline-flex;
     vertical-align: middle;
@@ -71,6 +70,27 @@
 
 .vis-time-axis .vis-grid.vis-minor {
     border-color: rgba(0, 0, 0, 0.04);
+}
+
+/*element du panneau de gauche de la timeline (rcr)*/
+.vis-group{
+    max-height: 2em;
+}
+.vis-label.vis-nested-group.vis-group-level-1{
+    background-color: white;
+    border: 1px solid grey;
+    font-max-size: 6px;
+}
+.vis-label.vis-nested-group.vis-group-level-2{
+    background-color: white;
+    border: 1px solid grey;
+}
+.vis-label.vis-nested-group.vis-group-level-3{
+    background-color: white;
+    border: 1px solid grey;
+}
+.vis-inner{
+    font-size: small;
 }
 
 .vis-text>div {

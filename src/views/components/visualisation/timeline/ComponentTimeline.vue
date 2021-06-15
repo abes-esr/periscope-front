@@ -34,24 +34,14 @@ export default class ComponentTimeline extends Vue {
                min: '0000-01-01',
                horizontalScroll: true,
                zoomKey: 'ctrlKey',
-               orientation: 'both',
-               zoomMin: 1000,
+               orientation: 'top',
+               zoomMin: 1000*60*60*24,
                stack: false,
             };
             // Create a Timeline
             this.timeline = new Timeline(container, this.items, this.groups, options);
-            this.timeline.on('rangechanged', (e) => {
-               this.$emit('range-changed', e);
-            });
          }
       }
    }
 }
 </script>
-
-<style>
-div.vis-item-overflow{
-   border: 1px solid black;
-   border-radius: 0px;
-}
-</style>

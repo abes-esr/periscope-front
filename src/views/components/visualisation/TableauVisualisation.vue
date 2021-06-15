@@ -139,25 +139,3 @@ export default class TableauVisualisation extends Vue {
    }
 }
 </script>
-
-<style>
-div.vis-group{
-   max-height: 1.8em;
-}
-div.vis-label.vis-nested-group.vis-group-level-1{
-   background-color: white;
-   border: 1px solid black;
-   font-max-size: 6px;
-}
-div.vis-label.vis-nested-group.vis-group-level-2{
-   background-color: white;
-   border: 1px solid black;
-}
-div.vis-label.vis-nested-group.vis-group-level-3{
-   background-color: white;
-   border: 1px solid black;
-}
-div.vis-inner{
-   font-size: small;
-}
-</style>
