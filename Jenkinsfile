@@ -169,12 +169,12 @@ node {
     stage('Build') {
         try {
          if (ENV == 'DEV') {
-            sh 'npm run build -- --mode development'
+            sh 'NODE_ENV=production npm run build -- --mode development'
         } else if (ENV == 'TEST') {
-            sh 'npm run build -- --mode test'
+            sh 'NODE_ENV=production npm run build -- --mode test'
 
         } else if (ENV == 'PROD') {
-            sh 'npm run build -- --mode production'
+            sh 'NODE_ENV=production npm run build -- --mode production'
         }
 
         } catch (e) {
