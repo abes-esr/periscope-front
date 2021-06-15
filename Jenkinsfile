@@ -194,7 +194,7 @@ node {
 
                 echo "Deploy to ${serverHostnames[i]}"
                 echo "--------------------------"
-                sh "ssh -tt ${username}@${hostname} \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
+                sh "ssh -tt ${username}@${hostname} \"cd ${htmlBaseDir} && rm -rdf index.html favicon.ico js css img fonts \""
                 sh "scp -r ${jsDir}* ${username}@${hostname}:${htmlBaseDir}"
              }
 
