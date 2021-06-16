@@ -169,12 +169,12 @@ node {
     stage('Build') {
         try {
          if (ENV == 'DEV') {
-            sh 'npm run build -- --mode development'
+            sh 'NODE_ENV=production npm run build -- --mode development'
         } else if (ENV == 'TEST') {
-            sh 'npm run build -- --mode test'
+            sh 'NODE_ENV=production npm run build -- --mode test'
 
         } else if (ENV == 'PROD') {
-            sh 'npm run build -- --mode production'
+            sh 'NODE_ENV=production npm run build -- --mode production'
         }
 
         } catch (e) {
@@ -194,7 +194,7 @@ node {
 
                 echo "Deploy to ${serverHostnames[i]}"
                 echo "--------------------------"
-                sh "ssh -tt ${username}@${hostname} \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
+                sh "ssh -tt ${username}@${hostname} \"cd ${htmlBaseDir} && rm -rdf index.html favicon.ico js css img fonts \""
                 sh "scp -r ${jsDir}* ${username}@${hostname}:${htmlBaseDir}"
              }
 
