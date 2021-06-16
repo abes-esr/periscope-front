@@ -77,18 +77,19 @@ export default class TableauVisualisation extends Vue {
 
       this.items = [
          {
-            id: 341725201,
+            id: 1,
             group: 1,
-            content: 'Etat de collection:no. 2 (jul-1972) - no. 5 (avr-1974) ;[Lacunes][ Lacunes signalées : no.4 (1973) ]',
+            content: 'Item 1',
             start: '2000-01-01',
             end: '2015-12-31',
             className: 'green',
             type: 'range',
+            title: 'erop',
          },
          {
             id: 2,
             group: 1,
-            content: 'Item 1',
+            content: 'Item 2',
             rcr: '123456789',
             start: '2016-01-01',
             end: '2016-12-31',
@@ -98,9 +99,9 @@ export default class TableauVisualisation extends Vue {
          {
             id: 3,
             group: 1,
-            content: 'Item 1',
+            content: 'Item 3',
             rcr: '123456789',
-            start: '2017-01-01',
+            start: '2019-01-01',
             end: '2021-12-31',
             className: 'green',
             type: 'range',
@@ -108,7 +109,7 @@ export default class TableauVisualisation extends Vue {
          {
             id: 4,
             group: 2,
-            content: 'item 2',
+            content: 'Item 4',
             rcr: '123456789',
             start: '2000-01-01',
             end: '2015-12-31',
@@ -118,7 +119,7 @@ export default class TableauVisualisation extends Vue {
          {
             id: 5,
             group: 2,
-            content: 'item 3',
+            content: 'Item 5',
             rcr: '123456789',
             start: '2017-01-01',
             end: '2019-12-31',
@@ -128,7 +129,7 @@ export default class TableauVisualisation extends Vue {
          {
             id: 6,
             group: 3,
-            content: 'item 4',
+            content: 'Item 6',
             rcr: '123456789',
             start: '2010-01-01',
             end: '2018-12-31',

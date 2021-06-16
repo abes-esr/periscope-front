@@ -5,7 +5,7 @@
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {DataGroup, DataSet, Timeline} from 'vis-timeline/standalone';
-import {TimelineOptions} from 'vis-timeline';
+import {TimelineItem, TimelineOptions} from 'vis-timeline';
 
 @Component
 export default class ComponentTimeline extends Vue {
@@ -33,10 +33,23 @@ export default class ComponentTimeline extends Vue {
                //max: '2022-01-01', //TODO recupérer la date du jour ici (date max)
                min: '0000-01-01',
                horizontalScroll: true,
-               zoomKey: 'ctrlKey',
+               moveable: true,
+               zoomKey: 'shiftKey', //TODO ne fonctionne pas malgre la doc
                orientation: 'top',
-               zoomMin: 1000*60*60*24,
+               zoomMin: 1000,
                stack: false,
+               cluster: { //Gestion des chevauchement de sequences
+                  maxItems: 1,
+                  titleTemplate: '',
+                  clusterCriteria: () => true,
+                  showStipes: true,
+                  fitOnDoubleClick: false,
+               },
+               tooltip: { //info bulles au survol
+                  followMouse: false,
+                  overflowMethod: 'flip',
+                  delay: 100,
+               }
             };
             // Create a Timeline
             this.timeline = new Timeline(container, this.items, this.groups, options);
