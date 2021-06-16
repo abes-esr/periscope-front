@@ -1,7 +1,7 @@
 <template>
    <div id="visualization" class="visualisationBloc"></div>
 </template>
-<style src="./style.css"></style>
+
 <script lang="ts">
 import {Component, Prop, Vue} from 'vue-property-decorator';
 import {DataGroup, DataSet, Timeline} from 'vis-timeline/standalone';
@@ -37,18 +37,17 @@ export default class ComponentTimeline extends Vue {
                zoomKey: 'shiftKey', //TODO ne fonctionne pas malgre la doc
                orientation: 'top',
                zoomMin: 1000,
-               stack: false,
+               stack: true,
                cluster: { //Gestion des chevauchement de sequences
-                  maxItems: 1,
+                  maxItems: 5,
                   titleTemplate: '',
-                  clusterCriteria: () => true,
                   showStipes: true,
                   fitOnDoubleClick: false,
                },
-               tooltip: { //info bulles au survol
-                  followMouse: false,
-                  overflowMethod: 'flip',
-                  delay: 100,
+               tooltip: { //info bulles au survol, template
+                  template: (item) => {
+                     return '<h1>' + item.title + '</h1>';
+                  }
                }
             };
             // Create a Timeline

@@ -84,7 +84,7 @@ export default class TableauVisualisation extends Vue {
             end: '2015-12-31',
             className: 'green',
             type: 'range',
-            title: 'erop',
+            title: 'Info complémentaire de la séquence',
          },
          {
             id: 2,
@@ -101,7 +101,7 @@ export default class TableauVisualisation extends Vue {
             group: 1,
             content: 'Item 3',
             rcr: '123456789',
-            start: '2019-01-01',
+            start: '2016-01-01',
             end: '2021-12-31',
             className: 'green',
             type: 'range',
