@@ -1,36 +1,58 @@
 <template>
-   <v-container class="outlined-app">
-      <v-container style="padding: 5px; text-align: left">
-         <v-row align-content="center" class="justify-space-between">
-            <v-col cols="4">
-               <v-tooltip top open-delay="700">
-                  <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app btnTableau" outlined small @click.stop="displayDrawer = !displayDrawer" v-on="on"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
-                  </template>
-                  <span>Afficher / Cacher les facettes</span>
-               </v-tooltip>
-            </v-col>
-         </v-row>
-      </v-container>
-      <v-container style="border: 1px solid black">
-         <!-- <v-navigation-drawer v-model="drawer" permanent style="margin-right: 1rem" v-bind:class="[displayDrawer ? 'd-flex' : 'd-none']">
-            <v-expansion-panels multiple accordion>
-               <v-expansion-panel   v-for="(item,i) in 3"
-                                    :key="i">
-                  <v-expansion-panel-header>
-                    Item
-                  </v-expansion-panel-header>
-                  <v-expansion-panel-content style="padding-left: 0.5em; margin-top: -0.5em">
-                     <v-container fluid  v-for="(item,i) in 5"
-                                  :key="i" style="max-height: 2em; padding: 0">
-                        <v-checkbox :disabled="true" label="Value"></v-checkbox>
-                     </v-container>
-                  </v-expansion-panel-content>
-               </v-expansion-panel>
-            </v-expansion-panels>
-         </v-navigation-drawer>-->
-         <component-timeline v-bind:items="items" v-bind:groups="groups" style="border: 1px solid grey"></component-timeline>
-      </v-container>
+   <v-container>
+      <v-row class="outlined-app">
+         <v-col cols='1'>
+            <v-btn outlined small @click.stop="displayChart = !displayChart"><v-icon>mdi-arrow-down</v-icon></v-btn>
+         </v-col>
+         <v-col cols='1'>
+            <v-btn outlined small @click.stop="displayPanel = !displayPanel"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
+         </v-col>
+         <v-col cols='10'>
+            Notice n°XXXX
+         </v-col>
+      </v-row>
+      <v-row v-if="displayChart">
+         <v-container>
+            <v-row>
+               <v-col cols='2'>
+
+               </v-col>
+               <v-col cols='10'>
+                  <p>test</p>
+               </v-col>
+            </v-row>
+            <v-row justify='center'>
+               <v-col><v-chip label small color="blue">
+                  Collection sans information de lacunes
+               </v-chip></v-col>
+                  <v-col>
+                  <v-chip label small color="yellow">
+                     Collection lacunaire
+                  </v-chip></v-col>
+               <v-col>
+                  <v-chip label small color="grey">
+                     Erreur
+                  </v-chip></v-col>
+               <v-col>
+                  <v-chip label small color="green">
+                     Synthèse disponible
+                  </v-chip></v-col>
+               <v-col>
+                  <v-chip label small color="red">
+                     Synthèse lacunaire
+                  </v-chip>
+               </v-col>
+            </v-row>
+            <v-row>
+               <v-col v-if="displayPanel" cols='3'>
+                  <p>test</p>
+               </v-col>
+               <v-col>
+                  <component-timeline v-bind:items="items" v-bind:groups="groups" style="border: 1px solid grey"></component-timeline>
+               </v-col>
+            </v-row>
+         </v-container>
+      </v-row>
    </v-container>
 </template>
 <script lang="ts">
@@ -43,14 +65,16 @@ import ComponentTimeline from '@/views/components/visualisation/timeline/Compone
    },
 })
 export default class TableauVisualisation extends Vue {
-   displayDrawer: boolean;
+   displayChart: boolean;
+   displayPanel: boolean;
    drawer: any;
    groups: Array<any>;
    items: Array<any>;
 
    constructor() {
       super();
-      this.displayDrawer = true;
+      this.displayChart = false;
+      this.displayPanel = false;
       this.drawer = null;
 
       this.groups = [
@@ -137,6 +161,10 @@ export default class TableauVisualisation extends Vue {
             type: 'range',
          },
       ];
+   }
+
+   test(): void {
+      this.displayPanel = !this.displayPanel;
    }
 }
 </script>

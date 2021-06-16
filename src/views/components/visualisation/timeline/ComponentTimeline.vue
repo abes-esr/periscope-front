@@ -1,5 +1,7 @@
 <template>
-   <div id="visualization" class="visualisationBloc"></div>
+   <v-container>
+      <div id="visualization" class="visualisationBloc"></div>
+   </v-container>
 </template>
 
 <script lang="ts">
