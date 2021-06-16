@@ -23,7 +23,7 @@ import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
 import {APIResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
-import index from '@/router';
+import router from '@/router';
 import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
 
@@ -1366,6 +1366,9 @@ export default new Vuex.Store({
       updateSelectedInternalPcpRegionsOperator(context, operator: number) {
          context.commit('mutationInternalPcpRegionsOperator', operator);
       },
+      updateCandidatesPcpRegions(context, arraySent: Array<CheckboxItem>) {
+         context.commit('mutationPcpRegions', arraySent);
+      },
       updateSelectedPcpRegions(context, arraySent: Array<string>) {
          context.commit('mutationPcpRegions', arraySent);
       },
@@ -1374,6 +1377,9 @@ export default new Vuex.Store({
       },
       updateSelectedInternalPcpMetiersOperator(context, operator: number) {
          context.commit('mutationInternalPcpMetiersOperator', operator);
+      },
+      updateCandidatesPcpMetiers(context, arraySent: Array<CheckboxItem>) {
+         context.commit('mutationPcpMetiers', arraySent);
       },
       updateSelectedPcpMetiers(context, arraySent: Array<CheckboxItem>) {
          context.commit('mutationPcpMetiers', arraySent);
@@ -1581,7 +1587,7 @@ export default new Vuex.Store({
                   this.dispatch('callPeriscopeAPI')
                      .then(() => {
                         this.dispatch('updateSnackBarDisplay', false);
-                        index
+                        router
                            .push('/Resultat')
                            .then(() => {
                               resolve(true);
@@ -1651,10 +1657,18 @@ export default new Vuex.Store({
          return Composants.isMoveUpAvailable(id, state.composants._panel);
       },
       isFirstPage: (state) => () => {
-         return state.pagination._currentPage == 0;
+         if (state.pagination._currentPage == 0) {
+            return true;
+         } else {
+            return false;
+         }
       },
       isLastPage: (state) => () => {
-         return state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0;
+         if (state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0) {
+            return true;
+         } else {
+            return false;
+         }
       },
       orderSortArrayResultLabelElements: (state) => {
          return BlocTri.getTriLabels(state.blocTri);
