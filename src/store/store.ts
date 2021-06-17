@@ -1293,6 +1293,14 @@ export default new Vuex.Store({
          Logger.debug('Reset du type de sequence');
          state.lotHoldings._typeSequence = 'unset';
       },
+      mutationCurrentRcr(state, value) {
+         Logger.debug('Mutation des RCR courant');
+         state.lotHoldings._rcrList = value;
+      },
+      resetCurrentRcr(state) {
+         Logger.debug('Reset des RCR courant');
+         state.lotHoldings._rcrList = [];
+      },
    },
    actions: {
       //******************
@@ -1525,6 +1533,9 @@ export default new Vuex.Store({
       },
       updateTypeSequence(context, value: string) {
          context.commit('mutationTypeSequence', value);
+      },
+      updateCurrentRcr(context, value: Array<string>) {
+         context.commit('mutationCurrentRcr', value);
       },
 
       //*******************

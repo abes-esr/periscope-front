@@ -374,6 +374,9 @@ export default class TableauResultats extends Vue {
       this.$store.dispatch('updateCurrentPpn', value.ppn).catch((err) => {
          Logger.error(err);
       });
+     this.$store.dispatch('updateCurrentRcr', value.rcrList).catch((err) => {
+       Logger.error(err);
+     });
       this.$store
          .dispatch('doVisualisation')
          .catch((err) => {

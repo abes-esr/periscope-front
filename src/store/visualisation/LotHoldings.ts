@@ -7,4 +7,5 @@ export class LotHoldings {
    _holdings: Array<Holding> = [];
    _ppn = 'unset';
    _typeSequence = 'unset';
+   _rcrList: Array<string> = [];
 }
