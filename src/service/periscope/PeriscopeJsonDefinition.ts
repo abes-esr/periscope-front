@@ -2,6 +2,8 @@
  * Définitions des formats Json utilisés par l'API Periscope
  */
 import Notice from '@/store/entity/Notice';
+import Holding from '@/store/entity/Holding';
+
 export interface JsonTri {
    sort: string;
    order: string;
@@ -79,7 +81,7 @@ export interface JsonTriProvider {
    order: string;
 }
 
-export interface APIResponse {
+export interface APISearchResponse {
    notice: Array<Notice>;
    facettes: Array<string>;
    nbPages: number;
@@ -93,4 +95,15 @@ export interface JsonFacetteRequest {
 export interface JsonFacetteItem {
    key: string;
    occurrence: number;
+}
+
+export interface APIHoldingsResponse {
+   holdings: Array<Holding>;
+}
+
+export interface JsonSequenceItem {
+   dateDebut: string;
+   dateFin: string;
+   typeSequence: string;
+   rcr: number;
 }

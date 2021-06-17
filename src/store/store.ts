@@ -1,7 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
 import createPersistedState from 'vuex-persistedstate';
-import {CheckboxItem, Operator, ListItem} from '@/store/recherche/BlocDefinition';
+import {CheckboxItem, ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
 import {LotNotices} from '@/store/resultat/LotNotices';
@@ -20,12 +20,24 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {
+   DisplaySwitch,
+   Movement,
+   PanelDisplaySwitchProvider,
+   PanelMovementProvider,
+   PanelType,
+} from '@/store/composant/ComposantDefinition';
 import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
-import {APIResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
+import {
+   APIHoldingsResponse,
+   APISearchResponse,
+   JsonGlobalSearchRequest,
+} from '@/service/periscope/PeriscopeJsonDefinition';
 import router from '@/router';
 import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
+import {LotHoldings} from '@/store/visualisation/LotHoldings';
+import Holding from '@/store/entity/Holding';
 
 Vue.use(Vuex);
 
@@ -48,6 +60,8 @@ export default new Vuex.Store({
       //Resultats de recherche
       lotNotices: new LotNotices(),
       lotFacettes: new LotFacettes(),
+      // Visualisation
+      lotHoldings: new LotHoldings(),
       //Composants
       composants: new Composants(),
       //Méthodes pour construire JSON à envoyer au back-end
@@ -1253,6 +1267,32 @@ export default new Vuex.Store({
          Logger.debug('Mutation temps de requête');
          state.lotNotices._executionTime = element;
       },
+
+      // Holdings
+      mutationHoldings(state, values) {
+         Logger.debug('Mutation des Etats de collection');
+         values.forEach((obj: any) => state.lotHoldings._holdings.push(new Holding(obj)));
+      },
+      resetHoldings(state) {
+         Logger.debug('Reset des Etats de collection');
+         state.lotHoldings._holdings = [];
+      },
+      mutationCurrentPpn(state, value) {
+         Logger.debug('Mutation du Ppn courant');
+         state.lotHoldings._ppn = value;
+      },
+      resetCurrentPpn(state) {
+         Logger.debug('Reset du Ppn courant');
+         state.lotHoldings._ppn = 'unset';
+      },
+      mutationTypeSequence(state, value) {
+         Logger.debug('Mutation du type de sequence');
+         state.lotHoldings._typeSequence = value;
+      },
+      resetTypeSequence(state) {
+         Logger.debug('Reset du type de sequence');
+         state.lotHoldings._typeSequence = 'unset';
+      },
    },
    actions: {
       //******************
@@ -1480,6 +1520,12 @@ export default new Vuex.Store({
       updateSelectedTri(context, value: Array<string>) {
          context.commit('mutationTri', value);
       },
+      updateCurrentPpn(context, value: string) {
+         context.commit('mutationCurrentPpn', value);
+      },
+      updateTypeSequence(context, value: string) {
+         context.commit('mutationTypeSequence', value);
+      },
 
       //*******************
       //       Composants
@@ -1559,7 +1605,7 @@ export default new Vuex.Store({
             const start = Date.now();
             PeriscopeApiAxios.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
-                  const response: APIResponse = (res as unknown) as APIResponse;
+                  const response: APISearchResponse = (res as unknown) as APISearchResponse;
                   context.commit('resetNotices');
                   context.commit('mutationNotices', response.notice);
                   context.commit('resetFacettes');
@@ -1606,6 +1652,35 @@ export default new Vuex.Store({
                      });
                })
                .catch((err) => {
+                  reject(err);
+               });
+         });
+      },
+      doVisualisation(context): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            //On envoie la requête au back-end
+            PeriscopeApiAxios.getHoldingsFromPpn(context.state.lotHoldings._ppn)
+               .then((res) => {
+                  const response: APIHoldingsResponse = (res as unknown) as APIHoldingsResponse;
+                  context.commit('resetHoldings');
+                  context.commit('mutationHoldings', response.holdings);
+                  this.dispatch('updateSnackBarDisplay', false);
+                  router
+                     .push('/Visualisation')
+                     .then(() => {
+                        resolve(true);
+                     })
+                     .catch((err) => {
+                        if (err.name == 'NavigationDuplicated') {
+                           // On ignore cette erreur
+                           resolve(true);
+                        } else {
+                           reject(err);
+                        }
+                     });
+               })
+               .catch((err) => {
+                  //Si une erreur avec le ws est jetée, on lève un message d'erreur
                   reject(err);
                });
          });

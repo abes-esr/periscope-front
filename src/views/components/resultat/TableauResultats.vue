@@ -176,6 +176,7 @@ import {HttpRequestError} from '@/exception/HttpRequestError';
 import Facet from '@/store/entity/Facet';
 import {BlocLangue} from '@/store/recherche/criteres/BlocLangue';
 import {BlocPays} from '@/store/recherche/criteres/BlocPays';
+import router from '@/router';
 
 @Component
 export default class TableauResultats extends Vue {
@@ -370,12 +371,33 @@ export default class TableauResultats extends Vue {
    /******************** Events ***************************/
 
    clickOnRow(value: Notice): void {
+      this.$store.dispatch('updateCurrentPpn', value.ppn).catch((err) => {
+         Logger.error(err);
+      });
+      this.$store
+         .dispatch('doVisualisation')
+         .catch((err) => {
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+               Logger.debug('Erreur API : ' + err.debugMessage);
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                  Logger.error(err);
+               });
+            } else {
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                  Logger.error(err);
+               });
+            }
+         });
+
+      /*
+     Code pour ouvrir / fermer le contenu de la ligne
       const index: number = this.expanded.indexOf(value);
       if (index > -1) {
          this.expanded.splice(index, 1);
       } else {
          this.expanded.push(value);
-      }
+      }*/
    }
 
    /**

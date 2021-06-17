@@ -32,5 +32,19 @@ class PeriscopeService {
    findNoticesWithFacetsByCriteria(page: number, size: number, data: any): Promise<AxiosResponse> {
       return this.client.post(`/notice/findByCriteriaWithFacets?page=${page}&size=${size}`, data, {timeout: 1000 * 10});
    }
+
+   /**
+    * Récupère l'état de collection d'une notice à partir de son PPN
+    * @param ppn Numéro PPN de la noticer
+    * @param typeSequence Filtre sur les types de séquences
+    * @return Promise<AxiosResponse> Réponse Axios
+    */
+   getHoldingsFromPpn(ppn: string, typeSequence?: string): Promise<AxiosResponse> {
+      if (typeSequence) {
+         return this.client.get(`/holdings/${ppn}&typeSequence=${typeSequence}`, {timeout: 1000 * 10});
+      } else {
+         return this.client.get(`/holdings/${ppn}`, {timeout: 1000 * 10});
+      }
+   }
 }
 export default new PeriscopeService();

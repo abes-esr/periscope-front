@@ -40,8 +40,8 @@ export class Notice {
       }
    }
 
-   ppn: number;
-   issn: number;
+   ppn: string;
+   issn: string;
    pcpList: Array<string> = [];
    rcrList: Array<string> = [];
    editor: string;
