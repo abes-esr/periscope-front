@@ -343,7 +343,7 @@ export default class TableauResultats extends Vue {
       return this.$store.getters.isFirstPage();
    }
    get isLastPage(): boolean {
-      return this.$store.getters.isLastPage();
+      return this.$store.getters.isLastPage;
    }
    get isSelectionEmpty(): boolean {
       return this.selected.length == 0;

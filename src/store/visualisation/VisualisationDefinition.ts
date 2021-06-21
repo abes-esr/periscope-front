@@ -1,25 +1,18 @@
-export interface Panel {
+export interface Group {
    id: number;
-   text: string;
-   elements: Array<ListItem>;
+   title: string;
+   content: string;
+   treeLevel: number;
+   classname: string;
 }
 
-export interface ListLabel {
-   label: string;
-   elements: Array<ListItem>;
-}
-
-export interface ListItem {
-   //Liste d'éléments à selectionner
-   id: string;
-   text: string;
-   value: boolean;
-}
-
-export interface ListRcr {
-   rcrNumber: number;
-   rcrDepartment: number;
-   rcrRegion: string;
-   rcrPcpAttachedOrNot: boolean;
-   rcrPcpAttachedLabel: string;
+export interface Items {
+   id: number;
+   group: number;
+   content: string;
+   rcr: string;
+   start: string;
+   end: string;
+   classname: string;
+   type: string;
 }

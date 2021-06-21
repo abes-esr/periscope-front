@@ -20,24 +20,15 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {
-   DisplaySwitch,
-   Movement,
-   PanelDisplaySwitchProvider,
-   PanelMovementProvider,
-   PanelType,
-} from '@/store/composant/ComposantDefinition';
+import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
-import {
-   APIHoldingsResponse,
-   APISearchResponse,
-   JsonGlobalSearchRequest,
-} from '@/service/periscope/PeriscopeJsonDefinition';
+import {APIHoldingsResponse, APISearchResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
 import router from '@/router';
 import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
 import {LotHoldings} from '@/store/visualisation/LotHoldings';
 import Holding from '@/store/entity/Holding';
+import {Group, Items} from './visualisation/VisualisationDefinition';
 
 Vue.use(Vuex);
 
@@ -1272,6 +1263,7 @@ export default new Vuex.Store({
       mutationHoldings(state, values) {
          Logger.debug('Mutation des Etats de collection');
          values.forEach((obj: any) => state.lotHoldings._holdings.push(new Holding(obj)));
+         console.log(JSON.parse(JSON.stringify(state.lotHoldings)));
       },
       resetHoldings(state) {
          Logger.debug('Reset des Etats de collection');
@@ -1779,6 +1771,34 @@ export default new Vuex.Store({
             }
          });
          return arrayReturned;
+      },
+
+      //Formatte le retour de holdings pour l'adapter au composant de visualisation
+      getGroupsFromHoldings: (state) => {
+         const group: Array<Group> = [];
+         let counter = 1;
+         group.push({id: counter, title: 'Global', content: 'Global', treeLevel: 1, classname: 'test'});
+         state.lotHoldings._rcrList.forEach((holdingElement) => {
+            counter += 1;
+            group.push({id: counter, title: holdingElement, content: 'RCR: ' + holdingElement, treeLevel: 2, classname: 'test'});
+         });
+         return group;
+      },
+      getItemsFromHoldings: (state) => {
+         const items: Array<Items> = [];
+         let counter = 1;
+         state.lotHoldings._holdings[0].sequences.forEach((sequence) => {
+            items.push({id: counter, group: counter, content: state.lotHoldings._holdings[0].etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'none', type: sequence.typeSequence});
+         });
+         const copy = state.lotHoldings._holdings;
+         delete copy[0];
+         copy.forEach((holding) => {
+            counter += 1;
+            holding.sequences.forEach((sequence) => {
+               items.push({id: counter, group: counter, content: holding.etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'none', type: sequence.typeSequence});
+            });
+         });
+         return items;
       },
    },
    plugins: [createPersistedState()],

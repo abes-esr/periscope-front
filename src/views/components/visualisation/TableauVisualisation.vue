@@ -1,50 +1,33 @@
 <template>
    <v-container>
       <v-row class="outlined-app">
-         <v-col cols='1'>
+         <v-col cols="1">
             <v-btn outlined small @click.stop="displayChart = !displayChart"><v-icon>mdi-arrow-down</v-icon></v-btn>
          </v-col>
-         <v-col cols='1'>
+         <v-col cols="1">
             <v-btn outlined small @click.stop="displayPanel = !displayPanel"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
          </v-col>
-         <v-col cols='10'>
-            Notice n°XXXX
-         </v-col>
+         <v-col cols="10"> Notice n°{{ ppnNumber }} </v-col>
       </v-row>
       <v-row v-if="displayChart">
          <v-container>
             <v-row>
-               <v-col cols='2'>
-
-               </v-col>
-               <v-col cols='10'>
+               <v-col cols="2"> </v-col>
+               <v-col cols="10">
                   <p>test</p>
                </v-col>
             </v-row>
-            <v-row justify='center'>
-               <v-col><v-chip label small color="blue">
-                  Collection sans information de lacunes
-               </v-chip></v-col>
-                  <v-col>
-                  <v-chip label small color="yellow">
-                     Collection lacunaire
-                  </v-chip></v-col>
+            <v-row justify="center">
+               <v-col><v-chip label small color="blue"> Collection sans information de lacunes </v-chip></v-col>
+               <v-col> <v-chip label small color="yellow"> Collection lacunaire </v-chip></v-col>
+               <v-col> <v-chip label small color="grey"> Erreur </v-chip></v-col>
+               <v-col> <v-chip label small color="green"> Synthèse disponible </v-chip></v-col>
                <v-col>
-                  <v-chip label small color="grey">
-                     Erreur
-                  </v-chip></v-col>
-               <v-col>
-                  <v-chip label small color="green">
-                     Synthèse disponible
-                  </v-chip></v-col>
-               <v-col>
-                  <v-chip label small color="red">
-                     Synthèse lacunaire
-                  </v-chip>
+                  <v-chip label small color="red"> Synthèse lacunaire </v-chip>
                </v-col>
             </v-row>
             <v-row>
-               <v-col v-if="displayPanel" cols='3'>
+               <v-col v-if="displayPanel" cols="3">
                   <p>test</p>
                </v-col>
                <v-col>
@@ -58,6 +41,7 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentTimeline from '@/views/components/visualisation/timeline/ComponentTimeline.vue';
+import {Group, Items} from '@/store/visualisation/VisualisationDefinition';
 
 @Component({
    components: {
@@ -70,20 +54,27 @@ export default class TableauVisualisation extends Vue {
    drawer: any;
    groups: Array<any>;
    items: Array<any>;
+   ppnNumber: '';
+   testElem: any;
 
    constructor() {
       super();
       this.displayChart = false;
       this.displayPanel = false;
       this.drawer = null;
+      this.ppnNumber = this.$store.state.lotHoldings._ppn;
+      this.testElem = this.getElement;
+      this.groups = this.getGroups;
+      this.items = this.getItems;
 
+      /*
       this.groups = [
          {
             id: 1,
             title: 'general',
             content: 'general',
             treeLevel: 1,
-            classname: 'test'
+            classname: 'test',
          },
          {
             id: 2,
@@ -98,7 +89,9 @@ export default class TableauVisualisation extends Vue {
             treeLevel: 2,
          },
       ];
+      */
 
+      /*
       this.items = [
          {
             id: 1,
@@ -161,10 +154,21 @@ export default class TableauVisualisation extends Vue {
             type: 'range',
          },
       ];
+      */
    }
 
-   test(): void {
-      this.displayPanel = !this.displayPanel;
+   get getElement(): string {
+      console.log(this.$store.getters.getGroupsFromHoldings);
+      console.log(this.$store.getters.getItemsFromHoldings);
+      return '';
+   }
+
+   get getGroups(): Array<Group> {
+      return this.$store.getters.getGroupsFromHoldings;
+   }
+
+   get getItems(): Array<Items> {
+      return this.$store.getters.getItemsFromHoldings;
    }
 }
 </script>
