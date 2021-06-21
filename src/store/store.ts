@@ -1786,16 +1786,18 @@ export default new Vuex.Store({
       },
       getItemsFromHoldings: (state) => {
          const items: Array<Items> = [];
-         let counter = 1;
+         let groupCounter = 1;
+         let elementSequenceCounter = 1;
          state.lotHoldings._holdings[0].sequences.forEach((sequence) => {
-            items.push({id: counter, group: counter, content: state.lotHoldings._holdings[0].etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'none', type: sequence.typeSequence});
+            items.push({id: groupCounter, group: groupCounter, content: state.lotHoldings._holdings[0].etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'none', type: sequence.typeSequence});
          });
          const copy = state.lotHoldings._holdings;
          delete copy[0];
          copy.forEach((holding) => {
-            counter += 1;
+            groupCounter += 1;
             holding.sequences.forEach((sequence) => {
-               items.push({id: counter, group: counter, content: holding.etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'none', type: sequence.typeSequence});
+               elementSequenceCounter +=1 ;
+               items.push({id: elementSequenceCounter, group: groupCounter, content: holding.etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'red', type: sequence.typeSequence});
             });
          });
          return items;

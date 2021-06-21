@@ -158,8 +158,8 @@ export default class TableauVisualisation extends Vue {
    }
 
    get getElement(): string {
-      console.log(this.$store.getters.getGroupsFromHoldings);
-      console.log(this.$store.getters.getItemsFromHoldings);
+      console.log(JSON.parse(JSON.stringify(this.$store.getters.getGroupsFromHoldings)));
+      console.log(JSON.parse(JSON.stringify(this.$store.getters.getItemsFromHoldings)));
       return '';
    }
 
