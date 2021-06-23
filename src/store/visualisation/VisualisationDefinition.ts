@@ -13,6 +13,7 @@ export interface Items {
    rcr: string;
    start: string;
    end: string;
-   classname: string;
+   className: string;
    type: string;
+   title: string;
 }

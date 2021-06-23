@@ -1263,7 +1263,6 @@ export default new Vuex.Store({
       mutationHoldings(state, values) {
          Logger.debug('Mutation des Etats de collection');
          values.forEach((obj: any) => state.lotHoldings._holdings.push(new Holding(obj)));
-         console.log(JSON.parse(JSON.stringify(state.lotHoldings)));
       },
       resetHoldings(state) {
          Logger.debug('Reset des Etats de collection');
@@ -1773,34 +1772,8 @@ export default new Vuex.Store({
          return arrayReturned;
       },
 
-      //Formatte le retour de holdings pour l'adapter au composant de visualisation
-      getGroupsFromHoldings: (state) => {
-         const group: Array<Group> = [];
-         let counter = 1;
-         group.push({id: counter, title: 'Global', content: 'Global', treeLevel: 1, classname: 'test'});
-         state.lotHoldings._rcrList.forEach((holdingElement) => {
-            counter += 1;
-            group.push({id: counter, title: holdingElement, content: 'RCR: ' + holdingElement, treeLevel: 2, classname: 'test'});
-         });
-         return group;
-      },
-      getItemsFromHoldings: (state) => {
-         const items: Array<Items> = [];
-         let groupCounter = 1;
-         let elementSequenceCounter = 1;
-         state.lotHoldings._holdings[0].sequences.forEach((sequence) => {
-            items.push({id: groupCounter, group: groupCounter, content: state.lotHoldings._holdings[0].etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'none', type: sequence.typeSequence});
-         });
-         const copy = state.lotHoldings._holdings;
-         delete copy[0];
-         copy.forEach((holding) => {
-            groupCounter += 1;
-            holding.sequences.forEach((sequence) => {
-               elementSequenceCounter +=1 ;
-               items.push({id: elementSequenceCounter, group: groupCounter, content: holding.etatCollection, rcr: 'aucun', start: sequence.dateDebut, end: sequence.dateFin, classname: 'red', type: sequence.typeSequence});
-            });
-         });
-         return items;
+      getLotHoldings: (state) => {
+         return state.lotHoldings;
       },
    },
    plugins: [createPersistedState()],

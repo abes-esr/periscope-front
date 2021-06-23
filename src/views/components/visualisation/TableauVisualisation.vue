@@ -14,7 +14,7 @@
             <v-row>
                <v-col cols="2"> </v-col>
                <v-col cols="10">
-                  <p>test</p>
+
                </v-col>
             </v-row>
             <v-row justify="center">
@@ -42,6 +42,8 @@
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentTimeline from '@/views/components/visualisation/timeline/ComponentTimeline.vue';
 import {Group, Items} from '@/store/visualisation/VisualisationDefinition';
+import {JsonSequenceItem} from '@/service/periscope/PeriscopeJsonDefinition';
+import Holding from '@/store/entity/Holding';
 
 @Component({
    components: {
@@ -52,10 +54,9 @@ export default class TableauVisualisation extends Vue {
    displayChart: boolean;
    displayPanel: boolean;
    drawer: any;
-   groups: Array<any>;
-   items: Array<any>;
+   groups: Array<Group>;
+   items: Array<Items>;
    ppnNumber: '';
-   testElem: any;
 
    constructor() {
       super();
@@ -63,9 +64,9 @@ export default class TableauVisualisation extends Vue {
       this.displayPanel = false;
       this.drawer = null;
       this.ppnNumber = this.$store.state.lotHoldings._ppn;
-      this.testElem = this.getElement;
       this.groups = this.getGroups;
       this.items = this.getItems;
+
 
       /*
       this.groups = [
@@ -157,6 +158,16 @@ export default class TableauVisualisation extends Vue {
       */
    }
 
+   showHoldings(): void {
+      console.log(JSON.parse(JSON.stringify(this.$store.getters.getLotHoldings)));
+   }
+
+   sortRcrListFromHoldings(): Array<string> {
+      const rcrList : Array<string> = this.$store.getters.getLotHoldings._rcrList;
+      rcrList.sort((a: any, b: any) => a - b);
+      return rcrList;
+   }
+
    get getElement(): string {
       console.log(JSON.parse(JSON.stringify(this.$store.getters.getGroupsFromHoldings)));
       console.log(JSON.parse(JSON.stringify(this.$store.getters.getItemsFromHoldings)));
@@ -164,11 +175,43 @@ export default class TableauVisualisation extends Vue {
    }
 
    get getGroups(): Array<Group> {
-      return this.$store.getters.getGroupsFromHoldings;
+      const group: Array<Group> = [];
+      group.push({id: 1, title: 'Global', content: 'Global', treeLevel: 1, classname: 'test'});
+      this.$store.getters.getLotHoldings._rcrList.forEach((holdingElement: string) => {
+         group.push({id: +holdingElement, title: holdingElement, content: 'RCR: ' + holdingElement, treeLevel: 2, classname: 'test'});
+      });
+      return group;
    }
 
    get getItems(): Array<Items> {
-      return this.$store.getters.getItemsFromHoldings;
+      const items: Array<Items> = [];
+      let elementSequenceCounter = 1;
+
+      this.$store.getters.getLotHoldings._holdings[0].sequences.forEach((sequence: JsonSequenceItem) => {
+         elementSequenceCounter += 1;
+         items.push({id: elementSequenceCounter, group: +sequence.rcr, content: this.$store.getters.getLotHoldings._holdings[0].etatCollection, rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: sequence.rcr.toString()});
+      });
+
+      const copy = this.$store.getters.getLotHoldings._holdings; //Copie du résultat d'holdings
+      delete copy[0]; //Suppression du premier élément d'holdings
+
+      copy.forEach((holding: Holding) => {
+         holding.sequences.forEach((sequence: JsonSequenceItem) => {
+            elementSequenceCounter += 1;
+            items.push({id: elementSequenceCounter, group: +sequence.rcr, content: holding.etatCollection, rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: sequence.rcr.toString()});
+         });
+      });
+      console.log(JSON.parse(JSON.stringify(items)));
+      return items;
+   }
+
+   getClassNameBySequenceType(sequenceType: string): string {
+      switch (sequenceType){
+         case "CONTINUE": return 'blue';
+         case "LACUNE": return 'yellow';
+         case "ERREUR": return 'red';
+         default: return 'none';
+      }
    }
 }
 </script>
