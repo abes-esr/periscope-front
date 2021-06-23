@@ -1739,6 +1739,7 @@ export default new Vuex.Store({
          } else {
             return false;
          }
+         return false;
       },
       isLastPage: (state) => () => {
          if (state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0) {
@@ -1746,6 +1747,7 @@ export default new Vuex.Store({
          } else {
             return false;
          }
+         return false;
       },
       orderSortArrayResultLabelElements: (state) => {
          return BlocTri.getTriLabels(state.blocTri);

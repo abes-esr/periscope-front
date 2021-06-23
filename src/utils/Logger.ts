@@ -29,12 +29,12 @@ export class Logger {
     * @param message
     * @param type Type de l'erreur (optionnel)
     */
-   static error(message: string, type?: string): void {
+   static error(message: string, type?: string, vm?: Vue, info?: string): void {
       if (Logger.mode == 'development' || Logger.mode == 'test') {
          if (type) {
-            console.log('[ERROR][' + type + '] ' + message);
+            console.log('[ERROR][' + type + '] ' + message + ':' + info);
          } else {
-            console.log('[ERROR] ' + message);
+            console.log('[ERROR] ' + message + ':' + info);
          }
       }
    }
