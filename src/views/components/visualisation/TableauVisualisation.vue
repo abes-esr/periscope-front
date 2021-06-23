@@ -176,7 +176,7 @@ export default class TableauVisualisation extends Vue {
 
    get getGroups(): Array<Group> {
       const group: Array<Group> = [];
-      group.push({id: 1, title: 'Global', content: 'Global', treeLevel: 1, classname: 'test'});
+      group.push({id: 1, title: '', content: '', treeLevel: 1, classname: 'test'});
       this.$store.getters.getLotHoldings._rcrList.forEach((holdingElement: string) => {
          group.push({id: +holdingElement, title: holdingElement, content: 'RCR: ' + holdingElement, treeLevel: 2, classname: 'test'});
       });
@@ -189,7 +189,7 @@ export default class TableauVisualisation extends Vue {
 
       this.$store.getters.getLotHoldings._holdings[0].sequences.forEach((sequence: JsonSequenceItem) => {
          elementSequenceCounter += 1;
-         items.push({id: elementSequenceCounter, group: +sequence.rcr, content: this.$store.getters.getLotHoldings._holdings[0].etatCollection, rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: ''});
+         items.push({id: elementSequenceCounter, group: +sequence.rcr, content: this.$store.getters.getLotHoldings._holdings[0].etatCollection, rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: 'green', type: 'range', title: ''});
       });
 
       const copy = this.$store.getters.getLotHoldings._holdings; //Copie du résultat d'holdings

@@ -106,3 +106,20 @@
    height: 100%;
    text-align: left;
 }
+
+div.vis-label.vis-nested-group.vis-group-level-1 {
+   font-size: 6px;
+}
+
+div.vis-label.vis-nested-group.vis-group-level-2 {
+   font-size: 6px;
+}
+
+div.vis-item-overflow {
+   max-height: 0.5em;
+   font-size: 6px;
+}
+
+div.vis-group {
+   font-size: 6px;
+}
