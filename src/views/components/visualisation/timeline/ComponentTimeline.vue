@@ -1,5 +1,6 @@
 <template>
    <v-container>
+      <!-- https://visjs.github.io/vis-timeline/ !-->
       <div id="visualization" class="visualisationBloc"></div>
    </v-container>
 </template>
@@ -39,16 +40,17 @@ export default class ComponentTimeline extends Vue {
                zoomKey: 'shiftKey', //TODO ne fonctionne pas malgre la doc
                orientation: 'top',
                zoomMin: 1000,
-               stack: true,
+               stack: false,
+               stackSubgroups: true,
                cluster: { //Gestion des chevauchement de sequences
-                  maxItems: 5,
+                  maxItems: 30,
                   titleTemplate: '',
-                  showStipes: true,
+                  showStipes: false,
                   fitOnDoubleClick: false,
                },
                tooltip: { //info bulles au survol, template
                   template: (item) => {
-                     return '<h1>' + item.title + '</h1>';
+                     return '<h5>' + item.title + '</h5>';
                   }
                }
             };

@@ -189,7 +189,7 @@ export default class TableauVisualisation extends Vue {
 
       this.$store.getters.getLotHoldings._holdings[0].sequences.forEach((sequence: JsonSequenceItem) => {
          elementSequenceCounter += 1;
-         items.push({id: elementSequenceCounter, group: +sequence.rcr, content: this.$store.getters.getLotHoldings._holdings[0].etatCollection, rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: sequence.rcr.toString()});
+         items.push({id: elementSequenceCounter, group: +sequence.rcr, content: this.$store.getters.getLotHoldings._holdings[0].etatCollection, rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: ''});
       });
 
       const copy = this.$store.getters.getLotHoldings._holdings; //Copie du résultat d'holdings
@@ -198,7 +198,7 @@ export default class TableauVisualisation extends Vue {
       copy.forEach((holding: Holding) => {
          holding.sequences.forEach((sequence: JsonSequenceItem) => {
             elementSequenceCounter += 1;
-            items.push({id: elementSequenceCounter, group: +sequence.rcr, content: holding.etatCollection, rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: sequence.rcr.toString()});
+            items.push({id: elementSequenceCounter, group: +sequence.rcr, content: '', rcr: sequence.rcr.toString(), start: sequence.dateDebut, end: sequence.dateFin, className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: holding.etatCollection});
          });
       });
       console.log(JSON.parse(JSON.stringify(items)));
