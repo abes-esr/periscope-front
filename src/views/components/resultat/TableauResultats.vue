@@ -23,7 +23,7 @@
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="btnTableau" :disabled="selectedArray === 0" outlined small v-on="on"><download-csv :data="selected" name="periscope-export.csv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
+                     <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on"><download-csv :data="selected" name="periscope-export.csv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
                   </template>
                   <span>Exporter la sélection au format CSV</span>
                </v-tooltip>
@@ -37,7 +37,7 @@
             <v-col cols="3">
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPageGetter" v-on="on"><v-icon>mdi-arrow-left</v-icon></v-btn>
+                     <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPage" v-on="on"><v-icon>mdi-arrow-left</v-icon></v-btn>
                   </template>
                   <span>Aller à la page précédente</span>
                </v-tooltip>
@@ -137,7 +137,7 @@
                <v-col cols="3">
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
-                        <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPageGetter" v-on="on"><v-icon>mdi-arrow-left</v-icon></v-btn>
+                        <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPage" v-on="on"><v-icon>mdi-arrow-left</v-icon></v-btn>
                      </template>
                      <span>Aller à la page précédente</span>
                   </v-tooltip>
@@ -176,7 +176,6 @@ import {HttpRequestError} from '@/exception/HttpRequestError';
 import Facet from '@/store/entity/Facet';
 import {BlocLangue} from '@/store/recherche/criteres/BlocLangue';
 import {BlocPays} from '@/store/recherche/criteres/BlocPays';
-import router from '@/router';
 
 @Component
 export default class TableauResultats extends Vue {
@@ -197,8 +196,6 @@ export default class TableauResultats extends Vue {
    mappingLabelTri: {[key: string]: TriType} = {};
    mappingLabelFacet: {[key: string]: string} = {};
    displayDrawer: boolean;
-   isFirstPage = false;
-   isLastPage = false;
 
    constructor() {
       super();
@@ -219,16 +216,6 @@ export default class TableauResultats extends Vue {
       this.mappingLabelTri = this.getMappingLabeltoTriType;
       this.mappingLabelFacet = this.getFacetLabelMapping;
       this.displayDrawer = true;
-      this.isFirstPage = this.$store.getters.isFirstPage;
-      this.isLastPage = this.$store.getters.isLastPage;
-   }
-
-   get selectedArray() {
-      return this.selected;
-   }
-
-   get isFirstPageGetter() {
-      return this.isFirstPage;
    }
 
    get getOrderSortBooleans(): Array<boolean> {
@@ -350,6 +337,15 @@ export default class TableauResultats extends Vue {
    }
    get getMaxPage(): number {
       return this.$store.state.pagination._maxPage;
+   }
+   get isFirstPage(): boolean {
+      return this.$store.getters.isFirstPage();
+   }
+   get isLastPage(): boolean {
+      return this.$store.getters.isLastPage();
+   }
+   get isSelectionEmpty(): boolean {
+      return this.selected.length == 0;
    }
    get getFieldsToExport(): Array<string> {
       return ['ppn', 'issn', 'continiousType', 'editor', 'title', 'startDate', 'endDate', 'nbLoc'];
