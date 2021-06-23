@@ -7,7 +7,7 @@ Vue.use(Vuetify);
 
 export default new Vuetify({
    lang: {
-    locales: {fr},
-    current: 'fr',
-  }
+      locales: {fr},
+      current: 'fr',
+   },
 });

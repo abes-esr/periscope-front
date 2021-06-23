@@ -45,7 +45,7 @@ npm install -g @vue/cli
 ```
 vue create periscope-poc-vue-js-latest
 ```
-1. vue2, babel, router, vuex, linter, unit testing (jest).
+1. vue2, babel, index, vuex, linter, unit testing (jest).
 2. cd [emplacement du projet]
 
 ```
@@ -83,7 +83,7 @@ See [Configuration Reference](https://cli.vuejs.org/config/).
 
 ### Force resolution of vulnerabilities
 install in package.json file
-```javascript
+```java
 "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -109,7 +109,7 @@ Tip: think to run the script after each npm installation modules.
 Please tap after the creation of your vuetify project
 
 ```
-vue add router
+vue add index
 ```
 
-And this will restore functionalities on router.
+And this will restore functionalities on index.

@@ -63,11 +63,9 @@ node {
             if (ENV == 'DEV') {
                 serverHostnames.add('hostname.server-frontAphyl-1-dev')
                 serverHostnames.add('hostname.server-frontAphyl-2-dev')
-
             } else if (ENV == 'TEST') {
                 serverHostnames.add('hostname.server-frontAphyl-1-test')
                 serverHostnames.add('hostname.server-frontAphyl-2-test')
-
             } else if (ENV == 'PROD') {
                 serverHostnames.add('hostname.server-frontAphyl-1-prod')
                 serverHostnames.add('hostname.server-frontAphyl-2-prod')
@@ -114,33 +112,42 @@ node {
           try {
             echo "Edit .env file..."
 
-            original = readFile ".env"
-            newconfig = original
-
             if (ENV == 'DEV') {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-dev", variable: 'url')
                 ]) {
-                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
+                    original = readFile ".env.development"
+                    newconfig = original
+                    newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
+                    newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
+                    writeFile file: ".env.development", text: "${newconfig}"
+                    echo "texte = ${newconfig}"
                 }
 
             } else if (ENV == 'TEST') {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-test", variable: 'url')
                 ]) {
-                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
+                     original = readFile ".env.test"
+                     newconfig = original
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
+                     writeFile file: ".env.test", text: "${newconfig}"
+                     echo "texte = ${newconfig}"
                 }
 
             } else if (ENV == 'PROD') {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-prod", variable: 'url')
                 ]) {
-                    newconfig = newconfig.replaceAll("VUE_APP_ROOT_API=*", "VUE_APP_ROOT_API=${url}")
+                     original = readFile ".env.production"
+                     newconfig = original
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
+                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
+                     writeFile file: ".env.production", text: "${newconfig}"
+                     echo "texte = ${newconfig}"
                 }
             }
-
-            writeFile file: ".env", text: "${newconfig}"
-            echo "texte = ${newconfig}"
 
           } catch (e) {
             currentBuild.result = hudson.model.Result.FAILURE.toString()
@@ -161,7 +168,15 @@ node {
 
     stage('Build') {
         try {
-            sh 'npm run build'
+         if (ENV == 'DEV') {
+            sh 'NODE_ENV=production npm run build -- --mode development'
+        } else if (ENV == 'TEST') {
+            sh 'NODE_ENV=production npm run build -- --mode test'
+
+        } else if (ENV == 'PROD') {
+            sh 'NODE_ENV=production npm run build -- --mode production'
+        }
+
         } catch (e) {
             currentBuild.result = hudson.model.Result.FAILURE.toString()
             notifySlack(slackChannel,e.getLocalizedMessage())
@@ -179,7 +194,7 @@ node {
 
                 echo "Deploy to ${serverHostnames[i]}"
                 echo "--------------------------"
-                sh "ssh -tt ${username}@${hostname} \"cd ${htmlBaseDir} && rm -rf -d js && rm -rf -d css\""
+                sh "ssh -tt ${username}@${hostname} \"cd ${htmlBaseDir} && rm -rdf index.html favicon.ico js css img fonts \""
                 sh "scp -r ${jsDir}* ${username}@${hostname}:${htmlBaseDir}"
              }
 
