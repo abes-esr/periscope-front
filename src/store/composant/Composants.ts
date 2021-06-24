@@ -12,7 +12,28 @@ export class Composants {
    _snackBarMultiline = true;
    _snackBarColor = 'info';
    _snackBarText = '';
-   _panel: Array<PanelProvider> = [];
+   _panel: Array<PanelProvider> = [
+      {id: PanelType.PPN, position: 3, displayed: false, available: true, label: 'PPN'},
+      {id: PanelType.ISSN, position: 4, displayed: false, available: true, label: 'ISSN'},
+      {id: PanelType.RCR, position: 5, displayed: false, available: true, label: 'RCR'},
+      {id: PanelType.REGIONS, position: 2, displayed: false, available: true, label: 'PCP Régions'},
+      {id: PanelType.METIERS, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
+      {id: PanelType.WORDS, position: 6, displayed: false, available: true, label: 'Mots du Titre'},
+      {id: PanelType.EDITOR, position: 7, displayed: false, available: true, label: 'Editeur'},
+      {id: PanelType.LANG, position: 8, displayed: false, available: true, label: 'Langue'},
+      {id: PanelType.COUNTRY, position: 9, displayed: false, available: true, label: 'Pays'},
+      {id: PanelType.HISTORY, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
+   ].sort((n1, n2) => {
+      if (n1.position > n2.position) {
+         return 1;
+      }
+
+      if (n1.position < n2.position) {
+         return -1;
+      }
+
+      return 0;
+   });
 
    /**
     * Calcul un changement de position d'un panneau du module de recherche.
