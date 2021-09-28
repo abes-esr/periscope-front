@@ -24,6 +24,7 @@ import {Component, Vue} from 'vue-property-decorator';
 
 @Component
 export default class Footer extends Vue {
+
    //Events
    conditionsGenerales(): void {
       this.$router.replace('conditions-generales');
@@ -31,5 +32,12 @@ export default class Footer extends Vue {
    mentionsLegales(): void {
       this.$router.replace('mentions-legales');
    }
+   created() {
+      let ckeditor = document.createElement('script');    ckeditor.setAttribute('src',"//cdn.ckeditor.com/4.6.2/full/ckeditor.js");
+      document.head.appendChild(ckeditor);
+   }
 }
+
 </script>
+
+
