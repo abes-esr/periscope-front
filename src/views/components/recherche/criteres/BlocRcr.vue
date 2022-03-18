@@ -116,6 +116,7 @@ import {Logger} from '@/utils/Logger';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
+import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 @Component
 export default class ComponentRcr extends Vue {
@@ -131,6 +132,7 @@ export default class ComponentRcr extends Vue {
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];
    currentValue: any;
+   rcrL_liste: any;
 
    constructor() {
       super();
@@ -144,6 +146,10 @@ export default class ComponentRcr extends Vue {
       this.comboboxLabel = 'ex : 123456789';
       this.comboboxPlaceholder = 'Saisir des n° de RCR';
       this.currentValue = null;
+      PcpLibProfileService.getRcrName().then((response) => {
+         this.rcrL_liste = response;
+      });
+      Logger.info('test test' + JSON.stringify(this.rcrL_liste));
    }
 
    /**
