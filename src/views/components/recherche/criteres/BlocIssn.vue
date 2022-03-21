@@ -308,9 +308,9 @@ export default class ComponentIssn extends Vue {
     * Vérifie la valeur courante
     */
    checkValues(): void {
-      //Logger.debug('----- DEBUT CHECK VALUES -----');
-      //Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
-      //Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
+      Logger.debug('----- DEBUT CHECK VALUES -----');
+      Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
+      Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
 
       if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
@@ -319,6 +319,12 @@ export default class ComponentIssn extends Vue {
                   this.comboboxAlert = [];
                } else {
                   //Logger.debug('------- BREAK --------');
+                  return;
+               }
+            } else if (value.trim().match('^\\d{8}$')) {
+               if (this.addItem(value.substring(0, 4) + '-' + value.substring(4, 8))) {
+                  this.comboboxAlert = [];
+               } else {
                   return;
                }
             } else {
