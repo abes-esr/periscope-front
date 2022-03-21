@@ -101,7 +101,7 @@
                   disablePagination: true,
                   pageText: '',
                   itemsPerPageText: 'nombre de notices affichées',
-                  itemsPerPageOptions: [25, 50, 250, 1000],
+                  itemsPerPageOptions: [25, 250, 1000, getMaxNotice],
                   showFirstLastPage: false,
                   firstIcon: 'mdi-arrow-collapse-left',
                   lastIcon: 'mdi-arrow-collapse-right',
@@ -373,33 +373,31 @@ export default class TableauResultats extends Vue {
       this.$store.dispatch('updateCurrentPpn', value.ppn).catch((err) => {
          Logger.error(err);
       });
-     this.$store.dispatch('updateCurrentRcr', value.rcrList).catch((err) => {
-       Logger.error(err);
-     });
-      this.$store
-         .dispatch('doVisualisation')
-         .catch((err) => {
-            Logger.error(err.message);
-            if (err instanceof HttpRequestError) {
-               Logger.debug('Erreur API : ' + err.debugMessage);
-               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
-                  Logger.error(err);
-               });
-            } else {
-               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
-                  Logger.error(err);
-               });
-            }
-         });
+      this.$store.dispatch('updateCurrentRcr', value.rcrList).catch((err) => {
+         Logger.error(err);
+      });
+      this.$store.dispatch('doVisualisation').catch((err) => {
+         Logger.error(err.message);
+         if (err instanceof HttpRequestError) {
+            Logger.debug('Erreur API : ' + err.debugMessage);
+            this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+               Logger.error(err);
+            });
+         } else {
+            this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+               Logger.error(err);
+            });
+         }
+      });
 
       /*
-     Code pour ouvrir / fermer le contenu de la ligne
-      const index: number = this.expanded.indexOf(value);
-      if (index > -1) {
-         this.expanded.splice(index, 1);
-      } else {
-         this.expanded.push(value);
-      }*/
+   Code pour ouvrir / fermer le contenu de la ligne
+    const index: number = this.expanded.indexOf(value);
+    if (index > -1) {
+       this.expanded.splice(index, 1);
+    } else {
+       this.expanded.push(value);
+    }*/
    }
 
    /**
@@ -502,6 +500,9 @@ export default class TableauResultats extends Vue {
     */
    getItemPerPage(val: number): void {
       this.loading = true;
+      this.$store.dispatch('openInfoSnackBar', 'Affichage de ' + val + ' notices par page (Si plus de 1000 notices, patienter entre 30 secondes et 2 minutes)').catch((err) => {
+         Logger.error(err);
+      });
       this.$store.dispatch('updatePageSize', val).catch((err) => {
          Logger.error(err);
       });
