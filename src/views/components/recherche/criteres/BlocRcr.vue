@@ -37,6 +37,8 @@
                               @keydown="checkValues()"
                               @blur="checkValues()"
                               :rules="comboboxAlert"
+                              :items="rcr_liste"
+                              item-text="label"
                               multiple
                               outlined
                               small-chips
@@ -45,6 +47,7 @@
                               :placeholder="comboboxPlaceholder"
                               v-model="comboboxArrayTyped"
                               v-on="on"
+                              @click="updateRcrList()"
                            >
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item)">
@@ -132,7 +135,7 @@ export default class ComponentRcr extends Vue {
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];
    currentValue: any;
-   rcrL_liste: any;
+   rcr_liste: Array<any> = [];
 
    constructor() {
       super();
@@ -146,10 +149,7 @@ export default class ComponentRcr extends Vue {
       this.comboboxLabel = 'ex : 123456789';
       this.comboboxPlaceholder = 'Saisir des n° de RCR';
       this.currentValue = null;
-      PcpLibProfileService.getRcrName().then((response) => {
-         this.rcrL_liste = response;
-      });
-      Logger.info('test test' + JSON.stringify(this.rcrL_liste));
+      this.updateRcrList();
    }
 
    /**
@@ -238,6 +238,17 @@ export default class ComponentRcr extends Vue {
 
    /******************** Methods ***************************/
 
+   updateRcrList(): void {
+      PcpLibProfileService.getRcrName().then((response) => {
+         this.rcr_liste = [];
+         response.data.forEach((element: {rcr: string; label: string}) => {
+            // this.rcr_liste.push({label: element.rcr + ' ' + element.label, rcr: element.rcr});
+            this.rcr_liste.push(element.rcr + ' ' + element.label);
+         });
+         console.log('update list');
+      });
+   }
+
    updateStore(): void {
       this.$store.dispatch('updateSelectedRcr', this.comboboxArrayTyped).catch((err) => {
          Logger.error(err);
@@ -268,7 +279,6 @@ export default class ComponentRcr extends Vue {
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.comboboxArrayTyped = this.getRcrSelected;
    }
-
    /******************** Events ***************************/
 
    /**

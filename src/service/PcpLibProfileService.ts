@@ -5,20 +5,21 @@ import axios, {AxiosInstance, AxiosResponse} from 'axios';
  */
 export class PcpLibProfileService {
    client: AxiosInstance = axios.create({
-      baseURL: 'https://www.sudoc.fr/services/generic/?servicekey=pcplibprofile',
+      baseURL: 'https://apicom.sudoc.fr/wsReferentiels/v1/pcplibs.json',
       headers: {
-         'Content-type': 'application/xml',
+         'Content-type': 'text/json',
       },
 
    });
 
    /**
-    * Récupère les notices à partir des critères multiple de recherche
-    * @param data JSON contenant les critères de recherche
+    * Récupère une liste avec tout les RCR lié au nom de structure
     * @return Promise<AxiosResponse> Réponse Axios
     */
    getRcrName(): Promise<AxiosResponse> {
-      return this.client.post('');
+      return this.client.get('').then((response) => {
+         return response;
+      });
    }
 }
 export default new PcpLibProfileService();
