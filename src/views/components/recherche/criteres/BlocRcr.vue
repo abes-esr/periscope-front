@@ -136,6 +136,7 @@ export default class ComponentRcr extends Vue {
    comboboxArrayTyped: Array<string> = [];
    currentValue: any;
    rcr_liste: Array<any> = [];
+   rcrListLoad = false;
 
    constructor() {
       super();
@@ -239,14 +240,16 @@ export default class ComponentRcr extends Vue {
    /******************** Methods ***************************/
 
    updateRcrList(): void {
-      PcpLibProfileService.getRcrName().then((response) => {
-         this.rcr_liste = [];
-         response.data.forEach((element: {rcr: string; label: string}) => {
-            // this.rcr_liste.push({label: element.rcr + ' ' + element.label, rcr: element.rcr});
-            this.rcr_liste.push(element.rcr + ' ' + element.label);
+      if (!this.rcrListLoad) {
+         PcpLibProfileService.getRcrName().then((response) => {
+            this.rcr_liste = [];
+            response.data.forEach((element: {rcr: string; label: string}) => {
+               // this.rcr_liste.push({label: element.rcr + ' ' + element.label, rcr: element.rcr});
+               this.rcr_liste.push(element.rcr + ' ' + element.label);
+            });
+            this.rcrListLoad = true;
          });
-         console.log('update list');
-      });
+      }
    }
 
    updateStore(): void {
@@ -321,6 +324,7 @@ export default class ComponentRcr extends Vue {
       //Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
       //Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
 
+      // this.currentValue = this.currentValue
       if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
             if (value.trim().match('^\\d{9}$')) {
