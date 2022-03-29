@@ -14,6 +14,21 @@ export class Composants {
    _snackBarText = '';
    _panel: Array<PanelProvider> = [];
 
+   constructor() {
+      this._panel = [
+         {id: 9, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
+         {id: 4, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
+         {id: 3, position: 2, displayed: false, available: true, label: 'PCP Régions'},
+         {id: 0, position: 3, displayed: false, available: true, label: 'PPN'},
+         {id: 1, position: 4, displayed: false, available: true, label: 'ISSN'},
+         {id: 2, position: 5, displayed: false, available: true, label: 'RCR'},
+         {id: 5, position: 6, displayed: false, available: true, label: 'Mots du Titre'},
+         {id: 6, position: 7, displayed: false, available: true, label: 'Editeur'},
+         {id: 7, position: 8, displayed: false, available: true, label: 'Langue'},
+         {id: 8, position: 9, displayed: false, available: true, label: 'Pays'},
+      ];
+   }
+
    /**
     * Calcul un changement de position d'un panneau du module de recherche.
     * On applique le mouvement du panneau dont l'identifiant est passé en paramètre dans la liste des panneaux.
