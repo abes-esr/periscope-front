@@ -69,7 +69,7 @@
                   </v-expansion-panel-header>
                   <v-expansion-panel-content style="padding-left: 0.5em; margin-top: -0.5em">
                      <v-container fluid v-for="(val, i) in f.valeurs" :key="i" style="max-height: 2em; padding: 0">
-                        <v-checkbox :disabled="true" :label="convertFacetToLabel(f.zone, val.key) + ' (' + val.occurrence + ')'"></v-checkbox>
+                        <v-checkbox :label="convertFacetToLabel(f.zone, val.key) + ' (' + val.occurrence + ')'" @change="updateStoreFacet(f.zone, val.key)"></v-checkbox>
                      </v-container>
                   </v-expansion-panel-content>
                </v-expansion-panel>
@@ -352,6 +352,16 @@ export default class TableauResultats extends Vue {
    }
 
    /******************** Methods ***************************/
+
+   //experimental and test
+   updateStoreFacet(zone: string, key: string): void {
+     console.log(JSON.stringify(zone));
+     console.log(JSON.stringify(key));
+     const arrayZoneAndKey: Array<string> = [];
+     arrayZoneAndKey.push(zone);
+     arrayZoneAndKey.push(key);
+     this.$store.dispatch('updateCurrentFacets', arrayZoneAndKey);
+   }
 
    /**
     * Retourne le libéllé à afficher en fonction de la facette et de la clé

@@ -210,6 +210,9 @@ export class SearchRequest {
       };
       facettes.push(facetJson);
 
+      // Construction des filtres des facettes
+
+
       return {criteres: criteria, tri: sort, facettes: facettes};
    }
 
