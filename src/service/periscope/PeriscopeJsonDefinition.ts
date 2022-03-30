@@ -102,8 +102,8 @@ export interface APIHoldingsResponse {
 }
 
 export interface JsonSequenceItem {
-   dateDebut: string;
-   dateFin: string;
+   anneeDebut: string;
+   anneeFin: string;
    typeSequence: string;
    rcr: number;
 }

@@ -14,7 +14,11 @@ export class Holding {
       if (obj.sequences == null) {
          this.sequences = [];
       } else {
-         obj.sequences.forEach((element: JsonSequenceItem) => this.sequences.push(element));
+         obj.sequences.forEach((element: JsonSequenceItem) => {
+            console.log(JSON.stringify(element));
+            const sequence: JsonSequenceItem = {anneeDebut: element.anneeDebut+'-1-1', anneeFin: element.anneeFin+'-12-31',typeSequence: element.typeSequence,rcr:element.rcr};
+            this.sequences.push(sequence);
+         })
       }
 
       if (obj.erreurs == null) {
