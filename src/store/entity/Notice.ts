@@ -26,7 +26,7 @@ export class Notice {
       this.continiousType = obj.typeDocument;
       this.startDate = obj.date_debut;
 
-      if (this.endDate == null) {
+      if (obj.date_fin == null) {
          this.endDate = '-';
       } else {
          this.endDate = obj.date_fin;
