@@ -353,14 +353,17 @@ export default class TableauResultats extends Vue {
 
    /******************** Methods ***************************/
 
-   //experimental and test
+  /**
+   * Mets à jour les filtres de facette dans le store
+   * @param zone le type de facette (document_type, country...)
+   * @param key la valeur du type (périodique, monographie...)
+   */
    updateStoreFacet(zone: string, key: string): void {
-     console.log(JSON.stringify(zone));
-     console.log(JSON.stringify(key));
-     const arrayZoneAndKey: Array<string> = [];
-     arrayZoneAndKey.push(zone);
-     arrayZoneAndKey.push(key);
-     this.$store.dispatch('updateCurrentFacets', arrayZoneAndKey);
+      const arrayZoneAndKey: Array<string> = [];
+      arrayZoneAndKey.push(zone);
+      arrayZoneAndKey.push(key);
+      this.$store.dispatch('updateCurrentFacets', arrayZoneAndKey);
+      this.clicOnFacet();
    }
 
    /**
@@ -414,6 +417,33 @@ export default class TableauResultats extends Vue {
     * Action lorsque l'utilisateur clique sur le bouton d'actualisation du tri
     */
    sortColumns(): void {
+      this.loading = true;
+      this.$store
+         .dispatch('doSearch')
+         .then(() => {
+            this.notices = this.getNotices;
+            this.loading = false;
+         })
+         .catch((err) => {
+            this.loading = false;
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+               Logger.debug('Erreur API : ' + err.debugMessage);
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                  Logger.error(err);
+               });
+            } else {
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                  Logger.error(err);
+               });
+            }
+         });
+   }
+
+   /**
+    * Action lorsque l'utilisateur clique sur une des facettes
+    */
+   clicOnFacet(): void {
       this.loading = true;
       this.$store
          .dispatch('doSearch')

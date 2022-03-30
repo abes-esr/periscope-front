@@ -4,6 +4,6 @@ import {JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefiniti
  * Représente une requête de recherche
  */
 export class BlocRequeteEnregistree {
-   _directRequest: JsonGlobalSearchRequest = {criteres: [], tri: [], facettes: []};
+   _directRequest: JsonGlobalSearchRequest = {criteres: [], tri: [], facettes: [], filtresFacettes: []};
    _historyOfAllRequests: Array<JsonGlobalSearchRequest> = [];
 }

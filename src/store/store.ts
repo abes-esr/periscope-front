@@ -1127,7 +1127,7 @@ export default new Vuex.Store({
       },
       resetRequeteDirecte(state) {
          Logger.debug('Reset des requetes directes');
-         state.blocRequeteDirecte._directRequest = {criteres: [], tri: [], facettes: []};
+         state.blocRequeteDirecte._directRequest = {criteres: [], tri: [], facettes: [], filtresFacettes: []};
       },
       resetRequeteHistory(state) {
          Logger.debug("Reset de l'historique");
@@ -1148,7 +1148,8 @@ export default new Vuex.Store({
              state.blocLangue,
              state.blocPays,
              state.blocRequeteDirecte,
-             state.blocTri
+             state.blocTri,
+             state.filtresFacettes
          );
       },
 
@@ -1294,7 +1295,7 @@ export default new Vuex.Store({
          Logger.debug('Reset des RCR courant');
          state.lotHoldings._rcrList = [];
       },
-      mutationCurrentFacets(state, value) {
+      mutationCurrentFacets(state, value) { //TODO faire un refactor passer le tableau en objet, rendre genei
          Logger.debug('Mutation des facettes courantes');
          if(value[0] == "document_type"){
             if(state.filtresFacettes._filters[0].valeurs.includes(value[1])){
@@ -1645,6 +1646,7 @@ export default new Vuex.Store({
             PeriscopeApiAxios.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
                   const response: APISearchResponse = (res as unknown) as APISearchResponse;
+                  console.log(JSON.stringify(response.facettes));
                   context.commit('resetNotices');
                   context.commit('mutationNotices', response.notice);
                   context.commit('resetFacettes');
@@ -1653,8 +1655,6 @@ export default new Vuex.Store({
                   context.commit('mutationMaxNotice', response.nbNotices);
                   const millis = Date.now() - start;
                   context.commit('mutationExecutionTime', Math.floor(millis / 1000));
-
-                  //console.log(JSON.stringify(context.state.lotFacettes._facettes));
 
                   resolve(true);
                })
