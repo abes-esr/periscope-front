@@ -325,7 +325,9 @@ export default class ComponentRcr extends Vue {
          .filter((value) => value != '');
 
       // on enleve les doublons
-      this.comboboxArrayTyped = this.comboboxArrayTyped.filter((element, position) => this.comboboxArrayTyped.indexOf(element) == position);
+      // this.comboboxArrayTyped = this.comboboxArrayTyped.filter((element, position) => this.comboboxArrayTyped.indexOf(element) == position);
+      this.comboboxArrayTyped = Array.from(new Set(this.comboboxArrayTyped));
+
       this.updateStore();
    }
 
