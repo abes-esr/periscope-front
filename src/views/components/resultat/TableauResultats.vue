@@ -269,7 +269,7 @@ export default class TableauResultats extends Vue {
          {
             text: 'Code PCP',
             value: TriType[TriType.pcpList],
-            sortable: false,
+            sortable: true,
          },
          {
             text: 'Localisations',
