@@ -7,7 +7,7 @@
          <v-col cols="1">
             <v-btn outlined small @click.stop="displayPanel = !displayPanel"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
          </v-col>
-         <v-col cols="10"> Notice n°{{ ppnNumber }} </v-col>
+         <v-col cols="10"><a :href="'https://www.sudoc.fr/'+ppnNumber">Notice n°{{ ppnNumber }} </a></v-col>
       </v-row>
       <v-row v-if="displayChart">
          <v-container>
