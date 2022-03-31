@@ -32,20 +32,17 @@
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
                            <v-combobox
-                              :search-input.sync="currentValue"
-                              @keyup="checkValues()"
-                              @keydown="checkValues()"
-                              @blur="checkValues()"
-                              :rules="comboboxAlert"
-                              multiple
-                              outlined
-                              small-chips
-                              :label="comboboxLabel"
-                              class="style2"
-                              :placeholder="comboboxPlaceholder"
-                              v-model="comboboxArrayTyped"
-                              v-on="on"
-                           >
+                               @blur="checkValuesAndAddItems()"
+                               :rules="comboboxAlert"
+                               :items="rcr_liste"
+                               item-text="label"
+                               multiple outlined
+                               small-chips
+                               :label="comboboxLabel"
+                               class="style2"
+                               :placeholder="comboboxPlaceholder"
+                               v-model="comboboxArrayTyped"
+                               v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -116,6 +113,7 @@ import {Logger} from '@/utils/Logger';
 import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
+import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 @Component
 export default class ComponentRcr extends Vue {
@@ -131,6 +129,8 @@ export default class ComponentRcr extends Vue {
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];
    currentValue: any;
+   rcr_liste: Array<any> = [];
+   rcrListLoad = false;
 
    constructor() {
       super();
@@ -144,6 +144,7 @@ export default class ComponentRcr extends Vue {
       this.comboboxLabel = 'ex : 123456789';
       this.comboboxPlaceholder = 'Saisir des n° de RCR';
       this.currentValue = null;
+      this.updateRcrList();
    }
 
    /**
@@ -232,15 +233,23 @@ export default class ComponentRcr extends Vue {
 
    /******************** Methods ***************************/
 
+   updateRcrList(): void {
+      if (!this.rcrListLoad) {
+         PcpLibProfileService.getRcrName().then((response) => {
+            this.rcr_liste = [];
+            response.data.forEach((element: {rcr: string; label: string}) => {
+               // this.rcr_liste.push({label: element.rcr + ' ' + element.label, rcr: element.rcr});
+               this.rcr_liste.push(element.rcr + ' ' + element.label);
+            });
+            this.rcrListLoad = true;
+         });
+      }
+   }
+
    updateStore(): void {
       this.$store.dispatch('updateSelectedRcr', this.comboboxArrayTyped).catch((err) => {
          Logger.error(err);
       });
-   }
-   addItem(value: string): boolean {
-      this.comboboxArrayTyped.push(value.trim());
-      this.updateStore();
-      return true;
    }
 
    /**
@@ -262,7 +271,6 @@ export default class ComponentRcr extends Vue {
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.comboboxArrayTyped = this.getRcrSelected;
    }
-
    /******************** Events ***************************/
 
    /**
@@ -300,51 +308,27 @@ export default class ComponentRcr extends Vue {
    /**
     * Vérifie la valeur courante
     */
-   checkValues(): void {
-      //Logger.debug('----- DEBUT CHECK VALUES -----');
-      //Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
-      //Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
-
-      if (this.currentValue != null) {
-         for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{9}$')) {
-               if (this.addItem(value.trim())) {
-                  this.comboboxAlert = [];
-               } else {
-                  //Logger.debug('------- BREAK --------');
-                  return;
-               }
+   checkValuesAndAddItems(): void {
+      // netoyage des données pour avoir que les rcrs
+      this.comboboxArrayTyped = this.comboboxArrayTyped
+         .map((item) => {
+            console.log(item);
+            if (item.split(' ')[0].match('^\\d{9}$')) {
+               item = item.split(' ')[0];
+               console.log(item);
+               return item;
             } else {
-               this.currentValue = value;
-               if (this.comboboxAlert.length === 0) {
-                  this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
-               }
-               //Logger.debug('------- BREAK --------');
-               return;
+               this.removeItem(item);
+               return '';
             }
-         }
-         if (this.comboboxAlert.length === 0) {
-            this.currentValue = null;
-         }
-      } else if (this.comboboxArrayTyped.length !== 0 && !this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1].match('^\\d{9}$')) {
-         this.currentValue = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
-         this.removeItem(this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1]);
-         if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
-         }
-      } else if (this.currentValue == null) {
-         this.currentValue = null;
-         this.comboboxAlert = [];
-         this.updateStore();
-      } else {
-         if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push('Un RCR doit être constitué de 9 chiffres : XXXXXXXXX');
-         }
-      }
+         })
+         .filter((value) => value != '');
 
-      //Logger.debug(JSON.stringify('Search value AFTER validation: ' + this.currentValue));
-      //Logger.debug(JSON.stringify('Values AFTER validation : ' + JSON.stringify(this.comboboxArrayTyped)));
-      //Logger.debug('----- FIN CHECK VALUES -----');
+      // on enleve les doublons
+      // this.comboboxArrayTyped = this.comboboxArrayTyped.filter((element, position) => this.comboboxArrayTyped.indexOf(element) == position);
+      this.comboboxArrayTyped = Array.from(new Set(this.comboboxArrayTyped));
+
+      this.updateStore();
    }
 
    /******************** Panel Events ***************************/
