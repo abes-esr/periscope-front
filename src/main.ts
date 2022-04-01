@@ -14,7 +14,7 @@ Vue.config.productionTip = false;
 Vue.config.ignoredElements = ['Regions'];
 
 // Handle all Vue errors
-Vue.config.errorHandler = (error, vm, info) => Logger.error(error.message, error.constructor.name, vm, info);
+//Vue.config.errorHandler = (error, vm, info) => Logger.error(error.message, error.constructor.name, vm, info);
 
 Vue.use(VueClipboard); // Plugin pour l'historique
 Vue.component('downloadCsv', JsonCSV); // Plugin d'export au format CSV

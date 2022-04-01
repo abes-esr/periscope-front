@@ -39,7 +39,7 @@ export default class ComponentTimeline extends Vue {
                moveable: true,
                zoomKey: 'shiftKey', //TODO ne fonctionne pas malgre la doc
                orientation: 'top',
-               zoomMin: 1000,
+               zoomMin: 10000000,
                stack: false,
                stackSubgroups: true,
                cluster: { //Gestion des chevauchement de sequences
