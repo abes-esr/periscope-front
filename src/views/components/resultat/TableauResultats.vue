@@ -69,7 +69,7 @@
                   </v-expansion-panel-header>
                   <v-expansion-panel-content style="padding-left: 0.5em; margin-top: -0.5em">
                      <v-container fluid v-for="(val, i) in f.valeurs" :key="i" style="max-height: 2em; padding: 0">
-                        <v-checkbox :disabled="true" :label="convertFacetToLabel(f.zone, val.key) + ' (' + val.occurrence + ')'"></v-checkbox>
+                        <v-checkbox :label="convertFacetToLabel(f.zone, val.key) + ' (' + val.occurrence + ')'" @change="updateStoreFacet(f.zone, val.key)"></v-checkbox>
                      </v-container>
                   </v-expansion-panel-content>
                </v-expansion-panel>
@@ -353,6 +353,19 @@ export default class TableauResultats extends Vue {
 
    /******************** Methods ***************************/
 
+  /**
+   * Mets à jour les filtres de facette dans le store
+   * @param zone le type de facette (document_type, country...)
+   * @param key la valeur du type (périodique, monographie...)
+   */
+   updateStoreFacet(zone: string, key: string): void {
+      const arrayZoneAndKey: Array<string> = [];
+      arrayZoneAndKey.push(zone);
+      arrayZoneAndKey.push(key);
+      this.$store.dispatch('updateCurrentFacets', arrayZoneAndKey);
+      this.clicOnFacet();
+   }
+
    /**
     * Retourne le libéllé à afficher en fonction de la facette et de la clé
     * @return Libellé à afficher
@@ -404,6 +417,33 @@ export default class TableauResultats extends Vue {
     * Action lorsque l'utilisateur clique sur le bouton d'actualisation du tri
     */
    sortColumns(): void {
+      this.loading = true;
+      this.$store
+         .dispatch('doSearch')
+         .then(() => {
+            this.notices = this.getNotices;
+            this.loading = false;
+         })
+         .catch((err) => {
+            this.loading = false;
+            Logger.error(err.message);
+            if (err instanceof HttpRequestError) {
+               Logger.debug('Erreur API : ' + err.debugMessage);
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+                  Logger.error(err);
+               });
+            } else {
+               this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+                  Logger.error(err);
+               });
+            }
+         });
+   }
+
+   /**
+    * Action lorsque l'utilisateur clique sur une des facettes
+    */
+   clicOnFacet(): void {
       this.loading = true;
       this.$store
          .dispatch('doSearch')

@@ -3,6 +3,7 @@
  */
 import Notice from '@/store/entity/Notice';
 import Holding from '@/store/entity/Holding';
+import {FacetteType} from "@/store/recherche/filtresFacettes/FiltresFacettes";
 
 export interface JsonTri {
    sort: string;
@@ -13,6 +14,7 @@ export interface JsonGlobalSearchRequest {
    criteres: [];
    tri: Array<JsonTri>;
    facettes: Array<JsonFacetteRequest>;
+   filtresFacettes: Array<FacetteType>;
 }
 
 export interface JsonPcpBlocProvider {

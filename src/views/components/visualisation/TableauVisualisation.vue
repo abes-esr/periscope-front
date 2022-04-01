@@ -169,8 +169,6 @@ export default class TableauVisualisation extends Vue {
    }
 
    get getElement(): string {
-      console.log(JSON.parse(JSON.stringify(this.$store.getters.getGroupsFromHoldings)));
-      console.log(JSON.parse(JSON.stringify(this.$store.getters.getItemsFromHoldings)));
       return '';
    }
 
@@ -201,7 +199,6 @@ export default class TableauVisualisation extends Vue {
             items.push({id: elementSequenceCounter, group: +sequence.rcr, content: '', rcr: sequence.rcr.toString(), start: new Date(parseInt(sequence.anneeDebut), 1, 1), end: new Date(parseInt(sequence.anneeFin), 12, 31), className: this.getClassNameBySequenceType(sequence.typeSequence), type: 'range', title: holding.etatCollection});
          });
       });
-      console.log(JSON.parse(JSON.stringify(items)));
       return items;
    }
 

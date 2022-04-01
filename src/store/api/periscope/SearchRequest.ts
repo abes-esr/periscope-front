@@ -14,6 +14,7 @@ import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {OrderType, TriType} from '@/store/recherche/TriDefinition';
 import {ValueError} from '@/exception/ValueError';
 import {PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {FacetteType, FiltresFacettes} from "@/store/recherche/filtresFacettes/FiltresFacettes";
 
 /**
  * Représente une requête de recherche pour l'API Periscope
@@ -38,7 +39,8 @@ export class SearchRequest {
       blocLangue: BlocLangue,
       blocPays: BlocPays,
       blocRequeteDirecte: BlocRequeteEnregistree,
-      blocTri: BlocTri
+      blocTri: BlocTri,
+      filtresFacettes: FiltresFacettes,
    ): JsonGlobalSearchRequest {
       const criteria: any = [];
       const sort: Array<JsonTri> = [];
@@ -210,7 +212,11 @@ export class SearchRequest {
       };
       facettes.push(facetJson);
 
-      return {criteres: criteria, tri: sort, facettes: facettes};
+      // Construction des filtres des facettes
+      const filtres: Array<FacetteType> = filtresFacettes._filters;
+
+
+      return {criteres: criteria, tri: sort, facettes: facettes, filtresFacettes: filtres};
    }
 
    /**
