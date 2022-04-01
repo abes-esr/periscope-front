@@ -11,8 +11,8 @@ export interface Items {
    group: number;
    content: string;
    rcr: string;
-   start: string;
-   end: string;
+   start: Date;
+   end: Date;
    className: string;
    type: string;
    title: string;

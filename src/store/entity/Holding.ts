@@ -15,8 +15,7 @@ export class Holding {
          this.sequences = [];
       } else {
          obj.sequences.forEach((element: JsonSequenceItem) => {
-            console.log(JSON.stringify(element));
-            const sequence: JsonSequenceItem = {anneeDebut: element.anneeDebut+'-1-1', anneeFin: element.anneeFin+'-12-31',typeSequence: element.typeSequence,rcr:element.rcr};
+            const sequence: JsonSequenceItem = {anneeDebut: element.anneeDebut, anneeFin: element.anneeFin,typeSequence: element.typeSequence,rcr:element.rcr};
             this.sequences.push(sequence);
          })
       }
