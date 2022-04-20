@@ -109,7 +109,7 @@ export interface JsonSequenceItem {
 }
 
 export interface JsonDetailNotice {
-   ppn: number;
+   ppn: string;
    issn: string;
    titre: string;
    datePublication: string;

@@ -2,11 +2,18 @@
    <v-container class="container">
       <v-row class="outlined-app">
          <v-col cols="10">
-            <p>PPN {{ notice.ppn }} ISSN {{ notice.issn }} {{ notice.titre }} {{ notice.datePublication }}</p>
-            <p>{{ notice.ville }} {{ notice.editeur }} {{ notice.typeSupport }} {{ notice.periodicite }}</p>
-            <a :href="'https://www.sudoc.fr/' + ppnNumber" target="_blank"><img src="@/assets/bouton_sudoc.png" alt="Voir la notice dans le Sudoc public" /></a>
+            <div class="notice">
+               <p class="my-0">PPN {{ notice.ppn }} ISSN {{ notice.issn }} {{ notice.titre }} {{ notice.datePublication }}</p>
+               <p class="my-0">{{ notice.ville }} {{ notice.editeur }} {{ notice.typeSupport }} {{ notice.periodicite }}</p>
+            </div>
+         </v-col>
+         <v-col>
+            <div class="lien">
+               <a :href="'https://www.sudoc.fr/' + notice.ppn" target="_blank"><img src="@/assets/bouton_sudoc.png" alt="Voir la notice dans le Sudoc public" /></a>
+            </div>
          </v-col>
       </v-row>
+
    </v-container>
 </template>
 
@@ -14,21 +21,19 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
 import {HttpRequestError} from '@/exception/HttpRequestError';
-import {JsonDetailNotice} from "@/service/periscope/PeriscopeJsonDefinition";
+import {JsonDetailNotice} from '@/service/periscope/PeriscopeJsonDefinition';
 
 @Component
 export default class DetailNotice extends Vue {
    notice: JsonDetailNotice;
-   ppnNumber: string;
 
    constructor() {
       super();
-      this.notice = {};
-      this.ppnNumber = this.$store.state.lotHoldings._ppn;
+      this.notice = {ppn: this.$store.state.lotHoldings._ppn, issn: '', titre: '', datePublication: '', editeur: '', ville: '', typeSupport: '', periodicite: ''};
    }
 
    mounted() {
-      PeriscopeApiAxios.getInfosNotices(this.ppnNumber)
+      PeriscopeApiAxios.getInfosNotices(this.notice.ppn)
          .then((response) => {
             this.notice = {
                ppn: response.data.ppn,
@@ -40,7 +45,6 @@ export default class DetailNotice extends Vue {
                typeSupport: response.data.typeSupport,
                periodicite: response.data.periodicite,
             };
-            console.log(this.notice);
          })
          .catch((err) => {
             if (err.response) {
@@ -56,5 +60,15 @@ export default class DetailNotice extends Vue {
 <style scoped>
 .container {
    background-color: #31669e;
+}
+
+.notice {
+   text-align: left;
+   color: white;
+   font-size: small;
+}
+
+.lien {
+   text-align: right;
 }
 </style>
