@@ -108,7 +108,7 @@ export interface JsonSequenceItem {
    rcr: number;
 }
 
-export interface JsonNotice {
+export interface JsonDetailNotice {
    ppn: number;
    issn: string;
    titre: string;

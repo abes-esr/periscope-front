@@ -13,35 +13,34 @@
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
 import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
-import {JsonNotice} from '@/service/periscope/PeriscopeJsonDefinition';
 import {HttpRequestError} from '@/exception/HttpRequestError';
+import {JsonDetailNotice} from "@/service/periscope/PeriscopeJsonDefinition";
 
 @Component
 export default class DetailNotice extends Vue {
-   notice: JsonNotice;
+   notice: JsonDetailNotice;
    ppnNumber: string;
 
    constructor() {
       super();
+      this.notice = {};
       this.ppnNumber = this.$store.state.lotHoldings._ppn;
-      this.getNotice();
    }
 
-   getNotice(): void {
+   mounted() {
       PeriscopeApiAxios.getInfosNotices(this.ppnNumber)
          .then((response) => {
-            if (response.status == 200) {
-               this.notice = {
-                  ppn: response.data.ppn,
-                  issn: response.data.issn,
-                  titre: response.data.titre,
-                  datePublication: response.data.dateDePublication,
-                  editeur: response.data.editeur,
-                  ville: response.data.ville,
-                  typeSupport: response.data.typeSupport,
-                  periodicite: response.data.perioricite,
-               };
-            }
+            this.notice = {
+               ppn: response.data.ppn,
+               issn: response.data.issn,
+               titre: response.data.titre,
+               datePublication: response.data.datePublication,
+               editeur: response.data.editeur,
+               ville: response.data.ville,
+               typeSupport: response.data.typeSupport,
+               periodicite: response.data.periodicite,
+            };
+            console.log(this.notice);
          })
          .catch((err) => {
             if (err.response) {

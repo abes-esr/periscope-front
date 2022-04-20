@@ -1,4 +1,4 @@
-import {JsonGlobalSearchRequest, JsonNotice} from '@/service/periscope/PeriscopeJsonDefinition';
+import {JsonGlobalSearchRequest, JsonDetailNotice} from '@/service/periscope/PeriscopeJsonDefinition';
 import PeriscopeDataService from '@/service/periscope/PeriscopeService';
 import {AxiosResponse} from 'axios';
 import {HttpRequestError} from '@/exception/HttpRequestError';
