@@ -10,6 +10,11 @@
             <component-stepper></component-stepper>
          </v-col>
       </v-row>
+     <v-row>
+       <v-col>
+         <detail-notice></detail-notice>
+       </v-col>
+     </v-row>
       <v-row>
          <v-col>
             <tableau-visualisation></tableau-visualisation>
@@ -29,9 +34,11 @@ import ComponentHeader from '../components/Header.vue';
 import ComponentStepper from '../components/Stepper.vue';
 import TableauVisualisation from '@/views/components/visualisation/TableauVisualisation.vue';
 import ComponentFooter from '@/views/components/Footer.vue';
+import DetailNotice from "@/views/components/visualisation/DetailNotice.vue";
 
 @Component({
    components: {
+     DetailNotice,
       ComponentHeader,
       ComponentStepper,
       ComponentFooter,

@@ -107,3 +107,14 @@ export interface JsonSequenceItem {
    typeSequence: string;
    rcr: number;
 }
+
+export interface JsonNotice {
+   ppn: number;
+   issn: string;
+   titre: string;
+   datePublication: string;
+   editeur: string;
+   ville: string;
+   typeSupport: string;
+   periodicite: string;
+}

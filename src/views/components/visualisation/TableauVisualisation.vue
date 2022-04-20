@@ -1,42 +1,24 @@
 <template>
-   <v-container>
-      <v-row class="outlined-app">
-         <v-col cols="1">
-            <v-btn outlined small @click.stop="displayChart = !displayChart"><v-icon>mdi-arrow-down</v-icon></v-btn>
-         </v-col>
-         <v-col cols="1">
-            <v-btn outlined small @click.stop="displayPanel = !displayPanel"><v-icon>mdi-format-list-bulleted-square</v-icon></v-btn>
-         </v-col>
-         <v-col cols="10"><a :href="'https://www.sudoc.fr/'+ppnNumber">Notice n°{{ ppnNumber }} </a></v-col>
-      </v-row>
-      <v-row v-if="displayChart">
-         <v-container>
-            <v-row>
-               <v-col cols="2"> </v-col>
-               <v-col cols="10">
-
-               </v-col>
-            </v-row>
-            <v-row justify="center">
-               <v-col><v-chip label small color="blue"> Collection sans information de lacunes </v-chip></v-col>
-               <v-col> <v-chip label small color="yellow"> Collection lacunaire </v-chip></v-col>
-               <v-col> <v-chip label small color="grey"> Erreur </v-chip></v-col>
-               <v-col> <v-chip label small color="green"> Synthèse disponible </v-chip></v-col>
-               <v-col>
-                  <v-chip label small color="red"> Synthèse lacunaire </v-chip>
-               </v-col>
-            </v-row>
-            <v-row>
-               <v-col v-if="displayPanel" cols="3">
-                  <p>test</p>
-               </v-col>
-               <v-col>
-                  <component-timeline v-bind:items="items" v-bind:groups="groups" style="border: 1px solid grey"></component-timeline>
-               </v-col>
-            </v-row>
-         </v-container>
-      </v-row>
-   </v-container>
+      <v-container>
+         <v-row>
+            <v-col cols="2"> </v-col>
+            <v-col cols="10"> </v-col>
+         </v-row>
+         <v-row justify="center">
+            <v-col><v-chip label small color="blue"> Collection sans information de lacunes </v-chip></v-col>
+            <v-col> <v-chip label small color="yellow"> Collection lacunaire </v-chip></v-col>
+            <v-col> <v-chip label small color="grey"> Erreur </v-chip></v-col>
+            <v-col> <v-chip label small color="green"> Synthèse disponible </v-chip></v-col>
+            <v-col>
+               <v-chip label small color="red"> Synthèse lacunaire </v-chip>
+            </v-col>
+         </v-row>
+         <v-row>
+            <v-col>
+               <component-timeline v-bind:items="items" v-bind:groups="groups" style="border: 1px solid grey"></component-timeline>
+            </v-col>
+         </v-row>
+      </v-container>
 </template>
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
@@ -51,8 +33,6 @@ import Holding from '@/store/entity/Holding';
    },
 })
 export default class TableauVisualisation extends Vue {
-   displayChart: boolean;
-   displayPanel: boolean;
    drawer: any;
    groups: Array<Group>;
    items: Array<Items>;
@@ -60,13 +40,10 @@ export default class TableauVisualisation extends Vue {
 
    constructor() {
       super();
-      this.displayChart = false;
-      this.displayPanel = false;
       this.drawer = null;
       this.ppnNumber = this.$store.state.lotHoldings._ppn;
       this.groups = this.getGroups;
       this.items = this.getItems;
-
 
       /*
       this.groups = [
@@ -163,7 +140,7 @@ export default class TableauVisualisation extends Vue {
    }
 
    sortRcrListFromHoldings(): Array<string> {
-      const rcrList : Array<string> = this.$store.getters.getLotHoldings._rcrList;
+      const rcrList: Array<string> = this.$store.getters.getLotHoldings._rcrList;
       rcrList.sort((a: any, b: any) => a - b);
       return rcrList;
    }
@@ -206,11 +183,15 @@ export default class TableauVisualisation extends Vue {
    }
 
    getClassNameBySequenceType(sequenceType: string): string {
-      switch (sequenceType){
-         case "CONTINUE": return 'blue';
-         case "LACUNE": return 'yellow';
-         case "ERREUR": return 'red';
-         default: return 'none';
+      switch (sequenceType) {
+         case 'CONTINUE':
+            return 'blue';
+         case 'LACUNE':
+            return 'yellow';
+         case 'ERREUR':
+            return 'red';
+         default:
+            return 'none';
       }
    }
 }
