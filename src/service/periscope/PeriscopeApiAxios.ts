@@ -1,4 +1,4 @@
-import {JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
+import {JsonGlobalSearchRequest, JsonDetailNotice} from '@/service/periscope/PeriscopeJsonDefinition';
 import PeriscopeDataService from '@/service/periscope/PeriscopeService';
 import {AxiosResponse} from 'axios';
 import {HttpRequestError} from '@/exception/HttpRequestError';
@@ -76,5 +76,11 @@ export class PeriscopeApiAxios {
                throw new HttpRequestError(err.status, err.message);
             }
          });
+   }
+
+   static getInfosNotices(ppn: string): Promise<AxiosResponse> {
+      return PeriscopeDataService.getNotice(ppn).then((response) => {
+         return response;
+      });
    }
 }

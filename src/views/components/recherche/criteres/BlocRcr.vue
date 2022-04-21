@@ -238,7 +238,6 @@ export default class ComponentRcr extends Vue {
          PcpLibProfileService.getRcrName().then((response) => {
             this.rcr_liste = [];
             response.data.forEach((element: {rcr: string; label: string}) => {
-               // this.rcr_liste.push({label: element.rcr + ' ' + element.label, rcr: element.rcr});
                this.rcr_liste.push(element.rcr + ' ' + element.label);
             });
             this.rcrListLoad = true;

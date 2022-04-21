@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosResponse} from 'axios';
+import axios, {AxiosInstance, AxiosPromise, AxiosResponse} from 'axios';
 
 /**
  * Couche de service pour les appels à l'API Periscope
@@ -35,7 +35,7 @@ class PeriscopeService {
 
    /**
     * Récupère l'état de collection d'une notice à partir de son PPN
-    * @param ppn Numéro PPN de la noticer
+    * @param ppn Numéro PPN de la notice
     * @param typeSequence Filtre sur les types de séquences
     * @return Promise<AxiosResponse> Réponse Axios
     */
@@ -45,6 +45,15 @@ class PeriscopeService {
       } else {
          return this.client.get(`/holdings/${ppn}`, {timeout: 1000 * 10});
       }
+   }
+
+   /**
+    * Récupère les informations générales de la notice
+    * @param ppn : numéro ppn de la notice à récupérer
+    * @Return Promise<AxiosResponse> réponse Axios
+    */
+   getNotice(ppn: string): Promise<AxiosResponse> {
+      return this.client.get(`/holdings/notice/${ppn}`, {timeout: 1000 * 10});
    }
 }
 export default new PeriscopeService();
