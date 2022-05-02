@@ -1,22 +1,7 @@
 <template>
       <v-container>
-         <v-row>
-            <v-col cols="2"> </v-col>
-            <v-col cols="10"> </v-col>
-         </v-row>
          <v-row justify="center">
-            <v-col><v-chip label small color="blue"> Collection sans information de lacunes </v-chip></v-col>
-            <v-col> <v-chip label small color="yellow"> Collection lacunaire </v-chip></v-col>
-            <v-col> <v-chip label small color="grey"> Erreur </v-chip></v-col>
-            <v-col> <v-chip label small color="green"> Synthèse disponible </v-chip></v-col>
-            <v-col>
-               <v-chip label small color="red"> Synthèse lacunaire </v-chip>
-            </v-col>
-         </v-row>
-         <v-row>
-            <v-col>
-               <component-timeline v-bind:items="items" v-bind:groups="groups" style="border: 1px solid grey"></component-timeline>
-            </v-col>
+           <iframe src="http://localhost:8083/PCP_war_exploded/?ppnviewed=039237273&orderby=SORT_BY_PCP&collectionStatus=&tree=987352102%2C974112101%2C973022101%2C972332101%2C971202101%2C731372101%2C693872102%2C422182203%2C422182101%2C384212101%2C840072101%2C831372101%2C130555103%2C130012202%2C060882103%2C861942238%2C861942201%2C173002101%2C800212101%2C721812109%2C490076101%2C490072105%2C441092103%2C593502215%2C593502207%2C591782101%2C543952102%2C870856101%2C870852106%2C661362105%2C661362104%2C341722208%2C341722102%2C951272104%2C940682101%2C930792101%2C930662101%2C912282101%2C782972101%2C751162101%2C751125202%2C751075209%2C751065208%2C751055227%2C751052262%2C751052119%2C751045202%2C751015208%2C751015204%2C765402101%2C763512101%2C250562104%2C452342102%2C372612210%2C562602102%2C352382104%2C290192103%2C212312213%2C141182205%2C631132218%2C644452101%2C641022101%2C335222102%2C333182205%2C682242105%2C674822138%2C674822105%2C130012102%2C315552253%2C315552107%2C315552103%2C920712101%2C920502102%2C920462101%2C774682301%2C751132109%2C751062111%2C751052119%2C751052116" style="border:none;overflow: auto;min-height: 150vh"  width="100%"></iframe>
          </v-row>
       </v-container>
 </template>
@@ -193,3 +178,8 @@ export default class TableauVisualisation extends Vue {
    }
 }
 </script>
+<style>
+div {
+  height: 100%;
+}
+</style>
