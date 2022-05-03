@@ -79,7 +79,7 @@ export default class Stepper extends Vue {
             this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
                Logger.error(err);
             });
-            this.$router.replace('/Visualisation').catch((err) => {
+            this.$router.replace('/visualisation').catch((err) => {
                Logger.error(err);
             });
             break;

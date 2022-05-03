@@ -41,11 +41,8 @@ import DetailNotice from '@/views/components/visualisation/DetailNotice.vue';
    },
 })
 export default class Visualisation extends Vue {
-   test = 'test';
-
    constructor() {
       super();
-      this.test = 'dhu';
    }
 }
 </script>
