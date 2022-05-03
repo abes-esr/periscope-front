@@ -12,11 +12,6 @@
       </v-row>
       <v-row>
          <v-col>
-            <detail-notice></detail-notice>
-         </v-col>
-      </v-row>
-      <v-row>
-         <v-col>
             <tableau-visualisation></tableau-visualisation>
          </v-col>
       </v-row>
