@@ -1,7 +1,7 @@
 <template>
    <v-container>
       <v-row justify="center">
-         <iframe id="iframeDivTaget" :src="'http://localhost:8083/PCP_war_exploded/?ppnviewed=' + ppnNumber + '&orderby=SORT_BY_PCP&collectionStatus=&tree='" style="border: none; overflow: auto; min-height: 90vh" width="100%"></iframe>
+         <iframe id="iframeDivTaget" :src="iFrameURL + '?ppnviewed=' + ppnNumber + '&orderby=' + orderBy + '&collectionStatus=' + collectionStatus + '&tree=' + tree" style="border: none; overflow: auto; min-height: 100vh" width="100%"></iframe>
       </v-row>
    </v-container>
 </template>
@@ -16,10 +16,17 @@ import ComponentTimeline from '@/views/components/visualisation/timeline/Compone
 })
 export default class TableauVisualisation extends Vue {
    ppnNumber: '';
-
+   iFrameURL: '';
+   orderBy: string;
+   collectionStatus: string;
+   tree: string;
    constructor() {
       super();
       this.ppnNumber = this.$store.state.lotHoldings._ppn;
+      this.iFrameURL = process.env.VUE_APP_TIMELINE_PERISCOPE_V1;
+      this.orderBy = 'SORT_BY_PCP';
+      this.collectionStatus = '';
+      this.tree = '';
    }
 }
 </script>

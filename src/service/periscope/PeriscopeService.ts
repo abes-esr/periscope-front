@@ -1,4 +1,4 @@
-import axios, {AxiosInstance, AxiosPromise, AxiosResponse} from 'axios';
+import axios, {AxiosInstance, AxiosResponse} from 'axios';
 
 /**
  * Couche de service pour les appels à l'API Periscope
