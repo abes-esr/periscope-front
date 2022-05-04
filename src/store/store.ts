@@ -1643,8 +1643,6 @@ export default new Vuex.Store({
          return new Promise((resolve, reject) => {
             //On envoie la requête au back-end
             const start = Date.now();
-            console.log("->" + typeof context.state.jsonTraitements._jsonSearchRequest);
-            console.log("->" + JSON.stringify(context.state.jsonTraitements._jsonSearchRequest));
             PeriscopeApiAxios.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
                   const response: APISearchResponse = (res as unknown) as APISearchResponse;
@@ -1675,6 +1673,10 @@ export default new Vuex.Store({
                   });
                   this.dispatch('callPeriscopeAPI')
                      .then(() => {
+                        //TODO
+                        if(this.state.lotNotices._maxNotice === 1){
+                           this.dispatch('doVisualisation');
+                        }
                         this.dispatch('updateSnackBarDisplay', false);
                         router
                            .push('/Resultat')
