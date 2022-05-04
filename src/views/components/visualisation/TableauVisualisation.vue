@@ -1,13 +1,15 @@
 <template>
    <v-container>
       <v-row justify="center">
-         <iframe id="iframeDivTaget" :src="iFrameURL + '?ppnviewed=' + ppnNumber + '&orderby=' + orderBy + '&collectionStatus=' + collectionStatus + '&tree=' + tree" style="border: none; overflow: auto; min-height: 100vh" width="100%"></iframe>
+         <iframe id="iframeid" :src="iFrameURL + '?ppnviewed=' + ppnNumber + '&orderby=' + orderBy + '&collectionStatus=' + collectionStatus + '&tree=' + tree" @transitionend="onMyFrameLoad"
+                 width="100%"></iframe>
       </v-row>
    </v-container>
 </template>
-<script lang="ts">
+<script lang="js">
 import {Component, Vue} from 'vue-property-decorator';
 import ComponentTimeline from '@/views/components/visualisation/timeline/ComponentTimeline.vue';
+import iframeResize from 'iframe-resizer/js/iframeResizer';
 
 @Component({
    components: {
@@ -15,11 +17,11 @@ import ComponentTimeline from '@/views/components/visualisation/timeline/Compone
    },
 })
 export default class TableauVisualisation extends Vue {
-   ppnNumber: '';
-   iFrameURL: '';
-   orderBy: string;
-   collectionStatus: string;
-   tree: string;
+   ppnNumber;
+   iFrameURL;
+   orderBy;
+   collectionStatus;
+   tree;
    constructor() {
       super();
       this.ppnNumber = this.$store.state.lotHoldings._ppn;
@@ -28,5 +30,17 @@ export default class TableauVisualisation extends Vue {
       this.collectionStatus = '';
       this.tree = '';
    }
+   onMyFrameLoad() {
+    console.log('myframe is loaded');
+    }
+   updated(){
+     iframeResize({ log: true }, '#myIframe')
+   }
+   /*get srcurl(){
+     return iFrameURL + '?ppnviewed=' + ppnNumber + '&orderby=' + orderBy + '&collectionStatus=' + collectionStatus + '&tree=' + tree
+   }*/
+
 }
+
+
 </script>
