@@ -30,6 +30,7 @@ import {LotHoldings} from '@/store/visualisation/LotHoldings';
 import Holding from '@/store/entity/Holding';
 import {Group, Items} from './visualisation/VisualisationDefinition';
 import {FiltresFacettes} from "@/store/recherche/filtresFacettes/FiltresFacettes";
+import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
 
 Vue.use(Vuex);
 
@@ -48,6 +49,7 @@ export default new Vuex.Store({
       blocEditeur: new BlocEditeur(Operator.Ou),
       blocLangue: new BlocLangue(Operator.Ou),
       blocPays: new BlocPays(Operator.Ou),
+      blocPcpRcr: new BlocPcpRcr(Operator.Ou),
       blocRequeteDirecte: new BlocRequeteEnregistree(),
       //Resultats de recherche
       lotNotices: new LotNotices(),
@@ -1115,6 +1117,18 @@ export default new Vuex.Store({
          state.blocPays._selected = [];
          state.blocPays._candidates.forEach((element: { value: boolean }) => (element.value = false));
       },
+      //Bloc de Pcp Rcr
+      mutationPcpRcr(state, arraySent: Array<ListItem>) {
+         Logger.debug('Mutation des Pcp et Rcr');
+         state.blocPays._candidates = arraySent;
+         state.blocPays._selected = [];
+         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocPays._selected.push(element.id) : ''));
+      },
+      resetPcpRcr(state) {
+         Logger.debug('Reset des Pcp et Rcr');
+         state.blocPays._selected = [];
+         state.blocPays._candidates.forEach((element: { value: boolean }) => (element.value = false));
+      },
 
       //Bloc de requete directe
       mutationRequeteDirecte(state, element: JsonGlobalSearchRequest) {
@@ -1376,6 +1390,11 @@ export default new Vuex.Store({
          context.commit('resetExternalPaysOperator');
          context.commit('resetInternalPaysOperator');
          context.commit('resetPays');
+      },
+      resetBlocPcpRcr(context) {
+         context.commit('resetExternalPcpRcrOperator');
+         context.commit('resetInternalPcpRcrOperator');
+         context.commit('resetPcpRcr');
       },
       resetBlocRequeteDirecte(context) {
          context.commit('resetRequeteDirecte');

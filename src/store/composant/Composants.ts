@@ -16,7 +16,7 @@ export class Composants {
 
    constructor() {
       this._panel = [
-         {id: 9, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
+         {id: 10, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
          {id: 4, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
          {id: 3, position: 2, displayed: false, available: true, label: 'PCP Régions'},
          {id: 0, position: 3, displayed: false, available: true, label: 'PPN'},
@@ -26,6 +26,7 @@ export class Composants {
          {id: 6, position: 7, displayed: false, available: true, label: 'Editeur'},
          {id: 7, position: 8, displayed: false, available: true, label: 'Langue'},
          {id: 8, position: 9, displayed: false, available: true, label: 'Pays'},
+         {id: 9, position: 10, displayed: false, available: true, label: 'PCP et RCR (même exemplaire)'},
       ];
    }
 

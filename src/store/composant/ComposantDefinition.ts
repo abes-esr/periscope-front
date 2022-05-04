@@ -19,6 +19,7 @@ export enum PanelType {
    EDITOR,
    LANG,
    COUNTRY,
+   PCPRCR,
    HISTORY,
 }
 
