@@ -13,7 +13,7 @@
             <a href="https://stp.abes.fr/node/3?origine=periscope">Assistance</a>
          </v-col>
          <v-col xs="6" sm="3">
-            <a @click="mentionsLegales()">Mentions légalesss</a>
+            <a @click="mentionsLegales()">Mentions légales</a>
          </v-col>
       </v-row>
    </v-container>
