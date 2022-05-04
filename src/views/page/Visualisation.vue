@@ -12,11 +12,6 @@
       </v-row>
       <v-row>
          <v-col>
-            <detail-notice></detail-notice>
-         </v-col>
-      </v-row>
-      <v-row>
-         <v-col>
             <tableau-visualisation></tableau-visualisation>
          </v-col>
       </v-row>
@@ -46,11 +41,8 @@ import DetailNotice from '@/views/components/visualisation/DetailNotice.vue';
    },
 })
 export default class Visualisation extends Vue {
-   test = 'test';
-
    constructor() {
       super();
-      this.test = 'dhu';
    }
 }
 </script>
