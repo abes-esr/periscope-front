@@ -1,4 +1,18 @@
-import {JsonEditeurProvider, JsonFacetteRequest, JsonGlobalSearchRequest, JsonIssnBlocProvider, JsonLanguesProvider, JsonMotsDuTitreProvider, JsonPaysProvider, JsonPcpBlocProvider, JsonPpnBlocProvider, JsonRcrBlocProvider, JsonTri, JsonTriProvider} from '@/service/periscope/PeriscopeJsonDefinition';
+import {
+   JsonEditeurProvider,
+   JsonFacetteRequest,
+   JsonGlobalSearchRequest,
+   JsonIssnBlocProvider,
+   JsonLanguesProvider,
+   JsonMotsDuTitreProvider,
+   JsonPaysProvider,
+   JsonPcpBlocProvider,
+   JsonPcpRcrProvider,
+   JsonPpnBlocProvider,
+   JsonRcrBlocProvider,
+   JsonTri,
+   JsonTriProvider,
+} from '@/service/periscope/PeriscopeJsonDefinition';
 import {BlocRequeteEnregistree} from '@/store/recherche/BlocRequeteEnregistree';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
@@ -14,7 +28,9 @@ import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {OrderType, TriType} from '@/store/recherche/TriDefinition';
 import {ValueError} from '@/exception/ValueError';
 import {PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
-import {FacetteType, FiltresFacettes} from "@/store/recherche/filtresFacettes/FiltresFacettes";
+import {FacetteType, FiltresFacettes} from '@/store/recherche/filtresFacettes/FiltresFacettes';
+import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
+import {Operator} from '@/store/recherche/BlocDefinition';
 
 /**
  * Représente une requête de recherche pour l'API Periscope
@@ -38,6 +54,7 @@ export class SearchRequest {
       blocEditeur: BlocEditeur,
       blocLangue: BlocLangue,
       blocPays: BlocPays,
+      blocPcpRcr: BlocPcpRcr,
       blocRequeteDirecte: BlocRequeteEnregistree,
       blocTri: BlocTri,
       filtresFacettes: FiltresFacettes,
@@ -167,6 +184,15 @@ export class SearchRequest {
                   criteria.push(paysBlocJson);
                }
                break;
+            case PanelType.PCPRCR:
+               //construction de la partie pcp & rcr d'un même exemplaire en JSON
+               criteria.push( {
+                  type: 'CriterionPcpRcr',
+                  bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Ou),
+                  pcp: blocPcpRcr._pcp,
+                  rcr: blocPcpRcr._rcr,
+               });
+               break;
             case PanelType.LANG:
                //Construction de la partie Langue en JSON
                if (blocLangue._selected.length !== 0) {
@@ -214,7 +240,6 @@ export class SearchRequest {
 
       // Construction des filtres des facettes
       const filtres: Array<FacetteType> = filtresFacettes._filters;
-
 
       return {criteres: criteria, tri: sort, facettes: facettes, filtresFacettes: filtres};
    }

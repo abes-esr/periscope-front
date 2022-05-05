@@ -1118,16 +1118,18 @@ export default new Vuex.Store({
          state.blocPays._candidates.forEach((element: { value: boolean }) => (element.value = false));
       },
       //Bloc de Pcp Rcr
-      mutationPcpRcr(state, arraySent: Array<ListItem>) {
-         Logger.debug('Mutation des Pcp et Rcr');
-         state.blocPays._candidates = arraySent;
-         state.blocPays._selected = [];
-         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocPays._selected.push(element.id) : ''));
+      mutationPcpRcrPcp(state, pcp: string) {
+         Logger.debug('Mutation des Pcp et Rcr : rcr');
+         state.blocPcpRcr._pcp = pcp;
+      },
+      mutationPcpRcrRcr(state, rcr: string) {
+         Logger.debug('Mutation des Pcp et Rcr : rcr');
+         state.blocPcpRcr._rcr = rcr;
       },
       resetPcpRcr(state) {
          Logger.debug('Reset des Pcp et Rcr');
-         state.blocPays._selected = [];
-         state.blocPays._candidates.forEach((element: { value: boolean }) => (element.value = false));
+         state.blocPcpRcr._pcp = '';
+         state.blocPcpRcr._rcr = '';
       },
 
       //Bloc de requete directe
@@ -1161,6 +1163,7 @@ export default new Vuex.Store({
              state.blocEditeur,
              state.blocLangue,
              state.blocPays,
+             state.blocPcpRcr,
              state.blocRequeteDirecte,
              state.blocTri,
              state.filtresFacettes
@@ -1392,8 +1395,6 @@ export default new Vuex.Store({
          context.commit('resetPays');
       },
       resetBlocPcpRcr(context) {
-         context.commit('resetExternalPcpRcrOperator');
-         context.commit('resetInternalPcpRcrOperator');
          context.commit('resetPcpRcr');
       },
       resetBlocRequeteDirecte(context) {
@@ -1539,6 +1540,12 @@ export default new Vuex.Store({
       },
       updateSelectedPays(context, arraySent: Array<ListItem>) {
          context.commit('mutationPays', arraySent);
+      },
+      updateSelectedPcpRcrPcp(context, pcp: string) {
+         context.commit('mutationPcpRcrPcp', pcp);
+      },
+      updateSelectedPcpRcrRcr(context, rcr: string) {
+         context.commit('mutationPcpRcrRcr', rcr);
       },
       updateSelectedRequeteDirecte(context, value: string): Promise<boolean> {
          return new Promise((resolve, reject) => {

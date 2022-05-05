@@ -66,7 +66,7 @@
 
             <v-tooltip top open-delay="700">
                <template v-slot:activator="{on}">
-                  <v-btn :disabled="!isMoveUpAvailable" small icon class="ma-0" fab color="teal" @click="moveUpPanel()" v-on="on">
+                  <v-btn :disabled="!isMoveUpAvailable" small icon class="ma-0" fab color="teal" v-on="on">
                      <v-icon>mdi-arrow-up</v-icon>
                   </v-btn>
                </template>
@@ -75,7 +75,7 @@
 
             <v-tooltip top open-delay="700">
                <template v-slot:activator="{on}">
-                  <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" @click="moveDownPanel()" v-on="on">
+                  <v-btn :disabled="isLastDisplayedElement" small icon class="ma-0" fab color="teal" v-on="on">
                      <v-icon>mdi-arrow-down</v-icon>
                   </v-btn>
                </template>
@@ -105,9 +105,8 @@ import {ValueError} from '@/exception/ValueError';
 
 @Component
 export default class ComponentPpn extends Vue {
-   id: PanelType = PanelType.PPN;
+   id: PanelType = PanelType.PCPRCR;
    external_operator_label: string;
-   internal_operator_label: string;
    list_external_operator_to_select: Array<BlocOperator>;
    list_internal_operator_to_select: Array<BlocOperator>;
    external_operator_selected: Operator;
@@ -137,31 +136,16 @@ export default class ComponentPpn extends Vue {
     * @return Liste des opérateurs externes
     */
    get getExternalOperatorList(): Array<BlocOperator> {
-      return this.$store.state.blocPpn._externalBlocOperatorListToSelect;
+      return this.$store.state.blocPcpRcr._externalBlocOperatorListToSelect;
    }
 
-   /**
-    * Retourne les opérateurs internes à sélectionner
-    * @return Liste des opérateurs internes
-    */
-   get getInternalOperatorList(): Array<BlocOperator> {
-      return this.$store.state.blocPpn._internalBlocOperatorListToSelect;
-   }
-
-   /**
-    * Retourne l'opérateur interne du bloc sélectionné
-    * @return L'opérateur interne
-    */
-   get getInternalOperatorSelected(): Operator {
-      return this.$store.state.blocPpn._internalBlocOperator;
-   }
 
    /**
     * Retourne l'opérateur externe du bloc sélectionné
     * @return L'opérateur externe
     */
    get getExternalOperatorSelected(): Operator {
-      return this.$store.state.blocPpn._externalBlocOperator;
+      return this.$store.state.blocPcpRcr._externalBlocOperator;
    }
 
    /**
@@ -208,21 +192,13 @@ export default class ComponentPpn extends Vue {
       return this.$store.getters.isMoveUpAvailable(this.id);
    }
 
-   /**
-    * Retourne l'opérateur interne sélectionné en chaîne de caractère
-    * @return Chaîne de caractère de l'opérateur
-    */
-   get getInternalOperatorSelectedInString(): string {
-      return BlocAbstract.convertBlocOperatorToLabel(this.internal_operator_selected);
-   }
-
    /******************** Methods ***************************/
 
    /**
     * Réinitialisation des valeurs du bloc
     */
    clearSelectedValues(): void {
-      this.$store.dispatch('resetBlocPpn').catch((err) => {
+      this.$store.dispatch('resetBlocPcpRcr').catch((err) => {
          Logger.error(err);
       });
       this.reloadFromStore();
@@ -369,33 +345,5 @@ export default class ComponentPpn extends Vue {
       this.$emit('onChange'); // On notifie le composant parent
    }
 
-   /**
-    * Remonte le panneau
-    */
-   moveUpPanel(): void {
-      const action: PanelMovementProvider = {
-         panelId: this.id,
-         value: Movement.UP,
-      };
-
-      this.$store.dispatch('moveElementPanel', action).catch((err) => {
-         Logger.error(err);
-      });
-      this.$emit('onChange'); // On notifie le composant parent
-   }
-
-   /**
-    * Descendre le panneau
-    */
-   moveDownPanel(): void {
-      const action: PanelMovementProvider = {
-         panelId: this.id,
-         value: Movement.DOWN,
-      };
-      this.$store.dispatch('moveElementPanel', action).catch((err) => {
-         Logger.error(err);
-      });
-      this.$emit('onChange'); // On notifie le composant parent
-   }
 }
 </script>
