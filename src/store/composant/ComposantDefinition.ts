@@ -42,3 +42,4 @@ export interface PanelDisplaySwitchProvider {
    panelId: PanelType;
    value: DisplaySwitch;
 }
+

@@ -94,6 +94,11 @@ export default class ListeDeChoix extends Vue {
                   Logger.error(err);
                });
                break;
+            case PanelType.PCPRCR:
+               this.$store.dispatch('resetBlocPcpRcr').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
             case PanelType.LANG:
                this.$store.dispatch('resetBlocLangue').catch((err) => {
                   Logger.error(err);

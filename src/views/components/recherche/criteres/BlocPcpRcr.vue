@@ -1,25 +1,15 @@
 <template>
    <v-expansion-panel class="outlined-app blocPanel">
       <v-row align="center">
-         <!--External BlocOperator-->
-         <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="!isFirstDisplayedElement">
-            <v-tooltip top max-width="20vw" open-delay="700">
-               <template v-slot:activator="{on}">
-                  <v-select dense :label="external_operator_label" :items="list_external_operator_to_select" class="style1" outlined v-model="external_operator_selected" @change="updateBlocExternalOperator" v-on="on"></v-select>
-               </template>
-               <span>Cet opérateur logique permet de connecter ce bloc de recherche avec le bloc préccédent</span>
-            </v-tooltip>
-         </v-col>
-         <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="isFirstDisplayedElement"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par PPN </v-col>
+                     <v-col xs="12" sm="4" lg="3"> Recherche par PCP et RCR d'un même exemplaire </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de PPN </span>
-                           <span v-else key="1"> {{ returnItem + ' | Entre PPN: ' + getInternalOperatorSelectedInString }} </span>
+                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez un PCP et un RCR </span>
+                           <span v-else key="1"> {{ 'PCP :' + returnPcp() + ' & RCR : ' + returnRcr() }} </span>
                         </v-fade-transition>
                      </v-col>
                   </v-row>
@@ -27,11 +17,11 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
                <v-row justify="center" style="height: 20em">
-                  <v-col sm="10">
+                  <v-col sm="6">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox :search-input.sync="currentValue" @keyup.enter="checkValues()" @blur="checkValues()" :rules="comboboxAlert" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
+                           <v-combobox @blur="checkValuesAndAddRcrs()" :rules="comboboxAlert" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -39,16 +29,22 @@
                               </template>
                            </v-combobox>
                         </template>
-                        <span>Saisir un numéro PPN puis valider avec la touche "Entrer". Vous pouvez saisir plusieurs numéros PPN à la suite ou copier/coller une liste de PPN. Attention, les doublons seront automatiquement ignorés</span>
+                        <span>Saisir un numéro de RCR. Vous ne pouvez saisir / sélectionner qu'un numéro de RCR ou copier/coller un numéro RCR</span>
                      </v-tooltip>
                   </v-col>
-                  <v-col sm="2" class="internalOperator">
+                  <v-col sm="6">
                      <!--Internal BlocOperator-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="updateBlocInternalOperator" v-on="on"></v-select>
+                           <v-combobox @blur="checkValuesAndAddPcps()" :rules="comboboxAlert" :items="pcp_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
+                              <template v-slot:selection="{item}">
+                                 <v-chip close @click:close="removeItem(item)">
+                                    <span class="pr-2">{{ item }}</span>
+                                 </v-chip>
+                              </template>
+                           </v-combobox>
                         </template>
-                        <span>Cet opérateur logique permet de connecter les PPN entre eux</span>
+                        <span>Saisir un code PCP. Vous ne pouvez saisir / sélectionner qu'un seul PCP</span>
                      </v-tooltip></v-col
                   >
                </v-row>
@@ -97,38 +93,39 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {Operator, BlocOperator} from '@/store/recherche/BlocDefinition';
+import {BlocOperator, ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
-import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
-import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
+import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
+import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 @Component
 export default class ComponentPpn extends Vue {
    id: PanelType = PanelType.PCPRCR;
    external_operator_label: string;
    list_external_operator_to_select: Array<BlocOperator>;
-   list_internal_operator_to_select: Array<BlocOperator>;
    external_operator_selected: Operator;
    internal_operator_selected: Operator;
    comboboxAlert: Array<string> = [];
    comboboxLabel: string;
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];
+   rcr_liste: Array<any> = [];
+   rcrListLoad = false;
+   pcp_liste: Array<any> = [];
    currentValue: any;
 
    constructor() {
       super();
       this.external_operator_label = '';
-      this.internal_operator_label = 'Entre PPN';
       this.list_external_operator_to_select = this.getExternalOperatorList;
-      this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
-      this.internal_operator_selected = this.getInternalOperatorSelected;
       this.comboboxArrayTyped = this.getPpnSelected;
       this.comboboxLabel = 'ex : 17877166X';
       this.comboboxPlaceholder = 'Saisir des n° de PPN';
       this.currentValue = null;
+      this.pcp_liste = this.getPcp;
+      this.updateRcrList();
    }
 
    /**
@@ -138,7 +135,6 @@ export default class ComponentPpn extends Vue {
    get getExternalOperatorList(): Array<BlocOperator> {
       return this.$store.state.blocPcpRcr._externalBlocOperatorListToSelect;
    }
-
 
    /**
     * Retourne l'opérateur externe du bloc sélectionné
@@ -156,17 +152,48 @@ export default class ComponentPpn extends Vue {
       return this.$store.state.blocPpn._selected;
    }
 
+   get getPcp(): Array<ListItem> {
+      let arrayPcp = this.$store.state.blocPcpRcr._pcpCandidates;
+      if (arrayPcp.length === 0) {
+         Logger.warn('Pcp region are empty');
+      }
+      return arrayPcp;
+   }
    /**
     * Retourne les numéros PPN sélectionnés
     * @return Les numéros PPN sélectionnés séparés par des espaces
     */
-   get returnItem(): string {
+   get returnPcp(): string {
       let chain = '';
-      this.comboboxArrayTyped.forEach((element) => {
-         chain += element + ', ';
-      });
       return chain;
    }
+
+   get returnRcr(): string {
+      let chain = '';
+      return chain;
+   }
+
+   /**
+    * Vérifie la valeur courante
+    */
+   checkValuesAndAddRcrs(): void {
+      // netoyage des données pour avoir que les rcrs
+      this.comboboxArrayTyped = this.comboboxArrayTyped
+         .map((item) => {
+            console.log(item);
+            if (item.split(' ')[0].match('^\\d{9}$')) {
+               item = item.split(' ')[0];
+               console.log(item);
+               return item;
+            } else {
+               this.removeItem(item);
+               return '';
+            }
+         })
+         .filter((value) => value != '');
+   }
+
+   checkValuesAndAddPcps(): void {}
 
    /**
     * Vérifie si le bloc est le premier a être affiché
@@ -194,6 +221,18 @@ export default class ComponentPpn extends Vue {
 
    /******************** Methods ***************************/
 
+   updateRcrList(): void {
+      if (!this.rcrListLoad) {
+         PcpLibProfileService.getRcrName().then((response) => {
+            this.rcr_liste = [];
+            response.data.forEach((element: {rcr: string; label: string}) => {
+               this.rcr_liste.push(element.rcr + ' ' + element.label);
+            });
+            this.rcrListLoad = true;
+         });
+      }
+   }
+
    /**
     * Réinitialisation des valeurs du bloc
     */
@@ -209,9 +248,7 @@ export default class ComponentPpn extends Vue {
     */
    reloadFromStore(): void {
       this.list_external_operator_to_select = this.getExternalOperatorList;
-      this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
-      this.internal_operator_selected = this.getInternalOperatorSelected;
       this.comboboxArrayTyped = this.getPpnSelected;
    }
 
@@ -344,6 +381,5 @@ export default class ComponentPpn extends Vue {
       });
       this.$emit('onChange'); // On notifie le composant parent
    }
-
 }
 </script>

@@ -29,8 +29,10 @@ import Facet from '@/store/entity/Facet';
 import {LotHoldings} from '@/store/visualisation/LotHoldings';
 import Holding from '@/store/entity/Holding';
 import {Group, Items} from './visualisation/VisualisationDefinition';
-import {FiltresFacettes} from "@/store/recherche/filtresFacettes/FiltresFacettes";
+import {FiltresFacettes} from '@/store/recherche/filtresFacettes/FiltresFacettes';
 import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
+import pcpMetiers from '@/store/composant/PcpMetiers';
+import pcpRegions from '@/store/composant/PcpRegions';
 
 Vue.use(Vuex);
 
@@ -87,41 +89,26 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Pcp Regions');
          state.blocPcpRegions._candidates = arraySent;
          state.blocPcpRegions._selected = [];
-         arraySent.forEach((element: { value: boolean; key: string }) => (element.value ? state.blocPcpRegions._selected.push(element.key) : ''));
+         arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? state.blocPcpRegions._selected.push(element.key) : ''));
       },
       loadCandidatesPcpRegions(state, force?: boolean) {
          if (force || state.blocPcpRegions._candidates.length == 0) {
             Logger.debug('Chargement des Pcp Regions');
-            state.blocPcpRegions._candidates = [
-               {id: 0, key: 'PCAq', text: 'Aquitaine', value: false},
-               {id: 1, key: 'PCAuv', text: 'Auvergne', value: false},
-               {id: 2, key: 'PCBo', text: 'Bourgogne', value: false},
-               {id: 3, key: 'PCBre', text: 'Bretagne', value: false},
-               {id: 4, key: 'PCCA', text: 'Champagne-Ardenne', value: false},
-               {id: 5, key: 'PCCAPI', text: 'Champagne-Ardenne Picardie', value: false},
-               {id: 6, key: 'PCCor', text: 'Corse', value: false},
-               {id: 7, key: 'PCFC', text: 'Franche-Comté', value: false},
-               {id: 8, key: 'PCLR', text: 'Languedoc-Roussillon', value: false},
-               {id: 9, key: 'PCLim', text: 'Limousin', value: false},
-               {id: 10, key: 'PCLor', text: 'Lorraine', value: false},
-               {id: 11, key: 'PCMP', text: 'Midi-Pyrénées', value: false},
-               {id: 12, key: 'PCNPDC', text: 'Nord-Pas-de-Calais', value: false},
-               {id: 13, key: 'PCPACA', text: 'PACA', value: false},
-               {id: 14, key: 'PCPCh', text: 'Poitou-Charentes', value: false},
-               {id: 15, key: 'PCPL', text: 'Pays de Loire', value: false},
-               {id: 16, key: 'PCPic', text: 'Picardie', value: false},
-               {id: 17, key: 'PCRA', text: 'Rhône-Alpes', value: false},
-               {id: 18, key: 'PCSAM', text: 'Sciences Aix-Marseille', value: false},
-               {id: 19, key: 'PCScvdl', text: 'Sciences Centre Val de Loire', value: false},
-               {id: 20, key: 'PCUdp', text: 'Université de Poitiers', value: false},
-               {id: 21, key: 'PCUdr', text: 'Université de Rouen', value: false},
-            ];
+            state.blocPcpRegions._candidates = [];
+            pcpRegions.forEach((element, index) =>
+               state.blocPcpRegions._candidates.push({
+                  id: index,
+                  key: element.key,
+                  text: element.text,
+                  value: false,
+               }),
+            );
          }
       },
       resetPcpRegions(state) {
          Logger.debug('Reset des Pcp Regions');
          state.blocPcpRegions._selected = [];
-         state.blocPcpRegions._candidates.forEach((element: { value: boolean }) => (element.value = false));
+         state.blocPcpRegions._candidates.forEach((element: {value: boolean}) => (element.value = false));
       },
 
       //Bloc de recherche PcpMetiers
@@ -145,38 +132,26 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Pcp Metiers');
          state.blocPcpMetiers._candidates = arraySent;
          state.blocPcpMetiers._selected = [];
-         arraySent.forEach((element: { value: boolean; key: string }) => (element.value ? state.blocPcpMetiers._selected.push(element.key) : ''));
+         arraySent.forEach((element: {value: boolean; key: string}) => (element.value ? state.blocPcpMetiers._selected.push(element.key) : ''));
       },
       loadCandidatesPcpMetiers(state, force?: boolean) {
          if (force || state.blocPcpMetiers._candidates.length == 0) {
             Logger.debug('Chargement des Pcp Metiers');
-            state.blocPcpMetiers._candidates = [
-               {id: 0, key: 'PCAM', text: 'Arts-et-Métiers', value: false},
-               {id: 1, key: 'PCAS', text: 'Arts du spectacle', value: false},
-               {id: 2, key: 'PCAnt', text: "Sciences de l'Antiquité et Archéologie", value: false},
-               {id: 3, key: 'PCChimie', text: 'Chimie', value: false},
-               {id: 4, key: 'PCDroit', text: 'Droit', value: false},
-               {id: 5, key: 'PCEBCO', text: 'Europe balkanique, centrale et orientale', value: false},
-               {id: 6, key: 'PCGer', text: 'Langues, littératures, civilisation germaniques', value: false},
-               {id: 7, key: 'PCGéo', text: 'Géographie', value: false},
-               {id: 8, key: 'PCIta', text: 'Etudes italiennes', value: false},
-               {id: 9, key: 'PCMedieval', text: 'Médiéval', value: false},
-               {id: 10, key: 'PCNum', text: 'Sciences du Numérique', value: false},
-               {id: 11, key: 'PCMath', text: 'Mathématiques RNBM', value: false},
-               {id: 12, key: 'PCMed', text: 'Médecine', value: false},
-               {id: 13, key: 'PCPsy', text: 'Psychologie, Psychanalyse', value: false},
-               {id: 14, key: 'PCSTAPS', text: 'STAPS', value: false},
-               {id: 15, key: 'PCPhilo', text: 'Philosophie', value: false},
-               {id: 16, key: 'PCPhy', text: 'Physique', value: false},
-               //TODO 'PCLCen':['Lettres et Sciences Humaines Centre Val de Loire', 'geo' ], -> trouver correspondance
-               //TODO 'PCEco':['Economie et gestion', ''] idem
-            ];
+            state.blocPcpMetiers._candidates = [];
+            pcpMetiers.forEach((element, index) =>
+               state.blocPcpMetiers._candidates.push({
+                  id: index,
+                  key: element.key,
+                  text: element.text,
+                  value: false,
+               }),
+            );
          }
       },
       resetPcpMetiers(state) {
          Logger.debug('Reset des Pcp Metiers');
          state.blocPcpMetiers._selected = [];
-         state.blocPcpMetiers._candidates.forEach((element: { value: boolean }) => (element.value = false));
+         state.blocPcpMetiers._candidates.forEach((element: {value: boolean}) => (element.value = false));
       },
 
       //Bloc de recherche Rcr
@@ -337,7 +312,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Langues');
          state.blocLangue._candidates = arraySent;
          state.blocLangue._selected = [];
-         arraySent.forEach((element: { value: boolean; id: string }) => (element.value ? state.blocLangue._selected.push(element.id) : ''));
+         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocLangue._selected.push(element.id) : ''));
       },
       loadCandidatesLangue(state, force?: boolean) {
          if (force || state.blocLangue._candidates.length == 0) {
@@ -825,7 +800,7 @@ export default new Vuex.Store({
       resetLangue(state) {
          Logger.debug('Reset des Langues');
          state.blocLangue._selected = [];
-         state.blocLangue._candidates.forEach((element: { value: boolean }) => (element.value = false));
+         state.blocLangue._candidates.forEach((element: {value: boolean}) => (element.value = false));
       },
 
       //Bloc de recherche Pays
@@ -849,7 +824,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Pays');
          state.blocPays._candidates = arraySent;
          state.blocPays._selected = [];
-         arraySent.forEach((element: { value: boolean; id: string }) => (element.value ? state.blocPays._selected.push(element.id) : ''));
+         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocPays._selected.push(element.id) : ''));
       },
       loadCandidatesPays(state, force?: boolean) {
          if (force || state.blocPays._candidates.length == 0) {
@@ -1115,7 +1090,7 @@ export default new Vuex.Store({
       resetPays(state) {
          Logger.debug('Reset des Pays');
          state.blocPays._selected = [];
-         state.blocPays._candidates.forEach((element: { value: boolean }) => (element.value = false));
+         state.blocPays._candidates.forEach((element: {value: boolean}) => (element.value = false));
       },
       //Bloc de Pcp Rcr
       mutationPcpRcrPcp(state, pcp: string) {
@@ -1125,6 +1100,28 @@ export default new Vuex.Store({
       mutationPcpRcrRcr(state, rcr: string) {
          Logger.debug('Mutation des Pcp et Rcr : rcr');
          state.blocPcpRcr._rcr = rcr;
+      },
+      loadCandidatesAllPcp(state, force?: boolean) {
+         if (force || state.blocPcpRcr._pcpCandidates.length == 0) {
+            Logger.debug('Chargement des Pcp Regions & Métiers');
+            state.blocPcpRcr._pcpCandidates = [];
+            pcpRegions.forEach((element, index) =>
+               state.blocPcpRcr._pcpCandidates.push({
+                  id: index,
+                  key: element.key,
+                  text: element.text,
+                  value: false,
+               }),
+            );
+            pcpMetiers.forEach((element, index) =>
+               state.blocPcpRcr._pcpCandidates.push({
+                  id: index + pcpRegions.length,
+                  key: element.key,
+                  text: element.text,
+                  value: false,
+               }),
+            );
+         }
       },
       resetPcpRcr(state) {
          Logger.debug('Reset des Pcp et Rcr');
@@ -1153,20 +1150,20 @@ export default new Vuex.Store({
       mutationSearchRequest(state) {
          Logger.debug('Construction de la requête JSON');
          state.jsonTraitements._jsonSearchRequest = SearchRequest.constructJsonGlobalRequest(
-             state.composants._panel,
-             state.blocPcpRegions,
-             state.blocPcpMetiers,
-             state.blocRcr,
-             state.blocPpn,
-             state.blocIssn,
-             state.blocMotsDuTitre,
-             state.blocEditeur,
-             state.blocLangue,
-             state.blocPays,
-             state.blocPcpRcr,
-             state.blocRequeteDirecte,
-             state.blocTri,
-             state.filtresFacettes
+            state.composants._panel,
+            state.blocPcpRegions,
+            state.blocPcpMetiers,
+            state.blocRcr,
+            state.blocPpn,
+            state.blocIssn,
+            state.blocMotsDuTitre,
+            state.blocEditeur,
+            state.blocLangue,
+            state.blocPays,
+            state.blocPcpRcr,
+            state.blocRequeteDirecte,
+            state.blocTri,
+            state.filtresFacettes,
          );
       },
 
@@ -1208,6 +1205,7 @@ export default new Vuex.Store({
                {id: PanelType.EDITOR, position: 7, displayed: false, available: true, label: 'Editeur'},
                {id: PanelType.LANG, position: 8, displayed: false, available: true, label: 'Langue'},
                {id: PanelType.COUNTRY, position: 9, displayed: false, available: true, label: 'Pays'},
+               {id: PanelType.PCPRCR, position: 10, displayed: false, available: true, label: 'Pcp & RCR'},
                {id: PanelType.HISTORY, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
             ].sort((n1, n2) => {
                if (n1.position > n2.position) {
@@ -1312,38 +1310,39 @@ export default new Vuex.Store({
          Logger.debug('Reset des RCR courant');
          state.lotHoldings._rcrList = [];
       },
-      mutationCurrentFacets(state, value) { //TODO faire un refactor passer le tableau en objet, rendre genei
+      mutationCurrentFacets(state, value) {
+         //TODO faire un refactor passer le tableau en objet, rendre genei
          Logger.debug('Mutation des facettes courantes');
-         if(value[0] == "document_type"){
-            if(state.filtresFacettes._filters[0].valeurs.includes(value[1])){
+         if (value[0] == 'document_type') {
+            if (state.filtresFacettes._filters[0].valeurs.includes(value[1])) {
                const index = state.filtresFacettes._filters[0].valeurs.indexOf(value[1]);
                state.filtresFacettes._filters[0].valeurs.splice(index, 1); // 2nd parameter means remove one item only
-            }else{
+            } else {
                state.filtresFacettes._filters[0].valeurs.push(value[1]);
             }
-         }else if(value[0] == "support_type"){
-            if(state.filtresFacettes._filters[1].valeurs.includes(value[1])){
+         } else if (value[0] == 'support_type') {
+            if (state.filtresFacettes._filters[1].valeurs.includes(value[1])) {
                const index = state.filtresFacettes._filters[1].valeurs.indexOf(value[1]);
                state.filtresFacettes._filters[1].valeurs.splice(index, 1); // 2nd parameter means remove one item only
-            }else{
+            } else {
                state.filtresFacettes._filters[1].valeurs.push(value[1]);
             }
-         }else if(value[0] == "country"){
-            if(state.filtresFacettes._filters[2].valeurs.includes(value[1])){
+         } else if (value[0] == 'country') {
+            if (state.filtresFacettes._filters[2].valeurs.includes(value[1])) {
                const index = state.filtresFacettes._filters[2].valeurs.indexOf(value[1]);
                state.filtresFacettes._filters[2].valeurs.splice(index, 1); // 2nd parameter means remove one item only
-            }else{
+            } else {
                state.filtresFacettes._filters[2].valeurs.push(value[1]);
             }
-         }else if(value[0] == "language"){
-            if(state.filtresFacettes._filters[3].valeurs.includes(value[1])){
+         } else if (value[0] == 'language') {
+            if (state.filtresFacettes._filters[3].valeurs.includes(value[1])) {
                const index = state.filtresFacettes._filters[3].valeurs.indexOf(value[1]);
                state.filtresFacettes._filters[3].valeurs.splice(index, 1); // 2nd parameter means remove one item only
-            }else{
+            } else {
                state.filtresFacettes._filters[3].valeurs.push(value[1]);
             }
          }
-      }
+      },
    },
    actions: {
       //******************
@@ -1646,6 +1645,7 @@ export default new Vuex.Store({
       loadCandidatesValue(context, force?: boolean) {
          context.commit('loadCandidatesPcpMetiers', force);
          context.commit('loadCandidatesPcpRegions', force);
+         context.commit('loadCandidatesAllPcp', force);
          context.commit('loadCandidatesLangue', force);
          context.commit('loadCandidatesPays', force);
       },
