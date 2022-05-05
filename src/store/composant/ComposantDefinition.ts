@@ -4,8 +4,8 @@
 export interface PanelProvider {
    id: PanelType;
    position: number;
-   displayed: boolean;
-   available: boolean;
+   isDisplayed: boolean;
+   isAvailable: boolean;
    label: string;
 }
 

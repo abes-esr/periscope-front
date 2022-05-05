@@ -8,8 +8,12 @@
                      <v-col xs="12" sm="4" lg="3"> Recherche par PCP et RCR d'un même exemplaire </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez un PCP et un RCR </span>
-                           <span v-else key="1"> {{ 'PCP :' + returnPcp() + ' & RCR : ' + returnRcr() }} </span>
+                           <span v-if="open || (returnRcr === '' && returnPcp === '')" key="0"> Saisissez un PCP et un RCR </span>
+                           <span v-else key="1">
+                              <span v-if="returnPcp !== ''">{{ 'PCP :' + returnPcp }}</span>
+                              <span v-if="returnRcr !== '' && returnPcp !== ''"> & </span>
+                              <span v-if="returnRcr !== ''">{{ 'RCR : ' + returnRcr }}</span>
+                           </span>
                         </v-fade-transition>
                      </v-col>
                   </v-row>
@@ -21,7 +25,7 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @blur="checkValuesAndAddRcrs()" :rules="comboboxAlert" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
+                           <v-combobox @blur="checkValuesAndAddRcrs()" :rules="comboboxAlert" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -36,10 +40,10 @@
                      <!--Internal BlocOperator-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @blur="checkValuesAndAddPcps()" :rules="comboboxAlert" :items="pcp_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
+                           <v-combobox :rules="comboboxAlert" :items="pcp_liste" item-text="label" outlined small-chips class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item)">
-                                    <span class="pr-2">{{ item }}</span>
+                                    <span class="pr-2">{{ item.key }}</span>
                                  </v-chip>
                               </template>
                            </v-combobox>
@@ -93,36 +97,37 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {BlocOperator, ListItem, Operator} from '@/store/recherche/BlocDefinition';
+import {BlocOperator, CheckboxItem, ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
 import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
 import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 @Component
-export default class ComponentPpn extends Vue {
+export default class ComponentPcpRcr extends Vue {
    id: PanelType = PanelType.PCPRCR;
    external_operator_label: string;
    list_external_operator_to_select: Array<BlocOperator>;
-   external_operator_selected: Operator;
-   internal_operator_selected: Operator;
    comboboxAlert: Array<string> = [];
    comboboxLabel: string;
-   comboboxPlaceholder: string;
-   comboboxArrayTyped: Array<string> = [];
-   rcr_liste: Array<any> = [];
+   comboboxRcrPlaceholder: string;
+   comboboxPcpPlaceholder: string;
+   comboboxRcr: string;
+   comboboxPcp: string;
+   rcr_liste: Array<string> = [];
    rcrListLoad = false;
-   pcp_liste: Array<any> = [];
+   pcp_liste: Array<ListItem> = [];
    currentValue: any;
 
    constructor() {
       super();
       this.external_operator_label = '';
       this.list_external_operator_to_select = this.getExternalOperatorList;
-      this.external_operator_selected = this.getExternalOperatorSelected;
-      this.comboboxArrayTyped = this.getPpnSelected;
-      this.comboboxLabel = 'ex : 17877166X';
-      this.comboboxPlaceholder = 'Saisir des n° de PPN';
+      this.comboboxRcr = this.getRcrSelected;
+      this.comboboxPcp = this.getPcpSelected;
+      this.comboboxLabel = 'ex : 341725201';
+      this.comboboxRcrPlaceholder = 'Saisir un numéro Rcr';
+      this.comboboxPcpPlaceholder = 'Choisir un Plan de conservation partagé';
       this.currentValue = null;
       this.pcp_liste = this.getPcp;
       this.updateRcrList();
@@ -145,32 +150,34 @@ export default class ComponentPpn extends Vue {
    }
 
    /**
-    * Retourne les numéros PPN sélectionnés
-    * @return Liste des numéros PPN sélectionnés
+    * Retourne le numéro rcr sélectionné
+    * @return numéro rcr sélectionné
     */
-   get getPpnSelected(): Array<string> {
-      return this.$store.state.blocPpn._selected;
+   get getRcrSelected(): string {
+      return this.$store.state.blocPcpRcr._rcr;
+   }
+
+   get getPcpSelected(): string {
+     return this.$store.state.blocPcpRcr._pcp;
    }
 
    get getPcp(): Array<ListItem> {
-      let arrayPcp = this.$store.state.blocPcpRcr._pcpCandidates;
-      if (arrayPcp.length === 0) {
-         Logger.warn('Pcp region are empty');
-      }
-      return arrayPcp;
+      return this.$store.state.blocPcpRcr._pcpCandidates;
    }
    /**
-    * Retourne les numéros PPN sélectionnés
-    * @return Les numéros PPN sélectionnés séparés par des espaces
+    * Retourne le PCP sélectionné
+    * @return Le PCP sélectionné
     */
    get returnPcp(): string {
-      let chain = '';
-      return chain;
+      return this.comboboxPcp;
    }
 
+   /**
+    * Retourne le RCR sélectionné
+    * @return le RCR sélectionné
+    */
    get returnRcr(): string {
-      let chain = '';
-      return chain;
+      return this.comboboxRcr;
    }
 
    /**
@@ -178,23 +185,12 @@ export default class ComponentPpn extends Vue {
     */
    checkValuesAndAddRcrs(): void {
       // netoyage des données pour avoir que les rcrs
-      this.comboboxArrayTyped = this.comboboxArrayTyped
-         .map((item) => {
-            console.log(item);
-            if (item.split(' ')[0].match('^\\d{9}$')) {
-               item = item.split(' ')[0];
-               console.log(item);
-               return item;
-            } else {
-               this.removeItem(item);
-               return '';
-            }
-         })
-         .filter((value) => value != '');
+      if (this.comboboxRcr.split(' ')[0].match('^\\d{9}$')) {
+         this.comboboxRcr = this.comboboxRcr.split(' ')[0];
+      } else {
+         this.comboboxRcr = '';
+      }
    }
-
-   checkValuesAndAddPcps(): void {}
-
    /**
     * Vérifie si le bloc est le premier a être affiché
     * @return Vrai si le bloc est le premier a être affiché, Faux sinon
@@ -249,17 +245,17 @@ export default class ComponentPpn extends Vue {
    reloadFromStore(): void {
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
-      this.comboboxArrayTyped = this.getPpnSelected;
+      this.comboboxRcr = this.getRcrSelected;
    }
 
    updateStore(): void {
-      this.$store.dispatch('updateSelectedPpn', this.comboboxArrayTyped).catch((err) => {
+      this.$store.dispatch('updateSelectedPpn', this.comboboxRcr).catch((err) => {
          Logger.error(err);
       });
    }
 
-   addItem(value: string): boolean {
-      this.comboboxArrayTyped.push(value.trim());
+   setRcr(value: string): boolean {
+      this.comboboxRcr = value.trim();
       this.updateStore();
       return true;
    }
@@ -267,34 +263,12 @@ export default class ComponentPpn extends Vue {
    /******************** Events ***************************/
 
    /**
-    * Mise à jour de l'opérateur externe du bloc
-    */
-   updateBlocExternalOperator(): void {
-      this.$store.dispatch('updateSelectedExternalPpnOperator', this.external_operator_selected).catch((err) => {
-         Logger.error(err);
-      });
-   }
-
-   /**
-    * Mise à jour de l'opérateur interne du bloc
-    */
-   updateBlocInternalOperator(): void {
-      this.$store.dispatch('updateSelectedInternalPpnOperator', this.internal_operator_selected).catch((err) => {
-         Logger.error(err);
-      });
-   }
-
-   /**
     * Supprime un numéro PPN de la sélection
     * @param item Numéro PPN à supprimer
     * @throws ValueError si le numéro PPN n'a pas été trouvé
     */
    removeItem(item: string): void {
-      const index: number = this.comboboxArrayTyped.indexOf(item);
-      if (index == -1) {
-         throw new ValueError('PPN ' + item + ' not found');
-      }
-      this.comboboxArrayTyped.splice(index, 1);
+      this.comboboxRcr = '';
       this.updateStore();
    }
 
@@ -309,7 +283,7 @@ export default class ComponentPpn extends Vue {
       if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
             if (value.trim().match('^\\d{8,9}X?$')) {
-               if (this.addItem(value.trim())) {
+               if (this.setRcr(value.trim())) {
                   this.comboboxAlert = [];
                } else {
                   //Logger.debug('------- BREAK --------');
@@ -327,13 +301,12 @@ export default class ComponentPpn extends Vue {
          if (this.comboboxAlert.length === 0) {
             this.currentValue = null;
          }
-      } else if (this.comboboxArrayTyped.length !== 0) {
-         this.currentValue = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
-         this.comboboxArrayTyped.pop();
+      } else if (this.comboboxRcr.length !== 0) {
+         this.currentValue = this.comboboxRcr;
 
          for (let value of this.currentValue.trim().split(/\s+/)) {
             if (value.trim().match('^\\d{8,9}X?$')) {
-               if (this.addItem(value.trim())) {
+               if (this.setRcr(value.trim())) {
                   this.comboboxAlert = [];
                } else {
                   //Logger.debug('------- BREAK --------');

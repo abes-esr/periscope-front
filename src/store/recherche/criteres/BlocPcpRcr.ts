@@ -1,5 +1,5 @@
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
-import {CheckboxItem} from "@/store/recherche/BlocDefinition";
+import {ListItem} from "@/store/recherche/BlocDefinition";
 
 
 /**
@@ -8,7 +8,7 @@ import {CheckboxItem} from "@/store/recherche/BlocDefinition";
 export class BlocPcpRcr extends BlocAbstract {
    _rcr: string;
    _pcp: string;
-   _pcpCandidates: Array<CheckboxItem> = [];
+   _pcpCandidates: Array<ListItem> = [];
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
