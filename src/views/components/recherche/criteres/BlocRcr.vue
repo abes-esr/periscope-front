@@ -33,7 +33,6 @@
                         <template v-slot:activator="{on}">
                            <v-combobox
                                @blur="checkValuesAndAddItems()"
-                               :rules="comboboxAlert"
                                :items="rcr_liste"
                                item-text="label"
                                multiple outlined
@@ -124,7 +123,6 @@ export default class ComponentRcr extends Vue {
    list_internal_operator_to_select: Array<BlocOperator>;
    external_operator_selected: Operator;
    internal_operator_selected: Operator;
-   comboboxAlert: Array<string> = [];
    comboboxLabel: string;
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];

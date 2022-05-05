@@ -25,9 +25,9 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @blur="checkValuesAndAddRcrs()" :rules="comboboxAlert" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
+                           <v-combobox @blur="checkValuesAndAddRcrs()" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
                               <template v-slot:selection="{item}">
-                                 <v-chip close @click:close="removeItem(item)">
+                                 <v-chip close @click:close="removeItemRcr(item)">
                                     <span class="pr-2">{{ item }}</span>
                                  </v-chip>
                               </template>
@@ -40,10 +40,10 @@
                      <!--Internal BlocOperator-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox :rules="comboboxAlert" :items="pcp_liste" item-text="label" outlined small-chips class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
+                           <v-combobox :items="pcp_liste" item-text="label" outlined small-chips class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
                               <template v-slot:selection="{item}">
-                                 <v-chip close @click:close="removeItem(item)">
-                                    <span class="pr-2">{{ item.key }}</span>
+                                 <v-chip close @click:close="removeItemPcp(item)">
+                                    <span class="pr-2">{{ item }}</span>
                                  </v-chip>
                               </template>
                            </v-combobox>
@@ -108,7 +108,6 @@ export default class ComponentPcpRcr extends Vue {
    id: PanelType = PanelType.PCPRCR;
    external_operator_label: string;
    list_external_operator_to_select: Array<BlocOperator>;
-   comboboxAlert: Array<string> = [];
    comboboxLabel: string;
    comboboxRcrPlaceholder: string;
    comboboxPcpPlaceholder: string;
@@ -142,14 +141,6 @@ export default class ComponentPcpRcr extends Vue {
    }
 
    /**
-    * Retourne l'opérateur externe du bloc sélectionné
-    * @return L'opérateur externe
-    */
-   get getExternalOperatorSelected(): Operator {
-      return this.$store.state.blocPcpRcr._externalBlocOperator;
-   }
-
-   /**
     * Retourne le numéro rcr sélectionné
     * @return numéro rcr sélectionné
     */
@@ -158,7 +149,7 @@ export default class ComponentPcpRcr extends Vue {
    }
 
    get getPcpSelected(): string {
-     return this.$store.state.blocPcpRcr._pcp;
+      return this.$store.state.blocPcpRcr._pcp;
    }
 
    get getPcp(): Array<ListItem> {
@@ -244,12 +235,15 @@ export default class ComponentPcpRcr extends Vue {
     */
    reloadFromStore(): void {
       this.list_external_operator_to_select = this.getExternalOperatorList;
-      this.external_operator_selected = this.getExternalOperatorSelected;
       this.comboboxRcr = this.getRcrSelected;
+      this.comboboxPcp = this.getPcpSelected;
    }
 
    updateStore(): void {
-      this.$store.dispatch('updateSelectedPpn', this.comboboxRcr).catch((err) => {
+      this.$store.dispatch('updateSelectedPcpRcrRcr', this.comboboxRcr).catch((err) => {
+         Logger.error(err);
+      });
+      this.$store.dispatch('updateSelectedPcpRcrPcp', this.comboboxPcp).catch((err) => {
          Logger.error(err);
       });
    }
@@ -263,79 +257,23 @@ export default class ComponentPcpRcr extends Vue {
    /******************** Events ***************************/
 
    /**
-    * Supprime un numéro PPN de la sélection
-    * @param item Numéro PPN à supprimer
-    * @throws ValueError si le numéro PPN n'a pas été trouvé
+    * Supprime un numéro RCR de la sélection
+    * @param item Numéro RCR à supprimer
+    * @throws ValueError si le numéro RCR n'a pas été trouvé
     */
-   removeItem(item: string): void {
+   removeItemRcr(item: string): void {
       this.comboboxRcr = '';
       this.updateStore();
    }
 
    /**
-    * Vérifie la valeur courante
+    * Supprime le PCP de la sélection
+    * @param item pcp à supprimer
+    * @throws ValueError si le numéro PCP n'a pas été trouvé
     */
-   checkValues(): void {
-      //Logger.debug('----- DEBUT CHECK VALUES -----');
-      //Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
-      //Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
-
-      if (this.currentValue != null) {
-         for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{8,9}X?$')) {
-               if (this.setRcr(value.trim())) {
-                  this.comboboxAlert = [];
-               } else {
-                  //Logger.debug('------- BREAK --------');
-                  return;
-               }
-            } else {
-               this.currentValue = value;
-               if (this.comboboxAlert.length === 0) {
-                  this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
-               }
-               //Logger.debug('------- BREAK --------');
-               return;
-            }
-         }
-         if (this.comboboxAlert.length === 0) {
-            this.currentValue = null;
-         }
-      } else if (this.comboboxRcr.length !== 0) {
-         this.currentValue = this.comboboxRcr;
-
-         for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{8,9}X?$')) {
-               if (this.setRcr(value.trim())) {
-                  this.comboboxAlert = [];
-               } else {
-                  //Logger.debug('------- BREAK --------');
-                  return;
-               }
-            } else {
-               this.currentValue = value;
-               if (this.comboboxAlert.length === 0) {
-                  this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
-               }
-               //Logger.debug('------- BREAK --------');
-               return;
-            }
-         }
-         if (this.comboboxAlert.length === 0) {
-            this.currentValue = null;
-         }
-      } else if (this.currentValue == null || this.currentValue == undefined) {
-         this.currentValue = null;
-         this.comboboxAlert = [];
-         this.updateStore();
-      } else {
-         if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push("Le PPN doit être constitué de 8 ou 9 chiffres suivis ou pas d'un X");
-         }
-      }
-      //Logger.debug(JSON.stringify('Search value AFTER validation: ' + this.currentValue));
-      //Logger.debug(JSON.stringify('Values AFTER validation : ' + JSON.stringify(this.comboboxArrayTyped)));
-      //Logger.debug('----- FIN CHECK VALUES -----');
+   removeItemPcp(item: string): void {
+      this.comboboxPcp = '';
+      this.updateStore();
    }
 
    /******************** Panel Events ***************************/
