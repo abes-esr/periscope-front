@@ -186,12 +186,14 @@ export class SearchRequest {
                break;
             case PanelType.PCPRCR:
                //construction de la partie pcp & rcr d'un même exemplaire en JSON
-               criteria.push( {
-                  type: 'CriterionPcpRcr',
-                  bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Ou),
-                  pcp: blocPcpRcr._pcp,
-                  rcr: blocPcpRcr._rcr,
-               });
+               if (blocPcpRcr._rcr !== '' && blocPcpRcr._pcp !== '') {
+                  criteria.push({
+                     type: 'CriterionPcpRcr',
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Et),
+                     pcp: blocPcpRcr._pcp,
+                     rcr: blocPcpRcr._rcr,
+                  });
+               }
                break;
             case PanelType.LANG:
                //Construction de la partie Langue en JSON

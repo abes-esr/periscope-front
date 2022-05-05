@@ -1044,6 +1044,7 @@ export default new Vuex.Store({
    },
    getters: {
       isSelectionEmpty: (state) => {
+         console.log('pcp : ' + state.blocPcpRcr._pcp, 'rcr : ' + state.blocPcpRcr._rcr);
          return (
             state.blocPays._selected.length == 0 &&
             state.blocLangue._selected.length == 0 &&
@@ -1054,6 +1055,8 @@ export default new Vuex.Store({
             state.blocRcr._selected.length == 0 &&
             state.blocMotsDuTitre._selected.length == 0 &&
             state.blocPpn._selected.length == 0 &&
+             (state.blocPcpRcr._pcp === '' ||
+            state.blocPcpRcr._rcr === '' ) &&
             state.blocRequeteDirecte._directRequest.criteres.length == 0
          );
       },

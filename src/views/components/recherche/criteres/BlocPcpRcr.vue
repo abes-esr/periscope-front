@@ -1,16 +1,16 @@
 <template>
    <v-expansion-panel class="outlined-app blocPanel">
       <v-row align="center">
-         <v-col xs="8" sm="8" lg="8">
+         <v-col xs="8" sm="8" lg="10">
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par PCP et RCR d'un même exemplaire </v-col>
-                     <v-col xs="12" sm="8" lg="9" class="text--secondary">
+                     <v-col xs="12" sm="4" lg="7"> Recherche par PCP et RCR d'un même exemplaire </v-col>
+                     <v-col xs="12" sm="8" lg="4" class="text--secondary">
                         <v-fade-transition leave-absolute>
                            <span v-if="open || (returnRcr === '' && returnPcp === '')" key="0"> Saisissez un PCP et un RCR </span>
                            <span v-else key="1">
-                              <span v-if="returnPcp !== ''">{{ 'PCP :' + returnPcp }}</span>
+                              <span v-if="returnPcp !== ''">{{ 'PCP : ' + returnPcp }}</span>
                               <span v-if="returnRcr !== '' && returnPcp !== ''"> & </span>
                               <span v-if="returnRcr !== ''">{{ 'RCR : ' + returnRcr }}</span>
                            </span>
@@ -20,7 +20,7 @@
                </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
-               <v-row justify="center" style="height: 20em">
+               <v-row justify="center">
                   <v-col sm="6">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
@@ -40,7 +40,7 @@
                      <!--Internal BlocOperator-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox :items="pcp_liste" item-text="label" outlined small-chips class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
+                           <v-combobox @change="updatePcp" :items="pcp_liste" item-text="text" item-value="id" outlined small-chips class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemPcp(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -97,7 +97,7 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {BlocOperator, CheckboxItem, ListItem, Operator} from '@/store/recherche/BlocDefinition';
+import {BlocOperator, ListItem} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
 import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
@@ -141,19 +141,29 @@ export default class ComponentPcpRcr extends Vue {
    }
 
    /**
-    * Retourne le numéro rcr sélectionné
-    * @return numéro rcr sélectionné
+    * Retourne le numéro rcr sauvegardé dans le store
+    * @return numéro rcr du store
     */
    get getRcrSelected(): string {
       return this.$store.state.blocPcpRcr._rcr;
    }
 
+   /**
+    * Retourne le pcp sauvegardé dans le store
+    * @return numéro pcp du store
+    */
    get getPcpSelected(): string {
       return this.$store.state.blocPcpRcr._pcp;
    }
 
    get getPcp(): Array<ListItem> {
-      return this.$store.state.blocPcpRcr._pcpCandidates;
+      return this.$store.state.blocPcpRcr._pcpCandidates.sort((p1: ListItem, p2: ListItem) => {
+         if (p1.text.toUpperCase() > p2.text.toUpperCase()) {
+            return 1;
+         } else {
+            return -1;
+         }
+      });
    }
    /**
     * Retourne le PCP sélectionné
@@ -181,7 +191,9 @@ export default class ComponentPcpRcr extends Vue {
       } else {
          this.comboboxRcr = '';
       }
+      this.updateStoreRcr();
    }
+
    /**
     * Vérifie si le bloc est le premier a être affiché
     * @return Vrai si le bloc est le premier a être affiché, Faux sinon
@@ -220,6 +232,11 @@ export default class ComponentPcpRcr extends Vue {
       }
    }
 
+   updatePcp(item: ListItem): void {
+      this.comboboxPcp = item.id;
+      this.updateStorePcp();
+   }
+
    /**
     * Réinitialisation des valeurs du bloc
     */
@@ -239,10 +256,12 @@ export default class ComponentPcpRcr extends Vue {
       this.comboboxPcp = this.getPcpSelected;
    }
 
-   updateStore(): void {
+   updateStoreRcr(): void {
       this.$store.dispatch('updateSelectedPcpRcrRcr', this.comboboxRcr).catch((err) => {
          Logger.error(err);
       });
+   }
+   updateStorePcp(): void {
       this.$store.dispatch('updateSelectedPcpRcrPcp', this.comboboxPcp).catch((err) => {
          Logger.error(err);
       });
@@ -250,7 +269,13 @@ export default class ComponentPcpRcr extends Vue {
 
    setRcr(value: string): boolean {
       this.comboboxRcr = value.trim();
-      this.updateStore();
+      this.updateStoreRcr();
+      return true;
+   }
+
+   setPcp(value: string): boolean {
+      this.comboboxPcp = value.trim();
+      this.updateStorePcp();
       return true;
    }
 
@@ -263,17 +288,17 @@ export default class ComponentPcpRcr extends Vue {
     */
    removeItemRcr(item: string): void {
       this.comboboxRcr = '';
-      this.updateStore();
+      this.updateStoreRcr();
    }
 
    /**
     * Supprime le PCP de la sélection
-    * @param item pcp à supprimer
+    * @param value pcp à supprimer
     * @throws ValueError si le numéro PCP n'a pas été trouvé
     */
-   removeItemPcp(item: string): void {
+   removeItemPcp(value: string): void {
       this.comboboxPcp = '';
-      this.updateStore();
+      this.updateStorePcp();
    }
 
    /******************** Panel Events ***************************/
