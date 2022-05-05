@@ -173,9 +173,9 @@ node {
     stage('Build') {
         try {
          if (ENV == 'DEV') {
-            sh 'NODE_ENV=production npm run build -- --mode development'
+            sh 'NODE_ENV=development npm run build -- --mode development'
         } else if (ENV == 'TEST') {
-            sh 'NODE_ENV=production npm run build -- --mode test'
+            sh 'NODE_ENV=test npm run build -- --mode test'
 
         } else if (ENV == 'PROD') {
             sh 'NODE_ENV=production npm run build -- --mode production'
