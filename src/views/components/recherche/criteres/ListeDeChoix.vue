@@ -131,26 +131,16 @@ export default class ListeDeChoix extends Vue {
       });
 
       //isAvaialbe
-      // console.log(
-      //    this.$store.state.composants._panel.filter((el: PanelProvider) => {
-      //       el.isDisplayed === true
-      //    })
-      // );
-      if (
-         this.$store.state.composants._panel.filter((el: PanelProvider) => {
-            return el.isDisplayed;
-         }).length < 1
-      ) {
-         const actionAvailable: PanelAvailableSwitchProvider = {
-            panelId: id,
-            value: value ? AvailableSwitch.ON : AvailableSwitch.OFF,
-         };
 
-         //si un seul switch s'active ou dernier à se désactiver
-         this.$store.dispatch('switchElementAvailablePanel', actionAvailable).catch((err) => {
-            Logger.error(err);
-         });
-      }
+      const actionAvailable: PanelAvailableSwitchProvider = {
+         panelId: id,
+         value: value ? AvailableSwitch.ON : AvailableSwitch.OFF,
+      };
+
+      //
+      this.$store.dispatch('switchElementAvailablePanel', actionAvailable).catch((err) => {
+         Logger.error(err);
+      });
 
       this.$emit('onChange'); // On notifie le composant parent
    }
