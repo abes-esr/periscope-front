@@ -136,11 +136,11 @@ export class Composants {
       }
    }
 
-   /** TODO CHANGER LE  DOC
-    * Active ou désactive l'affichage d'un panneau de recherche
+   /**
+    * Désactive ou active les switches dans le panneau de recherche
     * @param panel Liste des panneaux de recherche (paramètre passé par référence -> les modifications sont appliquées)
     * @param value Interupteur d'affichage (ON/OFF)
-    * @param isPcpRcr
+    * @param isPcpRcr boolean permetant de savoir si c'est le switche du pcprcr (on ne veut pas pouvoir activer le bloc du pcp rcr avec d'autre critere)
     */
    static switchPanelAvailable(panel: Array<PanelProvider>, value: AvailableSwitch, isPcpRcr: boolean): void {
       if (isPcpRcr) {
@@ -163,7 +163,7 @@ export class Composants {
                throw new ValueError('Unable to decode panel available ' + value);
          }
       } else {
-         const isNoSwitchAreDisplayOn: boolean = panel.filter((el) => {return el.isDisplayed;}).length === 0
+         const isNoSwitchAreDisplayOn: boolean = (panel.filter((el) => {return el.isDisplayed;}).length === 0)
          switch (value) {
             case AvailableSwitch.ON:
                panel.forEach((panelTypeKey) => {
