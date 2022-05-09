@@ -154,7 +154,6 @@ export default class ComponentPcpRcr extends Vue {
     * @return numéro rcr du store
     */
    get getRcrSelected(): string {
-      console.log('rcr : '+this.$store.state.blocPcpRcr._rcr);
       return this.$store.state.blocPcpRcr._rcr === undefined ? '' : this.$store.state.blocPcpRcr._rcr;
    }
 
@@ -163,7 +162,6 @@ export default class ComponentPcpRcr extends Vue {
     * @return numéro pcp du store
     */
    get getPcpSelected(): string {
-      console.log('pcp : '+this.$store.state.blocPcpRcr._pcp);
       return this.$store.state.blocPcpRcr._pcp === undefined ? '' : this.$store.state.blocPcpRcr._pcp;
    }
 
