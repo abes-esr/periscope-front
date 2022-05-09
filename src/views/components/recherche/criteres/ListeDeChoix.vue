@@ -8,7 +8,7 @@
                   <v-tooltip top max-width="20vw" open-delay="700">
                      <template v-slot:activator="{on}">
                         <div v-on="on">
-                           <v-switch class="ma-4" v-model="item.displayed" :label="item.label" :value="item.displayed" :disabled="!item.available" @change="updatePanel(item.id, item.displayed)"></v-switch>
+                           <v-switch class="ma-4" v-model="item.isDisplayed" :label="item.label" :value="item.isDisplayed" :disabled="!item.isAvailable" @change="updatePanel(item.id, item.isDisplayed)"></v-switch>
                         </div>
                      </template>
                      <span>Activer / Désactiver le bloc de recherche par {{ item.label }}</span>
@@ -91,6 +91,11 @@ export default class ListeDeChoix extends Vue {
                break;
             case PanelType.COUNTRY:
                this.$store.dispatch('resetBlocPays').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
+            case PanelType.PCPRCR:
+               this.$store.dispatch('resetBlocPcpRcr').catch((err) => {
                   Logger.error(err);
                });
                break;

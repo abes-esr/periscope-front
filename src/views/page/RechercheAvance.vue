@@ -18,16 +18,17 @@
       <v-row>
          <v-col>
             <v-expansion-panels v-for="i in panel" :key="i.position">
-               <component-ppn v-if="i.id === 0 && i.displayed === true" @onChange="renderPanelList"></component-ppn>
-               <component-issn v-if="i.id === 1 && i.displayed === true" @onChange="renderPanelList"></component-issn>
-               <component-rcr v-if="i.id === 2 && i.displayed === true" @onChange="renderPanelList"></component-rcr>
-               <component-plan-conservation-regions v-if="i.id === 3 && i.displayed === true" @onChange="renderPanelList"></component-plan-conservation-regions>
-               <component-plan-conservation-metiers v-if="i.id === 4 && i.displayed === true" @onChange="renderPanelList"></component-plan-conservation-metiers>
-               <component-mots-du-titre v-if="i.id === 5 && i.displayed === true" @onChange="renderPanelList"></component-mots-du-titre>
-               <component-editeur v-if="i.id === 6 && i.displayed === true" @onChange="renderPanelList"></component-editeur>
-               <component-langue v-if="i.id === 7 && i.displayed === true" @onChange="renderPanelList"></component-langue>
-               <component-pays v-if="i.id === 8 && i.displayed === true" @onChange="renderPanelList"></component-pays>
-               <component-requete-enregistree v-if="i.id === 9 && i.displayed === true" @onChange="renderPanelList"></component-requete-enregistree>
+               <component-ppn v-if="i.id === 0 && i.isDisplayed" @onChange="renderPanelList"></component-ppn>
+               <component-issn v-if="i.id === 1 && i.isDisplayed" @onChange="renderPanelList"></component-issn>
+               <component-rcr v-if="i.id === 2 && i.isDisplayed" @onChange="renderPanelList"></component-rcr>
+               <component-plan-conservation-regions v-if="i.id === 3 && i.isDisplayed" @onChange="renderPanelList"></component-plan-conservation-regions>
+               <component-plan-conservation-metiers v-if="i.id === 4 && i.isDisplayed" @onChange="renderPanelList"></component-plan-conservation-metiers>
+               <component-mots-du-titre v-if="i.id === 5 && i.isDisplayed" @onChange="renderPanelList"></component-mots-du-titre>
+               <component-editeur v-if="i.id === 6 && i.isDisplayed" @onChange="renderPanelList"></component-editeur>
+               <component-langue v-if="i.id === 7 && i.isDisplayed" @onChange="renderPanelList"></component-langue>
+               <component-pays v-if="i.id === 8 && i.isDisplayed" @onChange="renderPanelList"></component-pays>
+               <component-pcp-rcr v-if="i.id === 9 && i.isDisplayed" @onChange="renderPanelList"></component-pcp-rcr>
+               <component-requete-enregistree v-if="i.id === 10 && i.isDisplayed" @onChange="renderPanelList"></component-requete-enregistree>
             </v-expansion-panels>
          </v-col>
       </v-row>
@@ -62,6 +63,7 @@ import ComponentRequeteEnregistree from '@/views/components/recherche/criteres/B
 import ComponentBoutonsRecherche from '@/views/components/recherche/BoutonsRecherche.vue';
 import {PanelProvider} from '@/store/composant/ComposantDefinition';
 import ComponentFooter from '@/views/components/Footer.vue';
+import ComponentPcpRcr from '@/views/components/recherche/criteres/BlocPcpRcr.vue';
 
 @Component({
    components: {
@@ -77,6 +79,7 @@ import ComponentFooter from '@/views/components/Footer.vue';
       ComponentEditeur,
       ComponentLangue,
       ComponentPays,
+      ComponentPcpRcr,
       ComponentRequeteEnregistree,
       ComponentBoutonsRecherche,
       ComponentFooter,

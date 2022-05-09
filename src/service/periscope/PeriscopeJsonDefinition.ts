@@ -64,11 +64,11 @@ export interface JsonPaysProvider {
    countries_operator: Array<string>;
 }
 
-export interface JsonPaysProvider {
+export interface JsonPcpRcrProvider {
    type: string;
    bloc_operator: string;
-   countries: Array<string>;
-   countries_operator: Array<string>;
+   rcr: string;
+   pcp: string;
 }
 
 export interface JsonLanguesProvider {

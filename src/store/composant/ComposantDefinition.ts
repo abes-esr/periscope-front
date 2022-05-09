@@ -4,8 +4,8 @@
 export interface PanelProvider {
    id: PanelType;
    position: number;
-   displayed: boolean;
-   available: boolean;
+   isDisplayed: boolean;
+   isAvailable: boolean;
    label: string;
 }
 
@@ -19,6 +19,7 @@ export enum PanelType {
    EDITOR,
    LANG,
    COUNTRY,
+   PCPRCR,
    HISTORY,
 }
 
@@ -41,3 +42,4 @@ export interface PanelDisplaySwitchProvider {
    panelId: PanelType;
    value: DisplaySwitch;
 }
+

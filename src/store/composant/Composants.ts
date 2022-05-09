@@ -16,16 +16,17 @@ export class Composants {
 
    constructor() {
       this._panel = [
-         {id: 9, position: 0, displayed: false, available: true, label: 'Requête enregistrée'},
-         {id: 4, position: 1, displayed: false, available: true, label: 'PCP Métiers'},
-         {id: 3, position: 2, displayed: false, available: true, label: 'PCP Régions'},
-         {id: 0, position: 3, displayed: false, available: true, label: 'PPN'},
-         {id: 1, position: 4, displayed: false, available: true, label: 'ISSN'},
-         {id: 2, position: 5, displayed: false, available: true, label: 'RCR'},
-         {id: 5, position: 6, displayed: false, available: true, label: 'Mots du Titre'},
-         {id: 6, position: 7, displayed: false, available: true, label: 'Editeur'},
-         {id: 7, position: 8, displayed: false, available: true, label: 'Langue'},
-         {id: 8, position: 9, displayed: false, available: true, label: 'Pays'},
+         {id: 10, position: 0, isDisplayed: false, isAvailable: true, label: 'Requête enregistrée'},
+         {id: 4, position: 1, isDisplayed: false, isAvailable: true, label: 'PCP Métiers'},
+         {id: 3, position: 2, isDisplayed: false, isAvailable: true, label: 'PCP Régions'},
+         {id: 0, position: 3, isDisplayed: false, isAvailable: true, label: 'PPN'},
+         {id: 1, position: 4, isDisplayed: false, isAvailable: true, label: 'ISSN'},
+         {id: 2, position: 5, isDisplayed: false, isAvailable: true, label: 'RCR'},
+         {id: 5, position: 6, isDisplayed: false, isAvailable: true, label: 'Mots du Titre'},
+         {id: 6, position: 7, isDisplayed: false, isAvailable: true, label: 'Editeur'},
+         {id: 7, position: 8, isDisplayed: false, isAvailable: true, label: 'Langue'},
+         {id: 8, position: 9, isDisplayed: false, isAvailable: true, label: 'Pays'},
+         {id: 9, position: 10, isDisplayed: false, isAvailable: true, label: 'PCP et RCR (même exemplaire)'},
       ];
    }
 
@@ -51,7 +52,7 @@ export class Composants {
             } else {
                // On cherche le panneau visible au dessus
                let ii: number = index - 1;
-               while (ii > 0 && !panel[ii].displayed) {
+               while (ii > 0 && !panel[ii].isDisplayed) {
                   ii -= 1;
                }
 
@@ -74,7 +75,7 @@ export class Composants {
             } else {
                // On cherche le panneau visible au dessous
                let ii: number = index + 1;
-               while (ii < panel.length && !panel[ii].displayed) {
+               while (ii < panel.length && !panel[ii].isDisplayed) {
                   ii += 1;
                }
 
@@ -125,10 +126,10 @@ export class Composants {
 
       switch (value) {
          case DisplaySwitch.ON:
-            panel[index].displayed = true;
+            panel[index].isDisplayed = true;
             break;
          case DisplaySwitch.OFF:
-            panel[index].displayed = false;
+            panel[index].isDisplayed = false;
             break;
          default:
             throw new ValueError('Unable to decode panel display ' + value);
@@ -145,7 +146,7 @@ export class Composants {
    static isFirstDisplayedElement(id: PanelType, panel: Array<PanelProvider>): boolean {
       let firstDisplayedIndex: number;
       firstDisplayedIndex = 0;
-      while (firstDisplayedIndex < panel.length && !panel[firstDisplayedIndex].displayed) {
+      while (firstDisplayedIndex < panel.length && !panel[firstDisplayedIndex].isDisplayed) {
          firstDisplayedIndex++;
       }
 
@@ -169,7 +170,7 @@ export class Composants {
    static isLastDisplayedElement(id: PanelType, panel: Array<PanelProvider>): boolean {
       let lastDisplayedIndex: number;
       lastDisplayedIndex = panel.length - 1;
-      while (lastDisplayedIndex > 0 && !panel[lastDisplayedIndex].displayed) {
+      while (lastDisplayedIndex > 0 && !panel[lastDisplayedIndex].isDisplayed) {
          lastDisplayedIndex--;
       }
 
@@ -195,7 +196,7 @@ export class Composants {
       // On cherche le premier
       let firstDisplayedIndex: number;
       firstDisplayedIndex = 0;
-      while (firstDisplayedIndex < panel.length && !panel[firstDisplayedIndex].displayed) {
+      while (firstDisplayedIndex < panel.length && !panel[firstDisplayedIndex].isDisplayed) {
          firstDisplayedIndex++;
       }
       if (firstDisplayedIndex >= panel.length) {
@@ -207,7 +208,7 @@ export class Composants {
          // Si le premier est l'historique, on cherche le deuxième
          let secondDisplayedIndex: number;
          secondDisplayedIndex = firstDisplayedIndex + 1;
-         while (secondDisplayedIndex < panel.length && !panel[secondDisplayedIndex].displayed) {
+         while (secondDisplayedIndex < panel.length && !panel[secondDisplayedIndex].isDisplayed) {
             secondDisplayedIndex++;
          }
 

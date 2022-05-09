@@ -1,0 +1,26 @@
+const pcpRegions = [
+   {key: 'PCAq', text: 'Aquitaine'},
+   {key: 'PCAuv', text: 'Auvergne'},
+   {key: 'PCBo', text: 'Bourgogne'},
+   {key: 'PCBre', text: 'Bretagne'},
+   {key: 'PCCA', text: 'Champagne-Ardenne'},
+   {key: 'PCCAPI', text: 'Champagne-Ardenne Picardie'},
+   {key: 'PCCor', text: 'Corse'},
+   {key: 'PCFC', text: 'Franche-Comté'},
+   {key: 'PCLR', text: 'Languedoc-Roussillon'},
+   {key: 'PCLim', text: 'Limousin'},
+   {key: 'PCLor', text: 'Lorraine'},
+   {key: 'PCMP', text: 'Midi-Pyrénées'},
+   {key: 'PCNPDC', text: 'Nord-Pas-de-Calais'},
+   {key: 'PCPACA', text: 'PACA'},
+   {key: 'PCPCh', text: 'Poitou-Charentes'},
+   {key: 'PCPL', text: 'Pays de Loire'},
+   {key: 'PCPic', text: 'Picardie'},
+   {key: 'PCRA', text: 'Rhône-Alpes'},
+   {key: 'PCSAM', text: 'Sciences Aix-Marseille'},
+   {key: 'PCScvdl', text: 'Sciences Centre Val de Loire'},
+   {key: 'PCUdp', text: 'Université de Poitiers'},
+   {key: 'PCUdr', text: 'Université de Rouen'},
+];
+
+export default pcpRegions;
