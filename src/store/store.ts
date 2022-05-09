@@ -473,7 +473,7 @@ export default new Vuex.Store({
                {id: PanelType.EDITOR, position: 7, isDisplayed: false, isAvailable: true, label: 'Editeur'},
                {id: PanelType.LANG, position: 8, isDisplayed: false, isAvailable: true, label: 'Langue'},
                {id: PanelType.COUNTRY, position: 9, isDisplayed: false, isAvailable: true, label: 'Pays'},
-               {id: PanelType.PCPRCR, position: 10, isDisplayed: false, isAvailable: true, label: 'Pcp & RCR'},
+               {id: PanelType.PCPRCR, position: 10, isDisplayed: false, isAvailable: true, label: 'PCP & RCR (même exemplaire)'},
                {id: PanelType.HISTORY, position: 0, isDisplayed: false, isAvailable: true, label: 'Requête enregistrée'},
             ].sort((n1, n2) => {
                if (n1.position > n2.position) {

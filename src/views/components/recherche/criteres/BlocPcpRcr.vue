@@ -21,11 +21,27 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
                <v-row justify="center">
+
+                  <v-col sm="6">
+                     <!--Internal BlocOperator-->
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <v-combobox @change="updatePcp" :items="pcp_liste" item-text="text" item-value="id" outlined small-chips :label="comboboxLabelPcp" class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
+                              <template v-slot:selection="{item}">
+                                 <v-chip close @click:close="removeItemPcp(item)">
+                                    <span class="pr-2">{{ item }}</span>
+                                 </v-chip>
+                              </template>
+                           </v-combobox>
+                        </template>
+                        <span>Saisir un code PCP. Vous ne pouvez saisir / sélectionner qu'un seul PCP</span>
+                     </v-tooltip>
+                  </v-col>
                   <v-col sm="6">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @blur="checkValuesAndAddRcrs()" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
+                           <v-combobox @blur="checkValuesAndAddRcrs()" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabelRcr" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemRcr(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -36,21 +52,6 @@
                         <span>Saisir un numéro de RCR. Vous ne pouvez saisir / sélectionner qu'un numéro de RCR ou copier/coller un numéro RCR</span>
                      </v-tooltip>
                   </v-col>
-                  <v-col sm="6">
-                     <!--Internal BlocOperator-->
-                     <v-tooltip top max-width="20vw" open-delay="700">
-                        <template v-slot:activator="{on}">
-                           <v-combobox @change="updatePcp" :items="pcp_liste" item-text="text" item-value="id" outlined small-chips class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
-                              <template v-slot:selection="{item}">
-                                 <v-chip close @click:close="removeItemPcp(item)">
-                                    <span class="pr-2">{{ item }}</span>
-                                 </v-chip>
-                              </template>
-                           </v-combobox>
-                        </template>
-                        <span>Saisir un code PCP. Vous ne pouvez saisir / sélectionner qu'un seul PCP</span>
-                     </v-tooltip></v-col
-                  >
                </v-row>
             </v-expansion-panel-content>
          </v-col>
@@ -108,7 +109,8 @@ export default class ComponentPcpRcr extends Vue {
    id: PanelType = PanelType.PCPRCR;
    external_operator_label: string;
    list_external_operator_to_select: Array<BlocOperator>;
-   comboboxLabel: string;
+   comboboxLabelRcr: string;
+   comboboxLabelPcp: string;
    comboboxRcrPlaceholder: string;
    comboboxPcpPlaceholder: string;
    comboboxRcr: string;
@@ -124,7 +126,8 @@ export default class ComponentPcpRcr extends Vue {
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.comboboxRcr = this.getRcrSelected;
       this.comboboxPcp = this.getPcpSelected;
-      this.comboboxLabel = 'ex : 341725201';
+      this.comboboxLabelRcr = 'ex : 341725201';
+      this.comboboxLabelPcp = 'ex : PCAq';
       this.comboboxRcrPlaceholder = 'Saisir un numéro Rcr';
       this.comboboxPcpPlaceholder = 'Choisir un Plan de conservation partagé';
       this.currentValue = null;
@@ -145,7 +148,8 @@ export default class ComponentPcpRcr extends Vue {
     * @return numéro rcr du store
     */
    get getRcrSelected(): string {
-      return this.$store.state.blocPcpRcr._rcr;
+      console.log('rcr : '+this.$store.state.blocPcpRcr._rcr);
+      return this.$store.state.blocPcpRcr._rcr === undefined ? '' : this.$store.state.blocPcpRcr._rcr;
    }
 
    /**
@@ -153,7 +157,8 @@ export default class ComponentPcpRcr extends Vue {
     * @return numéro pcp du store
     */
    get getPcpSelected(): string {
-      return this.$store.state.blocPcpRcr._pcp;
+      console.log('pcp : '+this.$store.state.blocPcpRcr._pcp);
+      return this.$store.state.blocPcpRcr._pcp === undefined ? '' : this.$store.state.blocPcpRcr._pcp;
    }
 
    get getPcp(): Array<ListItem> {
