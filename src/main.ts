@@ -31,7 +31,7 @@ vue.$store.dispatch('loadCandidatesValue', false).catch((err) => {
    Logger.error(err);
 });
 // Reset du panneau de recherche
-vue.$store.dispatch('resetSearchPanel', false).catch((err) => {
+vue.$store.dispatch('resetSearchPanel', true).catch((err) => {
    Logger.error(err);
 });
 
