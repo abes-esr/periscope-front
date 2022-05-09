@@ -16,7 +16,7 @@ export class PeriscopeApiAxios {
     */
    static findNoticeByCriteriaByPageAndSize(jsonObject: JsonGlobalSearchRequest, page: number, size: number): Promise<AxiosResponse[]> {
       // Note: Promise.all permet d'appeler plusieurs fonctions qui encapsule des appels Axios
-      return Promise.all([PeriscopeDataService.findNoticesByCriteria(page, size, JSON.stringify(jsonObject))])
+      return Promise.all([PeriscopeDataService.findNoticesByCriteria(page, size, jsonObject)])
          .then((response) => {
             if (response[0].status == 200) {
                return response[0].data;
@@ -40,7 +40,7 @@ export class PeriscopeApiAxios {
     */
    static findNoticeWithFacetsByCriteriaByPageAndSize(jsonObject: JsonGlobalSearchRequest, page: number, size: number): Promise<AxiosResponse[]> {
       // Note: Promise.all permet d'appeler plusieurs fonctions qui encapsule des appels Axios
-      return Promise.all([PeriscopeDataService.findNoticesWithFacetsByCriteria(page, size, JSON.stringify(jsonObject))])
+      return Promise.all([PeriscopeDataService.findNoticesWithFacetsByCriteria(page, size, jsonObject)])
          .then((response) => {
             if (response[0].status == 200) {
                return response[0].data;
@@ -61,6 +61,7 @@ export class PeriscopeApiAxios {
     * @param typeSequence Filtre sur les types de séquences
     * @throws HttpRequestError si la requête Http a échoué
     */
+   //Periscope V3
    static getHoldingsFromPpn(ppn: string, typeSequence?: string): Promise<AxiosResponse[]> {
       // Note: Promise.all permet d'appeler plusieurs fonctions qui encapsule des appels Axios
       return Promise.all([PeriscopeDataService.getHoldingsFromPpn(ppn, typeSequence)])

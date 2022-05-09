@@ -114,24 +114,28 @@ node {
 
             if (ENV == 'DEV') {
                 withCredentials([
-                  string(credentialsId: "url-api-periscope-dev", variable: 'url')
+                  string(credentialsId: "url-api-periscope-dev", variable: 'url'),
+                  string(credentialsId: "url-timeline-periscope-dev", variable: 'urlTimeline')
                 ]) {
                     original = readFile ".env.development"
                     newconfig = original
                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
+                    newconfig = newconfig.replaceAll("VUE_APP_TIMELINE_PERISCOPE_V1=*", "VUE_APP_TIMELINE_PERISCOPE_V1=${urlTimeline}/")
                     writeFile file: ".env.development", text: "${newconfig}"
                     echo "texte = ${newconfig}"
                 }
 
             } else if (ENV == 'TEST') {
                 withCredentials([
-                  string(credentialsId: "url-api-periscope-test", variable: 'url')
+                  string(credentialsId: "url-api-periscope-test", variable: 'url'),
+                  string(credentialsId: "url-timeline-periscope-test", variable: 'urlTimeline')
                 ]) {
                      original = readFile ".env.test"
                      newconfig = original
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
+                    newconfig = newconfig.replaceAll("VUE_APP_TIMELINE_PERISCOPE_V1=*", "VUE_APP_TIMELINE_PERISCOPE_V1=${urlTimeline}/")
                      writeFile file: ".env.test", text: "${newconfig}"
                      echo "texte = ${newconfig}"
                 }
@@ -169,9 +173,9 @@ node {
     stage('Build') {
         try {
          if (ENV == 'DEV') {
-            sh 'NODE_ENV=production npm run build -- --mode development'
+            sh 'NODE_ENV=development npm run build -- --mode development'
         } else if (ENV == 'TEST') {
-            sh 'NODE_ENV=production npm run build -- --mode test'
+            sh 'NODE_ENV=test npm run build -- --mode test'
 
         } else if (ENV == 'PROD') {
             sh 'NODE_ENV=production npm run build -- --mode production'

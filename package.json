@@ -15,10 +15,9 @@
   },
   "dependencies": {
     "@mdi/font": "^5.9.55",
-    "axios": "^0.21.1",
+    "axios": "^0.21.2",
     "core-js": "^3.9.0",
     "cosmiconfig": "^7.0.0",
-    "jquery": "^3.5.1",
     "js-cookie": "^2.2.1",
     "lodash": "^4.17.21",
     "ngx-jira-issue-collector": "^10.0.1",

@@ -389,7 +389,7 @@ export default class TableauResultats extends Vue {
       this.$store.dispatch('updateCurrentRcr', value.rcrList).catch((err) => {
          Logger.error(err);
       });
-      this.$store.dispatch('doVisualisation').catch((err) => {
+      this.$store.dispatch('doVisualisationWithHoldingsV1').catch((err) => {
          Logger.error(err.message);
          if (err instanceof HttpRequestError) {
             Logger.debug('Erreur API : ' + err.debugMessage);

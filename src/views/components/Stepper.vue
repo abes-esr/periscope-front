@@ -24,6 +24,7 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {Logger} from '@/utils/Logger';
 import {HttpRequestError} from '@/exception/HttpRequestError';
+import router from '@/router';
 
 @Component
 export default class Stepper extends Vue {
@@ -57,29 +58,33 @@ export default class Stepper extends Vue {
                this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
                   Logger.error(err);
                });
-               this.$store.dispatch('doSearch').catch((err) => {
-                  Logger.debug('Erreur API : ' + err.debugMessage);
-                  Logger.error(err.message);
-                  if (err instanceof HttpRequestError) {
+               if(this.$store.getters.getMaxNotices === 1){
+                  router.push('/Resultat');
+               } else {
+                 this.$store.dispatch('doSearch').catch((err) => {
+                   Logger.debug('Erreur API : ' + err.debugMessage);
+                   Logger.error(err.message);
+                   if (err instanceof HttpRequestError) {
                      this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
-                        Logger.error(err);
+                       Logger.error(err);
                      });
-                  } else if (err.name !== 'NavigationDuplicated') {
+                   } else if (err.name !== 'NavigationDuplicated') {
                      this.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
-                        Logger.error(err);
+                       Logger.error(err);
                      });
-                  }
-               });
-               this.$store.dispatch('openStickyInfoSnackBar', 'Recherche en cours...').catch((err) => {
-                  Logger.error(err);
-               });
+                   }
+                 });
+                 this.$store.dispatch('openStickyInfoSnackBar', 'Recherche en cours...').catch((err) => {
+                   Logger.error(err);
+                 });
+               }
             }
             break;
          case 3:
             this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
                Logger.error(err);
             });
-            this.$router.replace('/Visualisation').catch((err) => {
+            this.$router.replace('/visualisation').catch((err) => {
                Logger.error(err);
             });
             break;

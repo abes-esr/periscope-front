@@ -967,20 +967,26 @@ export default new Vuex.Store({
                   });
                   this.dispatch('callPeriscopeAPI')
                      .then(() => {
-                        this.dispatch('updateSnackBarDisplay', false);
-                        router
-                           .push('/Resultat')
-                           .then(() => {
-                              resolve(true);
-                           })
-                           .catch((err) => {
-                              if (err.name == 'NavigationDuplicated') {
-                                 // On ignore cette erreur
+                        if (this.state.lotNotices._maxNotice === 1) {
+                           this.dispatch('doVisualisationWithHoldingsV1');
+                           this.dispatch('updateSnackBarDisplay', false);
+                           resolve(true);
+                        } else {
+                           this.dispatch('updateSnackBarDisplay', false);
+                           router
+                              .push('/Resultat')
+                              .then(() => {
                                  resolve(true);
-                              } else {
-                                 reject(err);
-                              }
-                           });
+                              })
+                              .catch((err) => {
+                                 if (err.name == 'NavigationDuplicated') {
+                                    // On ignore cette erreur
+                                    resolve(true);
+                                 } else {
+                                    reject(err);
+                                 }
+                              });
+                        }
                      })
                      .catch((err) => {
                         reject(err);
@@ -991,7 +997,8 @@ export default new Vuex.Store({
                });
          });
       },
-      doVisualisation(context): Promise<boolean> {
+      //Ne pas supprimer cette méthode, peut servir pour utiliser Holdings V2 pour périscope V3
+      doVisualisationWithHoldingsV2(context): Promise<boolean> {
          return new Promise((resolve, reject) => {
             //On envoie la requête au back-end
             PeriscopeApiAxios.getHoldingsFromPpn(context.state.lotHoldings._ppn)
@@ -1001,7 +1008,7 @@ export default new Vuex.Store({
                   context.commit('mutationHoldings', response.holdings);
                   this.dispatch('updateSnackBarDisplay', false);
                   router
-                     .push('/Visualisation')
+                     .push('/visualisation')
                      .then(() => {
                         resolve(true);
                      })
@@ -1017,6 +1024,23 @@ export default new Vuex.Store({
                .catch((err) => {
                   //Si une erreur avec le ws est jetée, on lève un message d'erreur
                   reject(err);
+               });
+         });
+      },
+      doVisualisationWithHoldingsV1(): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            router
+               .push('/Visualisation')
+               .then(() => {
+                  resolve(true);
+               })
+               .catch((err) => {
+                  if (err.name == 'NavigationDuplicated') {
+                     // On ignore cette erreur
+                     resolve(true);
+                  } else {
+                     reject(err);
+                  }
                });
          });
       },
@@ -1043,8 +1067,10 @@ export default new Vuex.Store({
       },
    },
    getters: {
+      getMaxNotices: (state) => {
+         return state.lotNotices._maxNotice;
+      },
       isSelectionEmpty: (state) => {
-         console.log('pcp : ' + state.blocPcpRcr._pcp, 'rcr : ' + state.blocPcpRcr._rcr);
          return (
             state.blocPays._selected.length == 0 &&
             state.blocLangue._selected.length == 0 &&
