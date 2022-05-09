@@ -1,4 +1,4 @@
-import {DisplaySwitch, Movement, PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, Movement, PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
 import {Logger} from '@/utils/Logger';
 
@@ -133,6 +133,54 @@ export class Composants {
             break;
          default:
             throw new ValueError('Unable to decode panel display ' + value);
+      }
+   }
+
+   /** TODO CHANGER LE  DOC
+    * Active ou désactive l'affichage d'un panneau de recherche
+    * @param id Identifiant du panneau de recherche
+    * @param panel Liste des panneaux de recherche (paramètre passé par référence -> les modifications sont appliquées)
+    * @param value Interupteur d'affichage (ON/OFF)
+    */
+   static switchPanelAvailable(panel: Array<PanelProvider>, value: AvailableSwitch, isPcpRcr: boolean): void {
+      if (isPcpRcr) {
+         switch (value) {
+            case AvailableSwitch.ON:
+               panel.forEach((panelTypeKey) => {
+                  if (panelTypeKey.id !== PanelType.PCPRCR) {
+                     panelTypeKey.isAvailable = false;
+                  }
+               });
+               break;
+            case AvailableSwitch.OFF:
+               panel.forEach((panelTypeKey) => {
+                  if (panelTypeKey.id !== PanelType.PCPRCR) {
+                     panelTypeKey.isAvailable = true;
+                  }
+               });
+               break;
+            default:
+               throw new ValueError('Unable to decode panel available ' + value);
+         }
+      } else {
+         switch (value) {
+            case AvailableSwitch.ON:
+               panel.forEach((panelTypeKey) => {
+                  if (panelTypeKey.id === PanelType.PCPRCR) {
+                     panelTypeKey.isAvailable = false;
+                  }
+               });
+               break;
+            case AvailableSwitch.OFF:
+               panel.forEach((panelTypeKey) => {
+                  if (panelTypeKey.id === PanelType.PCPRCR) {
+                     panelTypeKey.isAvailable = true;
+                  }
+               });
+               break;
+            default:
+               throw new ValueError('Unable to decode panel available ' + value);
+         }
       }
    }
 
