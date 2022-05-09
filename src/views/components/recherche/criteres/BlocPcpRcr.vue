@@ -100,7 +100,13 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {BlocOperator, ListItem} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
-import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {
+   AvailableSwitch,
+   DisplaySwitch,
+   PanelAvailableSwitchProvider,
+   PanelDisplaySwitchProvider,
+   PanelType,
+} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
 import PcpLibProfileService from '@/service/PcpLibProfileService';
 
@@ -320,6 +326,14 @@ export default class ComponentPcpRcr extends Vue {
       this.$store.dispatch('switchElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      const actionAvailable: PanelAvailableSwitchProvider = {
+         panelId: this.id,
+         value: AvailableSwitch.OFF,
+      };
+      this.$store.dispatch('switchElementAvailablePanel', actionAvailable).catch((err) => {
+         Logger.error(err);
+      });
+
       this.$emit('onChange'); // On notifie le composant parent
    }
 }

@@ -113,7 +113,15 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {Operator, BlocOperator} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
-import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {
+   AvailableSwitch,
+   DisplaySwitch,
+   Movement,
+   PanelAvailableSwitchProvider,
+   PanelDisplaySwitchProvider,
+   PanelMovementProvider,
+   PanelType,
+} from '@/store/composant/ComposantDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
 
@@ -372,6 +380,13 @@ export default class ComponentIssn extends Vue {
          value: DisplaySwitch.OFF,
       };
       this.$store.dispatch('switchElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      const actionAvailable: PanelAvailableSwitchProvider = {
+         panelId: this.id,
+         value: AvailableSwitch.OFF,
+      };
+      this.$store.dispatch('switchElementAvailablePanel', actionAvailable).catch((err) => {
          Logger.error(err);
       });
       this.$emit('onChange'); // On notifie le composant parent
