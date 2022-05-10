@@ -72,13 +72,7 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {
-   AvailableSwitch,
-   DisplaySwitch,
-   PanelAvailableSwitchProvider,
-   PanelDisplaySwitchProvider,
-   PanelType,
-} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {Logger} from '@/utils/Logger';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 

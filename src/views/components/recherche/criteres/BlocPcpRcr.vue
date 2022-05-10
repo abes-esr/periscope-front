@@ -26,13 +26,13 @@
                      <!--Internal BlocOperator-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @change="updatePcp" :items="pcp_liste" item-text="text" item-value="id" outlined small-chips :label="comboboxLabelPcp" class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
+                           <v-autocomplete @change="checkValuesAndAddPcp" :items="pcp_liste" item-value="id" item-text="text" outlined small-chips :label="comboboxLabelPcp" class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemPcp(item)">
-                                    <span class="pr-2">{{ item }}</span>
+                                    <span class="pr-2">{{ item.id }}</span>
                                  </v-chip>
                               </template>
-                           </v-combobox>
+                           </v-autocomplete>
                         </template>
                         <span>Saisir un code PCP. Vous ne pouvez saisir / sélectionner qu'un seul PCP</span>
                      </v-tooltip>
@@ -125,7 +125,6 @@ export default class ComponentPcpRcr extends Vue {
    rcr_liste: Array<string> = [];
    rcrListLoad = false;
    pcp_liste: Array<ListItem> = [];
-   currentValue: any;
 
    constructor() {
       super();
@@ -137,8 +136,8 @@ export default class ComponentPcpRcr extends Vue {
       this.comboboxLabelPcp = 'ex : PCAq';
       this.comboboxRcrPlaceholder = 'Saisir un numéro Rcr';
       this.comboboxPcpPlaceholder = 'Choisir un Plan de conservation partagé';
-      this.currentValue = null;
       this.pcp_liste = this.getPcp;
+      console.log(this.pcp_liste);
       this.updateRcrList();
    }
 
@@ -204,6 +203,25 @@ export default class ComponentPcpRcr extends Vue {
       this.updateStoreRcr();
    }
 
+   checkValuesAndAddPcp(item: ListItem): void {
+     console.log(this.comboboxPcp)
+     console.log(
+         'test : ' +
+            this.pcp_liste.filter((el) => {
+               return el.id === this.comboboxPcp;
+            }).length,
+      );
+      if (
+         this.pcp_liste.filter((el) => {
+            return el.id === this.comboboxPcp;
+         }).length == 1
+      ) {
+         this.updateStorePcp();
+      } else {
+         this.removeItemPcp('');
+      }
+   }
+
    /**
     * Vérifie si le bloc est le premier a être affiché
     * @return Vrai si le bloc est le premier a être affiché, Faux sinon
@@ -240,11 +258,6 @@ export default class ComponentPcpRcr extends Vue {
             this.rcrListLoad = true;
          });
       }
-   }
-
-   updatePcp(item: ListItem): void {
-      this.comboboxPcp = item.id;
-      this.updateStorePcp();
    }
 
    /**

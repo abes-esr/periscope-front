@@ -363,11 +363,11 @@ export default new Vuex.Store({
       },
       //Bloc de Pcp Rcr
       mutationPcpRcrPcp(state, pcp: string) {
-         Logger.debug('Mutation des Pcp et Rcr : pcp');
+         Logger.debug('Mutation des Pcp : ' + pcp);
          state.blocPcpRcr._pcp = pcp;
       },
       mutationPcpRcrRcr(state, rcr: string) {
-         Logger.debug('Mutation des Pcp et Rcr : rcr');
+         Logger.debug('Mutation des Rcr : ' + rcr);
          state.blocPcpRcr._rcr = rcr;
       },
       loadCandidatesAllPcp(state, force?: boolean) {
