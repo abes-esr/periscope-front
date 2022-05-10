@@ -698,6 +698,9 @@ export default new Vuex.Store({
          this.dispatch('resetBlocPays').catch((err) => {
             Logger.error(err);
          });
+         this.dispatch('resetBlocPcpRcr').catch((err) => {
+            Logger.error(err);
+         });
          this.dispatch('resetBlocRequeteDirecte').catch((err) => {
             Logger.error(err);
          });

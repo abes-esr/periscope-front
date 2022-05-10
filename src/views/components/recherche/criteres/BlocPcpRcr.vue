@@ -21,7 +21,7 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
                <v-row justify="center">
-
+                  <!-- PCP -->
                   <v-col sm="6">
                      <!--Internal BlocOperator-->
                      <v-tooltip top max-width="20vw" open-delay="700">
@@ -37,6 +37,7 @@
                         <span>Saisir un code PCP. Vous ne pouvez saisir / sélectionner qu'un seul PCP</span>
                      </v-tooltip>
                   </v-col>
+                  <!-- RCR -->
                   <v-col sm="6">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
