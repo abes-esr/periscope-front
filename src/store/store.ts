@@ -34,6 +34,7 @@ import pcpMetiers from '@/store/composant/PcpMetiers';
 import pcpRegions from '@/store/composant/PcpRegions';
 import pays from '@/store/composant/Pays';
 import langues from '@/store/composant/Langues';
+import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 Vue.use(Vuex);
 
@@ -388,6 +389,21 @@ export default new Vuex.Store({
                   value: false,
                }),
             );
+         }
+      },
+      loadCandidatesRcr(state, force?: boolean) {
+         if (force || state.blocPcpRcr._rcrCandidates.length == 0) {
+            Logger.debug('Chargement des Rcr');
+            state.blocPcpRcr._rcrCandidates = [];
+            PcpLibProfileService.getRcrName().then((response) => {
+               response.data.forEach((element: {rcr: string; label: string}) => {
+                  state.blocPcpRcr._rcrCandidates.push({
+                     id: element.rcr,
+                     text: element.rcr + element.label,
+                     value: false,
+                  });
+               });
+            });
          }
       },
       resetPcpRcr(state) {
@@ -923,6 +939,7 @@ export default new Vuex.Store({
          context.commit('loadCandidatesPcpMetiers', force);
          context.commit('loadCandidatesPcpRegions', force);
          context.commit('loadCandidatesAllPcp', force);
+         context.commit('loadCandidatesRcr', force);
          context.commit('loadCandidatesLangue', force);
          context.commit('loadCandidatesPays', force);
       },

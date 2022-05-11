@@ -9,6 +9,7 @@ export class BlocPcpRcr extends BlocAbstract {
    _rcr: string;
    _pcp: string;
    _pcpCandidates: Array<ListItem> = [];
+   _rcrCandidates: Array<ListItem> = [];
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);

@@ -42,13 +42,13 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @blur="checkValuesAndAddRcrs()" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabelRcr" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
+                           <v-autocomplete @blur="checkValuesAndAddRcrs()" :items="rcr_liste" item-value="id" item-text="text" outlined small-chips :label="comboboxLabelRcr" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemRcr(item)">
-                                    <span class="pr-2">{{ item }}</span>
+                                    <span class="pr-2">{{ item.id }}</span>
                                  </v-chip>
                               </template>
-                           </v-combobox>
+                           </v-autocomplete>
                         </template>
                         <span>Saisir un numéro de RCR. Vous ne pouvez saisir / sélectionner qu'un numéro de RCR ou copier/coller un numéro RCR</span>
                      </v-tooltip>
@@ -101,15 +101,8 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {BlocOperator, ListItem} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
-import {
-   AvailableSwitch,
-   DisplaySwitch,
-   PanelAvailableSwitchProvider,
-   PanelDisplaySwitchProvider,
-   PanelType,
-} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
-import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 @Component
 export default class ComponentPcpRcr extends Vue {
@@ -122,8 +115,7 @@ export default class ComponentPcpRcr extends Vue {
    comboboxPcpPlaceholder: string;
    comboboxRcr: string;
    comboboxPcp: string;
-   rcr_liste: Array<string> = [];
-   rcrListLoad = false;
+   rcr_liste: Array<ListItem> = [];
    pcp_liste: Array<ListItem> = [];
 
    constructor() {
@@ -136,9 +128,9 @@ export default class ComponentPcpRcr extends Vue {
       this.comboboxLabelPcp = 'ex : PCAq';
       this.comboboxRcrPlaceholder = 'Saisir un numéro Rcr';
       this.comboboxPcpPlaceholder = 'Choisir un Plan de conservation partagé';
-      this.pcp_liste = this.getPcp;
-      console.log(this.pcp_liste);
-      this.updateRcrList();
+      this.pcp_liste = this.getPcps;
+      this.rcr_liste = this.getRcrs;
+      // this.updateRcrList();
    }
 
    /**
@@ -165,7 +157,11 @@ export default class ComponentPcpRcr extends Vue {
       return this.$store.state.blocPcpRcr._pcp === undefined ? '' : this.$store.state.blocPcpRcr._pcp;
    }
 
-   get getPcp(): Array<ListItem> {
+   /**
+    * Retourne tout les candidats de pcp trié par ordre alphabétique
+    * @return Array un tableau de Pcp stocké comme ex ci contre : {id: "PCAq", text: "Aquitaine", value: false}
+    */
+   get getPcps(): Array<ListItem> {
       return this.$store.state.blocPcpRcr._pcpCandidates.sort((p1: ListItem, p2: ListItem) => {
          if (p1.text.toUpperCase() > p2.text.toUpperCase()) {
             return 1;
@@ -174,6 +170,11 @@ export default class ComponentPcpRcr extends Vue {
          }
       });
    }
+
+   get getRcrs(): Array<ListItem> {
+      return this.$store.state.blocPcpRcr._rcrCandidates;
+   }
+
    /**
     * Retourne le PCP sélectionné
     * @return Le PCP sélectionné
@@ -204,13 +205,6 @@ export default class ComponentPcpRcr extends Vue {
    }
 
    checkValuesAndAddPcp(item: ListItem): void {
-     console.log(this.comboboxPcp)
-     console.log(
-         'test : ' +
-            this.pcp_liste.filter((el) => {
-               return el.id === this.comboboxPcp;
-            }).length,
-      );
       if (
          this.pcp_liste.filter((el) => {
             return el.id === this.comboboxPcp;
@@ -247,18 +241,6 @@ export default class ComponentPcpRcr extends Vue {
    }
 
    /******************** Methods ***************************/
-
-   updateRcrList(): void {
-      if (!this.rcrListLoad) {
-         PcpLibProfileService.getRcrName().then((response) => {
-            this.rcr_liste = [];
-            response.data.forEach((element: {rcr: string; label: string}) => {
-               this.rcr_liste.push(element.rcr + ' ' + element.label);
-            });
-            this.rcrListLoad = true;
-         });
-      }
-   }
 
    /**
     * Réinitialisation des valeurs du bloc
