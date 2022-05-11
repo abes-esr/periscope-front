@@ -196,12 +196,15 @@ export default class ComponentPcpRcr extends Vue {
     */
    checkValuesAndAddRcrs(): void {
       // netoyage des données pour avoir que les rcrs
-      if (this.comboboxRcr.split(' ')[0].match('^\\d{9}$')) {
-         this.comboboxRcr = this.comboboxRcr.split(' ')[0];
+      if (
+         this.rcr_liste.filter((el) => {
+            return el.id === this.comboboxRcr;
+         }).length == 1
+      ) {
+         this.updateStoreRcr();
       } else {
-         this.comboboxRcr = '';
+         this.removeItemRcr('');
       }
-      this.updateStoreRcr();
    }
 
    checkValuesAndAddPcp(item: ListItem): void {
