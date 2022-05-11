@@ -42,7 +42,7 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-autocomplete @blur="checkValuesAndAddRcrs()" :items="rcr_liste" item-value="id" item-text="text" outlined small-chips :label="comboboxLabelRcr" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
+                           <v-autocomplete @change="checkValuesAndAddRcrs()" :items="rcr_liste" item-value="id" item-text="text" outlined small-chips :label="comboboxLabelRcr" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemRcr(item)">
                                     <span class="pr-2">{{ item.id }}</span>
