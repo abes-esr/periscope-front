@@ -399,7 +399,7 @@ export default new Vuex.Store({
                response.data.forEach((element: {rcr: string; label: string}) => {
                   state.blocPcpRcr._rcrCandidates.push({
                      id: element.rcr,
-                     text: element.rcr + element.label,
+                     text: element.rcr + ' ' + element.label,
                      value: false,
                   });
                });
@@ -1107,7 +1107,7 @@ export default new Vuex.Store({
             state.blocRcr._selected.length == 0 &&
             state.blocMotsDuTitre._selected.length == 0 &&
             state.blocPpn._selected.length == 0 &&
-            (state.blocPcpRcr._pcp === '' || state.blocPcpRcr._rcr === '') &&
+            (state.blocPcpRcr._pcp === '' || typeof state.blocPcpRcr._pcp === 'undefined' || state.blocPcpRcr._rcr === '' || typeof state.blocPcpRcr._rcr === 'undefined') &&
             state.blocRequeteDirecte._directRequest.criteres.length == 0
          );
       },
