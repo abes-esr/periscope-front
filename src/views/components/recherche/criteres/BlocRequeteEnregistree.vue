@@ -72,7 +72,7 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {Logger} from '@/utils/Logger';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 
@@ -150,6 +150,13 @@ export default class ComponentRequeteEnregistree extends Vue {
          value: DisplaySwitch.OFF,
       };
       this.$store.dispatch('switchElementPanel', action).catch((err) => {
+         Logger.error(err);
+      });
+      const actionAvailable: PanelAvailableSwitchProvider = {
+         panelId: this.id,
+         value: AvailableSwitch.OFF,
+      };
+      this.$store.dispatch('switchElementAvailablePanel', actionAvailable).catch((err) => {
          Logger.error(err);
       });
       this.$emit('onChange'); // On notifie le composant parent

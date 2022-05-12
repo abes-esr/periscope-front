@@ -21,33 +21,34 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
                <v-row justify="center">
-
+                  <!-- PCP -->
                   <v-col sm="6">
                      <!--Internal BlocOperator-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @change="updatePcp" :items="pcp_liste" item-text="text" item-value="id" outlined small-chips :label="comboboxLabelPcp" class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
+                           <v-autocomplete @change="checkValuesAndAddPcp" :items="pcp_liste" item-value="id" item-text="text" outlined small-chips :label="comboboxLabelPcp" class="style2" :placeholder="comboboxPcpPlaceholder" v-model="comboboxPcp" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemPcp(item)">
-                                    <span class="pr-2">{{ item }}</span>
+                                    <span class="pr-2">{{ item.id }}</span>
                                  </v-chip>
                               </template>
-                           </v-combobox>
+                           </v-autocomplete>
                         </template>
                         <span>Saisir un code PCP. Vous ne pouvez saisir / sélectionner qu'un seul PCP</span>
                      </v-tooltip>
                   </v-col>
+                  <!-- RCR -->
                   <v-col sm="6">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @blur="checkValuesAndAddRcrs()" :items="rcr_liste" item-text="label" outlined small-chips :label="comboboxLabelRcr" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
+                           <v-autocomplete @change="checkValuesAndAddRcrs()" :items="rcr_liste" item-value="id" item-text="text" outlined small-chips :label="comboboxLabelRcr" class="style2" :placeholder="comboboxRcrPlaceholder" v-model="comboboxRcr" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemRcr(item)">
-                                    <span class="pr-2">{{ item }}</span>
+                                    <span class="pr-2">{{ item.id }}</span>
                                  </v-chip>
                               </template>
-                           </v-combobox>
+                           </v-autocomplete>
                         </template>
                         <span>Saisir un numéro de RCR. Vous ne pouvez saisir / sélectionner qu'un numéro de RCR ou copier/coller un numéro RCR</span>
                      </v-tooltip>
@@ -100,9 +101,8 @@
 import {Component, Vue} from 'vue-property-decorator';
 import {BlocOperator, ListItem} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
-import {DisplaySwitch, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
-import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 @Component
 export default class ComponentPcpRcr extends Vue {
@@ -115,10 +115,8 @@ export default class ComponentPcpRcr extends Vue {
    comboboxPcpPlaceholder: string;
    comboboxRcr: string;
    comboboxPcp: string;
-   rcr_liste: Array<string> = [];
-   rcrListLoad = false;
+   rcr_liste: Array<ListItem> = [];
    pcp_liste: Array<ListItem> = [];
-   currentValue: any;
 
    constructor() {
       super();
@@ -130,9 +128,9 @@ export default class ComponentPcpRcr extends Vue {
       this.comboboxLabelPcp = 'ex : PCAq';
       this.comboboxRcrPlaceholder = 'Saisir un numéro Rcr';
       this.comboboxPcpPlaceholder = 'Choisir un Plan de conservation partagé';
-      this.currentValue = null;
-      this.pcp_liste = this.getPcp;
-      this.updateRcrList();
+      this.pcp_liste = this.getPcps;
+      this.rcr_liste = this.getRcrs;
+      // this.updateRcrList();
    }
 
    /**
@@ -148,7 +146,6 @@ export default class ComponentPcpRcr extends Vue {
     * @return numéro rcr du store
     */
    get getRcrSelected(): string {
-      console.log('rcr : '+this.$store.state.blocPcpRcr._rcr);
       return this.$store.state.blocPcpRcr._rcr === undefined ? '' : this.$store.state.blocPcpRcr._rcr;
    }
 
@@ -157,11 +154,14 @@ export default class ComponentPcpRcr extends Vue {
     * @return numéro pcp du store
     */
    get getPcpSelected(): string {
-      console.log('pcp : '+this.$store.state.blocPcpRcr._pcp);
       return this.$store.state.blocPcpRcr._pcp === undefined ? '' : this.$store.state.blocPcpRcr._pcp;
    }
 
-   get getPcp(): Array<ListItem> {
+   /**
+    * Retourne tout les candidats de pcp trié par ordre alphabétique
+    * @return Array un tableau de Pcp stocké comme ex ci contre : {id: "PCAq", text: "Aquitaine", value: false}
+    */
+   get getPcps(): Array<ListItem> {
       return this.$store.state.blocPcpRcr._pcpCandidates.sort((p1: ListItem, p2: ListItem) => {
          if (p1.text.toUpperCase() > p2.text.toUpperCase()) {
             return 1;
@@ -170,6 +170,11 @@ export default class ComponentPcpRcr extends Vue {
          }
       });
    }
+
+   get getRcrs(): Array<ListItem> {
+      return this.$store.state.blocPcpRcr._rcrCandidates;
+   }
+
    /**
     * Retourne le PCP sélectionné
     * @return Le PCP sélectionné
@@ -191,12 +196,27 @@ export default class ComponentPcpRcr extends Vue {
     */
    checkValuesAndAddRcrs(): void {
       // netoyage des données pour avoir que les rcrs
-      if (this.comboboxRcr.split(' ')[0].match('^\\d{9}$')) {
-         this.comboboxRcr = this.comboboxRcr.split(' ')[0];
+      if (
+         this.rcr_liste.filter((el) => {
+            return el.id === this.comboboxRcr;
+         }).length == 1
+      ) {
+         this.updateStoreRcr();
       } else {
-         this.comboboxRcr = '';
+         this.removeItemRcr('');
       }
-      this.updateStoreRcr();
+   }
+
+   checkValuesAndAddPcp(item: ListItem): void {
+      if (
+         this.pcp_liste.filter((el) => {
+            return el.id === this.comboboxPcp;
+         }).length == 1
+      ) {
+         this.updateStorePcp();
+      } else {
+         this.removeItemPcp('');
+      }
    }
 
    /**
@@ -224,23 +244,6 @@ export default class ComponentPcpRcr extends Vue {
    }
 
    /******************** Methods ***************************/
-
-   updateRcrList(): void {
-      if (!this.rcrListLoad) {
-         PcpLibProfileService.getRcrName().then((response) => {
-            this.rcr_liste = [];
-            response.data.forEach((element: {rcr: string; label: string}) => {
-               this.rcr_liste.push(element.rcr + ' ' + element.label);
-            });
-            this.rcrListLoad = true;
-         });
-      }
-   }
-
-   updatePcp(item: ListItem): void {
-      this.comboboxPcp = item.id;
-      this.updateStorePcp();
-   }
 
    /**
     * Réinitialisation des valeurs du bloc
@@ -298,10 +301,10 @@ export default class ComponentPcpRcr extends Vue {
 
    /**
     * Supprime le PCP de la sélection
-    * @param value pcp à supprimer
+    * @param item pcp à supprimer
     * @throws ValueError si le numéro PCP n'a pas été trouvé
     */
-   removeItemPcp(value: string): void {
+   removeItemPcp(item: string): void {
       this.comboboxPcp = '';
       this.updateStorePcp();
    }
@@ -320,6 +323,14 @@ export default class ComponentPcpRcr extends Vue {
       this.$store.dispatch('switchElementPanel', action).catch((err) => {
          Logger.error(err);
       });
+      const actionAvailable: PanelAvailableSwitchProvider = {
+         panelId: this.id,
+         value: AvailableSwitch.OFF,
+      };
+      this.$store.dispatch('switchElementAvailablePanel', actionAvailable).catch((err) => {
+         Logger.error(err);
+      });
+
       this.$emit('onChange'); // On notifie le composant parent
    }
 }

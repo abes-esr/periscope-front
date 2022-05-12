@@ -42,4 +42,12 @@ export interface PanelDisplaySwitchProvider {
    panelId: PanelType;
    value: DisplaySwitch;
 }
+export enum AvailableSwitch {
+   ON,
+   OFF,
+}
 
+export interface PanelAvailableSwitchProvider {
+   panelId: PanelType;
+   value: AvailableSwitch;
+}

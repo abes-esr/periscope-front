@@ -20,7 +20,7 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {DisplaySwitch, Movement, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, Movement, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
 import {APIHoldingsResponse, APISearchResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
 import router from '@/router';
@@ -28,13 +28,13 @@ import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
 import {LotHoldings} from '@/store/visualisation/LotHoldings';
 import Holding from '@/store/entity/Holding';
-import {Group, Items} from './visualisation/VisualisationDefinition';
 import {FiltresFacettes} from '@/store/recherche/filtresFacettes/FiltresFacettes';
 import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
 import pcpMetiers from '@/store/composant/PcpMetiers';
 import pcpRegions from '@/store/composant/PcpRegions';
-import pays from "@/store/composant/Pays";
-import langues from "@/store/composant/Langues";
+import pays from '@/store/composant/Pays';
+import langues from '@/store/composant/Langues';
+import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 Vue.use(Vuex);
 
@@ -364,11 +364,11 @@ export default new Vuex.Store({
       },
       //Bloc de Pcp Rcr
       mutationPcpRcrPcp(state, pcp: string) {
-         Logger.debug('Mutation des Pcp et Rcr : pcp');
+         Logger.debug('Mutation des Pcp : ' + pcp);
          state.blocPcpRcr._pcp = pcp;
       },
       mutationPcpRcrRcr(state, rcr: string) {
-         Logger.debug('Mutation des Pcp et Rcr : rcr');
+         Logger.debug('Mutation des Rcr : ' + rcr);
          state.blocPcpRcr._rcr = rcr;
       },
       loadCandidatesAllPcp(state, force?: boolean) {
@@ -389,6 +389,21 @@ export default new Vuex.Store({
                   value: false,
                }),
             );
+         }
+      },
+      loadCandidatesRcr(state, force?: boolean) {
+         if (force || state.blocPcpRcr._rcrCandidates.length == 0) {
+            Logger.debug('Chargement des Rcr');
+            state.blocPcpRcr._rcrCandidates = [];
+            PcpLibProfileService.getRcrName().then((response) => {
+               response.data.forEach((element: {rcr: string; label: string}) => {
+                  state.blocPcpRcr._rcrCandidates.push({
+                     id: element.rcr,
+                     text: element.rcr + element.label,
+                     value: false,
+                  });
+               });
+            });
          }
       },
       resetPcpRcr(state) {
@@ -459,6 +474,10 @@ export default new Vuex.Store({
       mutationPanelDisplaySwitch(state, action: PanelDisplaySwitchProvider) {
          Logger.debug('Mutation Panel Display switch : ' + PanelType[action.panelId] + ' ' + DisplaySwitch[action.value]);
          Composants.switchPanelDisplay(action.panelId, state.composants._panel, action.value);
+      },
+      mutationPanelAvailableSwitch(state, action: PanelAvailableSwitchProvider) {
+         Logger.debug('Mutation Panel Available switch : ' + PanelType[action.panelId] + ' ' + AvailableSwitch[action.value]);
+         Composants.switchPanelAvailable(state.composants._panel, action.value, action.panelId === PanelType.PCPRCR);
       },
       resetSearchPanel(state, force?: boolean) {
          if (force || state.composants._panel.length == 0) {
@@ -695,6 +714,9 @@ export default new Vuex.Store({
          this.dispatch('resetBlocPays').catch((err) => {
             Logger.error(err);
          });
+         this.dispatch('resetBlocPcpRcr').catch((err) => {
+            Logger.error(err);
+         });
          this.dispatch('resetBlocRequeteDirecte').catch((err) => {
             Logger.error(err);
          });
@@ -893,6 +915,9 @@ export default new Vuex.Store({
       switchElementPanel(context, value: PanelDisplaySwitchProvider) {
          context.commit('mutationPanelDisplaySwitch', value);
       },
+      switchElementAvailablePanel(context, value: PanelAvailableSwitchProvider) {
+         context.commit('mutationPanelAvailableSwitch', value);
+      },
 
       //*******************
       //       Page
@@ -914,6 +939,7 @@ export default new Vuex.Store({
          context.commit('loadCandidatesPcpMetiers', force);
          context.commit('loadCandidatesPcpRegions', force);
          context.commit('loadCandidatesAllPcp', force);
+         context.commit('loadCandidatesRcr', force);
          context.commit('loadCandidatesLangue', force);
          context.commit('loadCandidatesPays', force);
       },
@@ -1081,8 +1107,7 @@ export default new Vuex.Store({
             state.blocRcr._selected.length == 0 &&
             state.blocMotsDuTitre._selected.length == 0 &&
             state.blocPpn._selected.length == 0 &&
-             (state.blocPcpRcr._pcp === '' ||
-            state.blocPcpRcr._rcr === '' ) &&
+            (state.blocPcpRcr._pcp === '' || state.blocPcpRcr._rcr === '') &&
             state.blocRequeteDirecte._directRequest.criteres.length == 0
          );
       },

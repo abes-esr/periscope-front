@@ -1,4 +1,4 @@
-import {DisplaySwitch, Movement, PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, Movement, PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
 import {Logger} from '@/utils/Logger';
 
@@ -133,6 +133,57 @@ export class Composants {
             break;
          default:
             throw new ValueError('Unable to decode panel display ' + value);
+      }
+   }
+
+   /**
+    * Désactive ou active les switches dans le panneau de recherche
+    * @param panel Liste des panneaux de recherche (paramètre passé par référence -> les modifications sont appliquées)
+    * @param value Interupteur d'affichage (ON/OFF)
+    * @param isPcpRcr boolean permetant de savoir si c'est le switche du pcprcr (on ne veut pas pouvoir activer le bloc du pcp rcr avec d'autre critere)
+    */
+   static switchPanelAvailable(panel: Array<PanelProvider>, value: AvailableSwitch, isPcpRcr: boolean): void {
+      if (isPcpRcr) {
+         switch (value) {
+            case AvailableSwitch.ON:
+               panel.forEach((panelTypeKey) => {
+                  if (panelTypeKey.id !== PanelType.PCPRCR) {
+                     panelTypeKey.isAvailable = false;
+                  }
+               });
+               break;
+            case AvailableSwitch.OFF:
+               panel.forEach((panelTypeKey) => {
+                  if (panelTypeKey.id !== PanelType.PCPRCR) {
+                     panelTypeKey.isAvailable = true;
+                  }
+               });
+               break;
+            default:
+               throw new ValueError('Unable to decode panel available ' + value);
+         }
+      } else {
+         const isNoSwitchAreDisplayOn: boolean = (panel.filter((el) => {return el.isDisplayed;}).length === 0)
+         switch (value) {
+            case AvailableSwitch.ON:
+               panel.forEach((panelTypeKey) => {
+                  if (panelTypeKey.id === PanelType.PCPRCR) {
+                     panelTypeKey.isAvailable = false;
+                  }
+               });
+               break;
+            case AvailableSwitch.OFF:
+               if (isNoSwitchAreDisplayOn) {
+                  panel.forEach((panelTypeKey) => {
+                     if (panelTypeKey.id === PanelType.PCPRCR) {
+                        panelTypeKey.isAvailable = true;
+                     }
+                  });
+               }
+               break;
+            default:
+               throw new ValueError('Unable to decode panel available ' + value);
+         }
       }
    }
 
