@@ -28,13 +28,18 @@ import {HttpRequestError} from '@/exception/HttpRequestError';
 
 @Component
 export default class BoutonsRecherche extends Vue {
+   selectionEmpty: boolean;
+
+   constructor() {
+      super();
+      this.selectionEmpty = this.isSelectionEmpty;
+   }
 
    /**
     * Vérifie si le formulaire de recherche est vide
     * @return Vrai si le formulaire de recherche est vide, Faux sinon
     */
    get isSelectionEmpty(): boolean {
-      console.log(this.$store.getters.isSelectionEmpty)
       return this.$store.getters.isSelectionEmpty;
    }
 
