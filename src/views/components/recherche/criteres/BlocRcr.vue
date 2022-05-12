@@ -31,17 +31,7 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox
-                               @blur="checkValuesAndAddItems()"
-                               :items="rcr_liste"
-                               item-text="label"
-                               multiple outlined
-                               small-chips
-                               :label="comboboxLabel"
-                               class="style2"
-                               :placeholder="comboboxPlaceholder"
-                               v-model="comboboxArrayTyped"
-                               v-on="on">
+                           <v-combobox @change="checkValuesAndAddItems()" :items="rcr_liste" item-text="text" item-value="id" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -107,17 +97,9 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {Operator, BlocOperator} from '@/store/recherche/BlocDefinition';
+import {Operator, BlocOperator, ListItem} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
-import {
-   AvailableSwitch,
-   DisplaySwitch,
-   Movement,
-   PanelAvailableSwitchProvider,
-   PanelDisplaySwitchProvider,
-   PanelMovementProvider,
-   PanelType,
-} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, Movement, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
 import PcpLibProfileService from '@/service/PcpLibProfileService';
@@ -150,7 +132,8 @@ export default class ComponentRcr extends Vue {
       this.comboboxLabel = 'ex : 123456789';
       this.comboboxPlaceholder = 'Saisir des n° de RCR';
       this.currentValue = null;
-      this.updateRcrList();
+      this.rcr_liste = this.getRcrs;
+      // this.updateRcrList();
    }
 
    /**
@@ -191,6 +174,10 @@ export default class ComponentRcr extends Vue {
     */
    get getRcrSelected(): Array<string> {
       return this.$store.state.blocRcr._selected;
+   }
+
+   get getRcrs(): Array<ListItem> {
+      return this.$store.state.blocPcpRcr._rcrCandidates;
    }
 
    /**
@@ -315,22 +302,23 @@ export default class ComponentRcr extends Vue {
     */
    checkValuesAndAddItems(): void {
       // netoyage des données pour avoir que les rcrs
+      let bigInputStringRcr: string[] = [];
       this.comboboxArrayTyped = this.comboboxArrayTyped
          .map((item) => {
-            console.log(item);
-            if (item.split(' ')[0].match('^\\d{9}$')) {
-               item = item.split(' ')[0];
-               console.log(item);
-               return item;
+            if (typeof item === 'object') {
+               return item['id'];
             } else {
-               this.removeItem(item);
+               bigInputStringRcr = item.split(' ').filter((el) => {
+                  return el.match('^\\d{9}$');
+               });
                return '';
             }
          })
          .filter((value) => value != '');
-
+      bigInputStringRcr.forEach((el) => {
+         this.comboboxArrayTyped.push(el);
+      });
       // on enleve les doublons
-      // this.comboboxArrayTyped = this.comboboxArrayTyped.filter((element, position) => this.comboboxArrayTyped.indexOf(element) == position);
       this.comboboxArrayTyped = Array.from(new Set(this.comboboxArrayTyped));
 
       this.updateStore();
