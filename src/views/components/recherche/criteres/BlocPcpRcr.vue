@@ -301,10 +301,10 @@ export default class ComponentPcpRcr extends Vue {
 
    /**
     * Supprime le PCP de la sélection
-    * @param value pcp à supprimer
+    * @param item pcp à supprimer
     * @throws ValueError si le numéro PCP n'a pas été trouvé
     */
-   removeItemPcp(value: string): void {
+   removeItemPcp(item: string): void {
       this.comboboxPcp = '';
       this.updateStorePcp();
    }
