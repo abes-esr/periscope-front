@@ -64,6 +64,7 @@ import ComponentBoutonsRecherche from '@/views/components/recherche/BoutonsReche
 import {PanelProvider} from '@/store/composant/ComposantDefinition';
 import ComponentFooter from '@/views/components/Footer.vue';
 import ComponentPcpRcr from '@/views/components/recherche/criteres/BlocPcpRcr.vue';
+import {Logger} from "@/utils/Logger";
 
 @Component({
    components: {
@@ -92,6 +93,14 @@ export default class RechercheAvance extends Vue {
       super();
       this.panel = this.getPanel;
    }
+
+  mounted() {
+    console.log('passe');
+    this.$store.dispatch('resetTree').catch((err) => {
+      Logger.error(err.message);
+    });
+    console.log(JSON.stringify(this.$store.state.tree));
+  }
 
    computed(): void {
       this.panel = this.getPanel;

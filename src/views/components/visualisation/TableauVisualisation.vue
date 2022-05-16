@@ -1,7 +1,7 @@
 <template>
    <v-container>
       <v-row justify="center">
-         <iframe id="iframeid" :src="iFrameURL + '?ppnviewed=' + ppnNumber + '&orderby=' + orderBy + '&collectionStatus=' + collectionStatus + '&tree=' + tree" width="100%" allowfullscreen></iframe>
+         <iframe id="iframeid" :src="getUrl" width="100%" allowfullscreen></iframe>
       </v-row>
    </v-container>
 </template>
@@ -23,7 +23,16 @@ export default class TableauVisualisation extends Vue {
       this.iFrameURL = process.env.VUE_APP_TIMELINE_PERISCOPE_V1;
       this.orderBy = 'SORT_BY_PCP';
       this.collectionStatus = '';
-      this.tree = '';
+      this.tree = this.getTree;
+      console.log(this.getUrl);
+   }
+
+   get getTree() {
+     return this.$store.state.tree.join('%2C');
+   }
+
+   get getUrl() {
+     return this.iFrameURL + '?ppnviewed=' + this.ppnNumber + '&orderby=' + this.orderBy + '&collectionStatus=' + this.collectionStatus + '&tree=' + this.tree;
    }
 }
 </script>

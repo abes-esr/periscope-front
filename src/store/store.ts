@@ -67,6 +67,8 @@ export default new Vuex.Store({
       jsonTraitements: new SearchRequest(),
       //Bloc de tri multiples
       blocTri: new BlocTri(),
+      //Arbre de RCR
+      tree: new Array<string>(),
       pagination: new Pagination(),
    },
    mutations: {
@@ -630,6 +632,16 @@ export default new Vuex.Store({
             }
          }
       },
+      mutationTreeBlocEnParam(state, value) {
+         Logger.debug('Mutation des RCR de l\'arbre');
+         value.forEach((el: string) => {
+            state.tree.push(el);
+         })
+      },
+      resetTree(state) {
+         Logger.debug('Reset de l\'arbre RCR');
+         state.tree = [];
+      },
    },
    actions: {
       //******************
@@ -738,6 +750,9 @@ export default new Vuex.Store({
       },
       resetRequeteHistory(context) {
          context.commit('resetRequeteHistory');
+      },
+      resetTree(context) {
+         context.commit('resetTree');
       },
 
       //******************
@@ -982,6 +997,30 @@ export default new Vuex.Store({
                   //Si une erreur avec le ws est jetée, on lève un message d'erreur
                   reject(err);
                });
+         });
+      },
+      feedTree(): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            try {
+               this.dispatch('getRcrCriteriaAndPcpCriteria');
+            } catch (err: any) {
+               reject(err.message);
+            }
+         })
+      },
+      getRcrCriteria(context): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            try {
+               if(context.state.blocRcr._selected.length != 0){
+                  context.commit('mutationTreeBlocEnParam', context.state.blocRcr._selected);
+               }
+               else{
+                  context.commit('mutationTreeBlocEnParam', [context.state.blocPcpRcr._rcr]);
+               }
+               console.log(JSON.stringify(context.state.tree));
+            } catch (err: any) {
+               reject(err.message);
+            }
          });
       },
       doSearch(): Promise<boolean> {
