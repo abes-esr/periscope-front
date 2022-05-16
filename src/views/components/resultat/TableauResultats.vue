@@ -53,7 +53,7 @@
                </v-tooltip>
             </v-col>
             <v-col cols="5">
-               <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie" single-line hide-details style="margin: 0 !important; padding: 0 !important"></v-text-field>
+               <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie sur page en cours" single-line hide-details style="margin: 0 !important; padding: 0 !important"></v-text-field>
             </v-col>
          </v-row>
          <v-row class="secondary-line">
