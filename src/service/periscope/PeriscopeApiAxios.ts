@@ -57,16 +57,18 @@ export class PeriscopeApiAxios {
    }
 
    /** Retourne des Rcr à partir d'une liste de PCP**/
-   static findRcrByPcp(pcp: string):Promise<AxiosResponse> {
+   static findRcrByPcp(pcp: string): Promise<AxiosResponse> {
       return Pcp2RcrDataService.findrcrByPcp(pcp)
-          .then((response) => { return response})
-          .catch((err) => {
-             if (err.response) {
-                throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
-             } else {
-                throw new HttpRequestError(err.status, err.message);
-             }
-          });
+         .then((response) => {
+            return response;
+         })
+         .catch((err) => {
+            if (err.response) {
+               throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
+            } else {
+               throw new HttpRequestError(err.status, err.message);
+            }
+         });
    }
 
    /**

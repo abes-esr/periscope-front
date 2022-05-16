@@ -633,13 +633,13 @@ export default new Vuex.Store({
          }
       },
       mutationTreeBlocEnParam(state, value) {
-         Logger.debug('Mutation des RCR de l\'arbre');
+         Logger.debug("Mutation des RCR de l'arbre");
          value.forEach((el: string) => {
             state.tree.push(el);
-         })
+         });
       },
       resetTree(state) {
-         Logger.debug('Reset de l\'arbre RCR');
+         Logger.debug("Reset de l'arbre RCR");
          state.tree = [];
       },
    },
@@ -1002,17 +1002,20 @@ export default new Vuex.Store({
       callPCP2RCRApi(context): Promise<boolean> {
          Logger.debug('Appel de PCP2RCR');
          return new Promise((resolve, reject) => {
-            try{
-               if(context.state.blocPcpRcr._pcp !== undefined){
+            try {
+               if (context.state.blocPcpRcr._pcp !== undefined) {
                   const rcrListResults: Array<string> = [];
                   PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRcr._pcp).then((result) => {
-                     console.log(JSON.stringify(result));
-                        for(let i = 0; i < result.data.sudoc.length; i++){
-                           console.log(JSON.stringify(result.data.sudoc.query.result.library[i]));
+                     for (let i = 0; i < result.data.sudoc.length; i++) {
+                        const level1 = result.data.sudoc[i];
+                        for (let j = 0; j < level1.query.result.length; j++) {
+                           const level2 = level1.query.result[j];
+                           rcrListResults.push(level2.library.rcr);
                         }
-                     });
+                     }
+                  });
                   resolve(true);
-               }else{
+               } else {
                   //PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected));
                }
             } catch (err: any) {
@@ -1028,15 +1031,14 @@ export default new Vuex.Store({
             } catch (err: any) {
                reject(err.message);
             }
-         })
+         });
       },
       getRcrCriteria(context): Promise<boolean> {
          return new Promise((resolve, reject) => {
             try {
-               if(context.state.blocRcr._selected.length != 0){
+               if (context.state.blocRcr._selected.length != 0) {
                   context.commit('mutationTreeBlocEnParam', context.state.blocRcr._selected);
-               }
-               else{
+               } else {
                   context.commit('mutationTreeBlocEnParam', [context.state.blocPcpRcr._rcr]);
                }
                console.log(JSON.stringify(context.state.tree));
@@ -1047,9 +1049,13 @@ export default new Vuex.Store({
       },
       getPcpCriteria(context): Promise<boolean> {
          return new Promise((resolve, reject) => {
-            this.dispatch('callPCP2RCRApi').then(() => {
-               resolve(true);
-            }).catch((err) => {reject(err)});
+            this.dispatch('callPCP2RCRApi')
+               .then(() => {
+                  resolve(true);
+               })
+               .catch((err) => {
+                  reject(err);
+               });
          });
       },
       doSearch(): Promise<boolean> {
