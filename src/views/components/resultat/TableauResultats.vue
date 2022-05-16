@@ -216,6 +216,7 @@ export default class TableauResultats extends Vue {
       this.mappingLabelTri = this.getMappingLabeltoTriType;
       this.mappingLabelFacet = this.getFacetLabelMapping;
       this.displayDrawer = true;
+      console.log(this.$store.state.lotHoldings._ppn);
    }
 
    get getOrderSortBooleans(): Array<boolean> {
@@ -353,11 +354,11 @@ export default class TableauResultats extends Vue {
 
    /******************** Methods ***************************/
 
-  /**
-   * Mets à jour les filtres de facette dans le store
-   * @param zone le type de facette (document_type, country...)
-   * @param key la valeur du type (périodique, monographie...)
-   */
+   /**
+    * Mets à jour les filtres de facette dans le store
+    * @param zone le type de facette (document_type, country...)
+    * @param key la valeur du type (périodique, monographie...)
+    */
    updateStoreFacet(zone: string, key: string): void {
       const arrayZoneAndKey: Array<string> = [];
       arrayZoneAndKey.push(zone);
@@ -383,6 +384,9 @@ export default class TableauResultats extends Vue {
    /******************** Events ***************************/
 
    clickOnRow(value: Notice): void {
+      this.$store.dispatch('changeStepAction', 3).catch((err) => {
+         Logger.error(err);
+      });
       this.$store.dispatch('updateCurrentPpn', value.ppn).catch((err) => {
          Logger.error(err);
       });
