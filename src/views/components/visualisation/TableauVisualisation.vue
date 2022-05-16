@@ -7,8 +7,10 @@
 </template>
 <script lang="js">
 import {Component, Vue} from 'vue-property-decorator';
-
-@Component
+import Stepper from "@/views/components/Stepper";
+@Component({
+  components: {Stepper}
+})
 export default class TableauVisualisation extends Vue {
    ppnNumber;
    iFrameURL;
