@@ -95,11 +95,9 @@ export default class RechercheAvance extends Vue {
    }
 
   mounted() {
-    console.log('passe');
     this.$store.dispatch('resetTree').catch((err) => {
       Logger.error(err.message);
     });
-    console.log(JSON.stringify(this.$store.state.tree));
   }
 
    computed(): void {

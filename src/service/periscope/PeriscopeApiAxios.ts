@@ -1,5 +1,6 @@
 import {JsonGlobalSearchRequest, JsonDetailNotice} from '@/service/periscope/PeriscopeJsonDefinition';
 import PeriscopeDataService from '@/service/periscope/PeriscopeService';
+import Pcp2RcrDataService from '@/service/periscope/Pcp2RcrService';
 import {AxiosResponse} from 'axios';
 import {HttpRequestError} from '@/exception/HttpRequestError';
 
@@ -53,6 +54,19 @@ export class PeriscopeApiAxios {
                throw new HttpRequestError(err.status, err.message);
             }
          });
+   }
+
+   /** Retourne des Rcr à partir d'une liste de PCP**/
+   static findRcrByPcp(pcp: string):Promise<AxiosResponse> {
+      return Pcp2RcrDataService.findrcrByPcp(pcp)
+          .then((response) => { return response})
+          .catch((err) => {
+             if (err.response) {
+                throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
+             } else {
+                throw new HttpRequestError(err.status, err.message);
+             }
+          });
    }
 
    /**

@@ -999,10 +999,32 @@ export default new Vuex.Store({
                });
          });
       },
+      callPCP2RCRApi(context): Promise<boolean> {
+         Logger.debug('Appel de PCP2RCR');
+         return new Promise((resolve, reject) => {
+            try{
+               if(context.state.blocPcpRcr._pcp !== undefined){
+                  const rcrListResults: Array<string> = [];
+                  PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRcr._pcp).then((result) => {
+                     console.log(JSON.stringify(result));
+                        for(let i = 0; i < result.data.sudoc.length; i++){
+                           console.log(JSON.stringify(result.data.sudoc.query.result.library[i]));
+                        }
+                     });
+                  resolve(true);
+               }else{
+                  //PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected));
+               }
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
+      },
       feedTree(): Promise<boolean> {
          return new Promise((resolve, reject) => {
             try {
-               this.dispatch('getRcrCriteriaAndPcpCriteria');
+               this.dispatch('getRcrCriteria');
+               this.dispatch('getPcpCriteria');
             } catch (err: any) {
                reject(err.message);
             }
@@ -1021,6 +1043,13 @@ export default new Vuex.Store({
             } catch (err: any) {
                reject(err.message);
             }
+         });
+      },
+      getPcpCriteria(context): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            this.dispatch('callPCP2RCRApi').then(() => {
+               resolve(true);
+            }).catch((err) => {reject(err)});
          });
       },
       doSearch(): Promise<boolean> {

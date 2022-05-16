@@ -317,10 +317,8 @@ export default class ComponentRcr extends Vue {
       // netoyage des données pour avoir que les rcrs
       this.comboboxArrayTyped = this.comboboxArrayTyped
          .map((item) => {
-            console.log(item);
             if (item.split(' ')[0].match('^\\d{9}$')) {
                item = item.split(' ')[0];
-               console.log(item);
                return item;
             } else {
                this.removeItem(item);
