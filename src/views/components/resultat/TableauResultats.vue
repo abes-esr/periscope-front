@@ -216,7 +216,6 @@ export default class TableauResultats extends Vue {
       this.mappingLabelTri = this.getMappingLabeltoTriType;
       this.mappingLabelFacet = this.getFacetLabelMapping;
       this.displayDrawer = true;
-      console.log(this.$store.state.lotHoldings._ppn);
    }
 
    get getOrderSortBooleans(): Array<boolean> {
