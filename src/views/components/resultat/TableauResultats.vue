@@ -604,3 +604,8 @@ export default class TableauResultats extends Vue {
    }
 }
 </script>
+<style>
+.v-btn:not(.v-btn--round).v-size--small{
+  margin-top: 5px;
+}
+</style>
