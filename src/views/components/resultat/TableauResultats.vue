@@ -9,11 +9,11 @@
                   </template>
                   <span>Afficher / Cacher les facettes</span>
                </v-tooltip>
-              <v-tooltip top open-delay="700">
-                <template v-slot:activator="{on}">
-                  <v-btn class="outlined-app btnTableau" small @click="goToBottomOfPage" v-on="on"><v-icon>mdi-arrow-down</v-icon></v-btn>
-                </template>
-              </v-tooltip>
+               <v-tooltip top open-delay="700">
+                  <template v-slot:activator="{on}">
+                     <v-btn class="outlined-app btnTableau" outlined small @click="goToBottomOfPage" v-on="on"><v-icon>mdi-arrow-down</v-icon></v-btn>
+                  </template>
+               </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
                      <v-btn class="outlined-app btnTableau" outlined small @click="clearSelection" v-on="on"><v-icon>mdi-checkbox-blank-off-outline</v-icon></v-btn>
