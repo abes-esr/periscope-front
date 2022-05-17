@@ -9,17 +9,16 @@
                   </template>
                   <span>Afficher / Cacher les facettes</span>
                </v-tooltip>
+              <v-tooltip top open-delay="700">
+                <template v-slot:activator="{on}">
+                  <v-btn class="outlined-app btnTableau" small @click="goToBottomOfPage" v-on="on"><v-icon>mdi-arrow-down</v-icon></v-btn>
+                </template>
+              </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
                      <v-btn class="outlined-app btnTableau" outlined small @click="clearSelection" v-on="on"><v-icon>mdi-checkbox-blank-off-outline</v-icon></v-btn>
                   </template>
                   <span>Vider la sélection</span>
-               </v-tooltip>
-               <v-tooltip top open-delay="700">
-                  <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app btnTableau" outlined small @click="clearSort" v-on="on"><v-icon>mdi-cancel</v-icon></v-btn>
-                  </template>
-                  <span>Réinitialiser les tris</span>
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
@@ -33,6 +32,12 @@
                   </template>
                   <span>Appliquer les tris</span>
                </v-tooltip>
+              <v-tooltip top open-delay="700">
+                <template v-slot:activator="{on}">
+                  <v-btn class="outlined-app btnTableau" outlined small @click="clearSort" v-on="on"><v-icon>mdi-cancel</v-icon></v-btn>
+                </template>
+                <span>Réinitialiser les tris</span>
+              </v-tooltip>
             </v-col>
             <v-col cols="3">
                <v-tooltip top open-delay="700">
@@ -55,6 +60,7 @@
             <v-col cols="5">
                <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie sur page en cours" single-line hide-details style="margin: 0 !important; padding: 0 !important"></v-text-field>
             </v-col>
+
          </v-row>
          <v-row class="secondary-line">
             <v-col>Requête : {{ getMaxNotice }} notices ({{ getExecutionTime }} secondes)</v-col>
@@ -126,15 +132,7 @@
          </v-card>
          <v-container>
             <v-row align-content="center" class="justify-space-between">
-               <v-col cols="3">
-                  <v-tooltip top open-delay="700">
-                     <template v-slot:activator="{on}">
-                        <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
-                     </template>
-                     <span>Aller en haut de la page</span>
-                  </v-tooltip>
-               </v-col>
-               <v-col cols="3">
+               <v-col cols="6">
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
                         <v-btn icon color="primary" @click="previousPage" :disabled="isFirstPage" v-on="on"><v-icon>mdi-arrow-left</v-icon></v-btn>
@@ -536,6 +534,10 @@ export default class TableauResultats extends Vue {
     */
    goToTopOfPage(): void {
       scroll(0, 0);
+   }
+
+   goToBottomOfPage(): void {
+     scroll(0, document.body.scrollHeight || document.documentElement.scrollHeight);
    }
 
    /**
