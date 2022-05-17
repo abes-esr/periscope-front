@@ -1001,9 +1001,12 @@ export default new Vuex.Store({
       },
       callPCP2RCRApi(context): Promise<boolean> {
          Logger.debug('Appel de PCP2RCR');
+         console.log(context.state.blocPcpRcr._pcp !== "")
          return new Promise((resolve, reject) => {
             try {
-               if (context.state.blocPcpRcr._pcp !== undefined) {
+               //TODO context.state.blocPcpRcr._pcp est empty après une premiere recherche vidée
+               //TODO la condition ci dessous à droite ne fonctionne pas
+               if (context.state.blocPcpRcr._pcp !== undefined || context.state.blocPcpRcr._pcp !== "") {
                   const rcrListResults: Array<string> = [];
                   PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRcr._pcp).then((result) => {
                      for (let i = 0; i < result.data.sudoc.length; i++) {
@@ -1016,6 +1019,12 @@ export default new Vuex.Store({
                   });
                   resolve(true);
                } else {
+                  //TODO doit passer dans cette boucle quand le bloc pcprcr est vide 
+                  console.log('e')
+                  console.log(context.state.blocPcpRegions._selected)
+                  console.log(context.state.blocPcpMetiers._selected)
+                  const pcpRegionsEtMetiers: Array<string> = context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
+                  //console.log(pcpRegionsEtMetiers);
                   //PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected));
                }
             } catch (err: any) {
