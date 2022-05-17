@@ -13,5 +13,7 @@ export class BlocPcpRcr extends BlocAbstract {
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);
+      this._pcp = '';
+      this._rcr = '';
    }
 }

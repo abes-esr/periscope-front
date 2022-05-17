@@ -1001,13 +1001,12 @@ export default new Vuex.Store({
       },
       callPCP2RCRApi(context): Promise<boolean> {
          Logger.debug('Appel de PCP2RCR');
-         console.log(context.state.blocPcpRcr._pcp !== "")
          return new Promise((resolve, reject) => {
+            const rcrListResults: Array<string> = [];
             try {
                //TODO context.state.blocPcpRcr._pcp est empty après une premiere recherche vidée
                //TODO la condition ci dessous à droite ne fonctionne pas
-               if (context.state.blocPcpRcr._pcp !== undefined || context.state.blocPcpRcr._pcp !== "") {
-                  const rcrListResults: Array<string> = [];
+               if (context.state.blocPcpRcr._pcp !== undefined && context.state.blocPcpRcr._pcp !== '') {
                   PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRcr._pcp).then((result) => {
                      for (let i = 0; i < result.data.sudoc.length; i++) {
                         const level1 = result.data.sudoc[i];
@@ -1019,13 +1018,23 @@ export default new Vuex.Store({
                   });
                   resolve(true);
                } else {
-                  //TODO doit passer dans cette boucle quand le bloc pcprcr est vide 
-                  console.log('e')
+                  //TODO doit passer dans cette boucle quand le bloc pcprcr est vide
                   console.log(context.state.blocPcpRegions._selected)
                   console.log(context.state.blocPcpMetiers._selected)
                   const pcpRegionsEtMetiers: Array<string> = context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
-                  //console.log(pcpRegionsEtMetiers);
-                  //PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected));
+                  pcpRegionsEtMetiers.forEach((pcp) => {
+                     console.log("ici" + pcp);
+                     PeriscopeApiAxios.findRcrByPcp(pcp).then((result) => {
+                        for (let i = 0; i < result.data.sudoc.length; i++) {
+                           const level1 = result.data.sudoc[i];
+                           for (let j = 0; j < level1.query.result.length; j++) {
+                              const level2 = level1.query.result[j];
+                              rcrListResults.push(level2.library.rcr);
+                           }
+                        }
+                        console.log('la ' + pcp);
+                     })
+                  });
                }
             } catch (err: any) {
                reject(err.message);
