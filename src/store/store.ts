@@ -171,7 +171,7 @@ export default new Vuex.Store({
       },
       resetInternalRcrOperator(state) {
          Logger.debug('Reset Operateur interne des Rcr');
-         state.blocRcr._internalBlocOperator = Operator.Et;
+         state.blocRcr._internalBlocOperator = Operator.Ou;
       },
       mutationRcr(state, arraySent: Array<string>) {
          Logger.debug('Mutation des Rcr');
@@ -197,7 +197,7 @@ export default new Vuex.Store({
       },
       resetInternalPpnOperator(state) {
          Logger.debug('Reset Operateur interne des Ppn');
-         state.blocPpn._internalBlocOperator = Operator.Et;
+         state.blocPpn._internalBlocOperator = Operator.Ou;
       },
       mutationPpn(state, arraySent: Array<string>) {
          Logger.debug('Mutation des Ppn');
@@ -223,7 +223,7 @@ export default new Vuex.Store({
       },
       resetInternalIssnOperator(state) {
          Logger.debug('Reset Operateur interne des Issn');
-         state.blocIssn._internalBlocOperator = Operator.Et;
+         state.blocIssn._internalBlocOperator = Operator.Ou;
       },
       mutationIssn(state, arraySent: Array<string>) {
          Logger.debug('Mutation des Issn');
