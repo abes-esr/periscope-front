@@ -606,8 +606,18 @@ export default class TableauResultats extends Vue {
    }
 }
 </script>
-<style>
+<style scoped>
 .v-btn:not(.v-btn--round).v-size--small{
   margin-top: 5px;
 }
+
+::v-deep .theme--light.v-data-table
+> .v-data-table__wrapper
+> table
+> tbody
+> tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper)
+{
+  background: #0f75bc;
+}
+
 </style>
