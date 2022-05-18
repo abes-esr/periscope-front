@@ -568,6 +568,16 @@ export default new Vuex.Store({
          state.lotNotices._executionTime = element;
       },
 
+      //FiltresFacettes
+      resetFiltresFacettes(state) {
+         Logger.debug('Reset des filtres facettes');
+         state.filtresFacettes._filters = [
+            {zone: 'document_type', valeurs: []},
+            {zone: 'support_type', valeurs: []},
+            {zone: 'country', valeurs: []},
+            {zone: 'language', valeurs: []},
+         ];
+      },
       // Holdings
       mutationHoldings(state, values) {
          Logger.debug('Mutation des Etats de collection');
@@ -639,7 +649,7 @@ export default new Vuex.Store({
       mutationIsClosed(state) {
          Logger.debug('Mutation du boolean indiquant la bonne fermeture du navigateur');
          state.isClosed = true;
-      }
+      },
    },
    actions: {
       //******************
@@ -739,6 +749,9 @@ export default new Vuex.Store({
       },
       resetFacettes(context) {
          context.commit('resetFacettes');
+      },
+      resetFiltresFacettes(context) {
+         context.commit('resetFiltresFacettes');
       },
       resetSearchPanel(context, force?: boolean) {
          context.commit('resetSearchPanel', force);
@@ -1182,6 +1195,6 @@ export default new Vuex.Store({
 
       getIsClosed: (state) => {
          return state.isClosed;
-      }
+      },
    },
 });
