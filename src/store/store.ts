@@ -68,7 +68,6 @@ export default new Vuex.Store({
       //Bloc de tri multiples
       blocTri: new BlocTri(),
       pagination: new Pagination(),
-      isClosed: false,
    },
    mutations: {
       //Bloc de recherche PcpRegions
@@ -634,12 +633,6 @@ export default new Vuex.Store({
             }
          }
       },
-
-      // Fermeture du navigateur
-      mutationIsClosed(state) {
-         Logger.debug('Mutation du boolean indiquant la bonne fermeture du navigateur');
-         state.isClosed = true;
-      }
    },
    actions: {
       //******************
@@ -1101,11 +1094,6 @@ export default new Vuex.Store({
       displayStore() {
          Logger.debug(JSON.stringify(this.state));
       },
-
-      // Fermeture du navigateur
-      switchIsClosed(context) {
-         context.commit('mutationIsClosed');
-      },
    },
    getters: {
       getMaxNotices: (state) => {
@@ -1179,9 +1167,5 @@ export default new Vuex.Store({
       getLotHoldings: (state) => {
          return state.lotHoldings;
       },
-
-      getIsClosed: (state) => {
-         return state.isClosed;
-      }
    },
 });

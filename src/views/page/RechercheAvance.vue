@@ -91,34 +91,6 @@ export default class RechercheAvance extends Vue {
    constructor() {
       super();
       this.panel = this.getPanel;
-      console.log('constructor');
-   }
-
-   //lifecycle
-   beforeCreate(): void {
-     console.log(this.$store.state.blocRcr._selected);
-     console.log(JSON.stringify(this.$store.state.blocRequeteDirecte._historyOfAllRequests));
-      console.log('beforecreate');
-   }
-
-   created(): void {
-      console.log('created');
-   }
-
-   mounted(): void {
-      console.log('mounted');
-      this.panel = this.getPanel;
-   }
-
-   destroyed(): void {
-     console.log('destroyed');
-     this.$store.dispatch('switchIsClosed');
-   }
-
-   //end lifecycle
-
-   computed(): void {
-      console.log('computed');
    }
 
    get getPanel(): Array<PanelProvider> {
