@@ -422,6 +422,8 @@ export default new Vuex.Store({
       addRequeteDirecteToHistory(state, element: JsonGlobalSearchRequest) {
          Logger.debug("Ajout requete dans l'historique");
          state.blocRequeteDirecte._historyOfAllRequests.push(element);
+         //stockage de l'historique dans le localstorage pour réutilisation ultérieure
+         localStorage.history = JSON.stringify(state.blocRequeteDirecte._historyOfAllRequests);
       },
       resetRequeteDirecte(state) {
          Logger.debug('Reset des requetes directes');
@@ -1182,5 +1184,4 @@ export default new Vuex.Store({
          return state.isClosed;
       }
    },
-   plugins: [createPersistedState({paths:["HistoriqueRequetes"]})],
 });
