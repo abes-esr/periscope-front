@@ -18,7 +18,7 @@
                      <v-col xs="12" sm="4" lg="3"> Recherche par RCR </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || comboboxArrayTyped.length === 0" key="0"> Saisissez des n° de RCR d'une Bibliothèque</span>
+                           <span v-if="open || arrayRcrSelected.length === 0" key="0"> Saisissez des n° de RCR d'une Bibliothèque</span>
                            <span v-else key="1"> {{ returnItem + ' | Entre RCR: ' + getInternalOperatorSelectedInString }} </span>
                         </v-fade-transition>
                      </v-col>
@@ -27,11 +27,26 @@
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
                <v-row justify="center" style="height: 20em">
-                  <v-col sm="10">
+                  <v-col sm="5">
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @change="checkValuesAndAddItems()" :items="rcr_liste" item-text="text" item-value="id" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="comboboxArrayTyped" v-on="on">
+                           <v-autocomplete @change="checkValuesAndAddItems()" :items="rcr_liste" item-text="text" item-value="id" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="arrayRcrSelected" v-on="on">
+                              <template v-slot:selection="{item}">
+                                 <v-chip close @click:close="removeItem(item)">
+                                    <span class="pr-2">{{ item.id }}</span>
+                                 </v-chip>
+                              </template>
+                           </v-autocomplete>
+                        </template>
+                        <span>Saisir un numéro de RCR. Vous pouvez saisir plusieurs numéros de RCR à la suite ou copier/coller une liste de numéro RCR</span>
+                     </v-tooltip>
+                  </v-col>
+                  <v-col sm="5">
+                     <!--Elements-->
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <v-combobox @change="checkValuesAddItemsAndClearSpace()" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="arrayRcrCopierColler" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -115,7 +130,8 @@ export default class ComponentRcr extends Vue {
    internal_operator_selected: Operator;
    comboboxLabel: string;
    comboboxPlaceholder: string;
-   comboboxArrayTyped: Array<string> = [];
+   arrayRcrSelected: Array<string> = [];
+   arrayRcrCopierColler: Array<string> = [];
    currentValue: any;
    rcr_liste: Array<any> = [];
    rcrListLoad = false;
@@ -128,7 +144,7 @@ export default class ComponentRcr extends Vue {
       this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
-      this.comboboxArrayTyped = this.getRcrSelected;
+      this.arrayRcrSelected = this.getRcrSelected;
       this.comboboxLabel = 'ex : 123456789';
       this.comboboxPlaceholder = 'Saisir des n° de RCR';
       this.currentValue = null;
@@ -186,7 +202,7 @@ export default class ComponentRcr extends Vue {
     */
    get returnItem(): string {
       let chain = '';
-      this.comboboxArrayTyped.forEach((element) => {
+      this.arrayRcrSelected.forEach((element) => {
          chain += element + ', ';
       });
       return chain;
@@ -239,7 +255,7 @@ export default class ComponentRcr extends Vue {
    }
 
    updateStore(): void {
-      this.$store.dispatch('updateSelectedRcr', this.comboboxArrayTyped).catch((err) => {
+      this.$store.dispatch('updateSelectedRcr', this.arrayRcrSelected.concat(this.arrayRcrCopierColler)).catch((err) => {
          Logger.error(err);
       });
    }
@@ -261,7 +277,8 @@ export default class ComponentRcr extends Vue {
       this.list_internal_operator_to_select = this.getInternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
-      this.comboboxArrayTyped = this.getRcrSelected;
+      this.arrayRcrSelected = this.getRcrSelected;
+      this.arrayRcrCopierColler = [];
    }
    /******************** Events ***************************/
 
@@ -289,11 +306,11 @@ export default class ComponentRcr extends Vue {
     * @throws ValueError si le numéro RCR n'a pas été trouvé
     */
    removeItem(item: string): void {
-      const index: number = this.comboboxArrayTyped.indexOf(item);
+      const index: number = this.arrayRcrSelected.indexOf(item);
       if (index == -1) {
          throw new ValueError('RCR ' + item + ' not found');
       }
-      this.comboboxArrayTyped.splice(index, 1);
+      this.arrayRcrSelected.splice(index, 1);
       this.updateStore();
    }
 
@@ -301,25 +318,25 @@ export default class ComponentRcr extends Vue {
     * Vérifie la valeur courante
     */
    checkValuesAndAddItems(): void {
-      // netoyage des données pour avoir que les rcrs
-      let bigInputStringRcr: string[] = [];
-      this.comboboxArrayTyped = this.comboboxArrayTyped
-         .map((item) => {
-            if (typeof item === 'object') {
-               return item['id'];
-            } else {
-               bigInputStringRcr = item.split(' ').filter((el) => {
-                  return el.match('^\\d{9}$');
-               });
-               return '';
-            }
-         })
-         .filter((value) => value != '');
-      bigInputStringRcr.forEach((el) => {
-         this.comboboxArrayTyped.push(el);
-      });
       // on enleve les doublons
-      this.comboboxArrayTyped = Array.from(new Set(this.comboboxArrayTyped));
+      this.arrayRcrSelected = Array.from(new Set(this.arrayRcrSelected));
+
+      this.updateStore();
+   }
+
+   /**
+    * Vérifie la valeur courante
+    */
+   checkValuesAddItemsAndClearSpace(): void {
+      // netoyage des données pour avoir que les rcrs
+      console.log(this.arrayRcrCopierColler);
+      this.arrayRcrCopierColler = this.arrayRcrCopierColler[0].split(' ').filter((el: string) => {
+         return el.match('^\\d{9}$');
+      });
+
+      console.log(this.arrayRcrCopierColler);
+      // on enleve les doublons
+      this.arrayRcrCopierColler = Array.from(new Set(this.arrayRcrCopierColler));
 
       this.updateStore();
    }
