@@ -28,13 +28,6 @@ import {HttpRequestError} from '@/exception/HttpRequestError';
 
 @Component
 export default class BoutonsRecherche extends Vue {
-   selectionEmpty: boolean;
-
-   constructor() {
-      super();
-      this.selectionEmpty = this.isSelectionEmpty;
-   }
-
    /**
     * Vérifie si le formulaire de recherche est vide
     * @return Vrai si le formulaire de recherche est vide, Faux sinon
@@ -47,6 +40,9 @@ export default class BoutonsRecherche extends Vue {
     * Action de recherche
     */
    clickSearch(): void {
+      this.$store.dispatch('changeStepAction', 2).catch((err) => {
+         Logger.error(err);
+      });
       this.$store.dispatch('doSearch').catch((err) => {
          Logger.error(err.message);
          if (err instanceof HttpRequestError) {
