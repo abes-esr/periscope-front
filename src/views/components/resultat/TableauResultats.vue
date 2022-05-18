@@ -346,7 +346,7 @@ export default class TableauResultats extends Vue {
       return this.selected.length == 0;
    }
    get getFieldsToExport(): Array<string> {
-      return ['ppn', 'issn', 'continiousType', 'title', 'pcpList', 'nbLoc'];
+      return ['ppn', 'issn', 'continiousType', 'title', 'pcpList', 'nbLoc', 'rcrList'];
    }
 
    /******************** Methods ***************************/
