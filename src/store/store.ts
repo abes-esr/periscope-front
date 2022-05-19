@@ -1121,19 +1121,11 @@ export default new Vuex.Store({
          return Composants.isMoveUpAvailable(id, state.composants._panel);
       },
       isFirstPage: (state) => () => {
-         if (state.pagination._currentPage == 0) {
-            return true;
-         } else {
-            return false;
-         }
+         return state.pagination._currentPage == 0;
          return false;
       },
       isLastPage: (state) => () => {
-         if (state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0) {
-            return true;
-         } else {
-            return false;
-         }
+         return state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0;
          return false;
       },
       orderSortArrayResultLabelElements: (state) => {
