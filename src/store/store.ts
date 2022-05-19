@@ -632,10 +632,12 @@ export default new Vuex.Store({
             }
          }
       },
-      mutationTreeBlocEnParam(state, value) {
+      mutationTreeBlocEnParam(state, value: Array<string>) {
          Logger.debug("Mutation des RCR de l'arbre");
+         console.log(JSON.stringify(value));
          value.forEach((el: string) => {
             state.tree.push(el);
+            console.log(el);
          });
       },
       resetTree(state) {
@@ -1001,13 +1003,10 @@ export default new Vuex.Store({
       },
       callPCP2RCRApi(context): Promise<boolean> {
          Logger.debug('Appel de PCP2RCR');
-         console.log(context.state.blocPcpRcr._pcp !== "")
          return new Promise((resolve, reject) => {
             try {
-               //TODO context.state.blocPcpRcr._pcp est empty après une premiere recherche vidée
-               //TODO la condition ci dessous à droite ne fonctionne pas
-               if (context.state.blocPcpRcr._pcp !== undefined || context.state.blocPcpRcr._pcp !== "") {
-                  const rcrListResults: Array<string> = [];
+               const rcrListResults: Array<string> = [];
+               if (context.state.blocPcpRcr._pcp !== '') {
                   PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRcr._pcp).then((result) => {
                      for (let i = 0; i < result.data.sudoc.length; i++) {
                         const level1 = result.data.sudoc[i];
@@ -1017,14 +1016,26 @@ export default new Vuex.Store({
                         }
                      }
                   });
+                  console.log(rcrListResults);
                   resolve(true);
                } else {
-                  //TODO doit passer dans cette boucle quand le bloc pcprcr est vide 
-                  console.log('e')
-                  console.log(context.state.blocPcpRegions._selected)
-                  console.log(context.state.blocPcpMetiers._selected)
+                  //TODO doit passer dans cette boucle quand le bloc pcprcr est vide
                   const pcpRegionsEtMetiers: Array<string> = context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
-                  //console.log(pcpRegionsEtMetiers);
+                  pcpRegionsEtMetiers.forEach((el: string) => {
+                     PeriscopeApiAxios.findRcrByPcp(el).then((result) => {
+                        for (let i = 0; i < result.data.sudoc.length; i++) {
+                           const level1 = result.data.sudoc[i];
+                           for (let j = 0; j < level1.query.result.length; j++) {
+                              const level2 = level1.query.result[j];
+                              rcrListResults.push(level2.library.rcr);
+                           }
+                        }
+                     });
+                  });
+                  console.log(rcrListResults);
+                  this.state.tree = rcrListResults;
+                  console.log(JSON.stringify(this.state.tree))
+                  resolve(true);
                   //PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected));
                }
             } catch (err: any) {
