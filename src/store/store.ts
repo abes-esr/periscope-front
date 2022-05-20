@@ -431,6 +431,7 @@ export default new Vuex.Store({
       resetRequeteHistory(state) {
          Logger.debug("Reset de l'historique");
          state.blocRequeteDirecte._historyOfAllRequests = [];
+         localStorage.history = [];
       },
 
       mutationSearchRequest(state) {
