@@ -362,6 +362,7 @@ export default new Vuex.Store({
          state.blocPays._selected = [];
          state.blocPays._candidates.forEach((element: {value: boolean}) => (element.value = false));
       },
+
       //Bloc de Pcp Rcr
       mutationPcpRcrPcp(state, pcp: string) {
          Logger.debug('Mutation des Pcp : ' + pcp);
@@ -420,6 +421,8 @@ export default new Vuex.Store({
       addRequeteDirecteToHistory(state, element: JsonGlobalSearchRequest) {
          Logger.debug("Ajout requete dans l'historique");
          state.blocRequeteDirecte._historyOfAllRequests.push(element);
+         //stockage de l'historique dans le localstorage pour réutilisation ultérieure
+         localStorage.history = JSON.stringify(state.blocRequeteDirecte._historyOfAllRequests);
       },
       resetRequeteDirecte(state) {
          Logger.debug('Reset des requetes directes');
@@ -428,6 +431,7 @@ export default new Vuex.Store({
       resetRequeteHistory(state) {
          Logger.debug("Reset de l'historique");
          state.blocRequeteDirecte._historyOfAllRequests = [];
+         localStorage.history = [];
       },
 
       mutationSearchRequest(state) {
@@ -564,6 +568,16 @@ export default new Vuex.Store({
          state.lotNotices._executionTime = element;
       },
 
+      //FiltresFacettes
+      resetFiltresFacettes(state) {
+         Logger.debug('Reset des filtres facettes');
+         state.filtresFacettes._filters = [
+            {zone: 'document_type', valeurs: []},
+            {zone: 'support_type', valeurs: []},
+            {zone: 'country', valeurs: []},
+            {zone: 'language', valeurs: []},
+         ];
+      },
       // Holdings
       mutationHoldings(state, values) {
          Logger.debug('Mutation des Etats de collection');
@@ -729,6 +743,9 @@ export default new Vuex.Store({
       },
       resetFacettes(context) {
          context.commit('resetFacettes');
+      },
+      resetFiltresFacettes(context) {
+         context.commit('resetFiltresFacettes');
       },
       resetSearchPanel(context, force?: boolean) {
          context.commit('resetSearchPanel', force);
@@ -1157,5 +1174,4 @@ export default new Vuex.Store({
          return state.lotHoldings;
       },
    },
-   plugins: [createPersistedState()],
 });
