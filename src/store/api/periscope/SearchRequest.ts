@@ -187,6 +187,7 @@ export class SearchRequest {
             case PanelType.PCPRCR:
                //construction de la partie pcp & rcr d'un même exemplaire en JSON
                if (blocPcpRcr._rcr !== '' && blocPcpRcr._pcp !== '') {
+                  console.log('je passe')
                   criteria.push({
                      type: 'CriterionPcpRcr',
                      bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Et),

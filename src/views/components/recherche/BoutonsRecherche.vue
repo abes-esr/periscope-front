@@ -40,6 +40,9 @@ export default class BoutonsRecherche extends Vue {
     * Action de recherche
     */
    clickSearch(): void {
+     this.$store.dispatch('resetFiltresFacettes').catch((err) => {
+       Logger.error(err);
+     });
       this.$store.dispatch('changeStepAction', 2).catch((err) => {
          Logger.error(err);
       });

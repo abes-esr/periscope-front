@@ -93,10 +93,6 @@ export default class RechercheAvance extends Vue {
       this.panel = this.getPanel;
    }
 
-   computed(): void {
-      this.panel = this.getPanel;
-   }
-
    get getPanel(): Array<PanelProvider> {
       return this.$store.state.composants._panel;
    }
