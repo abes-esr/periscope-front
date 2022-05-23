@@ -46,7 +46,7 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @change="checkValuesAddItemsAndClearSpace()" multiple outlined small-chips :label="'Pour le copier coller'" class="style2" :placeholder="'copier coller'" v-model="arrayRcrCopierColler" v-on="on">
+                           <v-combobox @change="checkValuesAddItemsAndClearSpace" @focus="resetCopyPasteRcr" multiple outlined small-chips :label="'Pour le copier coller'" class="style2" :placeholder="'copier coller'" v-model="arrayRcrCopierColler" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItemCopyPaste(item)">
                                     <span class="pr-2">{{ item }}</span>
@@ -197,9 +197,8 @@ export default class ComponentRcr extends Vue {
       return this.$store.state.blocRcr._selectedCopyPasteRcr;
    }
 
-
    get getRcrs(): Array<ListItem> {
-      return this.$store.state.blocPcpRcr._rcrCandidates;
+      return this.$store.state.blocRcr._candidates;
    }
 
    /**
@@ -346,6 +345,14 @@ export default class ComponentRcr extends Vue {
       // on enleve les doublons
       this.arrayRcrCopierColler = Array.from(new Set(this.arrayRcrCopierColler));
 
+      this.updateStore();
+   }
+
+   /**
+    * reset  Copy Paste RCR
+    */
+   resetCopyPasteRcr(): void {
+      this.arrayRcrCopierColler = [];
       this.updateStore();
    }
 

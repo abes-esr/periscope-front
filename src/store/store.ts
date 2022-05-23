@@ -67,6 +67,7 @@ export default new Vuex.Store({
       //Bloc de tri multiples
       blocTri: new BlocTri(),
       pagination: new Pagination(),
+      liste_rcr: new Array<ListItem>(),
    },
    mutations: {
       //Bloc de recherche PcpRegions
@@ -397,18 +398,20 @@ export default new Vuex.Store({
          }
       },
       loadCandidatesRcr(state, force?: boolean) {
-         if (force || state.blocPcpRcr._rcrCandidates.length == 0) {
+         if (force || state.liste_rcr.length == 0) {
             Logger.debug('Chargement des Rcr');
-            state.blocPcpRcr._rcrCandidates = [];
+            state.liste_rcr = [];
             PcpLibProfileService.getRcrName().then((response) => {
                response.data.forEach((element: {rcr: string; label: string}) => {
-                  state.blocPcpRcr._rcrCandidates.push({
+                  state.liste_rcr.push({
                      id: element.rcr,
                      text: element.rcr + ' ' + element.label,
                      value: false,
                   });
                });
             });
+            state.blocRcr._candidates = state.liste_rcr;
+            state.blocPcpRcr._rcrCandidates = state.liste_rcr;
          }
       },
       resetPcpRcr(state) {
