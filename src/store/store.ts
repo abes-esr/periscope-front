@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
 import {CheckboxItem, ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
@@ -177,9 +176,14 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Rcr');
          state.blocRcr._selected = arraySent;
       },
+      mutationRcrCopyPaste(state, arraySent: Array<string>) {
+         Logger.debug('Mutation des Rcr copy paste');
+         state.blocRcr._selectedCopyPasteRcr = arraySent;
+      },
       resetRcr(state) {
          Logger.debug('Reset des Rcr');
          state.blocRcr._selected = [];
+         state.blocRcr._selectedCopyPasteRcr = [];
       },
 
       //Bloc de recherche Ppn
@@ -793,6 +797,9 @@ export default new Vuex.Store({
       updateSelectedRcr(context, arraySent: Array<string>) {
          context.commit('mutationRcr', arraySent);
       },
+      updateSelectedRcrCopyPaste(context, arraySent: Array<string>) {
+         context.commit('mutationRcrCopyPaste', arraySent);
+      },
       updateSelectedExternalPpnOperator(context, operator: number) {
          context.commit('mutationExternalPpnOperator', operator);
       },
@@ -1122,6 +1129,7 @@ export default new Vuex.Store({
             state.blocPcpMetiers._selected.length == 0 &&
             state.blocIssn._selected.length == 0 &&
             state.blocRcr._selected.length == 0 &&
+            state.blocRcr._selectedCopyPasteRcr.length == 0 &&
             state.blocMotsDuTitre._selected.length == 0 &&
             state.blocPpn._selected.length == 0 &&
             (state.blocPcpRcr._pcp === '' || typeof state.blocPcpRcr._pcp === 'undefined' || state.blocPcpRcr._rcr === '' || typeof state.blocPcpRcr._rcr === 'undefined') &&
@@ -1139,11 +1147,9 @@ export default new Vuex.Store({
       },
       isFirstPage: (state) => () => {
          return state.pagination._currentPage == 0;
-         return false;
       },
       isLastPage: (state) => () => {
          return state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0;
-         return false;
       },
       orderSortArrayResultLabelElements: (state) => {
          return BlocTri.getTriLabels(state.blocTri);

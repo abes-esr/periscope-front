@@ -116,12 +116,12 @@ export class SearchRequest {
                break;
             case PanelType.RCR:
                //Construction de la partie Rcr en JSON
-               if (blocRcr._selected.length !== 0) {
+               if (Array.from(new Set(blocRcr._selected.concat(blocRcr._selectedCopyPasteRcr))).length !== 0) {
                   const rcrBlocJson: JsonRcrBlocProvider = {
                      type: 'CriterionRcr',
                      bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocRcr._externalBlocOperator),
-                     rcr: blocRcr._selected,
-                     rcr_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocRcr._internalBlocOperator, blocRcr._selected.length),
+                     rcr: Array.from(new Set(blocRcr._selected.concat(blocRcr._selectedCopyPasteRcr))),
+                     rcr_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocRcr._internalBlocOperator, Array.from(new Set(blocRcr._selected.concat(blocRcr._selectedCopyPasteRcr))).length),
                   };
                   criteria.push(rcrBlocJson);
                }

@@ -33,7 +33,7 @@
                         <template v-slot:activator="{on}">
                            <v-autocomplete @change="checkValuesAndAddItems()" :items="rcr_liste" item-text="text" item-value="id" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="arrayRcrSelected" v-on="on">
                               <template v-slot:selection="{item}">
-                                 <v-chip close @click:close="removeItem(item)">
+                                 <v-chip close @click:close="removeItem(item.id)">
                                     <span class="pr-2">{{ item.id }}</span>
                                  </v-chip>
                               </template>
@@ -46,9 +46,9 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @change="checkValuesAddItemsAndClearSpace()" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="arrayRcrCopierColler" v-on="on">
+                           <v-combobox @change="checkValuesAddItemsAndClearSpace()" multiple outlined small-chips :label="'Pour le copier coller'" class="style2" :placeholder="'copier coller'" v-model="arrayRcrCopierColler" v-on="on">
                               <template v-slot:selection="{item}">
-                                 <v-chip close @click:close="removeItem(item)">
+                                 <v-chip close @click:close="removeItemCopyPaste(item)">
                                     <span class="pr-2">{{ item }}</span>
                                  </v-chip>
                               </template>
@@ -132,9 +132,7 @@ export default class ComponentRcr extends Vue {
    comboboxPlaceholder: string;
    arrayRcrSelected: Array<string> = [];
    arrayRcrCopierColler: Array<string> = [];
-   currentValue: any;
    rcr_liste: Array<any> = [];
-   rcrListLoad = false;
 
    constructor() {
       super();
@@ -145,11 +143,10 @@ export default class ComponentRcr extends Vue {
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.arrayRcrSelected = this.getRcrSelected;
+      this.arrayRcrCopierColler = this.getRcrCopyPasteSelected;
       this.comboboxLabel = 'ex : 123456789';
       this.comboboxPlaceholder = 'Saisir des n° de RCR';
-      this.currentValue = null;
       this.rcr_liste = this.getRcrs;
-      // this.updateRcrList();
    }
 
    /**
@@ -192,6 +189,15 @@ export default class ComponentRcr extends Vue {
       return this.$store.state.blocRcr._selected;
    }
 
+   /**
+    * Retourne les numéros RCR sélectionnés dans copy paste
+    * @return Liste des numéros RCR sélectionnés
+    */
+   get getRcrCopyPasteSelected(): Array<string> {
+      return this.$store.state.blocRcr._selectedCopyPasteRcr;
+   }
+
+
    get getRcrs(): Array<ListItem> {
       return this.$store.state.blocPcpRcr._rcrCandidates;
    }
@@ -202,7 +208,7 @@ export default class ComponentRcr extends Vue {
     */
    get returnItem(): string {
       let chain = '';
-      this.arrayRcrSelected.forEach((element) => {
+      Array.from(new Set(this.arrayRcrSelected.concat(this.arrayRcrCopierColler))).forEach((element) => {
          chain += element + ', ';
       });
       return chain;
@@ -242,20 +248,11 @@ export default class ComponentRcr extends Vue {
 
    /******************** Methods ***************************/
 
-   updateRcrList(): void {
-      if (!this.rcrListLoad) {
-         PcpLibProfileService.getRcrName().then((response) => {
-            this.rcr_liste = [];
-            response.data.forEach((element: {rcr: string; label: string}) => {
-               this.rcr_liste.push(element.rcr + ' ' + element.label);
-            });
-            this.rcrListLoad = true;
-         });
-      }
-   }
-
    updateStore(): void {
-      this.$store.dispatch('updateSelectedRcr', this.arrayRcrSelected.concat(this.arrayRcrCopierColler)).catch((err) => {
+      this.$store.dispatch('updateSelectedRcr', this.arrayRcrSelected).catch((err) => {
+         Logger.error(err);
+      });
+      this.$store.dispatch('updateSelectedRcrCopyPaste', this.arrayRcrCopierColler).catch((err) => {
          Logger.error(err);
       });
    }
@@ -278,7 +275,7 @@ export default class ComponentRcr extends Vue {
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.internal_operator_selected = this.getInternalOperatorSelected;
       this.arrayRcrSelected = this.getRcrSelected;
-      this.arrayRcrCopierColler = [];
+      this.arrayRcrCopierColler = this.getRcrCopyPasteSelected;
    }
    /******************** Events ***************************/
 
@@ -315,6 +312,20 @@ export default class ComponentRcr extends Vue {
    }
 
    /**
+    * Supprime un numéro RCR de la sélection copy paste
+    * @param item Numéro RCR à supprimer
+    * @throws ValueError si le numéro RCR n'a pas été trouvé
+    */
+   removeItemCopyPaste(item: string): void {
+      const index: number = this.arrayRcrCopierColler.indexOf(item);
+      if (index == -1) {
+         throw new ValueError('RCR ' + item + ' not found');
+      }
+      this.arrayRcrCopierColler.splice(index, 1);
+      this.updateStore();
+   }
+
+   /**
     * Vérifie la valeur courante
     */
    checkValuesAndAddItems(): void {
@@ -329,12 +340,9 @@ export default class ComponentRcr extends Vue {
     */
    checkValuesAddItemsAndClearSpace(): void {
       // netoyage des données pour avoir que les rcrs
-      console.log(this.arrayRcrCopierColler);
       this.arrayRcrCopierColler = this.arrayRcrCopierColler[0].split(' ').filter((el: string) => {
          return el.match('^\\d{9}$');
       });
-
-      console.log(this.arrayRcrCopierColler);
       // on enleve les doublons
       this.arrayRcrCopierColler = Array.from(new Set(this.arrayRcrCopierColler));
 
