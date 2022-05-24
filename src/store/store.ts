@@ -634,6 +634,7 @@ export default new Vuex.Store({
       },
       mutationTreeBlocEnParam(state, value: Array<string>) {
          Logger.debug("Mutation des RCR de l'arbre");
+         console.log("liste rcr : " + value);
          value.forEach((el: string) => {
             state.tree.push(el);
          });
@@ -1006,20 +1007,30 @@ export default new Vuex.Store({
                if (context.state.blocPcpRcr._pcp !== '') {
                   PeriscopeApiAxios.findRcrByPcps([context.state.blocPcpRcr._pcp])
                      .then((r) => {
-                        r.data.forEach((oneJsonElement: any) => {
-                           listToFill.push(oneJsonElement.rcr);
+                        r.data.forEach((oneJsonElement: string) => {
+                           listToFill.push(oneJsonElement);
                         });
-                        console.log(JSON.stringify(listToFill));
+                        context.commit('mutationTreeBlocEnParam', listToFill);
                         resolve(true);
                      })
                      .catch((err) => {
                         Logger.error(err);
-                     })
-                     .finally();
+                     });
                   resolve(true);
                   //Si on a selectionné en cochant des pcp régions et métiers dans les blocs correpondants
                } else {
                   const pcpRegionsEtMetiers: Array<string> = context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
+                  PeriscopeApiAxios.findRcrByPcps(pcpRegionsEtMetiers)
+                     .then((r) => {
+                        r.data.forEach((oneJsonElement: string) => {
+                           listToFill.push(oneJsonElement);
+                        });
+                        context.commit('mutationTreeBlocEnParam', listToFill);
+                        resolve(true);
+                     })
+                     .catch((err) => {
+                        Logger.error(err);
+                     });
                   resolve(true);
                }
             } catch (err: any) {
@@ -1032,7 +1043,6 @@ export default new Vuex.Store({
             try {
                this.dispatch('getRcrCriteria');
                this.dispatch('getPcpCriteria');
-               this.dispatch('test');
             } catch (err: any) {
                reject(err.message);
             }
@@ -1058,36 +1068,13 @@ export default new Vuex.Store({
          return new Promise((resolve, reject) => {
             this.dispatch('callPCP2RCRApi', rcrListResults)
                .then(() => {
-                  console.log('ici' + JSON.stringify(rcrListResults));
-                  this.state.tree = this.state.tree.concat(rcrListResults);
-                  console.log(this.state.tree);
+                  console.log("tree : " + this.state.tree);
                   resolve(true);
                })
                .catch((err) => {
                   reject(err);
                });
          });
-      },
-      async test(): Promise<any>{
-         try {
-            const rcrListResults: Array<string> = [];
-            return new Promise((resolve, reject) => {
-               this.dispatch('callPCP2RCRApi', rcrListResults)
-                   .then(() => {
-                      console.log('ici' + JSON.stringify(rcrListResults));
-                      this.state.tree = this.state.tree.concat(rcrListResults);
-                      console.log(this.state.tree);
-                      resolve(true);
-                   })
-                   .catch((err) => {
-                      reject(err);
-                   });
-            });
-         } catch (err) {
-            Logger.debug(err);
-         } finally {
-            Logger.debug('ending');
-         }
       },
       doSearch(): Promise<boolean> {
          return new Promise((resolve, reject) => {

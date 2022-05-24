@@ -62,31 +62,17 @@ export class PeriscopeApiAxios {
     * @param pcps les pcp sous forme de tableau de chaine de caractères
     */
    static findRcrByPcps(pcps: Array<string>): Promise<AxiosResponse> {
-      if (pcps.length === 1) {
-         return PcpLibProfileService.findRcrByOnePcp(pcps.toString())
-            .then((response) => {
-               return response;
-            })
-            .catch((err) => {
-               if (err.response) {
-                  throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
-               } else {
-                  throw new HttpRequestError(err.status, err.message);
-               }
-            });
-      } else {
-         return PcpLibProfileService.findRcrByListPcp(pcps)
-            .then((response) => {
-               return response;
-            })
-            .catch((err) => {
-               if (err.response) {
-                  throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
-               } else {
-                  throw new HttpRequestError(err.status, err.message);
-               }
-            });
-      }
+      return PcpLibProfileService.findRcrByListPcp(pcps)
+         .then((response) => {
+            return response;
+         })
+         .catch((err) => {
+            if (err.response) {
+               throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
+            } else {
+               throw new HttpRequestError(err.status, err.message);
+            }
+         });
    }
 
    /**

@@ -23,22 +23,12 @@ export class PcpLibProfileService {
    }
 
    /**
-    *  Retourne la liste des RCR rattachés à un PCP
-    * @param pcp le pcp dont on veut extraire les rcr qui y sont rattachés
-    */
-   findRcrByOnePcp(pcp: string): Promise<AxiosResponse> {
-      return this.client.get(`pcp2rcr/${pcp}`).then((response) => {
-         return response;
-      });
-   }
-
-   /**
     *  Retourne la liste des RCR rattachés à deux PCP ou plus
     * @param pcps liste de pcp dont on veut extraire les rcr qui y sont rattachés
     */
    findRcrByListPcp(pcps: Array<string>): Promise<AxiosResponse> {
       const listPcpInString = pcps.join(',');
-      return this.client.get(`multipcp2rcr/${listPcpInString}`).then((response) => {
+      return this.client.get(`pcp2rcr/${listPcpInString}`).then((response) => {
          return response;
       });
    }
