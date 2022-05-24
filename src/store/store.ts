@@ -34,7 +34,7 @@ import pcpMetiers from '@/store/composant/PcpMetiers';
 import pcpRegions from '@/store/composant/PcpRegions';
 import pays from '@/store/composant/Pays';
 import langues from '@/store/composant/Langues';
-import PcpLibProfileService from '@/service/PcpLibProfileService';
+import PcpLibProfileService from '@/service/periscope/PcpLibProfileService';
 
 Vue.use(Vuex);
 
@@ -981,7 +981,6 @@ export default new Vuex.Store({
             PeriscopeApiAxios.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
                   const response: APISearchResponse = (res as unknown) as APISearchResponse;
-                  console.log(JSON.stringify(response.facettes));
                   context.commit('resetNotices');
                   context.commit('mutationNotices', response.notice);
                   context.commit('resetFacettes');
@@ -1003,30 +1002,24 @@ export default new Vuex.Store({
          Logger.debug('Appel de PCP2RCR');
          return new Promise((resolve, reject) => {
             try {
+               //Si le bloc pcpRcr à été selectionné
                if (context.state.blocPcpRcr._pcp !== '') {
-                  PeriscopeApiAxios.findRcrByPcp(context.state.blocPcpRcr._pcp).then((result) => {
-                     for (let i = 0; i < result.data.sudoc.length; i++) {
-                        const level1 = result.data.sudoc[i];
-                        for (let j = 0; j < level1.query.result.length; j++) {
-                           const level2 = level1.query.result[j];
-                           listToFill.push(level2.library.rcr);
-                        }
-                     }
-                  });
+                  PeriscopeApiAxios.findRcrByPcps([context.state.blocPcpRcr._pcp])
+                     .then((r) => {
+                        r.data.forEach((oneJsonElement: any) => {
+                           listToFill.push(oneJsonElement.rcr);
+                        });
+                        console.log(JSON.stringify(listToFill));
+                        resolve(true);
+                     })
+                     .catch((err) => {
+                        Logger.error(err);
+                     })
+                     .finally();
                   resolve(true);
+                  //Si on a selectionné en cochant des pcp régions et métiers dans les blocs correpondants
                } else {
                   const pcpRegionsEtMetiers: Array<string> = context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
-                  pcpRegionsEtMetiers.forEach((el: string) => {
-                     PeriscopeApiAxios.findRcrByPcp(el).then((result) => {
-                        for (let i = 0; i < result.data.sudoc.length; i++) {
-                           const level1 = result.data.sudoc[i];
-                           for (let j = 0; j < level1.query.result.length; j++) {
-                              const level2 = level1.query.result[j];
-                              listToFill.push(level2.library.rcr);
-                           }
-                        }
-                     });
-                  });
                   resolve(true);
                }
             } catch (err: any) {
@@ -1039,6 +1032,7 @@ export default new Vuex.Store({
             try {
                this.dispatch('getRcrCriteria');
                this.dispatch('getPcpCriteria');
+               this.dispatch('test');
             } catch (err: any) {
                reject(err.message);
             }
@@ -1064,7 +1058,7 @@ export default new Vuex.Store({
          return new Promise((resolve, reject) => {
             this.dispatch('callPCP2RCRApi', rcrListResults)
                .then(() => {
-                  console.log(rcrListResults);
+                  console.log('ici' + JSON.stringify(rcrListResults));
                   this.state.tree = this.state.tree.concat(rcrListResults);
                   console.log(this.state.tree);
                   resolve(true);
@@ -1073,6 +1067,27 @@ export default new Vuex.Store({
                   reject(err);
                });
          });
+      },
+      async test(): Promise<any>{
+         try {
+            const rcrListResults: Array<string> = [];
+            return new Promise((resolve, reject) => {
+               this.dispatch('callPCP2RCRApi', rcrListResults)
+                   .then(() => {
+                      console.log('ici' + JSON.stringify(rcrListResults));
+                      this.state.tree = this.state.tree.concat(rcrListResults);
+                      console.log(this.state.tree);
+                      resolve(true);
+                   })
+                   .catch((err) => {
+                      reject(err);
+                   });
+            });
+         } catch (err) {
+            Logger.debug(err);
+         } finally {
+            Logger.debug('ending');
+         }
       },
       doSearch(): Promise<boolean> {
          return new Promise((resolve, reject) => {

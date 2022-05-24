@@ -120,7 +120,7 @@ import {
 } from '@/store/composant/ComposantDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
-import PcpLibProfileService from '@/service/PcpLibProfileService';
+import PcpLibProfileService from '@/service/periscope/PcpLibProfileService';
 
 @Component
 export default class ComponentRcr extends Vue {

@@ -1,6 +1,6 @@
 import axios, {AxiosInstance, AxiosResponse} from 'axios';
 
-class Pcp2RcrService {
+class Pcp2RcrService_deprecated {
    client: AxiosInstance = axios.create({
       baseURL: 'https://www.sudoc.fr/services',
       headers: {
@@ -12,4 +12,4 @@ class Pcp2RcrService {
       return this.client.get(`/pcp2rcr/${pcp}&format=text/json`, {timeout: 1000 * 5});
    }
 }
-export default new Pcp2RcrService();
+export default new Pcp2RcrService_deprecated();
