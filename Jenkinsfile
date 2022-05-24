@@ -115,7 +115,7 @@ node {
             if (ENV == 'DEV') {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-dev", variable: 'url'),
-                  string(credentialsId: "url-timeline-periscope-dev", variable: 'urlTimeline')
+                  string(credentialsId: "url-timeline-periscope-dev", variable: 'urlTimeline'),
                   string(credentialsId: "url-ws-apicom-dev", variable: 'urlWsApicom')
                 ]) {
                     original = readFile ".env.development"
@@ -131,7 +131,7 @@ node {
             } else if (ENV == 'TEST') {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-test", variable: 'url'),
-                  string(credentialsId: "url-timeline-periscope-test", variable: 'urlTimeline')
+                  string(credentialsId: "url-timeline-periscope-test", variable: 'urlTimeline'),
                   string(credentialsId: "url-ws-apicom-test", variable: 'urlWsApicom')
                 ]) {
                      original = readFile ".env.staging"
@@ -147,7 +147,7 @@ node {
             } else if (ENV == 'PROD') {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-prod", variable: 'url')
-                  string(credentialsId: "url-timeline-periscope-prod", variable: 'urlTimeline')
+                  string(credentialsId: "url-timeline-periscope-prod", variable: 'urlTimeline'),
                   string(credentialsId: "url-ws-apicom-prod", variable: 'urlWsApicom')
                 ]) {
                      original = readFile ".env.production"
