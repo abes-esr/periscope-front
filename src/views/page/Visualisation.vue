@@ -40,9 +40,5 @@ import DetailNotice from '@/views/components/visualisation/DetailNotice.vue';
       TableauVisualisation,
    },
 })
-export default class Visualisation extends Vue {
-   constructor() {
-      super();
-   }
-}
+export default class Visualisation extends Vue {}
 </script>

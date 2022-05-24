@@ -116,12 +116,14 @@ node {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-dev", variable: 'url'),
                   string(credentialsId: "url-timeline-periscope-dev", variable: 'urlTimeline')
+                  string(credentialsId: "url-ws-apicom-dev", variable: 'urlWsApicom')
                 ]) {
                     original = readFile ".env.development"
                     newconfig = original
                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
                     newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
                     newconfig = newconfig.replaceAll("VUE_APP_TIMELINE_PERISCOPE_V1=*", "VUE_APP_TIMELINE_PERISCOPE_V1=${urlTimeline}/")
+                    newconfig = newconfig.replaceAll("VUE_APP_WS_APICOM=*", "VUE_APP_WS_APICOM=${urlWsApicom}/")
                     writeFile file: ".env.development", text: "${newconfig}"
                     echo "texte = ${newconfig}"
                 }
@@ -130,12 +132,14 @@ node {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-test", variable: 'url'),
                   string(credentialsId: "url-timeline-periscope-test", variable: 'urlTimeline')
+                  string(credentialsId: "url-ws-apicom-test", variable: 'urlWsApicom')
                 ]) {
                      original = readFile ".env.staging"
                      newconfig = original
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
-                    newconfig = newconfig.replaceAll("VUE_APP_TIMELINE_PERISCOPE_V1=*", "VUE_APP_TIMELINE_PERISCOPE_V1=${urlTimeline}/")
+                     newconfig = newconfig.replaceAll("VUE_APP_TIMELINE_PERISCOPE_V1=*", "VUE_APP_TIMELINE_PERISCOPE_V1=${urlTimeline}/")
+                     newconfig = newconfig.replaceAll("VUE_APP_WS_APICOM=*", "VUE_APP_WS_APICOM=${urlWsApicom}/")
                      writeFile file: ".env.staging", text: "${newconfig}"
                      echo "texte = ${newconfig}"
                 }
@@ -143,11 +147,15 @@ node {
             } else if (ENV == 'PROD') {
                 withCredentials([
                   string(credentialsId: "url-api-periscope-prod", variable: 'url')
+                  string(credentialsId: "url-timeline-periscope-prod", variable: 'urlTimeline')
+                  string(credentialsId: "url-ws-apicom-prod", variable: 'urlWsApicom')
                 ]) {
                      original = readFile ".env.production"
                      newconfig = original
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V1_API_URL=*", "VUE_APP_PERISCOPE_V1_API_URL=${url}v1/")
                      newconfig = newconfig.replaceAll("VUE_APP_PERISCOPE_V2_API_URL=*", "VUE_APP_PERISCOPE_V2_API_URL=${url}v2/")
+                     newconfig = newconfig.replaceAll("VUE_APP_TIMELINE_PERISCOPE_V1=*", "VUE_APP_TIMELINE_PERISCOPE_V1=${urlTimeline}/")
+                     newconfig = newconfig.replaceAll("VUE_APP_WS_APICOM=*", "VUE_APP_WS_APICOM=${urlWsApicom}/")
                      writeFile file: ".env.production", text: "${newconfig}"
                      echo "texte = ${newconfig}"
                 }

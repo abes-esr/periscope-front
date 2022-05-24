@@ -59,6 +59,9 @@ export default class BoutonsRecherche extends Vue {
             });
          }
       });
+      this.$store.dispatch('feedTree').catch((err) => {
+        Logger.error(err.message);
+      });
       this.$store.dispatch('openStickyInfoSnackBar', 'Recherche en cours...').catch((err) => {
          Logger.error(err);
       });

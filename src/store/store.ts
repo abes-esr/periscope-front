@@ -33,7 +33,7 @@ import pcpMetiers from '@/store/composant/PcpMetiers';
 import pcpRegions from '@/store/composant/PcpRegions';
 import pays from '@/store/composant/Pays';
 import langues from '@/store/composant/Langues';
-import PcpLibProfileService from '@/service/PcpLibProfileService';
+import PcpLibProfileService from '@/service/periscope/PcpLibProfileService';
 
 Vue.use(Vuex);
 
@@ -66,6 +66,8 @@ export default new Vuex.Store({
       jsonTraitements: new SearchRequest(),
       //Bloc de tri multiples
       blocTri: new BlocTri(),
+      //Arbre de RCR
+      tree: new Array<string>(),
       pagination: new Pagination(),
       liste_rcr: new Array<ListItem>(),
    },
@@ -651,6 +653,16 @@ export default new Vuex.Store({
             }
          }
       },
+      mutationTreeBlocEnParam(state, value: Array<string>) {
+         Logger.debug("Mutation des RCR de l'arbre");
+         value.forEach((el: string) => {
+            state.tree.push(el);
+         });
+      },
+      resetTree(state) {
+         Logger.debug("Reset de l'arbre RCR");
+         state.tree = [];
+      },
    },
    actions: {
       //******************
@@ -762,6 +774,9 @@ export default new Vuex.Store({
       },
       resetRequeteHistory(context) {
          context.commit('resetRequeteHistory');
+      },
+      resetTree(context) {
+         context.commit('resetTree');
       },
 
       //******************
@@ -1006,6 +1021,61 @@ export default new Vuex.Store({
                })
                .catch((err) => {
                   //Si une erreur avec le ws est jetée, on lève un message d'erreur
+                  reject(err);
+               });
+         });
+      },
+      callPCP2RCRApi(context, listToFill: Array<string>): Promise<boolean> {
+         Logger.debug('Appel de PCP2RCR');
+         return new Promise((resolve, reject) => {
+            try {
+               //Si le bloc pcpRcr à été selectionné
+               const pcpsSelected = context.state.blocPcpRcr._pcp !== '' ? [context.state.blocPcpRcr._pcp] : context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
+               PeriscopeApiAxios.findRcrByPcps(pcpsSelected)
+                  .then((r) => {
+                     r.data.forEach((oneJsonElement: string) => {
+                        listToFill.push(oneJsonElement);
+                     });
+                     context.commit('mutationTreeBlocEnParam', listToFill);
+                     resolve(true);
+                  })
+                  .catch((err) => {
+                     Logger.error(err);
+                  });
+               resolve(true);
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
+      },
+      feedTree(): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            try {
+               this.dispatch('getRcrCriteria');
+               this.dispatch('getPcpCriteria');
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
+      },
+      getRcrCriteria(context): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            try {
+               context.commit('mutationTreeBlocEnParam', context.state.blocRcr._selected.length != 0 ? context.state.blocRcr._selected : [context.state.blocPcpRcr._rcr]);
+               resolve(true);
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
+      },
+      getPcpCriteria(context): Promise<boolean> {
+         const rcrListResults: Array<string> = [];
+         return new Promise((resolve, reject) => {
+            this.dispatch('callPCP2RCRApi', rcrListResults)
+               .then(() => {
+                  resolve(true);
+               })
+               .catch((err) => {
                   reject(err);
                });
          });
