@@ -655,7 +655,6 @@ export default new Vuex.Store({
       },
       mutationTreeBlocEnParam(state, value: Array<string>) {
          Logger.debug("Mutation des RCR de l'arbre");
-         console.log("liste rcr : " + value);
          value.forEach((el: string) => {
             state.tree.push(el);
          });
@@ -1031,35 +1030,19 @@ export default new Vuex.Store({
          return new Promise((resolve, reject) => {
             try {
                //Si le bloc pcpRcr à été selectionné
-               if (context.state.blocPcpRcr._pcp !== '') {
-                  PeriscopeApiAxios.findRcrByPcps([context.state.blocPcpRcr._pcp])
-                     .then((r) => {
-                        r.data.forEach((oneJsonElement: string) => {
-                           listToFill.push(oneJsonElement);
-                        });
-                        context.commit('mutationTreeBlocEnParam', listToFill);
-                        resolve(true);
-                     })
-                     .catch((err) => {
-                        Logger.error(err);
+               const pcpsSelected = context.state.blocPcpRcr._pcp !== '' ? [context.state.blocPcpRcr._pcp] : context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
+               PeriscopeApiAxios.findRcrByPcps(pcpsSelected)
+                  .then((r) => {
+                     r.data.forEach((oneJsonElement: string) => {
+                        listToFill.push(oneJsonElement);
                      });
-                  resolve(true);
-                  //Si on a selectionné en cochant des pcp régions et métiers dans les blocs correpondants
-               } else {
-                  const pcpRegionsEtMetiers: Array<string> = context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
-                  PeriscopeApiAxios.findRcrByPcps(pcpRegionsEtMetiers)
-                     .then((r) => {
-                        r.data.forEach((oneJsonElement: string) => {
-                           listToFill.push(oneJsonElement);
-                        });
-                        context.commit('mutationTreeBlocEnParam', listToFill);
-                        resolve(true);
-                     })
-                     .catch((err) => {
-                        Logger.error(err);
-                     });
-                  resolve(true);
-               }
+                     context.commit('mutationTreeBlocEnParam', listToFill);
+                     resolve(true);
+                  })
+                  .catch((err) => {
+                     Logger.error(err);
+                  });
+               resolve(true);
             } catch (err: any) {
                reject(err.message);
             }
@@ -1078,13 +1061,8 @@ export default new Vuex.Store({
       getRcrCriteria(context): Promise<boolean> {
          return new Promise((resolve, reject) => {
             try {
-               if (context.state.blocRcr._selected.length != 0) {
-                  context.commit('mutationTreeBlocEnParam', context.state.blocRcr._selected);
-                  resolve(true);
-               } else {
-                  context.commit('mutationTreeBlocEnParam', [context.state.blocPcpRcr._rcr]);
-                  resolve(true);
-               }
+               context.commit('mutationTreeBlocEnParam', context.state.blocRcr._selected.length != 0 ? context.state.blocRcr._selected : [context.state.blocPcpRcr._rcr]);
+               resolve(true);
             } catch (err: any) {
                reject(err.message);
             }
@@ -1095,7 +1073,6 @@ export default new Vuex.Store({
          return new Promise((resolve, reject) => {
             this.dispatch('callPCP2RCRApi', rcrListResults)
                .then(() => {
-                  console.log("tree : " + this.state.tree);
                   resolve(true);
                })
                .catch((err) => {
