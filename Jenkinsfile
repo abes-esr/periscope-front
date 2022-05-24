@@ -146,7 +146,7 @@ node {
 
             } else if (ENV == 'PROD') {
                 withCredentials([
-                  string(credentialsId: "url-api-periscope-prod", variable: 'url')
+                  string(credentialsId: "url-api-periscope-prod", variable: 'url'),
                   string(credentialsId: "url-timeline-periscope-prod", variable: 'urlTimeline'),
                   string(credentialsId: "url-ws-apicom-prod", variable: 'urlWsApicom')
                 ]) {
