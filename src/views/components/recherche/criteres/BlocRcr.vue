@@ -46,9 +46,9 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-combobox @change="checkValuesAddItemsAndClearSpace" @focus="resetCopyPasteRcr" multiple outlined small-chips :label="'Pour le copier coller'" class="style2" :placeholder="'copier coller'" v-model="arrayRcrCopierColler" v-on="on">
+                           <v-combobox @change="checkValuesAddItemsAndClearSpace" @focus="resetCopyPasteRcr" multiple outlined small-chips :label="comboboxLabelCopyPaste" class="style2" :placeholder="comboboxPlaceholderCopyPaste" v-model="arrayRcrCopierColler" v-on="on">
                               <template v-slot:selection="{item}">
-                                 <v-chip close @click:close="removeItemCopyPaste(item)">
+                                 <v-chip>
                                     <span class="pr-2">{{ item }}</span>
                                  </v-chip>
                               </template>
@@ -117,7 +117,6 @@ import {Logger} from '@/utils/Logger';
 import {AvailableSwitch, DisplaySwitch, Movement, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 import {ValueError} from '@/exception/ValueError';
-import PcpLibProfileService from '@/service/PcpLibProfileService';
 
 @Component
 export default class ComponentRcr extends Vue {
@@ -130,6 +129,8 @@ export default class ComponentRcr extends Vue {
    internal_operator_selected: Operator;
    comboboxLabel: string;
    comboboxPlaceholder: string;
+   comboboxLabelCopyPaste: string;
+   comboboxPlaceholderCopyPaste: string;
    arrayRcrSelected: Array<string> = [];
    arrayRcrCopierColler: Array<string> = [];
    rcr_liste: Array<any> = [];
@@ -146,6 +147,8 @@ export default class ComponentRcr extends Vue {
       this.arrayRcrCopierColler = this.getRcrCopyPasteSelected;
       this.comboboxLabel = 'ex : 123456789';
       this.comboboxPlaceholder = 'Saisir des n° de RCR';
+      this.comboboxLabelCopyPaste = 'Copier coller des n° de RCR avec comme séparateur un espace';
+      this.comboboxPlaceholderCopyPaste = 'ex : 111111111 222222222 333333333';
       this.rcr_liste = this.getRcrs;
    }
 
