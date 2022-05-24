@@ -44,7 +44,7 @@ export default class Stepper extends Vue {
    }
 
    get getStep(): number {
-     return this.$store.state.composants._stepperCurrentValue;
+      return this.$store.state.composants._stepperCurrentValue;
    }
    /**
     * Action lorsque l'utilisateur clique sur une étape du stepper

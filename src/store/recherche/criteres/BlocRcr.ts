@@ -1,4 +1,4 @@
-import {Operator} from '@/store/recherche/BlocDefinition';
+import {ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 
 /**
@@ -7,6 +7,8 @@ import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 export class BlocRcr extends BlocAbstract {
    _internalBlocOperator = Operator.Ou;
    _selected: Array<string> = []; //Tableau des RCR en chaîne
+   _selectedCopyPasteRcr: Array<string> = []; //Tableau des RCR en chaîne en copier coller
+   _candidates: Array<ListItem> = [];
 
    constructor(externalBlocOperator: number) {
       super(externalBlocOperator);

@@ -54,20 +54,17 @@ if (vue.$route.query.ppnviewed) {
    vue.$store.dispatch('updateCurrentPpn', vue.$route.query.ppnviewed).catch((err) => {
       Logger.error(err);
    });
-   vue.$store
-      .dispatch('doVisualisation')
-      .catch((err) => {
-         Logger.error(err.message);
-         if (err instanceof HttpRequestError) {
-            Logger.debug('Erreur API : ' + err.debugMessage);
-            vue.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
-               Logger.error(err);
-            });
-         } else {
-            vue.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
-               Logger.error(err);
-            });
-         }
-      });
-
+   vue.$store.dispatch('doVisualisation').catch((err) => {
+      Logger.error(err.message);
+      if (err instanceof HttpRequestError) {
+         Logger.debug('Erreur API : ' + err.debugMessage);
+         vue.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
+            Logger.error(err);
+         });
+      } else {
+         vue.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
+            Logger.error(err);
+         });
+      }
+   });
 }
