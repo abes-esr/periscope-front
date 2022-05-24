@@ -1257,5 +1257,4 @@ export default new Vuex.Store({
          return state.lotHoldings;
       },
    },
-   plugins: [createPersistedState()],
 });

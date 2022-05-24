@@ -5,7 +5,7 @@ import axios, {AxiosInstance, AxiosResponse} from 'axios';
  */
 export class PcpLibProfileService {
    client: AxiosInstance = axios.create({
-      baseURL: 'https://apicom-dev.sudoc.fr/wsReferentiels/v1/',
+      baseURL: process.env.VUE_APP_WS_APICOM,
       headers: {
          'Content-type': 'text/json',
       },
