@@ -83,6 +83,10 @@ export default class HistoriqueRequetes extends Vue {
    }
 
    get getHistoryRequests(): Array<JsonGlobalSearchRequest> {
+      if (localStorage.history) {
+        //récupération en priorité de l'historique contenu dans le local storage
+         return JSON.parse(localStorage.history).reverse();
+      }
       return this.$store.state.blocRequeteDirecte._historyOfAllRequests.reverse();
    }
 

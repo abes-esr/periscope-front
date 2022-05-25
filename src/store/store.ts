@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import createPersistedState from 'vuex-persistedstate';
 import {CheckboxItem, ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
@@ -34,7 +33,7 @@ import pcpMetiers from '@/store/composant/PcpMetiers';
 import pcpRegions from '@/store/composant/PcpRegions';
 import pays from '@/store/composant/Pays';
 import langues from '@/store/composant/Langues';
-import PcpLibProfileService from '@/service/PcpLibProfileService';
+import PcpLibProfileService from '@/service/periscope/PcpLibProfileService';
 
 Vue.use(Vuex);
 
@@ -67,7 +66,10 @@ export default new Vuex.Store({
       jsonTraitements: new SearchRequest(),
       //Bloc de tri multiples
       blocTri: new BlocTri(),
+      //Arbre de RCR
+      tree: new Array<string>(),
       pagination: new Pagination(),
+      liste_rcr: new Array<ListItem>(),
    },
    mutations: {
       //Bloc de recherche PcpRegions
@@ -177,9 +179,14 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Rcr');
          state.blocRcr._selected = arraySent;
       },
+      mutationRcrCopyPaste(state, arraySent: Array<string>) {
+         Logger.debug('Mutation des Rcr copy paste');
+         state.blocRcr._selectedCopyPasteRcr = arraySent;
+      },
       resetRcr(state) {
          Logger.debug('Reset des Rcr');
          state.blocRcr._selected = [];
+         state.blocRcr._selectedCopyPasteRcr = [];
       },
 
       //Bloc de recherche Ppn
@@ -362,6 +369,7 @@ export default new Vuex.Store({
          state.blocPays._selected = [];
          state.blocPays._candidates.forEach((element: {value: boolean}) => (element.value = false));
       },
+
       //Bloc de Pcp Rcr
       mutationPcpRcrPcp(state, pcp: string) {
          Logger.debug('Mutation des Pcp : ' + pcp);
@@ -392,18 +400,20 @@ export default new Vuex.Store({
          }
       },
       loadCandidatesRcr(state, force?: boolean) {
-         if (force || state.blocPcpRcr._rcrCandidates.length == 0) {
+         if (force || state.liste_rcr.length == 0) {
             Logger.debug('Chargement des Rcr');
-            state.blocPcpRcr._rcrCandidates = [];
+            state.liste_rcr = [];
             PcpLibProfileService.getRcrName().then((response) => {
                response.data.forEach((element: {rcr: string; label: string}) => {
-                  state.blocPcpRcr._rcrCandidates.push({
+                  state.liste_rcr.push({
                      id: element.rcr,
                      text: element.rcr + ' ' + element.label,
                      value: false,
                   });
                });
             });
+            state.blocRcr._candidates = state.liste_rcr;
+            state.blocPcpRcr._rcrCandidates = state.liste_rcr;
          }
       },
       resetPcpRcr(state) {
@@ -420,6 +430,8 @@ export default new Vuex.Store({
       addRequeteDirecteToHistory(state, element: JsonGlobalSearchRequest) {
          Logger.debug("Ajout requete dans l'historique");
          state.blocRequeteDirecte._historyOfAllRequests.push(element);
+         //stockage de l'historique dans le localstorage pour réutilisation ultérieure
+         localStorage.history = JSON.stringify(state.blocRequeteDirecte._historyOfAllRequests);
       },
       resetRequeteDirecte(state) {
          Logger.debug('Reset des requetes directes');
@@ -428,6 +440,7 @@ export default new Vuex.Store({
       resetRequeteHistory(state) {
          Logger.debug("Reset de l'historique");
          state.blocRequeteDirecte._historyOfAllRequests = [];
+         localStorage.history = [];
       },
 
       mutationSearchRequest(state) {
@@ -564,6 +577,16 @@ export default new Vuex.Store({
          state.lotNotices._executionTime = element;
       },
 
+      //FiltresFacettes
+      resetFiltresFacettes(state) {
+         Logger.debug('Reset des filtres facettes');
+         state.filtresFacettes._filters = [
+            {zone: 'document_type', valeurs: []},
+            {zone: 'support_type', valeurs: []},
+            {zone: 'country', valeurs: []},
+            {zone: 'language', valeurs: []},
+         ];
+      },
       // Holdings
       mutationHoldings(state, values) {
          Logger.debug('Mutation des Etats de collection');
@@ -629,6 +652,16 @@ export default new Vuex.Store({
                state.filtresFacettes._filters[3].valeurs.push(value[1]);
             }
          }
+      },
+      mutationTreeBlocEnParam(state, value: Array<string>) {
+         Logger.debug("Mutation des RCR de l'arbre");
+         value.forEach((el: string) => {
+            state.tree.push(el);
+         });
+      },
+      resetTree(state) {
+         Logger.debug("Reset de l'arbre RCR");
+         state.tree = [];
       },
    },
    actions: {
@@ -730,6 +763,9 @@ export default new Vuex.Store({
       resetFacettes(context) {
          context.commit('resetFacettes');
       },
+      resetFiltresFacettes(context) {
+         context.commit('resetFiltresFacettes');
+      },
       resetSearchPanel(context, force?: boolean) {
          context.commit('resetSearchPanel', force);
       },
@@ -738,6 +774,9 @@ export default new Vuex.Store({
       },
       resetRequeteHistory(context) {
          context.commit('resetRequeteHistory');
+      },
+      resetTree(context) {
+         context.commit('resetTree');
       },
 
       //******************
@@ -775,6 +814,9 @@ export default new Vuex.Store({
       },
       updateSelectedRcr(context, arraySent: Array<string>) {
          context.commit('mutationRcr', arraySent);
+      },
+      updateSelectedRcrCopyPaste(context, arraySent: Array<string>) {
+         context.commit('mutationRcrCopyPaste', arraySent);
       },
       updateSelectedExternalPpnOperator(context, operator: number) {
          context.commit('mutationExternalPpnOperator', operator);
@@ -966,7 +1008,6 @@ export default new Vuex.Store({
             PeriscopeApiAxios.findNoticeWithFacetsByCriteriaByPageAndSize(context.state.jsonTraitements._jsonSearchRequest, context.state.pagination._currentPage, context.state.pagination._sizeWanted)
                .then((res) => {
                   const response: APISearchResponse = (res as unknown) as APISearchResponse;
-                  console.log(JSON.stringify(response.facettes));
                   context.commit('resetNotices');
                   context.commit('mutationNotices', response.notice);
                   context.commit('resetFacettes');
@@ -980,6 +1021,61 @@ export default new Vuex.Store({
                })
                .catch((err) => {
                   //Si une erreur avec le ws est jetée, on lève un message d'erreur
+                  reject(err);
+               });
+         });
+      },
+      callPCP2RCRApi(context, listToFill: Array<string>): Promise<boolean> {
+         Logger.debug('Appel de PCP2RCR');
+         return new Promise((resolve, reject) => {
+            try {
+               //Si le bloc pcpRcr à été selectionné
+               const pcpsSelected = context.state.blocPcpRcr._pcp !== '' ? [context.state.blocPcpRcr._pcp] : context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
+               PeriscopeApiAxios.findRcrByPcps(pcpsSelected)
+                  .then((r) => {
+                     r.data.forEach((oneJsonElement: string) => {
+                        listToFill.push(oneJsonElement);
+                     });
+                     context.commit('mutationTreeBlocEnParam', listToFill);
+                     resolve(true);
+                  })
+                  .catch((err) => {
+                     Logger.error(err);
+                  });
+               resolve(true);
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
+      },
+      feedTree(): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            try {
+               this.dispatch('getRcrCriteria');
+               this.dispatch('getPcpCriteria');
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
+      },
+      getRcrCriteria(context): Promise<boolean> {
+         return new Promise((resolve, reject) => {
+            try {
+               context.commit('mutationTreeBlocEnParam', context.state.blocRcr._selected.length != 0 ? context.state.blocRcr._selected : [context.state.blocPcpRcr._rcr]);
+               resolve(true);
+            } catch (err: any) {
+               reject(err.message);
+            }
+         });
+      },
+      getPcpCriteria(context): Promise<boolean> {
+         const rcrListResults: Array<string> = [];
+         return new Promise((resolve, reject) => {
+            this.dispatch('callPCP2RCRApi', rcrListResults)
+               .then(() => {
+                  resolve(true);
+               })
+               .catch((err) => {
                   reject(err);
                });
          });
@@ -1105,6 +1201,7 @@ export default new Vuex.Store({
             state.blocPcpMetiers._selected.length == 0 &&
             state.blocIssn._selected.length == 0 &&
             state.blocRcr._selected.length == 0 &&
+            state.blocRcr._selectedCopyPasteRcr.length == 0 &&
             state.blocMotsDuTitre._selected.length == 0 &&
             state.blocPpn._selected.length == 0 &&
             (state.blocPcpRcr._pcp === '' || typeof state.blocPcpRcr._pcp === 'undefined' || state.blocPcpRcr._rcr === '' || typeof state.blocPcpRcr._rcr === 'undefined') &&
@@ -1121,20 +1218,10 @@ export default new Vuex.Store({
          return Composants.isMoveUpAvailable(id, state.composants._panel);
       },
       isFirstPage: (state) => () => {
-         if (state.pagination._currentPage == 0) {
-            return true;
-         } else {
-            return false;
-         }
-         return false;
+         return state.pagination._currentPage == 0;
       },
       isLastPage: (state) => () => {
-         if (state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0) {
-            return true;
-         } else {
-            return false;
-         }
-         return false;
+         return state.pagination._currentPage == state.pagination._maxPage - 1 || state.pagination._maxPage == 0;
       },
       orderSortArrayResultLabelElements: (state) => {
          return BlocTri.getTriLabels(state.blocTri);
@@ -1165,5 +1252,4 @@ export default new Vuex.Store({
          return state.lotHoldings;
       },
    },
-   plugins: [createPersistedState()],
 });

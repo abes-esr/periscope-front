@@ -23,10 +23,10 @@ export class BlocLangue extends BlocAbstract {
    static getItemLabel(candidates: Array<ListItem>, key: string): string {
       const index = candidates.findIndex((x) => x.id === key.toLowerCase());
 
-      if (index == -1) {
-         throw new ValueError('Language ' + key + ' not found');
+      if (index !== -1) {
+         return candidates[index].text;
       }
+      return "Code erroné";
 
-      return candidates[index].text;
    }
 }

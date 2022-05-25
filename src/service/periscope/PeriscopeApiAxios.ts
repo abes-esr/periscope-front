@@ -1,7 +1,9 @@
 import {JsonGlobalSearchRequest, JsonDetailNotice} from '@/service/periscope/PeriscopeJsonDefinition';
 import PeriscopeDataService from '@/service/periscope/PeriscopeService';
+import Pcp2RcrDataService from '@/service/periscope/Pcp2RcrService_deprecated';
 import {AxiosResponse} from 'axios';
 import {HttpRequestError} from '@/exception/HttpRequestError';
+import PcpLibProfileService from '@/service/periscope/PcpLibProfileService';
 
 /**
  * Cette classe représente les appels Axios pour l'API Periscope.
@@ -45,6 +47,24 @@ export class PeriscopeApiAxios {
             if (response[0].status == 200) {
                return response[0].data;
             }
+         })
+         .catch((err) => {
+            if (err.response) {
+               throw new HttpRequestError(err.response.data.status, err.response.data.message, err.response.data.debugMessage);
+            } else {
+               throw new HttpRequestError(err.status, err.message);
+            }
+         });
+   }
+
+   /**
+    * Retourne la liste des rcr pour un ou plusieurs pcp
+    * @param pcps les pcp sous forme de tableau de chaine de caractères
+    */
+   static findRcrByPcps(pcps: Array<string>): Promise<AxiosResponse> {
+      return PcpLibProfileService.findRcrByListPcp(pcps)
+         .then((response) => {
+            return response;
          })
          .catch((err) => {
             if (err.response) {
