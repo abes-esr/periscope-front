@@ -1,10 +1,10 @@
 import {BlocAbstract} from "@/store/recherche/criteres/BlocAbstract";
-import {ListItem, Operator} from "@/store/recherche/BlocDefinition";
+import {BlocStatutsBiblio, ListItem, Operator, EnumStatuts} from "@/store/recherche/BlocDefinition";
 
 export class BlocStatutBibliotheque extends BlocAbstract {
     _internalBlocOperator = Operator.Et;
-    _candidates: Array<ListItem> = [];
-    _selected: string;
+    _candidates: Array<BlocStatutsBiblio> = [];
+    _selected: EnumStatuts;
 
     constructor(externalBlocOperator: number) {
         super(externalBlocOperator);

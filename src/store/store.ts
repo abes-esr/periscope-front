@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {CheckboxItem, ListItem, Operator} from '@/store/recherche/BlocDefinition';
+import {CheckboxItem, EnumStatuts, ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
 import {LotNotices} from '@/store/resultat/LotNotices';
@@ -19,9 +19,21 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {AvailableSwitch, DisplaySwitch, Movement, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {
+   AvailableSwitch,
+   DisplaySwitch,
+   Movement,
+   PanelAvailableSwitchProvider,
+   PanelDisplaySwitchProvider,
+   PanelMovementProvider,
+   PanelType
+} from '@/store/composant/ComposantDefinition';
 import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
-import {APIHoldingsResponse, APISearchResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
+import {
+   APIHoldingsResponse,
+   APISearchResponse,
+   JsonGlobalSearchRequest
+} from '@/service/periscope/PeriscopeJsonDefinition';
 import router from '@/router';
 import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
@@ -434,15 +446,9 @@ export default new Vuex.Store({
          Logger.debug('Reset Operateur externe des Statuts');
          state.blocStatutBibliotheque._externalBlocOperator = Operator.Ou;
       },
-      mutationStatut(state, arraySent: Array<ListItem>) {
+      mutationStatut(state, enumSent: EnumStatuts) {
          Logger.debug('Mutation des Statuts');
-         state.blocStatutBibliotheque._candidates = arraySent;
-         state.blocStatutBibliotheque._selected = '';
-         arraySent.forEach((element: {value: boolean; id: string}) => {
-            if (element.value) {
-               state.blocStatutBibliotheque._selected = element.id;
-            }
-         });
+         state.blocStatutBibliotheque._selected = enumSent;
       },
       loadCandidatesStatut(state, force?: boolean) {
          if (force || state.blocStatutBibliotheque._candidates.length === 0) {
@@ -452,7 +458,7 @@ export default new Vuex.Store({
       },
       resetStatuts(state) {
          Logger.debug('Reset des Statuts');
-         state.blocStatutBibliotheque._selected = '';
+         state.blocStatutBibliotheque._selected = EnumStatuts.PC;
       },
 
       //Bloc de requete directe

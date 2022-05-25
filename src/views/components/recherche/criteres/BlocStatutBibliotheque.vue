@@ -18,7 +18,7 @@
               <v-col xs="12" sm="4" lg="3"> Recherche par Statut Bibliothèque </v-col>
               <v-col xs="12" sm="8" lg="9" class="text--secondary">
                 <v-fade-transition leave-absolute>
-                  <span v-if="open || getStatutSelected.length === 0" key="0"> Selectionnez des statuts </span>
+                  <span v-if="open || isSelected" key="0"> Selectionnez des statuts </span>
                 </v-fade-transition>
               </v-col>
             </v-row>
@@ -28,11 +28,7 @@
           <v-row justify="center">
             <v-col sm="10">
               <!--Elements-->
-              <v-tooltip top max-width="20vw" open-delay="700">
-                <template v-slot:activator="{on}">
-                  <v-select dense :label="statutSelected" :items="statutItems" class="style1" outlined v-model="statutSelected" @change="updateSelectedStatuts" v-on="on"></v-select>
-                </template>
-              </v-tooltip>
+                  <v-select dense :label="statutSelected" :items="statutItems" class="style1" outlined v-model="statutSelected" @change="updateSelectedStatuts"></v-select>
             </v-col>
           </v-row>
         </v-expansion-panel-content>
@@ -80,7 +76,7 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {Operator, ListItem, BlocOperator} from '@/store/recherche/BlocDefinition';
+import {Operator, ListItem, BlocOperator, EnumStatuts, BlocStatutsBiblio} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
 import {
   AvailableSwitch,
@@ -98,9 +94,10 @@ export default class ComponentStatut extends Vue {
   external_operator_label: string;
   list_external_operator_to_select: Array<BlocOperator>;
   external_operator_selected: Operator;
-  statutItems: Array<ListItem>; //Bloc Statut
-  statutSelected = '';
+  statutItems: Array<BlocStatutsBiblio>; //Bloc Statut
+  statutSelected : EnumStatuts;
   statutExternalBlocOperatorListToSelect: Array<BlocOperator>;
+  isSelected: boolean;
 
   constructor() {
     super();
@@ -109,7 +106,7 @@ export default class ComponentStatut extends Vue {
     this.external_operator_selected = this.getExternalOperatorSelected;
     this.statutItems = this.getStatutItems;
     this.statutSelected = this.getStatutSelected;
-    console.log(this.statutSelected.length);
+    this.isSelected = false;
   }
 
   /**
@@ -156,7 +153,7 @@ export default class ComponentStatut extends Vue {
    * Retourne les statuts candidats
    * @return Liste des statuts
    */
-  get getStatutItems(): Array<ListItem> {
+  get getStatutItems(): Array<BlocStatutsBiblio> {
     return this.$store.state.blocStatutBibliotheque._candidates;
   }
 
@@ -164,7 +161,7 @@ export default class ComponentStatut extends Vue {
    * Retourne le statut selectionné
    * @return Liste des statuts
    */
-  get getStatutSelected(): string {
+  get getStatutSelected(): EnumStatuts {
     return this.$store.state.blocStatutBibliotheque._selected;
   }
 
@@ -197,6 +194,7 @@ export default class ComponentStatut extends Vue {
     this.$store.dispatch('updateSelectedStatutBibliotheque', this.statutItems).catch((err) => {
       Logger.error(err);
     });
+    this.isSelected = true;
   }
 
   /******************** Events ***************************/
