@@ -199,7 +199,7 @@ export class SearchRequest {
                break;
             case PanelType.STATUT:
                //construction de la partie statut de la bibliothèque
-               if (blocStatut._selected !== '') {
+               if (blocStatut._selected) {
                   criteria.push({
                      type: 'CriterionStatutBib',
                      bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Et),

@@ -458,7 +458,7 @@ export default new Vuex.Store({
       },
       resetStatuts(state) {
          Logger.debug('Reset des Statuts');
-         state.blocStatutBibliotheque._selected = EnumStatuts.PC;
+         state.blocStatutBibliotheque._selected;
       },
 
       //Bloc de requete directe
@@ -1261,6 +1261,7 @@ export default new Vuex.Store({
             state.blocMotsDuTitre._selected.length == 0 &&
             state.blocPpn._selected.length == 0 &&
             (state.blocPcpRcr._pcp === '' || typeof state.blocPcpRcr._pcp === 'undefined' || state.blocPcpRcr._rcr === '' || typeof state.blocPcpRcr._rcr === 'undefined') &&
+            !state.blocStatutBibliotheque._selected && //todo: check rien selectionné
             state.blocRequeteDirecte._directRequest.criteres.length == 0
          );
       },
