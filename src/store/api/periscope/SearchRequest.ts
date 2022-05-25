@@ -31,6 +31,7 @@ import {PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {FacetteType, FiltresFacettes} from '@/store/recherche/filtresFacettes/FiltresFacettes';
 import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
 import {Operator} from '@/store/recherche/BlocDefinition';
+import {BlocStatutBibliotheque} from "@/store/recherche/criteres/BlocStatutBibliotheque";
 
 /**
  * Représente une requête de recherche pour l'API Periscope
@@ -55,6 +56,7 @@ export class SearchRequest {
       blocLangue: BlocLangue,
       blocPays: BlocPays,
       blocPcpRcr: BlocPcpRcr,
+      blocStatut: BlocStatutBibliotheque,
       blocRequeteDirecte: BlocRequeteEnregistree,
       blocTri: BlocTri,
       filtresFacettes: FiltresFacettes,
@@ -192,6 +194,16 @@ export class SearchRequest {
                      bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Et),
                      pcp: blocPcpRcr._pcp,
                      rcr: blocPcpRcr._rcr,
+                  });
+               }
+               break;
+            case PanelType.STATUT:
+               //construction de la partie statut de la bibliothèque
+               if (blocStatut._selected !== '') {
+                  criteria.push({
+                     type: 'CriterionStatutBib',
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Et),
+                     statut: blocStatut._selected,
                   });
                }
                break;

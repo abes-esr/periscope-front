@@ -26,7 +26,7 @@ const vue = new Vue({
    render: (h) => h(App),
 }).$mount('#app');
 
-// Chargement des valeurs candidates (PCP, langues, pays)
+// Chargement des valeurs candidates (PCP, langues, pays, statuts)
 vue.$store.dispatch('loadCandidatesValue', false).catch((err) => {
    Logger.error(err);
 });

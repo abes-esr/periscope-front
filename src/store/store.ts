@@ -32,8 +32,10 @@ import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
 import pcpMetiers from '@/store/composant/PcpMetiers';
 import pcpRegions from '@/store/composant/PcpRegions';
 import pays from '@/store/composant/Pays';
+import statuts from '@/store/composant/Statuts';
 import langues from '@/store/composant/Langues';
 import PcpLibProfileService from '@/service/periscope/PcpLibProfileService';
+import {BlocStatutBibliotheque} from '@/store/recherche/criteres/BlocStatutBibliotheque';
 
 Vue.use(Vuex);
 
@@ -53,6 +55,7 @@ export default new Vuex.Store({
       blocLangue: new BlocLangue(Operator.Ou),
       blocPays: new BlocPays(Operator.Ou),
       blocPcpRcr: new BlocPcpRcr(Operator.Ou),
+      blocStatutBibliotheque: new BlocStatutBibliotheque(Operator.Ou),
       blocRequeteDirecte: new BlocRequeteEnregistree(),
       //Resultats de recherche
       lotNotices: new LotNotices(),
@@ -422,6 +425,36 @@ export default new Vuex.Store({
          state.blocPcpRcr._rcr = '';
       },
 
+      //Bloc de statut
+      mutationExternalStatutOperator(state, operator: number) {
+         Logger.debug('Mutation Operateur externe des Statuts');
+         state.blocStatutBibliotheque._externalBlocOperator = operator;
+      },
+      resetExternalStatutOperator(state) {
+         Logger.debug('Reset Operateur externe des Statuts');
+         state.blocStatutBibliotheque._externalBlocOperator = Operator.Ou;
+      },
+      mutationStatut(state, arraySent: Array<ListItem>) {
+         Logger.debug('Mutation des Statuts');
+         state.blocStatutBibliotheque._candidates = arraySent;
+         state.blocStatutBibliotheque._selected = '';
+         arraySent.forEach((element: {value: boolean; id: string}) => {
+            if (element.value) {
+               state.blocStatutBibliotheque._selected = element.id;
+            }
+         });
+      },
+      loadCandidatesStatut(state, force?: boolean) {
+         if (force || state.blocStatutBibliotheque._candidates.length === 0) {
+            Logger.debug('Chargement des Statuts');
+            state.blocStatutBibliotheque._candidates = statuts;
+         }
+      },
+      resetStatuts(state) {
+         Logger.debug('Reset des Statuts');
+         state.blocStatutBibliotheque._selected = '';
+      },
+
       //Bloc de requete directe
       mutationRequeteDirecte(state, element: JsonGlobalSearchRequest) {
          Logger.debug('Mutation des requetes directes');
@@ -457,6 +490,7 @@ export default new Vuex.Store({
             state.blocLangue,
             state.blocPays,
             state.blocPcpRcr,
+            state.blocStatutBibliotheque,
             state.blocRequeteDirecte,
             state.blocTri,
             state.filtresFacettes,
@@ -506,6 +540,7 @@ export default new Vuex.Store({
                {id: PanelType.LANG, position: 8, isDisplayed: false, isAvailable: true, label: 'Langue'},
                {id: PanelType.COUNTRY, position: 9, isDisplayed: false, isAvailable: true, label: 'Pays'},
                {id: PanelType.PCPRCR, position: 10, isDisplayed: false, isAvailable: true, label: 'PCP & RCR (même exemplaire)'},
+               {id: PanelType.STATUT, position: 11, isDisplayed: false, isAvailable: true, label: "Statut de l'établissement"},
                {id: PanelType.HISTORY, position: 0, isDisplayed: false, isAvailable: true, label: 'Requête enregistrée'},
             ].sort((n1, n2) => {
                if (n1.position > n2.position) {
@@ -716,6 +751,9 @@ export default new Vuex.Store({
       resetBlocPcpRcr(context) {
          context.commit('resetPcpRcr');
       },
+      resetBlocStatut(context) {
+         context.commit('resetStatuts');
+      },
       resetBlocRequeteDirecte(context) {
          context.commit('resetRequeteDirecte');
       },
@@ -748,6 +786,9 @@ export default new Vuex.Store({
             Logger.error(err);
          });
          this.dispatch('resetBlocPcpRcr').catch((err) => {
+            Logger.error(err);
+         });
+         this.dispatch('resetBlocStatut').catch((err) => {
             Logger.error(err);
          });
          this.dispatch('resetBlocRequeteDirecte').catch((err) => {
@@ -878,6 +919,14 @@ export default new Vuex.Store({
       updateSelectedPcpRcrRcr(context, rcr: string) {
          context.commit('mutationPcpRcrRcr', rcr);
       },
+
+      updateSelectedExternalStatutBibliothequeOperator(context, externalOperator: number) {
+         context.commit('mutationExternalStatutOperator', externalOperator);
+      },
+      updateSelectedStatutBibliotheque(context, arraySent: Array<ListItem>) {
+         context.commit('mutationStatut', arraySent);
+      },
+
       updateSelectedRequeteDirecte(context, value: string): Promise<boolean> {
          return new Promise((resolve, reject) => {
             const returnMsg: string = SearchRequest.checkJsonIntegrity(value);
@@ -984,6 +1033,7 @@ export default new Vuex.Store({
          context.commit('loadCandidatesRcr', force);
          context.commit('loadCandidatesLangue', force);
          context.commit('loadCandidatesPays', force);
+         context.commit('loadCandidatesStatut', force);
       },
       constructJsonAction(context): Promise<boolean> {
          return new Promise((resolve, reject) => {

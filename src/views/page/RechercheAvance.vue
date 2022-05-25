@@ -29,6 +29,7 @@
                <component-pays v-if="i.id === 8 && i.isDisplayed" @onChange="renderPanelList"></component-pays>
                <component-pcp-rcr v-if="i.id === 9 && i.isDisplayed" @onChange="renderPanelList"></component-pcp-rcr>
                <component-requete-enregistree v-if="i.id === 10 && i.isDisplayed" @onChange="renderPanelList"></component-requete-enregistree>
+               <component-statut v-if="i.id === 11 && i.isDisplayed" @onChange="renderPanelList"></component-statut>
             </v-expansion-panels>
          </v-col>
       </v-row>
@@ -64,6 +65,7 @@ import ComponentBoutonsRecherche from '@/views/components/recherche/BoutonsReche
 import {PanelProvider} from '@/store/composant/ComposantDefinition';
 import ComponentFooter from '@/views/components/Footer.vue';
 import ComponentPcpRcr from '@/views/components/recherche/criteres/BlocPcpRcr.vue';
+import ComponentStatut from '@/views/components/recherche/criteres/BlocStatutBibliotheque.vue';
 import {Logger} from "@/utils/Logger";
 
 @Component({
@@ -84,6 +86,7 @@ import {Logger} from "@/utils/Logger";
       ComponentRequeteEnregistree,
       ComponentBoutonsRecherche,
       ComponentFooter,
+      ComponentStatut,
    },
 })
 export default class RechercheAvance extends Vue {
