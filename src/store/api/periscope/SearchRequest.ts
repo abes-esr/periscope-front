@@ -9,7 +9,7 @@ import {
    JsonPcpBlocProvider,
    JsonPcpRcrProvider,
    JsonPpnBlocProvider,
-   JsonRcrBlocProvider,
+   JsonRcrBlocProvider, JsonStatutsProvider,
    JsonTri,
    JsonTriProvider,
 } from '@/service/periscope/PeriscopeJsonDefinition';
@@ -199,12 +199,14 @@ export class SearchRequest {
                break;
             case PanelType.STATUT:
                //construction de la partie statut de la bibliothèque
-               if (blocStatut._selected) {
-                  criteria.push({
+               if (blocStatut._selected.length !== 0) {
+                  const statutBlocJson: JsonStatutsProvider = {
                      type: 'CriterionStatutBib',
-                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(Operator.Et),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocStatut._externalBlocOperator),
                      statut: blocStatut._selected,
-                  });
+                     statut_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocStatut._internalBlocOperator, blocStatut._selected.length),
+                  };
+                  criteria.push(statutBlocJson);
                }
                break;
             case PanelType.LANG:

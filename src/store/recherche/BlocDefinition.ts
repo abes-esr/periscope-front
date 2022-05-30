@@ -24,20 +24,8 @@ export interface ListItem {
    value: boolean;
 }
 
-export interface BlocStatutsBiblio {
-   id: number;
-   text: string;
-   value: EnumStatuts,
-}
-
 export enum Operator { //Conversion implicite en number
    Ou,
    Et,
    Sauf,
-}
-
-export enum EnumStatuts {
-   PC,
-   PA,
-   Orphelin,
 }

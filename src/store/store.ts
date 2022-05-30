@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
-import {CheckboxItem, EnumStatuts, ListItem, Operator} from '@/store/recherche/BlocDefinition';
+import {CheckboxItem, ListItem, Operator} from '@/store/recherche/BlocDefinition';
 import {SearchRequest} from '@/store/api/periscope/SearchRequest';
 import {PeriscopeApiAxios} from '@/service/periscope/PeriscopeApiAxios';
 import {LotNotices} from '@/store/resultat/LotNotices';
@@ -446,9 +446,19 @@ export default new Vuex.Store({
          Logger.debug('Reset Operateur externe des Statuts');
          state.blocStatutBibliotheque._externalBlocOperator = Operator.Ou;
       },
-      mutationStatut(state, enumSent: EnumStatuts) {
+      mutationInternalStatutOperator(state, operator: number) {
+         Logger.debug('Mutation Operateur interne des Statuts');
+         state.blocStatutBibliotheque._internalBlocOperator = operator;
+      },
+      resetInternalStatutOperator(state) {
+         Logger.debug('Reset Operateur interne des Status');
+         state.blocStatutBibliotheque._internalBlocOperator = Operator.Et;
+      },
+      mutationStatut(state, arraySent: Array<ListItem>) {
          Logger.debug('Mutation des Statuts');
-         state.blocStatutBibliotheque._selected = enumSent;
+         state.blocStatutBibliotheque._candidates = arraySent;
+         state.blocStatutBibliotheque._selected = [];
+         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocStatutBibliotheque._selected.push(element.id) : ''));
       },
       loadCandidatesStatut(state, force?: boolean) {
          if (force || state.blocStatutBibliotheque._candidates.length === 0) {
@@ -458,7 +468,8 @@ export default new Vuex.Store({
       },
       resetStatuts(state) {
          Logger.debug('Reset des Statuts');
-         state.blocStatutBibliotheque._selected;
+         state.blocStatutBibliotheque._selected = [];
+         state.blocStatutBibliotheque._candidates.forEach((element: {value: boolean}) => (element.value = false));
       },
 
       //Bloc de requete directe
@@ -929,6 +940,9 @@ export default new Vuex.Store({
       updateSelectedExternalStatutBibliothequeOperator(context, externalOperator: number) {
          context.commit('mutationExternalStatutOperator', externalOperator);
       },
+      updateSelectedInternalStatutOperator(context, internalOperator: number) {
+         context.commit('mutationInternalStatutOperator', internalOperator);
+      },
       updateSelectedStatutBibliotheque(context, arraySent: Array<ListItem>) {
          context.commit('mutationStatut', arraySent);
       },
@@ -1250,19 +1264,19 @@ export default new Vuex.Store({
       },
       isSelectionEmpty: (state) => {
          return (
-            state.blocPays._selected.length == 0 &&
-            state.blocLangue._selected.length == 0 &&
-            state.blocPcpRegions._selected.length == 0 &&
-            state.blocEditeur._selected.length == 0 &&
-            state.blocPcpMetiers._selected.length == 0 &&
-            state.blocIssn._selected.length == 0 &&
-            state.blocRcr._selected.length == 0 &&
-            state.blocRcr._selectedCopyPasteRcr.length == 0 &&
-            state.blocMotsDuTitre._selected.length == 0 &&
-            state.blocPpn._selected.length == 0 &&
+            state.blocPays._selected.length === 0 &&
+            state.blocLangue._selected.length === 0 &&
+            state.blocPcpRegions._selected.length === 0 &&
+            state.blocEditeur._selected.length === 0 &&
+            state.blocPcpMetiers._selected.length === 0 &&
+            state.blocIssn._selected.length === 0 &&
+            state.blocRcr._selected.length === 0 &&
+            state.blocRcr._selectedCopyPasteRcr.length === 0 &&
+            state.blocMotsDuTitre._selected.length === 0 &&
+            state.blocPpn._selected.length === 0 &&
             (state.blocPcpRcr._pcp === '' || typeof state.blocPcpRcr._pcp === 'undefined' || state.blocPcpRcr._rcr === '' || typeof state.blocPcpRcr._rcr === 'undefined') &&
-            !state.blocStatutBibliotheque._selected && //todo: check rien selectionné
-            state.blocRequeteDirecte._directRequest.criteres.length == 0
+            state.blocStatutBibliotheque._selected.length === 0 &&
+            state.blocRequeteDirecte._directRequest.criteres.length === 0
          );
       },
       isFirstDisplayedElement: (state) => (id: PanelType) => {

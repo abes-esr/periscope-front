@@ -1,9 +1,7 @@
-import {EnumStatuts} from '@/store/recherche/BlocDefinition';
-
 const statuts = [
-    {id: 0, text: 'Pôle de conservation', value: EnumStatuts.PC},
-    {id: 1, text: 'Membre du plan', value: EnumStatuts.PA},
-    {id: 2, text: 'Orphelin', value: EnumStatuts.Orphelin},
+    {id: 'PC', text: 'Pôle de conservation', value: false},
+    {id: 'PA', text: 'Membre du plan', value: false},
+    {id: 'Orphelin', text: 'Orphelin', value: false},
 ]
 
 export default statuts;

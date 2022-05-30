@@ -1,6 +1,5 @@
 import {Operator, ListItem} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
-import {ValueError} from '@/exception/ValueError';
 
 /**
  * Représente un bloc de recherche par langue

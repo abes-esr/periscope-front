@@ -13,23 +13,61 @@
          <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="isFirstDisplayedElement"></v-col>
          <v-col xs="8" sm="8" lg="8">
             <v-expansion-panel-header>
-               <template v-slot:default="{open}">
-                  <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par Statut Bibliothèque </v-col>
-                     <v-col xs="12" sm="8" lg="9" class="text--secondary">
-                        <v-fade-transition leave-absolute>
-                           <span v-if="open || isSelected" key="0"> Selectionnez des statuts </span>
-                        </v-fade-transition>
-                     </v-col>
-                  </v-row>
-               </template>
+              <template v-slot:default="{open}">
+                <v-row no-gutters>
+                  <v-col xs="12" sm="4" lg="3"> Recherche par Statut </v-col>
+                  <v-col xs="12" sm="8" lg="9" class="text--secondary">
+                    <v-fade-transition leave-absolute>
+                      <span v-if="open || statutEntered.length === 0" key="0"> Selectionnez des statuts </span>
+                      <span v-else key="1"> {{ getStatutEntered + ' | Entre les statuts : ' + getInternalOperatorSelectedInString }} </span>
+                    </v-fade-transition>
+                  </v-col>
+                </v-row>
+              </template>
             </v-expansion-panel-header>
             <v-expansion-panel-content class="expansionPanelContent">
                <v-row justify="center">
-                  <v-col sm="10">
-                     <!--Elements-->
-                     <v-select dense :label="'Choisissez un statut'" :items="statutItems" class="style1" outlined v-model="statutSelected" @change="updateSelectedStatuts"></v-select>
-                  </v-col>
+                 <v-col sm="10">
+                   <!--Elements-->
+                   <v-tooltip top max-width="20vw" open-delay="700">
+                     <template v-slot:activator="{on}">
+                       <v-autocomplete
+                           @change="updateArrayBlocStatut"
+                           v-model="statutEntered"
+                           :items="statutItems"
+                           @input="searchInput = null"
+                           :search-input.sync="searchInput"
+                           item-text="text"
+                           item-value="id"
+                           multiple
+                           outlined
+                           label="rechercher un statut"
+                           class="style2"
+                           placeholder="statut à saisir"
+                           v-on="on"
+                       >
+                         <template v-slot:selection="{attrs, item, selected}">
+                           <v-chip v-if="item === Object(item)" v-bind="attrs" :color="`${item.color} lighten-3`" :input-value="selected" label small>
+                                    <span class="pr-2">
+                                       {{ item.text }}
+                                    </span>
+                             <v-icon small @click="removeItemStatut(item)">x</v-icon>
+                           </v-chip>
+                         </template>
+                       </v-autocomplete>
+                     </template>
+                     <span>Rechercher un statut avec l'auto-complétion. Vous pouvez naviguer dans la liste avec les flèches haut et bas du clavier puis valider la sélection avec la touche "Entrer". Vous pouvez saisir plusieurs statuts</span>
+                   </v-tooltip>
+                 </v-col>
+                 <v-col sm="2" class="internalOperator">
+                   <!--Internal BlocOperator-->
+                   <v-tooltip top max-width="20vw" open-delay="700">
+                     <template v-slot:activator="{on}">
+                       <v-select dense :label="internal_operator_label" :items="list_internal_operator_to_select" class="style1" outlined v-model="internal_operator_selected" @change="updateBlocInternalOperator" v-on="on"></v-select>
+                     </template>
+                     <span>Cet opérateur logique permet de connecter les statuts entre eux</span>
+                   </v-tooltip>
+                 </v-col>
                </v-row>
             </v-expansion-panel-content>
          </v-col>
@@ -76,29 +114,35 @@
 
 <script lang="ts">
 import {Component, Vue} from 'vue-property-decorator';
-import {Operator, BlocOperator, EnumStatuts, BlocStatutsBiblio} from '@/store/recherche/BlocDefinition';
+import {Operator, BlocOperator, ListItem} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
 import {AvailableSwitch, DisplaySwitch, Movement, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {ValueError} from "@/exception/ValueError";
+import {BlocAbstract} from "@/store/recherche/criteres/BlocAbstract";
 
 @Component
 export default class ComponentStatut extends Vue {
    id: PanelType = PanelType.STATUT;
    external_operator_label: string;
-   list_external_operator_to_select: Array<BlocOperator>;
+   internal_operator_label: string;
+  list_external_operator_to_select: Array<BlocOperator>;
+  list_internal_operator_to_select: Array<BlocOperator>;
    external_operator_selected: Operator;
-   statutItems: Array<BlocStatutsBiblio>; //Bloc Statut
-   statutSelected: EnumStatuts;
-   statutExternalBlocOperatorListToSelect: Array<BlocOperator>;
-   isSelected: boolean;
+  internal_operator_selected: Operator;
+   statutItems: Array<ListItem>; //Bloc Statut
+   statutEntered: Array<string>;
+  searchInput = null;
 
    constructor() {
       super();
-      this.external_operator_label = '';
-      this.list_external_operator_to_select = this.getExternalOperatorList;
-      this.external_operator_selected = this.getExternalOperatorSelected;
-      this.statutItems = this.getStatutItems;
-      this.statutSelected = this.getStatutSelected;
-      this.isSelected = false;
+     this.external_operator_label = '';
+     this.internal_operator_label = 'Entre Statuts';
+     this.list_external_operator_to_select = this.getExternalOperatorList;
+     this.list_internal_operator_to_select = this.getInternalOperatorList;
+     this.external_operator_selected = this.getExternalOperatorSelected;
+     this.internal_operator_selected = this.getInternalOperatorSelected;
+     this.statutItems = this.getStatutItems;
+     this.statutEntered = this.getStatutEntered;
    }
 
    /**
@@ -108,6 +152,22 @@ export default class ComponentStatut extends Vue {
    get getExternalOperatorList(): Array<BlocOperator> {
       return this.$store.state.blocStatutBibliotheque._externalBlocOperatorListToSelect;
    }
+
+  /**
+   * Retourne les opérateurs internes à sélectionner
+   * @return Liste des opérateurs internes
+   */
+  get getInternalOperatorList(): Array<BlocOperator> {
+    return this.$store.state.blocStatutBibliotheque._internalBlocOperatorListToSelect;
+  }
+
+  /**
+   * Retourne l'opérateur interne du bloc sélectionné
+   * @return L'opérateur interne
+   */
+  get getInternalOperatorSelected(): Operator {
+    return this.$store.state.blocStatutBibliotheque._internalBlocOperator;
+  }
 
    /**
     * Retourne l'opérateur externe du bloc sélectionné
@@ -145,7 +205,7 @@ export default class ComponentStatut extends Vue {
     * Retourne les statuts candidats
     * @return Liste des statuts
     */
-   get getStatutItems(): Array<BlocStatutsBiblio> {
+   get getStatutItems(): Array<ListItem> {
       return this.$store.state.blocStatutBibliotheque._candidates;
    }
 
@@ -153,9 +213,17 @@ export default class ComponentStatut extends Vue {
     * Retourne le statut selectionné
     * @return Liste des statuts
     */
-   get getStatutSelected(): EnumStatuts {
+   get getStatutEntered(): Array<string> {
       return this.$store.state.blocStatutBibliotheque._selected;
    }
+
+  /**
+   * Retourne l'opérateur interne sélectionné en chaîne de caractère
+   * @return Chaîne de caractère de l'opérateur
+   */
+  get getInternalOperatorSelectedInString(): string {
+    return BlocAbstract.convertBlocOperatorToLabel(this.internal_operator_selected);
+  }
 
    /******************** Methods ***************************/
 
@@ -176,7 +244,7 @@ export default class ComponentStatut extends Vue {
       this.list_external_operator_to_select = this.getExternalOperatorList;
       this.external_operator_selected = this.getExternalOperatorSelected;
       this.statutItems = this.getStatutItems;
-      this.statutSelected = this.getStatutSelected;
+      this.statutEntered = this.getStatutEntered;
    }
 
    /**
@@ -186,7 +254,6 @@ export default class ComponentStatut extends Vue {
       this.$store.dispatch('updateSelectedStatutBibliotheque', this.statutItems).catch((err) => {
          Logger.error(err);
       });
-      this.isSelected = true;
    }
 
    /******************** Events ***************************/
@@ -199,6 +266,42 @@ export default class ComponentStatut extends Vue {
          Logger.error(err);
       });
    }
+
+  /**
+   * Mise à jour de l'opérateur interne du bloc
+   */
+  updateBlocInternalOperator(): void {
+    this.$store.dispatch('updateSelectedInternalStatutOperator', this.internal_operator_selected);
+  }
+
+  /**
+   * Mise à jour des statuts sélectionnés
+   */
+  updateArrayBlocStatut(items: Array<string>): void {
+    this.statutItems.forEach((v) => {
+      v.value = false;
+    })
+    for (let value of items) {
+      const index = this.statutItems.findIndex((x) => x.id === value);
+      if (index == -1) {
+        throw new ValueError('Statut ' + value + ' not found');
+      }
+      this.statutItems[index].value = true;
+    }
+    this.updateSelectedStatuts();
+  }
+
+  /**
+   * Supprime un statut de la sélection
+   * @param value statut à supprimer
+   * @throws ValueError si la statut n'a pas été trouvé
+   */
+  removeItemStatut(value: ListItem): void {
+    let index: number = this.statutEntered.indexOf(value.id);
+    this.statutEntered.splice(index, 1);
+    this.statutItems[index].value = false;
+    this.updateSelectedStatuts();
+  }
 
    /******************** Panel Events ***************************/
 
