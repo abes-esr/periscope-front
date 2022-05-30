@@ -21,6 +21,7 @@ export enum PanelType {
    COUNTRY,
    PCPRCR,
    HISTORY,
+   STATUT,
 }
 
 export enum Movement {

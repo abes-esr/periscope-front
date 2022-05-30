@@ -306,6 +306,9 @@ export default class ComponentLangue extends Vue {
     * Mise à jour des langues sélectionnés
     */
    updateArrayBlocLangue(items: Array<string>): void {
+     this.langueItems.forEach((v) => {
+       v.value = false;
+     });
       for (let value of items) {
          const index = this.langueItems.findIndex((x) => x.id === value);
          if (index == -1) {
