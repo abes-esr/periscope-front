@@ -9,7 +9,7 @@ import {
    JsonPcpBlocProvider,
    JsonPcpRcrProvider,
    JsonPpnBlocProvider,
-   JsonRcrBlocProvider,
+   JsonRcrBlocProvider, JsonStatutsProvider,
    JsonTri,
    JsonTriProvider,
 } from '@/service/periscope/PeriscopeJsonDefinition';
@@ -31,6 +31,7 @@ import {PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {FacetteType, FiltresFacettes} from '@/store/recherche/filtresFacettes/FiltresFacettes';
 import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
 import {Operator} from '@/store/recherche/BlocDefinition';
+import {BlocStatutBibliotheque} from "@/store/recherche/criteres/BlocStatutBibliotheque";
 
 /**
  * Représente une requête de recherche pour l'API Periscope
@@ -55,6 +56,7 @@ export class SearchRequest {
       blocLangue: BlocLangue,
       blocPays: BlocPays,
       blocPcpRcr: BlocPcpRcr,
+      blocStatut: BlocStatutBibliotheque,
       blocRequeteDirecte: BlocRequeteEnregistree,
       blocTri: BlocTri,
       filtresFacettes: FiltresFacettes,
@@ -193,6 +195,18 @@ export class SearchRequest {
                      pcp: blocPcpRcr._pcp,
                      rcr: blocPcpRcr._rcr,
                   });
+               }
+               break;
+            case PanelType.STATUT:
+               //construction de la partie statut de la bibliothèque
+               if (blocStatut._selected.length !== 0) {
+                  const statutBlocJson: JsonStatutsProvider = {
+                     type: 'CriterionStatutBib',
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocStatut._externalBlocOperator),
+                     statut: blocStatut._selected,
+                     statut_operator: BlocAbstract.getSameNumberOfIdenticalOperatorFromNumberOfElements(blocStatut._internalBlocOperator, blocStatut._selected.length),
+                  };
+                  criteria.push(statutBlocJson);
                }
                break;
             case PanelType.LANG:

@@ -296,6 +296,9 @@ export default class ComponentPays extends Vue {
     * Mise à jour des pays sélectionnés
     */
    updatePays(items: Array<string>): void {
+     this.paysItems.forEach((v) => {
+       v.value = false;
+     })
       for (let value of items) {
          const index = this.paysItems.findIndex((x) => x.id === value);
          if (index == -1) {
