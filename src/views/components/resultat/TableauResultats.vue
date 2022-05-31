@@ -22,7 +22,7 @@
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on"><download-csv :delimiter="'\t'" :data="selected" name="periscope-export.tsv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
+                     <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on" @click="displayLoad"><download-csv :delimiter="'\t'" :data="selected" name="periscope-export.tsv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
                   </template>
                   <span>Exporter la sélection au format CSV</span>
                </v-tooltip>
@@ -539,6 +539,15 @@ export default class TableauResultats extends Vue {
    goToBottomOfPage(): void {
      scroll(0, document.body.scrollHeight || document.documentElement.scrollHeight);
    }
+
+  /**
+   * Message de chargement d'export des notices
+   */
+  displayLoad(): void {
+    this.$store.dispatch('openInfoSnackBar', 'Chargement en cours').catch((err) => {
+      Logger.error(err);
+    });
+  }
 
    /**
     * Action lorsque l'utilisateur modifie le nombre de résultats voulus par page
