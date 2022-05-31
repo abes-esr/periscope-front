@@ -48,11 +48,15 @@ export default class Stepper extends Vue {
    }
    /**
     * Action lorsque l'utilisateur clique sur une étape du stepper
+    * Lorsque l'utilisateur retourne en recherche, automatiquement il repasse a 25 résultats
     * @param stepNumber Etape sélectionnée
     */
    changePage(stepNumber: number): void {
       switch (stepNumber) {
          case 1:
+           this.$store.dispatch('updatePageSize', 25).catch((err) => {
+             Logger.error(err);
+           });
             this.$store.dispatch('changeStepAction', stepNumber).catch((err) => {
                Logger.error(err);
             });
