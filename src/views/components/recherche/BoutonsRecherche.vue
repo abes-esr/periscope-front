@@ -1,7 +1,7 @@
 <template>
    <v-container>
-      <v-row justify="space-around">
-         <v-col xs="6" sm="3">
+      <v-row justify="end">
+         <v-col xs="4" sm="2">
             <v-tooltip top max-width="20vw" open-delay="700">
                <template v-slot:activator="{on}">
                   <v-btn @click="resetSearch()" color="#E53935" dark large v-on="on">Réinitialiser<v-icon dark right> mdi-cancel </v-icon></v-btn>
@@ -9,7 +9,7 @@
                <span>Réinitialiser le formulaire de recherche. Tous les blocs seront vidés et supprimés</span>
             </v-tooltip>
          </v-col>
-         <v-col xs="6" sm="3">
+         <v-col xs="4" sm="2">
             <v-tooltip top open-delay="700">
                <template v-slot:activator="{on}">
                   <v-btn :disabled="isSelectionEmpty" @click="clickSearch()" color="#4CAF50" class="white--text" large v-on="on">Recherche<v-icon right>mdi-magnify</v-icon></v-btn>

@@ -1,23 +1,26 @@
 <template>
-   <v-container class="ma-0 pa-0 outlined-app blocPanel" fluid>
-      <v-row align="center">
-         <v-col cols="4">Ajouter un bloc de recherche </v-col>
-         <v-col cols="6">
-            <v-card class="d-flex flex-wrap" flat>
-               <div v-for="item in items" :key="item.id">
-                  <v-tooltip top max-width="20vw" open-delay="700">
-                     <template v-slot:activator="{on}">
-                        <div v-on="on">
-                           <v-switch class="ma-4" v-model="item.isDisplayed" :label="item.label" :value="item.isDisplayed" :disabled="!item.isAvailable" @change="updatePanel(item.id, item.isDisplayed)"></v-switch>
-                        </div>
-                     </template>
-                     <span>Activer / Désactiver le bloc de recherche par {{ item.label }}</span>
-                  </v-tooltip>
-               </div>
-            </v-card>
-         </v-col>
-      </v-row>
-   </v-container>
+   <div>
+      <p class="pb-0">Il est possible de sélectionner plusieurs blocs de recherche (sauf 'PCP & RCR')</p>
+      <v-container class="ma-0 pa-0 outlined-app blocPanel" fluid>
+         <v-row align="center">
+            <v-col cols="4">Ajouter un bloc de recherche </v-col>
+            <v-col cols="6">
+               <v-card class="d-flex flex-wrap" flat>
+                  <div v-for="item in items" :key="item.id">
+                     <v-tooltip top max-width="20vw" open-delay="700">
+                        <template v-slot:activator="{on}">
+                           <div v-on="on">
+                              <v-switch class="ma-4" v-model="item.isDisplayed" :label="item.label" :value="item.isDisplayed" :disabled="!item.isAvailable" @change="updatePanel(item.id, item.isDisplayed)"></v-switch>
+                           </div>
+                        </template>
+                        <span>Activer / Désactiver le bloc de recherche par {{ item.label }}</span>
+                     </v-tooltip>
+                  </div>
+               </v-card>
+            </v-col>
+         </v-row>
+      </v-container>
+   </div>
 </template>
 
 <script lang="ts">
@@ -119,11 +122,11 @@ export default class ListeDeChoix extends Vue {
                   Logger.error(err);
                });
                break;
-           case PanelType.STATUT:
-             this.$store.dispatch('resetBlocStatut').catch((err) => {
-               Logger.error(err);
-             });
-             break;
+            case PanelType.STATUT:
+               this.$store.dispatch('resetBlocStatut').catch((err) => {
+                  Logger.error(err);
+               });
+               break;
          }
       }
       const action: PanelDisplaySwitchProvider = {
