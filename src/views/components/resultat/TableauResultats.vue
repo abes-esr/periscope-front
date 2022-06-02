@@ -22,7 +22,7 @@
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on"><download-csv :delimiter="'\t'" :data="selected" name="periscope-export.tsv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
+                     <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on" @click="displayLoad"><download-csv :delimiter="'\t'" :data="selected" name="periscope-export.tsv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
                   </template>
                   <span>Exporter la sélection au format CSV</span>
                </v-tooltip>
@@ -32,12 +32,12 @@
                   </template>
                   <span>Appliquer les tris</span>
                </v-tooltip>
-               <v-tooltip top open-delay="700">
-                  <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app btnTableau" outlined small @click="clearSort" v-on="on"><v-icon>mdi-cancel</v-icon></v-btn>
-                  </template>
-                  <span>Réinitialiser les tris</span>
-               </v-tooltip>
+              <v-tooltip top open-delay="700">
+                <template v-slot:activator="{on}">
+                  <v-btn class="outlined-app btnTableau" outlined small @click="clearSort" v-on="on"><v-icon>mdi-cancel</v-icon></v-btn>
+                </template>
+                <span>Réinitialiser les tris</span>
+              </v-tooltip>
             </v-col>
             <v-col cols="3">
                <v-tooltip top open-delay="700">
@@ -60,6 +60,7 @@
             <v-col cols="5">
                <v-text-field v-model="search" append-icon="mdi-magnify" label="Recherche approfondie sur page en cours" single-line hide-details style="margin: 0 !important; padding: 0 !important"></v-text-field>
             </v-col>
+
          </v-row>
          <v-row class="secondary-line">
             <v-col>Requête : {{ getMaxNotice }} notices ({{ getExecutionTime }} secondes)</v-col>
@@ -539,8 +540,17 @@ export default class TableauResultats extends Vue {
    }
 
    goToBottomOfPage(): void {
-      scroll(0, document.body.scrollHeight || document.documentElement.scrollHeight);
+     scroll(0, document.body.scrollHeight || document.documentElement.scrollHeight);
    }
+
+  /**
+   * Message de chargement d'export des notices
+   */
+  displayLoad(): void {
+    this.$store.dispatch('openInfoSnackBar', 'Chargement en cours').catch((err) => {
+      Logger.error(err);
+    });
+  }
 
    /**
     * Action lorsque l'utilisateur modifie le nombre de résultats voulus par page
@@ -609,11 +619,17 @@ export default class TableauResultats extends Vue {
 }
 </script>
 <style scoped>
-.v-btn:not(.v-btn--round).v-size--small {
-   margin-top: 5px;
+.v-btn:not(.v-btn--round).v-size--small{
+  margin-top: 5px;
 }
 
-::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
-   background: #0f75bc;
+::v-deep .theme--light.v-data-table
+> .v-data-table__wrapper
+> table
+> tbody
+> tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper)
+{
+  background: #0f75bc;
 }
+
 </style>

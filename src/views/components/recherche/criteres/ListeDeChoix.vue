@@ -119,6 +119,11 @@ export default class ListeDeChoix extends Vue {
                   Logger.error(err);
                });
                break;
+           case PanelType.STATUT:
+             this.$store.dispatch('resetBlocStatut').catch((err) => {
+               Logger.error(err);
+             });
+             break;
          }
       }
       const action: PanelDisplaySwitchProvider = {

@@ -78,6 +78,13 @@ export interface JsonLanguesProvider {
    language_operator: Array<string>;
 }
 
+export interface JsonStatutsProvider {
+   type: string;
+   bloc_operator: string;
+   statut: Array<string>;
+   statut_operator: Array<string>;
+}
+
 export interface JsonTriProvider {
    sort: string;
    order: string;

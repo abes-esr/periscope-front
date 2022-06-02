@@ -27,6 +27,7 @@ export class Composants {
          {id: 7, position: 8, isDisplayed: false, isAvailable: true, label: 'Langue'},
          {id: 8, position: 9, isDisplayed: false, isAvailable: true, label: 'Pays'},
          {id: 9, position: 10, isDisplayed: false, isAvailable: true, label: 'PCP & RCR (même exemplaire)'},
+         {id: 11, position: 11, isDisplayed: false, isAvailable: true, label: 'Statut de l\'établissement'},
       ];
    }
 

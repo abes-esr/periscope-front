@@ -172,6 +172,7 @@ const langues = [
    {id: 'hit', text: 'Hittite', value: false},
    {id: 'hmn', text: 'Hmong', value: false},
    {id: 'hun', text: 'Hongrois', value: false},
+   {id: 'hrv', text: 'République de croatie', value: false},
    {id: 'hup', text: 'Hupa', value: false},
    {id: 'sah', text: 'iakoute', value: false},
    {id: 'iba', text: 'Iban', value: false},
