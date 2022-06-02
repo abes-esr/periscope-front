@@ -1,22 +1,24 @@
 <template>
-   <v-container fluid>
-      <v-row justify="center">
-         <v-col xs="6" sm="6">
-            <img src="@/assets/logoABES.jpg" alt="logo abes" />
+     <v-footer absolute padless color="#0f75bc">
+       <v-container fluid>
+         <v-row align="center" style="background-color: #2c2968; color: white; font-size: 1em">
+           <v-col lg="3">
+             <span>Periscope, comparez vos collections de périodiques — {{ new Date().getFullYear() }}</span>
+           </v-col>
+           <v-col lg="3" offset-lg="6">
+             <span>Données personnelles | C.G.U. | Mentions légales | Accessibilité</span>
+           </v-col>
+         </v-row>
+       <v-row align="center" style="background-color: #2c2968; color: white; font-size: 1em">
+         <v-col lg="3">
+           <span>Periscope, comparez vos collections de périodiques — {{ new Date().getFullYear() }}</span>
          </v-col>
-      </v-row>
-      <v-row justify="center">
-         <v-col xs="6" sm="3">
-            <a @click="conditionsGenerales()">Conditions générales d'utilisation</a>
+         <v-col lg="3" offset-lg="6">
+           <span>Données personnelles | C.G.U. | Mentions légales | Accessibilité</span>
          </v-col>
-         <v-col xs="6" sm="3">
-            <a href="https://stp.abes.fr/node/3?origine=periscope">Assistance</a>
-         </v-col>
-         <v-col xs="6" sm="3">
-            <a @click="mentionsLegales()">Mentions légales</a>
-         </v-col>
-      </v-row>
-   </v-container>
+       </v-row>
+       </v-container>
+     </v-footer>
 </template>
 
 <script lang="ts">
@@ -24,6 +26,9 @@ import {Component, Vue} from 'vue-property-decorator';
 
 @Component
 export default class Footer extends Vue {
+  link1: string;
+  link2: string
+
 
    //Events
    conditionsGenerales(): void {
