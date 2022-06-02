@@ -7,7 +7,6 @@ import {
    JsonMotsDuTitreProvider,
    JsonPaysProvider,
    JsonPcpBlocProvider,
-   JsonPcpRcrProvider,
    JsonPpnBlocProvider,
    JsonRcrBlocProvider, JsonStatutsProvider,
    JsonTri,
