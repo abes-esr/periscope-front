@@ -1,5 +1,5 @@
 <template>
-   <v-container class="ma-0 pa-0">
+   <v-container class="ma-0 pa-0" fluid>
       <v-row align="center" justify="center" no-gutters dense>
          <v-col>
             <v-stepper :value="getStep" non-linear>

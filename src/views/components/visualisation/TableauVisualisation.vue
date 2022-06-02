@@ -1,5 +1,5 @@
 <template>
-   <v-container>
+   <v-container fluid>
       <v-row justify="center">
          <iframe id="iframeid" :src="getUrl" width="100%" allowfullscreen></iframe>
       </v-row>

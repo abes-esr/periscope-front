@@ -1,5 +1,5 @@
 <template>
-   <v-container class="outlined-app">
+   <v-container class="outlined-app" fluid>
       <v-container>
          <v-row>
             <v-col>

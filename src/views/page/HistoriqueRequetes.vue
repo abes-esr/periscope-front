@@ -1,5 +1,5 @@
 <template>
-   <v-container>
+   <v-container fluid>
       <v-row>
          <v-col>
             <component-header></component-header>
@@ -12,7 +12,7 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-container class="ma-0 pa-0 outlined-app">
+            <v-container class="ma-0 pa-0 outlined-app" fluid>
                <v-row align="center">
                   <v-col cols="12">Requetes Enregistrées</v-col>
                   <v-col cols="12">
