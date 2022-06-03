@@ -1,14 +1,13 @@
 <template>
    <div>
-      <p class="pb-0">Il est possible de sélectionner plusieurs blocs de recherche (sauf 'PCP & RCR')</p>
+     <div style="color: #2c2968; font-size: 1.2em; margin-bottom: 1em"><strong>Il est possible de sélectionner plusieurs blocs de recherche</strong> (sauf 'PCP & RCR')</div>
       <v-container class="ma-0 pa-0 outlined-app blocPanel" fluid>
-         <v-row align="center">
-            <v-col cols="4">Ajouter un bloc de recherche </v-col>
-            <v-col cols="6">
-               <v-card class="d-flex flex-wrap" flat>
-                  <div v-for="item in items" :key="item.id">
+         <v-row justify="center" align="center">
+            <v-col v-for="item in items" :key="item.id">
+               <v-card class="d-flex" flat>
+                  <div >
                      <v-tooltip top max-width="20vw" open-delay="700">
-                        <template v-slot:activator="{on}">
+                        <template v-slot:activator="{on}" >
                            <div v-on="on">
                               <v-switch class="ma-4" v-model="item.isDisplayed" :label="item.label" :value="item.isDisplayed" :disabled="!item.isAvailable" @change="updatePanel(item.id, item.isDisplayed)"></v-switch>
                            </div>
