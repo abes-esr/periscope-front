@@ -20,51 +20,58 @@ Vue.use(VueClipboard); // Plugin pour l'historique
 Vue.component('downloadCsv', JsonCSV); // Plugin d'export au format CSV
 
 const vue = new Vue({
-   router: index,
-   store,
-   vuetify,
-   render: (h) => h(App),
+  router: index,
+  store,
+  vuetify,
+  render: (h) => h(App),
 }).$mount('#app');
 
-// Chargement des valeurs candidates (PCP, langues, pays, statuts)
+//Chargements initiaux et reset initiaux au lancement de l'application
 vue.$store.dispatch('loadCandidatesValue', false).catch((err) => {
-   Logger.error(err);
+  Logger.error(err);
 });
-// Reset du panneau de recherche
 vue.$store.dispatch('resetSearchPanel', true).catch((err) => {
-   Logger.error(err);
+  Logger.error(err);
 });
-
 vue.$store.dispatch('resetNotices').catch((err) => {
-   Logger.error(err);
+  Logger.error(err);
 });
 vue.$store.dispatch('resetFacettes').catch((err) => {
-   Logger.error(err);
+  Logger.error(err);
 });
 vue.$store.dispatch('resetPage').catch((err) => {
-   Logger.error(err);
+  Logger.error(err);
 });
 
+//Si lien externe avec en paramètre de l'url PPN, Ordre de tri, Collection, Tree, pour atterrir directement sur la page, à tester
+//TODO adapter à l'iframe pour periscope v2
 if (vue.$route.query.ppnviewed) {
-   Logger.debug('PPN= ' + vue.$route.query.ppnviewed);
-   Logger.debug('OrderBy= ' + vue.$route.query.orderby);
-   Logger.debug('Collection= ' + vue.$route.query.collectionStatus);
-   Logger.debug('Tree= ' + vue.$route.query.tree);
+  Logger.debug('PPN= ' + vue.$route.query.ppnviewed);
+  Logger.debug('OrderBy= ' + vue.$route.query.orderby);
+  Logger.debug('Collection= ' + vue.$route.query.collectionStatus);
+  Logger.debug('Tree= ' + vue.$route.query.tree);
 
-   vue.$store.dispatch('updateCurrentPpn', vue.$route.query.ppnviewed).catch((err) => {
-      Logger.error(err);
-   });
-   vue.$store.dispatch('doVisualisation').catch((err) => {
-      Logger.error(err.message);
-      if (err instanceof HttpRequestError) {
-         Logger.debug('Erreur API : ' + err.debugMessage);
-         vue.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage).catch((err) => {
-            Logger.error(err);
-         });
-      } else {
-         vue.$store.dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message).catch((err) => {
-            Logger.error(err);
-         });
-      }
-   });
+  vue.$store.dispatch('updateCurrentPpn', vue.$route.query.ppnviewed).catch((err) => {
+    Logger.error(err);
+  });
+  vue.$store.dispatch('doVisualisation').catch((err) => {
+    Logger.error(err.message);
+    if (err instanceof HttpRequestError) {
+      Logger.debug('Erreur API : ' + err.debugMessage);
+      vue.$store
+        .dispatch(
+          'openErrorSnackBar',
+          "Impossible d'exécuter la requête. \n Erreur : " + err.message + ' \n Détails : ' + err.debugMessage,
+        )
+        .catch((err) => {
+          Logger.error(err);
+        });
+    } else {
+      vue.$store
+        .dispatch('openErrorSnackBar', "Impossible d'exécuter l'action. \n Erreur : " + err.message)
+        .catch((err) => {
+          Logger.error(err);
+        });
+    }
+  });
 }

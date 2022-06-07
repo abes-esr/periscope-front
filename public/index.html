@@ -1,28 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width,initial-scale=0.7">
+   <head>
+      <meta charset="utf-8" />
+      <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+      <meta name="viewport" content="width=device-width,initial-scale=0.7" />
       <!--Initial scale = reglage du zoom par defaut de l'application-->
-    <link rel="icon" href="<%= BASE_URL %>favicon.ico">
-    <title><%= htmlWebpackPlugin.options.title %></title>
-  </head>
-  <body onload="zoom()">
-    <noscript>
-      <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
-    </noscript>
-    <div id="app"></div>
-    <!--Collecteur JIRA test-->
-    <script type="text/javascript" src="https://abes-esr.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-fzx0du/b/3/9edb822e6c4db3635f27806476c088cb/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=fr-FR&collectorId=56d7ba7b"></script><script type="text/javascript" src="?collectorId=56d7ba7b"></script>
-    <!-- built files will be auto injected -->
-    <!--Firefox zoom par defaut a 70%-->
-    <script type="text/javascript">
-        function zoom() {
-            document.body.style.zoom = "70%"
-            document.getElementById('x').style.MozTransform = "scale(0.7)";
-            document.getElementById('x').style.MozTransformOrigin = "0 0";
-        }
-    </script>
-  </body>
+      <link rel="icon" href="<%= BASE_URL %>favicon.ico" />
+      <title><%= htmlWebpackPlugin.options.title %></title>
+   </head>
+   <body onload="zoom()">
+      <noscript>
+         <strong>We're sorry but <%= htmlWebpackPlugin.options.title %> doesn't work properly without JavaScript enabled. Please enable it to continue.</strong>
+      </noscript>
+      <div id="app"></div>
+      <!--Collecteur JIRA test-->
+      <script
+         type="text/javascript"
+         src="https://abes-esr.atlassian.net/s/d41d8cd98f00b204e9800998ecf8427e-T/-fzx0du/b/3/9edb822e6c4db3635f27806476c088cb/_/download/batch/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector/com.atlassian.jira.collector.plugin.jira-issue-collector-plugin:issuecollector.js?locale=fr-FR&collectorId=56d7ba7b"
+      ></script>
+      <script type="text/javascript" src="?collectorId=56d7ba7b"></script>
+      <!-- built files will be auto injected -->
+      <!--Firefox zoom par defaut a 70%-->
+      <script type="text/javascript">
+         function zoom() {
+            document.body.style.zoom = '70%';
+            document.getElementById('x').style.MozTransform = 'scale(0.7)';
+            document.getElementById('x').style.MozTransformOrigin = '0 0';
+         }
+      </script>
+   </body>
 </html>

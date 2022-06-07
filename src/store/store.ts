@@ -19,21 +19,9 @@ import {BlocPays} from '@/store/recherche/criteres/BlocPays';
 import {BlocRcr} from '@/store/recherche/criteres/BlocRcr';
 import {BlocPcpMetiers} from '@/store/recherche/criteres/BlocPcpMetiers';
 import {BlocPcpRegions} from '@/store/recherche/criteres/BlocPcpRegions';
-import {
-   AvailableSwitch,
-   DisplaySwitch,
-   Movement,
-   PanelAvailableSwitchProvider,
-   PanelDisplaySwitchProvider,
-   PanelMovementProvider,
-   PanelType
-} from '@/store/composant/ComposantDefinition';
+import {AvailableSwitch, DisplaySwitch, Movement, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelMovementProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {OrderType, TriDefinition} from '@/store/recherche/TriDefinition';
-import {
-   APIHoldingsResponse,
-   APISearchResponse,
-   JsonGlobalSearchRequest
-} from '@/service/periscope/PeriscopeJsonDefinition';
+import {APIHoldingsResponse, APISearchResponse, JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
 import router from '@/router';
 import {LotFacettes} from '@/store/resultat/LotFacettes';
 import Facet from '@/store/entity/Facet';
@@ -556,9 +544,27 @@ export default new Vuex.Store({
                {id: PanelType.EDITOR, position: 7, isDisplayed: false, isAvailable: true, label: 'Editeur'},
                {id: PanelType.LANG, position: 8, isDisplayed: false, isAvailable: true, label: 'Langue'},
                {id: PanelType.COUNTRY, position: 9, isDisplayed: false, isAvailable: true, label: 'Pays'},
-               {id: PanelType.PCPRCR, position: 10, isDisplayed: false, isAvailable: true, label: 'PCP & RCR (même exemplaire)'},
-               {id: PanelType.STATUT, position: 11, isDisplayed: false, isAvailable: true, label: "Statut de l'établissement"},
-               {id: PanelType.HISTORY, position: 0, isDisplayed: false, isAvailable: true, label: 'Requête enregistrée'},
+               {
+                  id: PanelType.PCPRCR,
+                  position: 10,
+                  isDisplayed: false,
+                  isAvailable: true,
+                  label: 'PCP & RCR (même exemplaire)',
+               },
+               {
+                  id: PanelType.STATUT,
+                  position: 11,
+                  isDisplayed: false,
+                  isAvailable: true,
+                  label: "Statut de l'établissement",
+               },
+               {
+                  id: PanelType.HISTORY,
+                  position: 0,
+                  isDisplayed: false,
+                  isAvailable: true,
+                  label: 'Requête enregistrée',
+               },
             ].sort((n1, n2) => {
                if (n1.position > n2.position) {
                   return 1;

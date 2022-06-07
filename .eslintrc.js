@@ -3,7 +3,13 @@ module.exports = {
   env: {
     node: true,
   },
-  extends: ['plugin:vue/essential', 'eslint:recommended', '@vue/typescript/recommended', '@vue/prettier/', '@vue/prettier/@typescript-eslint'],
+  extends: [
+    'plugin:vue/essential',
+    'eslint:recommended',
+    '@vue/typescript/recommended',
+    '@vue/prettier/',
+    '@vue/prettier/@typescript-eslint',
+  ],
   parserOptions: {
     ecmaVersion: 2019,
   },
@@ -25,7 +31,7 @@ module.exports = {
         // disable rule for obligation to have a return type
         '@typescript-eslint/explicit-function-return-type': ['off'],
         // disable rule for no explicity any
-        '@typescript-eslint/no-explicit-any': ["off", { "ignoreRestArgs": true }],
+        '@typescript-eslint/no-explicit-any': ['off', {ignoreRestArgs: true}],
         // disable rule for obligation to have a return type
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         // disable rule for empty interfaces

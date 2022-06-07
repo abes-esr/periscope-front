@@ -1,18 +1,16 @@
 import Vue from 'vue';
 import VueRouter, {RouteConfig} from 'vue-router';
-import Resultats from '@/views/page/Resultats.vue';
-import RechercheAvance from '@/views/page/RechercheAvance.vue';
-import ConditionsGenerales from '@/views/page/ConditionsGenerales.vue';
-import MentionsLegales from '@/views/page/MentionsLegales.vue';
-import HistoriqueRequetes from '@/views/page/HistoriqueRequetes.vue';
-import Visualisation from '@/views/page/Visualisation.vue';
+import Resultats from '@/views/components/03-router-content/02-resultats/Resultats.vue';
+import RechercheAvance from '@/views/components/03-router-content/01-recherche-avancee/RechercheAvancee.vue';
+import HistoriqueRequetes from '@/views/components/03-router-content/04-historique/HistoriqueRequetes.vue';
+import Visualisation from '@/views/components/03-router-content/03-visualisation/Visualisation.vue';
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
    {
       path: '/',
-      name: '/accueil',
+      name: 'Recherche',
       component: RechercheAvance,
       meta: {title: 'Periscope - Recherche'},
    },
@@ -21,18 +19,6 @@ const routes: Array<RouteConfig> = [
       name: 'Recherche',
       component: RechercheAvance,
       meta: {title: 'Periscope - Recherche'},
-   },
-   {
-      path: '/conditions-generales',
-      name: 'ConditionsGenerales',
-      component: ConditionsGenerales,
-      meta: {title: 'Periscope - Conditions générales'},
-   },
-   {
-      path: '/mentions-legales',
-      name: 'MentionsLegales',
-      component: MentionsLegales,
-      meta: {title: 'Periscope - Mentions légales'},
    },
    {
       path: '/resultat',
