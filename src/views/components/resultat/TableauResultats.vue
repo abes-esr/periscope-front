@@ -114,8 +114,8 @@
                   nextIcon: '',
                }"
             >
-               <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}" >
-                  <v-tooltip top v-bind:key="h.value" max-width="15vw" open-delay="700" >
+               <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}">
+                  <v-tooltip top v-bind:key="h.value" max-width="15vw" open-delay="700">
                      <template v-slot:activator="{on}">
                         <span v-on="on">{{ h.text }}</span>
                      </template>
@@ -620,10 +620,10 @@ export default class TableauResultats extends Vue {
 }
 
 ::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
-   background: #0f75bc;
+   background: #cfe3f2;
 }
-::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr{
-  background: #0f75bc;
-  color: white;
+::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > thead {
+   background: #0f75bc;
+   color: white;
 }
 </style>
