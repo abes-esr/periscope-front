@@ -55,8 +55,8 @@
          </v-row>
       </v-container>
       <v-container fluid>
-         <v-row align-content="end" class='justify-end'>
-            <v-col>
+         <v-row >
+            <v-col class='d-flex justify-end'>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
                      <v-btn class="outlined-app btnTableau" outlined small @click="goToBottomOfPage" v-on="on"><v-icon>mdi-arrow-down</v-icon></v-btn>
@@ -115,7 +115,7 @@
                   nextIcon: '',
                }"
             >
-               <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}">
+               <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}" >
                   <v-tooltip top v-bind:key="h.value" max-width="15vw" open-delay="700">
                      <template v-slot:activator="{on}">
                         <span v-on="on">{{ h.text }}</span>
@@ -150,7 +150,7 @@
                      <span>Aller à la page suivante</span>
                   </v-tooltip>
                </v-col>
-               <v-col cols="5" align-content="end">
+               <v-col class='d-flex justify-end'>
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
                         <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
