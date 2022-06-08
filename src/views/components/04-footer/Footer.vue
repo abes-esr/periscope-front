@@ -50,7 +50,7 @@ export default class Footer extends Vue {
    }
 
    frontVersion(): void {
-      console.log();
+      console.log(process.env.npm_package_version);
    }
 }
 </script>
