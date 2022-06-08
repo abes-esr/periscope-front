@@ -22,7 +22,7 @@
       </v-row>
       <v-row align='center' style="background-color: #2c2968; color: white; font-size: 1em">
          <v-col cols="auto" class="mr-auto" style='text-align: start; padding-left: 2em'>
-            <span>Periscope, comparez vos collections de périodiques — {{ new Date().getFullYear() }}</span>
+            <span>Periscope, comparez vos collections de périodiques — {{ new Date().getFullYear() }} — Interface:v </span>
          </v-col>
          <v-col cols="auto" style='text-align: start; padding-left: 2em; padding-right: 2em'>
             <span>
@@ -43,5 +43,14 @@
 import {Component, Vue} from 'vue-property-decorator';
 
 @Component
-export default class Footer extends Vue {}
+export default class Footer extends Vue {
+   constructor() {
+      super();
+      this.frontVersion();
+   }
+
+   frontVersion(): void {
+      console.log();
+   }
+}
 </script>
