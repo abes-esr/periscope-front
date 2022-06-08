@@ -11,17 +11,6 @@
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app btnTableau" outlined small @click="goToBottomOfPage" v-on="on"><v-icon>mdi-arrow-down</v-icon></v-btn>
-                  </template>
-               </v-tooltip>
-               <v-tooltip top open-delay="700">
-                  <template v-slot:activator="{on}">
-                     <v-btn class="outlined-app btnTableau" outlined small @click="clearSelection" v-on="on"><v-icon>mdi-checkbox-blank-off-outline</v-icon></v-btn>
-                  </template>
-                  <span>Vider la sélection</span>
-               </v-tooltip>
-               <v-tooltip top open-delay="700">
-                  <template v-slot:activator="{on}">
                      <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on" @click="displayLoad"><download-csv :delimiter="'\t'" :data="selected" name="periscope-export.tsv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
                   </template>
                   <span>Exporter la sélection au format CSV</span>
@@ -63,6 +52,18 @@
          </v-row>
          <v-row class="secondary-line">
             <v-col>Requête : {{ getMaxNotice }} notices ({{ getExecutionTime }} secondes)</v-col>
+         </v-row>
+      </v-container>
+      <v-container fluid>
+         <v-row align-content="end" class='justify-end'>
+            <v-col>
+               <v-tooltip top open-delay="700">
+                  <template v-slot:activator="{on}">
+                     <v-btn class="outlined-app btnTableau" outlined small @click="goToBottomOfPage" v-on="on"><v-icon>mdi-arrow-down</v-icon></v-btn>
+                  </template>
+                  <span>Aller en bas de la page</span>
+               </v-tooltip>
+            </v-col>
          </v-row>
       </v-container>
       <v-row style="margin-top: 10px" class="align-start justify-space-around">
@@ -129,7 +130,7 @@
                </template>
             </v-data-table>
          </v-card>
-         <v-container>
+         <v-container fluid>
             <v-row align-content="center" class="justify-space-between">
                <v-col cols="6">
                   <v-tooltip top open-delay="700">
@@ -620,7 +621,7 @@ export default class TableauResultats extends Vue {
 }
 
 ::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > tbody > tr:hover:not(.v-data-table__expanded__content):not(.v-data-table__empty-wrapper) {
-   background: #0f75bc;
+   background: #cfe3f2;
 }
 ::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr {
    background: #0f75bc;
