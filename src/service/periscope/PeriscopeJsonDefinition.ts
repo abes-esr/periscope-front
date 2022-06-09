@@ -3,7 +3,7 @@
  */
 import Notice from '@/store/entity/Notice';
 import Holding from '@/store/entity/Holding';
-import {FacetteType} from "@/store/recherche/filtresFacettes/FiltresFacettes";
+import {FacetteType} from '@/store/recherche/filtresFacettes/FiltresFacettes';
 
 export interface JsonTri {
    sort: string;

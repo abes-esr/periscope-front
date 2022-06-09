@@ -1,6 +1,5 @@
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
-import {ListItem} from "@/store/recherche/BlocDefinition";
-
+import {ListItem} from '@/store/recherche/BlocDefinition';
 
 /**
  * Représente un bloc de recherche de Pcp Rcr

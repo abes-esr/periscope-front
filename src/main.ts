@@ -26,15 +26,13 @@ const vue = new Vue({
    render: (h) => h(App),
 }).$mount('#app');
 
-// Chargement des valeurs candidates (PCP, langues, pays, statuts)
+//Chargements initiaux et reset initiaux au lancement de l'application
 vue.$store.dispatch('loadCandidatesValue', false).catch((err) => {
    Logger.error(err);
 });
-// Reset du panneau de recherche
 vue.$store.dispatch('resetSearchPanel', true).catch((err) => {
    Logger.error(err);
 });
-
 vue.$store.dispatch('resetNotices').catch((err) => {
    Logger.error(err);
 });
@@ -45,6 +43,8 @@ vue.$store.dispatch('resetPage').catch((err) => {
    Logger.error(err);
 });
 
+//Si lien externe avec en paramètre de l'url PPN, Ordre de tri, Collection, Tree, pour atterrir directement sur la page, à tester
+//TODO adapter à l'iframe pour periscope v2
 if (vue.$route.query.ppnviewed) {
    Logger.debug('PPN= ' + vue.$route.query.ppnviewed);
    Logger.debug('OrderBy= ' + vue.$route.query.orderby);
