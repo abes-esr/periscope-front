@@ -322,14 +322,14 @@ export default class ComponentIssn extends Vue {
 
       if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{4}-\\d{4}$')) {
+            if (value.trim().match('^\\d{4}-(\\d{3}X)?(\\d{4})?')) { //TODO controle regex groupe
                if (this.addItem(value.trim())) {
                   this.comboboxAlert = [];
                } else {
                   //Logger.debug('------- BREAK --------');
                   return;
                }
-            } else if (value.trim().match('^\\d{8}$')) {
+            } else if (value.trim().match('^(\\d{8})?(\\d{7}X)?$')) {
                if (this.addItem(value.substring(0, 4) + '-' + value.substring(4, 8))) {
                   this.comboboxAlert = [];
                } else {

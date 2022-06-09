@@ -1,6 +1,6 @@
 <template>
    <v-container class="ma-0 pa-0" style="margin-bottom: 1em">
-      <v-row style="max-height: 6em; height: 150px" align="center" justify="center" no-gutters>
+      <v-row style="max-height: 6em; height: 150px" align="start" justify="center" no-gutters>
          <v-col xs="12" sm="6">
             <img src="@/assets/periscope.png" style="max-width: 100%; max-height: 100%" alt="logo periscope" />
          </v-col>
