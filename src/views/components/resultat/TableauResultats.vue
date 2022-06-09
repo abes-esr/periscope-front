@@ -101,7 +101,7 @@
                show-select
                show-expand
                :items-per-page="getNumberOfNoticesAskedForNewCall"
-               @click:row="clickOnRow"
+               @dblclick:row="clickOnRow"
                @update:items-per-page="getItemPerPage"
                :footer-props="{
                   disablePagination: true,
@@ -128,6 +128,9 @@
                      <div class="v-data-table_line">Liste des établissements : {{ item.rcrList }}<br /></div>
                   </td>
                </template>
+              <template v-slot:[`item.linkSudoc`]="{item}">
+                <a target="_blank" :href="item.linkSudoc"><v-img src="@/assets/icone_sudoc.png"/></a>
+              </template>
             </v-data-table>
          </v-card>
          <v-container>
