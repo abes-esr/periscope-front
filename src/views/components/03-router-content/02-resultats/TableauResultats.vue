@@ -114,10 +114,10 @@
                   nextIcon: '',
                }"
             >
-               <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}" >
+               <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}">
                   <v-tooltip top v-bind:key="h.value" max-width="15vw" open-delay="700">
                      <template v-slot:activator="{on}">
-                        <span v-on="on">{{ h.text }}</span>
+                        <span v-on="on" style='color: white; font-weight: bold'>{{ h.text }}</span>
                      </template>
                      <span>Cliquez sur la colonne pour trier par {{ h.text }} puis cliquez sur 'Appliquer les tris'</span>
                   </v-tooltip>
