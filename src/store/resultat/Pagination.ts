@@ -1,6 +1,4 @@
-/**
- * Représente une pagination
- */
+/** * Représente une pagination */
 export class Pagination {
    _currentPage = 0;
    _previousPage = -1;

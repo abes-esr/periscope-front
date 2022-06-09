@@ -25,7 +25,6 @@ export class BlocLangue extends BlocAbstract {
       if (index !== -1) {
          return candidates[index].text;
       }
-      return "Code erroné";
-
+      return 'Code erroné';
    }
 }

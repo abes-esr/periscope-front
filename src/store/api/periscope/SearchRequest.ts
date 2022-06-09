@@ -8,7 +8,8 @@ import {
    JsonPaysProvider,
    JsonPcpBlocProvider,
    JsonPpnBlocProvider,
-   JsonRcrBlocProvider, JsonStatutsProvider,
+   JsonRcrBlocProvider,
+   JsonStatutsProvider,
    JsonTri,
    JsonTriProvider,
 } from '@/service/periscope/PeriscopeJsonDefinition';
@@ -30,7 +31,7 @@ import {PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
 import {FacetteType, FiltresFacettes} from '@/store/recherche/filtresFacettes/FiltresFacettes';
 import {BlocPcpRcr} from '@/store/recherche/criteres/BlocPcpRcr';
 import {Operator} from '@/store/recherche/BlocDefinition';
-import {BlocStatutBibliotheque} from "@/store/recherche/criteres/BlocStatutBibliotheque";
+import {BlocStatutBibliotheque} from '@/store/recherche/criteres/BlocStatutBibliotheque';
 
 /**
  * Représente une requête de recherche pour l'API Periscope
@@ -350,9 +351,9 @@ export class SearchRequest {
          const json: JsonGlobalSearchRequest = JSON.parse(value);
 
          if (!json.criteres) {
-            return 'La propriété "criteres" est obligatoire';
+            return 'La propriété "02-blocs-recherche" est obligatoire';
          } else if (!Array.isArray(json.criteres)) {
-            return 'La propriété "criteres" doit être un tableau de critères';
+            return 'La propriété "02-blocs-recherche" doit être un tableau de critères';
          }
 
          if (json.tri && !Array.isArray(json.tri)) {

@@ -14,9 +14,17 @@ semi: true
 singleQuote: true
 #Print spaces between brackets in object literals.
 bracketSpacing: false
+#Put the > of a multi-line HTML (HTML, JSX, Vue, Angular) element at the end of the last line instead of being alone on the next line (does not apply to self closing elements).
+#bracketSameLine: false
 #Whether or not to indent the code inside <script> and <style> tags in Vue files. Some people (like the creator of Vue)
 #don’t indent to save an indentation level, but this might break code folding in your editor
 #For vue project, put false.
 vueIndentScriptAndStyle: false
 #https://developpaper.com/solution-to-delete-%E2%90%8Deslint-prettier-prettier-error/
-"endOfLine": "auto"
+'endOfLine': 'auto'
+#Prettier commande globale formattage de tous les fichiers du projet
+#Lancer les commandes suivantes avec un powershell en admin et en se mettant dans le repertoire du projet en cours
+#  Set-ExecutionPolicy -ExecutionPolicy Unrestricted
+#  prettier --write .
+arrowParens: always
+proseWrap: never

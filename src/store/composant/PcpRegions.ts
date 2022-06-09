@@ -22,5 +22,4 @@ const pcpRegions = [
    {key: 'PCUdp', text: 'Université de Poitiers'},
    {key: 'PCUdr', text: 'Université de Rouen'},
 ];
-
 export default pcpRegions;
