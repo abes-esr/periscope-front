@@ -32,8 +32,8 @@ export class Notice {
          this.endDate = obj.date_fin;
       }
 
-      if (obj.link) {
-         this.linkSudoc = obj.link;
+      if (obj.lien_sudoc) {
+         this.linkSudoc = obj.lien_sudoc;
       }
       if (obj.nb_location) {
          this.nbLoc = obj.nb_location;
