@@ -67,9 +67,9 @@
          </v-row>
       </v-container>
       <v-row style="margin-top: 10px" class="align-start justify-space-around">
-         <v-navigation-drawer v-model="drawer" permanent style="margin-right: 1rem" v-bind:class="[displayDrawer ? 'd-flex' : 'd-none']">
+         <v-navigation-drawer v-model="drawer" permanent style="background-color: #f1f1f2" v-bind:class="[displayDrawer ? 'd-flex' : 'd-none']">
             <v-expansion-panels multiple accordion>
-               <v-expansion-panel v-for="f in facettes" :key="f.zone">
+               <v-expansion-panel v-for="f in facettes" :key="f.zone" style="background-color: #f1f1f2">
                   <v-expansion-panel-header>
                      {{ mappingLabelFacet[f.zone] }}
                   </v-expansion-panel-header>

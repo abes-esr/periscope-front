@@ -46,7 +46,7 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-btn @click="clearHistory()" color="#E53935" dark large>Vider l'historique<v-icon dark right> mdi-cancel </v-icon></v-btn>
+            <v-btn @click="clearHistory()" color="#cf4a1a" dark large>Vider l'historique<v-icon dark right> mdi-cancel </v-icon></v-btn>
          </v-col>
       </v-row>
    </v-container>
