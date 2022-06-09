@@ -81,9 +81,8 @@
                </v-expansion-panel>
             </v-expansion-panels>
          </v-navigation-drawer>
-
          <v-card class="d-flex flex-grow-1 flex-shrink-1" v-bind:class="[displayDrawer ? 'tabResultatSmallWidth' : 'tabResultatFullWidth']">
-            <v-data-table
+            <v-data-table style='width: 100%'
                :custom-sort="customSort"
                :sort-by="orderLabels"
                :sort-desc="orderBooleans"
