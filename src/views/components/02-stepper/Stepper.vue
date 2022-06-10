@@ -4,16 +4,16 @@
          <v-col>
             <v-stepper :value="getStep" non-linear>
                <v-stepper-header>
-                  <v-stepper-step v-if="isSelectionEmpty" step="1" complete editable color="grey lighten-2" edit-icon="mdi-magnify" complete-icon="mdi-magnify" @click="changePage(1)">Recherche</v-stepper-step>
-                  <v-stepper-step v-else step="1" complete editable color="grey lighten-2" edit-icon="mdi-magnify" complete-icon="mdi-magnify" @click="changePage(1)">Recherche</v-stepper-step>
+                  <v-stepper-step v-if="isSelectionEmpty" step="1" complete editable color="#0f75bc" edit-icon="mdi-magnify" complete-icon="mdi-magnify" @click="changePage(1)">Recherche</v-stepper-step>
+                  <v-stepper-step v-else step="1" complete editable color="#0f75bc" edit-icon="mdi-magnify" complete-icon="mdi-magnify" @click="changePage(1)">Recherche</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step v-if="isSelectionEmpty" complete step="2" color="grey lighten-2" complete-icon="mdi-table">Résultats</v-stepper-step>
-                  <v-stepper-step v-else step="2" complete editable color="grey lighten-2" edit-icon="mdi-table" complete-icon="mdi-table" @click="changePage(2)">Résultats</v-stepper-step>
+                  <v-stepper-step v-if="isSelectionEmpty" complete step="2" color="#0f75bc" complete-icon="mdi-table">Résultats</v-stepper-step>
+                  <v-stepper-step v-else step="2" complete editable color="#0f75bc" edit-icon="mdi-table" complete-icon="mdi-table" @click="changePage(2)">Résultats</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step v-if="isPpnEmpty" disabled="" complete step="3" color="grey lighten-2" edit-icon="mdi-table" complete-icon="mdi-table">Visualisation</v-stepper-step>
-                  <v-stepper-step v-else complete editable step="3" color="grey lighten-2" edit-icon="mdi-table" complete-icon="mdi-table" @click="changePage(3)">Visualisation</v-stepper-step>
+                  <v-stepper-step v-if="isPpnEmpty" disabled="" complete step="3" color="#0f75bc" edit-icon="mdi-table" complete-icon="mdi-table">Visualisation</v-stepper-step>
+                  <v-stepper-step v-else complete editable step="3" color="#0f75bc" edit-icon="mdi-table" complete-icon="mdi-table" @click="changePage(3)">Visualisation</v-stepper-step>
                   <v-divider></v-divider>
-                  <v-stepper-step step="4" complete editable color="grey lighten-2" edit-icon="mdi-history" complete-icon="mdi-history" @click="changePage(4)">Historique</v-stepper-step>
+                  <v-stepper-step step="4" complete editable color="#0f75bc" edit-icon="mdi-history" complete-icon="mdi-history" @click="changePage(4)">Historique</v-stepper-step>
                </v-stepper-header>
             </v-stepper>
          </v-col>
