@@ -100,7 +100,7 @@
                show-select
                show-expand
                :items-per-page="getNumberOfNoticesAskedForNewCall"
-               @dblclick:row="clickOnRow"
+               v-on:dblclick:row="dblClickOnRow"
                @update:items-per-page="getItemPerPage"
                :footer-props="{
                   disablePagination: true,
@@ -382,7 +382,8 @@ export default class TableauResultats extends Vue {
 
    /******************** Events ***************************/
 
-   clickOnRow(value: Notice): void {
+   dblClickOnRow(event: Event, item: any): void {
+      const value: Notice = item.item
       this.$store.dispatch('changeStepAction', 3).catch((err) => {
          Logger.error(err);
       });
