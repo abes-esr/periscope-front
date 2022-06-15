@@ -8,6 +8,7 @@
       <v-row>
          <v-col>
             <v-expansion-panels v-for="i in panel" :key="i.position">
+               <!-- TODO: essayé de comparer i.id === PanelType.PPN               -->
                <component-ppn v-if="i.id === 0 && i.isDisplayed" @onChange="renderPanelList"></component-ppn>
                <component-issn v-if="i.id === 1 && i.isDisplayed" @onChange="renderPanelList"></component-issn>
                <component-rcr v-if="i.id === 2 && i.isDisplayed" @onChange="renderPanelList"></component-rcr>
@@ -18,8 +19,8 @@
                <component-langue v-if="i.id === 7 && i.isDisplayed" @onChange="renderPanelList"></component-langue>
                <component-pays v-if="i.id === 8 && i.isDisplayed" @onChange="renderPanelList"></component-pays>
                <component-pcp-rcr v-if="i.id === 9 && i.isDisplayed" @onChange="renderPanelList"></component-pcp-rcr>
-               <component-requete-enregistree v-if="i.id === 10 && i.isDisplayed" @onChange="renderPanelList"></component-requete-enregistree>
-               <component-statut v-if="i.id === 11 && i.isDisplayed" @onChange="renderPanelList"></component-statut>
+               <component-statut v-if="i.id === 10 && i.isDisplayed" @onChange="renderPanelList"></component-statut>
+               <component-requete-enregistree v-if="i.id === 11 && i.isDisplayed" @onChange="renderPanelList"></component-requete-enregistree>
             </v-expansion-panels>
          </v-col>
       </v-row>
