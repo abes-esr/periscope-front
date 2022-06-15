@@ -23,7 +23,7 @@
             </v-expansion-panels>
          </v-col>
       </v-row>
-      <v-row>
+      <v-row justify="end">
          <v-col>
             <component-boutons-recherche @onChange="renderPanelList"></component-boutons-recherche>
          </v-col>
