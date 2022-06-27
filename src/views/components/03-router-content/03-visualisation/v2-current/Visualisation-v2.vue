@@ -24,6 +24,8 @@ export default class TableauVisualisation extends Vue {
       this.orderBy = 'SORT_BY_PCP';
       this.collectionStatus = '';
       this.tree = this.getTree;
+      console.log(this.$route.query.ppnviewed);
+      console.log(this.$route.query.bidule);
    }
 
    get getTree() {
