@@ -19,13 +19,11 @@ export default class TableauVisualisation extends Vue {
    tree;
    constructor() {
       super();
-      this.ppnNumber = this.$store.state.lotHoldings._ppn;
+      this.ppnNumber = this.$route.query.ppnviewed ? this.$route.query.ppnviewed : this.$store.state.lotHoldings._ppn;
       this.iFrameURL = process.env.VUE_APP_TIMELINE_PERISCOPE_V1;
-      this.orderBy = 'SORT_BY_PCP';
-      this.collectionStatus = '';
-      this.tree = this.getTree;
-      console.log(this.$route.query.ppnviewed);
-      console.log(this.$route.query.bidule);
+      this.orderBy = this.$route.query.orderby ? this.$route.query.orderby : 'SORT_BY_PCP';
+      this.collectionStatus = this.$route.query.collectionStatus ? this.$route.query.collectionStatus : '';
+      this.tree = this.$route.query.tree ? this.$route.query.tree : this.getTree;
    }
 
    get getTree() {
