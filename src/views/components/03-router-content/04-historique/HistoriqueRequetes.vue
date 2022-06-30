@@ -4,7 +4,7 @@
          <v-col>
             <v-container class="ma-0 pa-0 outlined-app" fluid>
                <v-row align="center">
-                  <v-col cols="12">Requetes Enregistrées</v-col>
+                  <v-col cols="1" style="font-weight: bolder">Requetes Enregistrées</v-col>
                   <v-col cols="12">
                      <v-timeline dense>
                         <v-timeline-item v-for="(i, index) in requestsHistory" :key="index" small fill-dot>
@@ -25,14 +25,14 @@
                               <v-tooltip top open-delay="700">
                                  <template v-slot:activator="{on}">
                                     <button type="button" v-clipboard:copy="JSON.stringify(i)" v-clipboard:success="onCopy" v-clipboard:error="onError" v-on="on">
-                                       <v-icon>mdi-content-paste </v-icon>
+                                       <v-icon color="#cf4a1a">mdi-content-paste </v-icon>
                                     </button>
                                  </template>
                                  <span>Copier dans le presse papier</span>
                               </v-tooltip>
                               <v-tooltip top open-delay="700">
                                  <template v-slot:activator="{on}">
-                                    <v-btn icon @click="restoreToSearchForm(JSON.stringify(i))" v-on="on"><v-icon>mdi-file-restore</v-icon></v-btn>
+                                    <v-btn icon color="#cf4a1a"  @click="restoreToSearchForm(JSON.stringify(i))" v-on="on"><v-icon>mdi-file-restore</v-icon></v-btn>
                                  </template>
                                  <span>Restaurer dans le formulaire de recherche</span>
                               </v-tooltip>
@@ -46,7 +46,11 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-btn @click="clearHistory()" color="#cf4a1a" dark large>Vider l'historique<v-icon dark right> mdi-cancel </v-icon></v-btn>
+           <v-container style="justify-content: end" fluid>
+             <v-row justify="end">
+               <v-btn @click="clearHistory()" color="#cf4a1a" dark large>Vider l'historique<v-icon dark right> mdi-cancel </v-icon></v-btn>
+             </v-row>
+           </v-container>
          </v-col>
       </v-row>
    </v-container>
