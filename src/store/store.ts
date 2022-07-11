@@ -1166,6 +1166,8 @@ export default new Vuex.Store({
                   this.dispatch('callPeriscopeAPI')
                      .then(() => {
                         if (this.state.lotNotices._maxNotice === 1) {
+                           this.dispatch('changeStepAction', 3);
+                           this.dispatch('updateCurrentPpn', this.state.lotNotices._notices[0].ppn);
                            this.dispatch('doVisualisationWithHoldingsV1');
                            this.dispatch('updateSnackBarDisplay', false);
                            resolve(true);
