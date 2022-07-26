@@ -33,7 +33,7 @@
                      <!--Elements-->
                      <v-tooltip top max-width="20vw" open-delay="700">
                         <template v-slot:activator="{on}">
-                           <v-autocomplete @change="checkValuesAndAddItems()" :items="rcr_liste" item-text="text" item-value="id" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="arrayRcrSelected" v-on="on">
+                           <v-autocomplete @change="checkValuesAndAddItems()" :items="rcr_liste" item-text="text" item-value="id" :filter="customFilter" multiple outlined small-chips :label="comboboxLabel" class="style2" :placeholder="comboboxPlaceholder" v-model="arrayRcrSelected" v-on="on">
                               <template v-slot:selection="{item}">
                                  <v-chip close @click:close="removeItem(item.id)">
                                     <span class="pr-2">{{ item.id }}</span>
@@ -259,6 +259,19 @@ export default class ComponentRcr extends Vue {
       this.$store.dispatch('updateSelectedRcrCopyPaste', this.arrayRcrCopierColler).catch((err) => {
          Logger.error(err);
       });
+   }
+
+   customFilter(item: ListItem, queryText: string): boolean {
+      const textOne = item.text
+         .toLowerCase()
+         .normalize('NFD')
+         .replace(/[\u0300-\u036f]/g, '');
+      const textTwo = item.value.toString();
+      const searchText = queryText
+         .toLowerCase()
+         .normalize('NFD')
+         .replace(/[\u0300-\u036f]/g, '');
+      return textOne.indexOf(searchText) > -1 || textTwo.indexOf(searchText) > -1;
    }
 
    /**
