@@ -316,15 +316,17 @@ export default class ComponentIssn extends Vue {
 
       if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{4}-(\\d{3}X)?(\\d{4})?')) { //TODO controle regex groupe
+            if (value.trim().match('^\\d{8}$')) {
                if (this.addItem(value.trim())) {
                   this.comboboxAlert = [];
                } else {
                   //Logger.debug('------- BREAK --------');
                   return;
                }
-            } else if (value.trim().match('^(\\d{8})?(\\d{7}X)?$')) {
-               if (this.addItem(value.substring(0, 4) + '-' + value.substring(4, 8))) {
+            } else if (value.trim().match('^\\d{4}-\\d{4}$') || value.trim().match('^\\d{4}-\\d\\d\\dX$')) {
+               console.log(value.substring(0, 4));
+               console.log(value.substring(0, 8));
+               if (this.addItem(value.substring(0, 4) + '-' + value.substring(5, 9))) {
                   this.comboboxAlert = [];
                } else {
                   return;
@@ -341,25 +343,7 @@ export default class ComponentIssn extends Vue {
          if (this.comboboxAlert.length === 0) {
             this.currentValue = null;
          }
-      } else if (this.comboboxArrayTyped.length !== 0 && !this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1].match('^\\d{4}-\\d{4}$')) {
-         this.currentValue = this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1];
-         this.removeItem(this.comboboxArrayTyped[this.comboboxArrayTyped.length - 1]);
-         if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push("L'ISSN doit être constitué de 4 chiffres suivis d'un - et de 4 chiffres : XXXX-XXXX");
-         }
-      } else if (this.currentValue == null || this.currentValue.trim().length == 0) {
-         this.currentValue = null;
-         this.comboboxAlert = [];
-         this.updateSelectedIssn();
-      } else {
-         if (this.comboboxAlert.length === 0) {
-            this.comboboxAlert.push("L'ISSN doit être constitué de 4 chiffres suivis d'un - et de 4 chiffres : XXXX-XXXX");
-         }
       }
-
-      //Logger.debug(JSON.stringify('Search value AFTER validation: ' + this.currentValue));
-      //Logger.debug(JSON.stringify('Values AFTER validation : ' + JSON.stringify(this.comboboxArrayTyped)));
-      //Logger.debug('----- FIN CHECK VALUES -----');
    }
 
    /******************** Panel Events ***************************/
