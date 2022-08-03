@@ -11,9 +11,9 @@
             </span>
          </v-col>
          <v-col md="auto" style='text-align: start; padding-left: 2em'>
-            <div><a href="https://documentation.abes.fr/sudoc/" style="color: white">Sudoc</a></div>
-            <div><a href="https://documentation.abes.fr/aideperiscope/" style="color: white">Documentation</a></div>
-            <div><a href="https://stp.abes.fr/node/3?origine=sudocpro" style="color: white">ABESstp</a></div>
+            <div><a href="https://documentation.abes.fr/sudoc/" target="_blank" style="color: white">Sudoc</a></div>
+            <div><a href="https://documentation.abes.fr/aideperiscope/" target="_blank" style="color: white">Documentation</a></div>
+            <div><a href="https://stp.abes.fr/node/3?origine=sudocpro" target="_blank" style="color: white">ABESstp</a></div>
          </v-col>
          <v-col cols="auto" style="padding-right: 2em; padding-left: 2em">
             <span style='padding-right: 1em'><a href="https://abes.fr/"><img src="@/assets/abes.png" /></a></span>
