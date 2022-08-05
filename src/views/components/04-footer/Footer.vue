@@ -11,13 +11,13 @@
             </span>
          </v-col>
          <v-col md="auto" style='text-align: start; padding-left: 2em'>
-            <div><a href="https://documentation.abes.fr/sudoc/" target="_blank" style="color: white">Sudoc</a></div>
+            <div><a href="http://www.sudoc.abes.fr/" target="_blank" style="color: white">Sudoc</a></div>
             <div><a href="https://documentation.abes.fr/aideperiscope/" target="_blank" style="color: white">Documentation</a></div>
-            <div><a href="https://stp.abes.fr/node/3?origine=sudocpro" target="_blank" style="color: white">ABESstp</a></div>
+            <div><a href="https://stp.abes.fr/node/3?origine=periscope-pcp" target="_blank" style="color: white">ABESstp</a></div>
          </v-col>
          <v-col cols="auto" style="padding-right: 2em; padding-left: 2em">
-            <span style='padding-right: 1em'><a href="https://abes.fr/"><img src="@/assets/abes.png" /></a></span>
-            <span><a href="https://www.enseignementsup-recherche.gouv.fr/fr"><img src="@/assets/MESRI_logo.svg" /></a></span>
+            <span style='padding-right: 1em'><a href="https://abes.fr/" target="_blank"><img src="@/assets/abes.png" /></a></span>
+            <span><a href="https://www.enseignementsup-recherche.gouv.fr/fr" target="_blank"><img src="@/assets/MESRI_logo.svg" /></a></span>
          </v-col>
       </v-row>
       <v-row align='center' style="background-color: #2c2968; color: white; font-size: 1em">
