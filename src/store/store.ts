@@ -324,7 +324,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Langues');
          state.blocLangue._candidates = arraySent;
          state.blocLangue._selected = [];
-         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocLangue._selected.push(element.id) : ''));
+         arraySent.forEach((element: {index:number; value: boolean; id: string}) => (element.value ? state.blocLangue._selected.splice(element.index, 0, element.id) : ''));
       },
       loadCandidatesLangue(state, force?: boolean) {
          if (force || state.blocLangue._candidates.length == 0) {
@@ -359,7 +359,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Pays');
          state.blocPays._candidates = arraySent;
          state.blocPays._selected = [];
-         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocPays._selected.push(element.id) : ''));
+         arraySent.forEach((element: {index: number; value: boolean; id: string}) => (element.value ? state.blocPays._selected.splice(element.index, 0, element.id) : ''));
       },
       loadCandidatesPays(state, force?: boolean) {
          if (force || state.blocPays._candidates.length == 0) {
@@ -391,6 +391,7 @@ export default new Vuex.Store({
                   id: element.key,
                   text: element.text,
                   value: false,
+                  index:0,
                }),
             );
             pcpMetiers.forEach((element) =>
@@ -398,6 +399,7 @@ export default new Vuex.Store({
                   id: element.key,
                   text: element.text,
                   value: false,
+                  index:0,
                }),
             );
          }
@@ -412,6 +414,7 @@ export default new Vuex.Store({
                      id: element.rcr,
                      text: element.rcr + ' ' + element.label,
                      value: false,
+                     index:0,
                   });
                });
             });
@@ -446,7 +449,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Statuts');
          state.blocStatutBibliotheque._candidates = arraySent;
          state.blocStatutBibliotheque._selected = [];
-         arraySent.forEach((element: {value: boolean; id: string}) => (element.value ? state.blocStatutBibliotheque._selected.push(element.id) : ''));
+         arraySent.forEach((element: {index: number; value: boolean; id: string}) => (element.value ? state.blocStatutBibliotheque._selected.splice(element.index, 0, element.id) : ''));
       },
       loadCandidatesStatut(state, force?: boolean) {
          if (force || state.blocStatutBibliotheque._candidates.length === 0) {

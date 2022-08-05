@@ -303,12 +303,14 @@ export default class ComponentLangue extends Vue {
       this.langueItems.forEach((v) => {
          v.value = false;
       });
-      for (let value of items) {
+      for (let i = 0; i < items.length; i++) {
+         let value = items[i];
          const index = this.langueItems.findIndex((x) => x.id === value);
          if (index == -1) {
             throw new ValueError('Language ' + value + ' not found');
          }
          this.langueItems[index].value = true;
+         this.langueItems[index].index = i;
       }
       this.updateSelectedLangue();
    }

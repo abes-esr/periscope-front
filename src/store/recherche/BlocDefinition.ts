@@ -22,6 +22,7 @@ export interface ListItem {
    id: string;
    text: string;
    value: boolean;
+   index: number;
 }
 
 export enum Operator { //Conversion implicite en number
