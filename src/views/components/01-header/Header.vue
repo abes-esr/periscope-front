@@ -5,7 +5,7 @@
             <a><img src="@/assets/logo-periscope.svg" @click="$router.push({path: '/'})" style="max-width: 100%; max-height: 100%" alt="logo periscope" /></a>
          </v-col>
          <v-col md="auto">
-            <a href="https://stp.abes.fr/node/3?origine=sudocpro" target="_blank" title="Assistance"><img alt="icone assistance" height="41px" src="@/assets/assistance.png" width="41px" style="margin-left: 1em" /></a>
+            <a href="https://stp.abes.fr/node/3?origine=periscope-pcp" target="_blank" title="Assistance"><img alt="icone assistance" height="41px" src="@/assets/assistance.png" width="41px" style="margin-left: 1em" /></a>
          </v-col>
          <v-col cols="auto" style='padding-left: 2em; padding-right: 2em'>
             <a href="https://documentation.abes.fr/aideperiscope/" target="_blank" title="Documentation"><img alt="icone documentation" height="41px" src="@/assets/documentation.png" width="41px" style="margin-left: 1em" /></a>
