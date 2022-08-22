@@ -1,5 +1,5 @@
 <template>
-   <v-footer padless app color="#0f75bc">
+   <v-footer app height="200" color="#0f75bc">
       <v-row align="center" style="background-color: #0f75bc; color: white; font-size: 1em">
          <v-col cols="auto" class="mr-auto" lg="8" style='text-align: start; padding-left: 2em; padding-right: 2em' v-if="!$vuetify.breakpoint.md && !$vuetify.breakpoint.sm">
             <span>
