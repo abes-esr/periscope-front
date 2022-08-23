@@ -3,8 +3,7 @@
       <v-content>
          <component-header></component-header>
          <component-stepper></component-stepper>
-         <router-view />
-         <div style='margin-top: 1em'></div>
+         <router-view style="padding-bottom: 220px" />
          <component-footer></component-footer>
       </v-content>
    </v-app>
