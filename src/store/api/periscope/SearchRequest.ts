@@ -64,11 +64,12 @@ export class SearchRequest {
       const criteria: any = [];
       const sort: Array<JsonTri> = [];
       const facettes: Array<JsonFacetteRequest> = [];
-
+      //todo : modifier le tri
       //Construction d'une requête en cas de saisie directe de requête
       if (blocRequeteDirecte._directRequest.criteres.length !== 0) {
          blocRequeteDirecte._directRequest.criteres.forEach((element: any) => criteria.push(element));
-
+         blocRequeteDirecte._directRequest.tri.forEach((element: any) => sort.push(element));
+         blocRequeteDirecte._directRequest.facettes.forEach((element: any) => facettes.push(element));
          // Les tris contenus dans la requête ont été appliqués à la saisie dans le formulaire. cf :
          // store -> action 'updateSelectedRequeteDirecte'
          // Inutile donc de remplir les tris avec les tris contenus dans la requête
