@@ -261,7 +261,6 @@ export default class ComponentIssn extends Vue {
       this.$store.dispatch('updateSelectedIssn', this.comboboxArrayTyped).catch((err) => {
          Logger.error(err);
       });
-      console.log("->" + this.$store.state.blocIssn._selected);
    }
 
    /**
@@ -311,7 +310,6 @@ export default class ComponentIssn extends Vue {
     * Vérifie la valeur courante
     */
    checkValues(): void {
-      console.log('passe');
       Logger.debug('----- DEBUT CHECK VALUES -----');
       Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
       Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));

@@ -293,12 +293,14 @@ export default class ComponentPays extends Vue {
       this.paysItems.forEach((v) => {
          v.value = false;
       });
-      for (let value of items) {
+      for (let i = 0; i < items.length; i++) {
+         let value = items[i];
          const index = this.paysItems.findIndex((x) => x.id === value);
          if (index == -1) {
             throw new ValueError('Country ' + value + ' not found');
          }
          this.paysItems[index].value = true;
+         this.paysItems[index].index = i;
       }
       this.updateSelectedPays();
    }

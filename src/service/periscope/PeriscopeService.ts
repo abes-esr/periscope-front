@@ -19,7 +19,7 @@ class PeriscopeService {
     * @return Promise<AxiosResponse> Réponse Axios
     */
    findNoticesByCriteria(page: number, size: number, data: any): Promise<AxiosResponse> {
-      return this.client.post(`/notice/findByCriteria?page=${page}&size=${size}`, data, {timeout: 1000 * 10});
+      return this.client.post(`/notice/findByCriteria?page=${page}&size=${size}`, data, {timeout: 1000 * 20});
    }
 
    /**
@@ -30,7 +30,7 @@ class PeriscopeService {
     * @return Promise<AxiosResponse> Réponse Axios
     */
    findNoticesWithFacetsByCriteria(page: number, size: number, data: any): Promise<AxiosResponse> {
-      return this.client.post(`/notice/findByCriteriaWithFacets?page=${page}&size=${size}`, data, {timeout: 1000 * 10});
+      return this.client.post(`/notice/findByCriteriaWithFacets?page=${page}&size=${size}`, data, {timeout: 1000 * 20});
    }
 
    /**

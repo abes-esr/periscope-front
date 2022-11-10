@@ -283,12 +283,14 @@ export default class ComponentStatut extends Vue {
       this.statutItems.forEach((v) => {
          v.value = false;
       });
-      for (let value of items) {
+      for (let i = 0; i < items.length; i++) {
+         let value = items[i];
          const index = this.statutItems.findIndex((x) => x.id === value);
          if (index == -1) {
             throw new ValueError('Statut ' + value + ' not found');
          }
          this.statutItems[index].value = true;
+         this.statutItems[index].index = i;
       }
       this.updateSelectedStatuts();
    }
