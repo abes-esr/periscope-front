@@ -1110,17 +1110,22 @@ export default new Vuex.Store({
             try {
                //Si le bloc pcpRcr à été selectionné
                const pcpsSelected = context.state.blocPcpRcr._pcp !== '' ? [context.state.blocPcpRcr._pcp] : context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
-               PeriscopeApiAxios.findRcrByPcps(pcpsSelected)
-                  .then((r) => {
-                     r.data.forEach((oneJsonElement: string) => {
-                        listToFill.push(oneJsonElement);
-                     });
-                     context.commit('mutationTreeBlocEnParam', listToFill);
-                     resolve(true);
-                  })
-                  .catch((err) => {
-                     Logger.error(err);
-                  });
+
+               if(pcpsSelected.length === 0){
+                  context.commit('mutationTreeBlocEnParam', []);
+               } else {
+                  PeriscopeApiAxios.findRcrByPcps(pcpsSelected)
+                      .then((r) => {
+                         r.data.forEach((oneJsonElement: string) => {
+                            listToFill.push(oneJsonElement);
+                        });
+                         context.commit('mutationTreeBlocEnParam', listToFill);
+                         resolve(true);
+                      })
+                      .catch((err) => {
+                         Logger.error(err);
+                      });
+               }
                resolve(true);
             } catch (err: any) {
                reject(err.message);
