@@ -261,6 +261,7 @@ export default class ComponentIssn extends Vue {
       this.$store.dispatch('updateSelectedIssn', this.comboboxArrayTyped).catch((err) => {
          Logger.error(err);
       });
+      console.log("->" + this.$store.state.blocIssn._selected);
    }
 
    /**
@@ -310,28 +311,44 @@ export default class ComponentIssn extends Vue {
     * Vérifie la valeur courante
     */
    checkValues(): void {
+      console.log('passe');
       Logger.debug('----- DEBUT CHECK VALUES -----');
       Logger.debug(JSON.stringify('Search value BEFORE validation: ' + this.currentValue));
       Logger.debug(JSON.stringify('Values BEFORE validation : ' + JSON.stringify(this.comboboxArrayTyped)));
 
       if (this.currentValue != null) {
          for (let value of this.currentValue.trim().split(/\s+/)) {
-            if (value.trim().match('^\\d{8}$')) {
-               if (this.addItem(value.trim())) {
+            if (value.trim().match('^\\d{7}[\\d|X]$')) {
+               if (this.addItem(value.substring(0, 4) + '-' + value.substring(4, 8))) {
                   this.comboboxAlert = [];
                } else {
                   //Logger.debug('------- BREAK --------');
                   return;
                }
-            } else if (value.trim().match('^\\d{4}-\\d{4}$') || value.trim().match('^\\d{4}-\\d\\d\\dX$')) {
-               console.log(value.substring(0, 4));
-               console.log(value.substring(0, 8));
+            }
+            else if (value.trim().match('^\\d{7}[x]$')) {
+               if (this.addItem(value.substring(0, 4) + '-' + value.substring(4, 7) + 'X')) {
+                  this.comboboxAlert = [];
+               } else {
+                  //Logger.debug('------- BREAK --------');
+                  return;
+               }
+            }
+            else if (value.trim().match('^\\d{4}-\\d{4}$') || value.trim().match('^\\d{4}-\\d\\d\\d[X]$')) {
                if (this.addItem(value.substring(0, 4) + '-' + value.substring(5, 9))) {
                   this.comboboxAlert = [];
                } else {
                   return;
                }
-            } else {
+            }
+            else if (value.trim().match('^\\d{4}-\\d\\d\\d[x]$')) {
+               if (this.addItem(value.substring(0, 4) + '-' + value.substring(5, 8) + 'X')) {
+                  this.comboboxAlert = [];
+               } else {
+                  return;
+               }
+            }
+            else {
                this.currentValue = value;
                if (this.comboboxAlert.length === 0) {
                   this.comboboxAlert.push("L'ISSN doit être constitué de 4 chiffres suivis d'un - et de 4 chiffres : XXXX-XXXX");
