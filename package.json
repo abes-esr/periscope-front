@@ -33,7 +33,7 @@
       "vue-json-csv": "^1.2.12",
       "vue-property-decorator": "^9.1.2",
       "vue-router": "^3.5.1",
-      "vuetify": "^2.4.4",
+      "vuetify": "^2.6.10",
       "vuex": "^3.6.2",
       "vuex-persistedstate": "^4.0.0-beta.3"
    },
@@ -48,7 +48,7 @@
       "@vue/cli-plugin-eslint": "~4.5.11",
       "@vue/cli-plugin-router": "~4.5.11",
       "@vue/cli-plugin-typescript": "~4.5.11",
-      "@vue/cli-plugin-unit-mocha": "~4.5.11",
+      "@vue/cli-plugin-unit-mocha": "~5.0.8",
       "@vue/cli-service": "~4.5.11",
       "@vue/eslint-config-prettier": "^6.0.0",
       "@vue/eslint-config-typescript": "^7.0.0",
