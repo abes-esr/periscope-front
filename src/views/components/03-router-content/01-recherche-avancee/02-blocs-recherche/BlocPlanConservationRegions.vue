@@ -39,10 +39,10 @@
                            <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="regions[m + 4].value" :label="regions[m + 4].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                         <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 6" :key="m" v-model="regions[m + 9].value" :label="regions[m + 9].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="regions[m + 9].value" :label="regions[m + 9].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                         <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 6" :key="m" v-model="regions[m + 15].value" :label="regions[m + 15].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="regions[m + 14].value" :label="regions[m + 14].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                      </v-row>
                      <!--Internal BlocOperator-->
