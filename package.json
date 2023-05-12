@@ -10,8 +10,7 @@
       "serve": "vue-cli-service serve",
       "build": "vue-cli-service build",
       "test:unit": "vue-cli-service test:unit",
-      "lint": "vue-cli-service lint",
-      "preinstall": "npx npm-force-resolutions"
+      "lint": "vue-cli-service lint"
    },
    "dependencies": {
       "@mdi/font": "^5.9.55",
