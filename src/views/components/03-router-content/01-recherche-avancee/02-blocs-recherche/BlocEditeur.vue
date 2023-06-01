@@ -1,5 +1,5 @@
 <template>
-   <v-expansion-panel class="outlined-app blocPanel">
+   <v-expansion-panel class="outlined-app blocPanel" :v-model="panel">
       <v-row align="center">
          <!--External BlocOperator-->
          <v-col xs="2" sm="2" lg="2" class="externalOperator" v-if="!isFirstDisplayedElement">
@@ -115,9 +115,11 @@ export default class ComponentEditeur extends Vue {
    external_operator_selected: Operator;
    internal_operator_selected: Operator;
    editeurEntered: Array<string>;
+   panel: [0];
 
    constructor() {
       super();
+      this.panel = [0];
       this.external_operator_label = '';
       this.internal_operator_label = 'Entre editeurs';
       this.list_external_operator_to_select = this.getExternalOperatorList;

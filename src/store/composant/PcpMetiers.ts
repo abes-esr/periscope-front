@@ -5,10 +5,10 @@ const pcpMetiers = [
    {key: 'PCChimie', text: 'Chimie'},
    {key: 'PCDroit', text: 'Droit'},
    {key: 'PCEBCO', text: 'Europe balkanique, centrale et orientale'},
+   {key: 'PCEco', text: 'Economie et gestion'},
    {key: 'PCGer', text: 'Langues, littératures, civilisation germaniques'},
-   {key: 'PCGéo', text: 'Géographie'},
    {key: 'PCIta', text: 'Etudes italiennes'},
-   {key: 'PCMedieval', text: 'Médiéval'},
+   {key: 'PCHistoire', text: 'Histoire'},
    {key: 'PCNum', text: 'Sciences du Numérique'},
    {key: 'PCMath', text: 'Mathématiques RNBM'},
    {key: 'PCMed', text: 'Médecine'},
@@ -16,8 +16,6 @@ const pcpMetiers = [
    {key: 'PCSTAPS', text: 'STAPS'},
    {key: 'PCPhilo', text: 'Philosophie'},
    {key: 'PCPhy', text: 'Physique'},
-   //TODO 'PCLCen':['Lettres et Sciences Humaines Centre Val de Loire', 'geo' ], -> trouver correspondance
-   //TODO 'PCEco':['Economie et gestion', ''] idem
 ];
 
 export default pcpMetiers;
