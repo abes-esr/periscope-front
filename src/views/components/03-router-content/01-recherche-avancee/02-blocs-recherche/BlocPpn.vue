@@ -119,6 +119,7 @@ export default class ComponentPpn extends Vue {
    comboboxPlaceholder: string;
    comboboxArrayTyped: Array<string> = [];
    currentValue: any;
+   maxLength: number;
 
    constructor() {
       super();
@@ -132,6 +133,7 @@ export default class ComponentPpn extends Vue {
       this.comboboxLabel = 'ex : 17877166X';
       this.comboboxPlaceholder = 'Saisir des n° de PPN';
       this.currentValue = null;
+      this.maxLength = 200;
    }
 
    /**
@@ -248,9 +250,13 @@ export default class ComponentPpn extends Vue {
    }
 
    addItem(value: string): boolean {
-      this.comboboxArrayTyped.push(value.trim());
-      this.updateStore();
-      return true;
+      if (this.comboboxArrayTyped.length <= this.maxLength) {
+         this.comboboxArrayTyped.push(value.trim());
+         this.updateStore();
+         return true;
+      } else {
+         return false;
+      }
    }
 
    /******************** Events ***************************/
@@ -283,6 +289,9 @@ export default class ComponentPpn extends Vue {
       if (index == -1) {
          throw new ValueError('PPN ' + item + ' not found');
       }
+      if (index == this.maxLength) {
+         this.comboboxAlert = [];
+      }
       this.comboboxArrayTyped.splice(index, 1);
       this.updateStore();
    }
@@ -301,6 +310,7 @@ export default class ComponentPpn extends Vue {
                if (this.addItem(value.trim())) {
                   this.comboboxAlert = [];
                } else {
+                  this.comboboxAlert.push('Trop de PPN entées, Max : '+ this.maxLength);
                   //Logger.debug('------- BREAK --------');
                   return;
                }
@@ -325,6 +335,7 @@ export default class ComponentPpn extends Vue {
                if (this.addItem(value.trim())) {
                   this.comboboxAlert = [];
                } else {
+                  this.comboboxAlert.push('Trop de PPN entées, Max : ' + this.maxLength);
                   //Logger.debug('------- BREAK --------');
                   return;
                }
