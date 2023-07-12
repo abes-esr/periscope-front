@@ -3,7 +3,7 @@ const pcpRegions = [
    {key: 'PCAuv', text: 'Auvergne'},
    {key: 'PCBo', text: 'Bourgogne'},
    {key: 'PCBre', text: 'Bretagne'},
-   {key: 'PCCA', text: 'Champagne-Ardenne'},
+   {key: 'PCGE', text: 'Grand Est'},
    {key: 'PCCAPI', text: 'Champagne-Ardenne Picardie'},
    {key: 'PCCor', text: 'Corse'},
    {key: 'PCFC', text: 'Franche-Comté'},
