@@ -180,7 +180,15 @@ export default class ComponentPlanConservationRegions extends Vue {
       if (arrayReturned.length === 0) {
          Logger.warn('Pcp region are empty');
       }
-      return arrayReturned;
+      return arrayReturned.sort(function comparatorF(a: CheckboxItem, b: CheckboxItem ){
+         if (a.text > b.text) {
+            return 1;
+         }
+         if (a.text < b.text) {
+            return -1;
+         }
+         return 0;
+      });
    }
 
    /**
