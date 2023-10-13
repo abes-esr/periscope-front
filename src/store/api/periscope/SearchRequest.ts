@@ -363,7 +363,7 @@ export class SearchRequest {
 
          return 'OK';
       } catch (err) {
-         return 'Impossible de décoder le JSON : ' + err.message;
+         return 'Impossible de décoder le JSON : ' + (err as Error).message;
       }
    }
 }
