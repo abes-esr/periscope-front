@@ -46,7 +46,6 @@ node {
             env.NODEJS_HOME = "${tool 'NodeJS 11.2.0'}"
             env.PATH="${env.NODEJS_HOME}/bin:${env.PATH}"
             sh 'npm --version'
-            sh 'npm update'
 
             if (params.BRANCH_TAG == null) {
                 throw new Exception("Variable BRANCH_TAG is null")
@@ -170,7 +169,7 @@ node {
 
     stage('Dependencies') {
         try {
-            sh 'npm install'
+            sh 'npm install --legacy-peer-deps'
         } catch (e) {
             currentBuild.result = hudson.model.Result.FAILURE.toString()
             notifySlack(slackChannel,e.getLocalizedMessage())
