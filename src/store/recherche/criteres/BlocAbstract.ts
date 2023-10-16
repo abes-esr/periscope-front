@@ -39,7 +39,7 @@ export abstract class BlocAbstract {
 
    /**
     * Construit une liste de label d'enum d'opérateur avec le nombre d'élement passé en paramètre
-    * Exemple : Utilisé pour construire les opérateurs de la liste des PCP Régions
+    * Exemple : Utilisé pour construire les opérateurs de la liste des PCPP régionaux
     * @param operator  Enum opérateur de bloc
     * @param numberOfElements Nombre d'élement de la liste à retourner
     * @return Liste de label d'énum d'opértareur

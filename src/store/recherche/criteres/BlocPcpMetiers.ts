@@ -2,7 +2,7 @@ import {CheckboxItem, Operator} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 
 /**
- * Représente un bloc de recherche par PCP Métiers
+ * Représente un bloc de recherche par PCPP thématiques
  */
 export class BlocPcpMetiers extends BlocAbstract {
    _internalBlocOperator = Operator.Et;
