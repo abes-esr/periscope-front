@@ -9,6 +9,7 @@ const pcpMetiers = [
    {key: 'PCGer', text: 'Langues, littératures, civilisation germaniques'},
    {key: 'PCIta', text: 'Etudes italiennes'},
    {key: 'PCHistoire', text: 'Histoire'},
+   {key: 'PCGeo', text: 'Géographie et urbanisme'},
    {key: 'PCNum', text: 'Sciences du Numérique'},
    {key: 'PCMath', text: 'Mathématiques RNBM'},
    {key: 'PCMed', text: 'Médecine'},

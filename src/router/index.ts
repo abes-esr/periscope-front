@@ -59,6 +59,8 @@ index.afterEach((to) => {
    // Use next tick to handle index history correctly
    // see: https://github.com/vuejs/vue-router/issues/914#issuecomment-384477609
    Vue.nextTick(() => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       document.title = to.meta.title || DEFAULT_TITLE;
    });
 });

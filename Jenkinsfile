@@ -169,7 +169,7 @@ node {
 
     stage('Dependencies') {
         try {
-            sh 'npm install'
+            sh 'npm install --legacy-peer-deps'
         } catch (e) {
             currentBuild.result = hudson.model.Result.FAILURE.toString()
             notifySlack(slackChannel,e.getLocalizedMessage())

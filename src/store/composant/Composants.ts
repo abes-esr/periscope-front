@@ -17,8 +17,8 @@ export class Composants {
    constructor() {
       this._panel = [
          {id: 11, position: 0, isDisplayed: false, isAvailable: true, label: 'Requête enregistrée'},
-         {id: 4, position: 1, isDisplayed: false, isAvailable: true, label: 'PCP Métiers'},
-         {id: 3, position: 2, isDisplayed: false, isAvailable: true, label: 'PCP Régions'},
+         {id: 4, position: 1, isDisplayed: false, isAvailable: true, label: 'PCPP thématiques'},
+         {id: 3, position: 2, isDisplayed: false, isAvailable: true, label: 'PCPP régionaux'},
          {id: 0, position: 3, isDisplayed: false, isAvailable: true, label: 'PPN'},
          {id: 1, position: 4, isDisplayed: false, isAvailable: true, label: 'ISSN'},
          {id: 2, position: 5, isDisplayed: false, isAvailable: true, label: 'RCR'},
