@@ -15,7 +15,7 @@
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par PCP Régions </v-col>
+                     <v-col xs="12" sm="4" lg="3"> Recherche par PCPP régionaux </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
                            <span v-if="open || getRegionsChecked.length === 0" key="0"> Selectionnez des plans de conservations Régions </span>
@@ -172,8 +172,8 @@ export default class ComponentPlanConservationRegions extends Vue {
    }
 
    /**
-    * Retourne les PCP Régions candidats
-    * @return Liste des PCP Régions
+    * Retourne les PCPP régionaux candidats
+    * @return Liste des PCPP régionaux
     */
    get getRegions(): Array<CheckboxItem> {
       let arrayReturned: Array<CheckboxItem> = this.$store.state.blocPcpRegions._candidates;
@@ -192,8 +192,8 @@ export default class ComponentPlanConservationRegions extends Vue {
    }
 
    /**
-    * Retourne les PCP Régions sélectionnées
-    * @return Liste des PCP Régions
+    * Retourne les PCPP régionaux sélectionnées
+    * @return Liste des PCPP régionaux
     */
    get getRegionsChecked(): Array<CheckboxItem> {
       return this.$store.getters.getCurrentArrayPcpRegionsElementsChecked;
@@ -276,7 +276,7 @@ export default class ComponentPlanConservationRegions extends Vue {
    }
 
    /**
-    * Mise à jour des PCP Régions sélectionnés
+    * Mise à jour des PCPP régionaux sélectionnés
     */
    updateCheckboxes(): void {
       this.$store.dispatch('updateSelectedPcpRegions', this.regions).catch((err) => {

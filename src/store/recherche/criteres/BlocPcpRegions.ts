@@ -2,7 +2,7 @@ import {CheckboxItem, Operator} from '@/store/recherche/BlocDefinition';
 import {BlocAbstract} from '@/store/recherche/criteres/BlocAbstract';
 
 /**
- * Représente un bloc de recherche par PCP Régions
+ * Représente un bloc de recherche par PCPP régionaux
  */
 export class BlocPcpRegions extends BlocAbstract {
    _internalBlocOperator = Operator.Et; // ET / Ou entre les PCP
