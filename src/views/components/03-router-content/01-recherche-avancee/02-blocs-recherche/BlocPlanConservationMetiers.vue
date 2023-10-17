@@ -15,7 +15,7 @@
             <v-expansion-panel-header>
                <template v-slot:default="{open}">
                   <v-row no-gutters>
-                     <v-col xs="12" sm="4" lg="3"> Recherche par PCP Métiers </v-col>
+                     <v-col xs="12" sm="4" lg="3"> Recherche par PCPP thématiques </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
                            <span v-if="open || getMetiersChecked.length === 0" key="0"> Selectionnez des plans de conservations Métiers </span>
@@ -169,19 +169,27 @@ export default class ComponentPlanConservationMetiers extends Vue {
    }
 
    /**
-    * Retourne les PCP Métiers candidats
-    * @return Liste des PCP Métiers
+    * Retourne les PCPP thématiques candidats
+    * @return Liste des PCPP thématiques
     */
    get getMetiers(): Array<CheckboxItem> {
       let arrayReturned = this.$store.state.blocPcpMetiers._candidates;
       if (arrayReturned.length === 0) {
          Logger.warn('Pcp region are empty');
       }
-      return arrayReturned;
+      return arrayReturned.sort(function comparatorF(a: CheckboxItem, b: CheckboxItem ){
+         if (a.text > b.text) {
+            return 1;
+         }
+         if (a.text < b.text) {
+            return -1;
+         }
+         return 0;
+      });
    }
    /**
-    * Retourne les PCP Métiers sélectionnées
-    * @return Liste des PCP Métiers
+    * Retourne les PCPP thématiques sélectionnées
+    * @return Liste des PCPP thématiques
     */
    get getMetiersChecked(): Array<CheckboxItem> {
       return this.$store.getters.getCurrentArrayPcpMetiersElementsChecked;
@@ -260,7 +268,7 @@ export default class ComponentPlanConservationMetiers extends Vue {
    }
 
    /**
-    * Mise à jour des PCP Métiers sélectionnés
+    * Mise à jour des PCPP thématiques sélectionnés
     */
    updateCheckboxes(): void {
       this.$store.dispatch('updateSelectedPcpMetiers', this.metiers).catch((err) => {

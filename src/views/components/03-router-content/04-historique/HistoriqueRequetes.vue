@@ -106,7 +106,7 @@ export default class HistoriqueRequetes extends Vue {
                });
             });
       } catch (err) {
-         Logger.error(err.message);
+         Logger.error((err as Error).message);
       }
    }
 
