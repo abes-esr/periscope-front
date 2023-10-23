@@ -33,16 +33,16 @@
                      <!--Elements-->
                      <v-row justify="center">
                         <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 4" :key="m" v-model="metiers[m - 1].value" :label="metiers[m - 1].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="metiers[m - 1].value" :label="metiers[m - 1].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                         <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 4" :key="m" v-model="metiers[m + 3].value" :label="metiers[m + 3].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                           <v-checkbox @change="updateCheckboxes()" v-for="m in 4" :key="m" v-model="metiers[m + 4].value" :label="metiers[m + 4].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                         <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 4" :key="m" v-model="metiers[m + 7].value" :label="metiers[m + 7].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                           <v-checkbox @change="updateCheckboxes()" v-for="m in 4" :key="m" v-model="metiers[m + 8].value" :label="metiers[m + 8].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                         <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="metiers[m + 11].value" :label="metiers[m + 11].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="metiers[m + 12].value" :label="metiers[m + 12].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                      </v-row>
                      <!--Internal BlocOperator-->
@@ -177,7 +177,7 @@ export default class ComponentPlanConservationMetiers extends Vue {
       if (arrayReturned.length === 0) {
          Logger.warn('Pcp region are empty');
       }
-      return arrayReturned.sort(function comparatorF(a: CheckboxItem, b: CheckboxItem ){
+      return arrayReturned.sort(function comparatorF(a: CheckboxItem, b: CheckboxItem) {
          if (a.text > b.text) {
             return 1;
          }
