@@ -128,7 +128,7 @@
                   </td>
                </template>
               <template v-slot:[`item.linkSudoc`]="{item}">
-                <a target="_blank" :href="item.linkSudoc"><v-img src="@/assets/icone_sudoc.png"/></a>
+                <a target="_blank" :href="item.linkSudoc"><img src="@/assets/logo-carre-sudoc.svg" width="30em"/></a>
               </template>
             </v-data-table>
          </v-card>
