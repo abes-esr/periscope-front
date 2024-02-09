@@ -93,8 +93,9 @@ export default class RechercheAvance extends Vue {
    renderPanelList(id: number): void {
       this.panel = this.getPanel;
       // on verifie que id n'est pas vide et que ce n'est pas la requete enregistree pour ne pas changer la position
-      if (id && id !== 11) {
-         this.panel.filter((panelProvider) => panelProvider.id === id)[0].position = this.panel.filter((panelProvider) => panelProvider.isDisplayed).length;
+      let displayPanel = this.panel.filter((panelProvider) => panelProvider.isDisplayed);
+      if (id != undefined && id != 11) {
+         this.panel.filter((panelProvider) => panelProvider.id === id)[0].position = displayPanel.length;
       }
       // On tri le tableau en fonction des nouvelles positions
       this.panel.sort((n1, n2) => {
@@ -106,6 +107,9 @@ export default class RechercheAvance extends Vue {
          }
          return 0;
       });
+      for (let i = 0; i < displayPanel.length; i++) {
+         this.panel.filter((panelProvider) => panelProvider.isDisplayed)[i].position = i;
+      }
       (this.$refs.listeChoix as ComponentListeDeChoix).updateList(); // On update la liste de choix
    }
 }

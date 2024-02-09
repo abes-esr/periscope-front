@@ -62,9 +62,17 @@ export class Composants {
                while (ii > 0 && !panel[ii].isDisplayed) {
                   ii -= 1;
                }
-               const x: number = panel[ii].position;
-               panel[ii].position = panel[index].position;
-               panel[index].position = x;
+               if (ii == -1) {
+                  // On échange avec le premier
+                  const x: number = panel[0].position;
+                  panel[0].position = panel[index].position;
+                  panel[index].position = x;
+               } else {
+                  // On échange avec un autre
+                  const x: number = panel[ii].position;
+                  panel[ii].position = panel[index].position;
+                  panel[index].position = x;
+               }
             }
             break;
          case Movement.DOWN:
@@ -76,9 +84,17 @@ export class Composants {
                while (ii < panel.length && !panel[ii].isDisplayed) {
                   ii += 1;
                }
-               const x: number = panel[ii].position;
-               panel[ii].position = panel[index].position;
-               panel[index].position = x;
+               if (ii == panel.length + 1) {
+                  // On échange avec le dernierr
+                  const x: number = panel[panel.length - 1].position;
+                  panel[panel.length - 1].position = panel[index].position;
+                  panel[index].position = x;
+               } else {
+                  // On échange avec un autre
+                  const x: number = panel[ii].position;
+                  panel[ii].position = panel[index].position;
+                  panel[index].position = x;
+               }
             }
             break;
          default:
