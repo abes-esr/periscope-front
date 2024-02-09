@@ -107,7 +107,7 @@ export default class RechercheAvance extends Vue {
          }
          return 0;
       });
-      for (let i = 0; i < displayPanel.length; i++) {
+      for (let i = 0; i < displayPanel.length; i++) { // reatribution de la position selon l'ordre
          this.panel.filter((panelProvider) => panelProvider.isDisplayed)[i].position = i;
       }
       (this.$refs.listeChoix as ComponentListeDeChoix).updateList(); // On update la liste de choix
