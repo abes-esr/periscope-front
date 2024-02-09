@@ -109,7 +109,7 @@ export class SearchRequest {
 
                   const pcpBlocJson: JsonPcpBlocProvider = {
                      type: 'CriterionPcp',
-                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocPcpRegions._externalBlocOperator),
+                     bloc_operator: BlocAbstract.convertBlocOperatorToLabel(blocPcpMetiers._externalBlocOperator),
                      pcp: pcpMetiersList,
                      pcp_operator: pcpMetiersInternalOperators,
                   };
