@@ -300,7 +300,7 @@ export default class ComponentEditeur extends Vue {
       this.$store.dispatch('switchElementAvailablePanel', actionAvailable).catch((err) => {
          Logger.error(err);
       });
-      this.$emit('onChange'); // On notifie le composant parent
+      this.$emit('onChange', this.id); // On notifie le composant parent
    }
 
    /**
@@ -315,7 +315,7 @@ export default class ComponentEditeur extends Vue {
       this.$store.dispatch('moveElementPanel', action).catch((err) => {
          Logger.error(err);
       });
-      this.$emit('onChange'); // On notifie le composant parent
+      this.$emit('onChange', this.id); // On notifie le composant parent
    }
 
    /**
@@ -329,7 +329,7 @@ export default class ComponentEditeur extends Vue {
       this.$store.dispatch('moveElementPanel', action).catch((err) => {
          Logger.error(err);
       });
-      this.$emit('onChange'); // On notifie le composant parent
+      this.$emit('onChange', this.id); // On notifie le composant parent
    }
 }
 </script>

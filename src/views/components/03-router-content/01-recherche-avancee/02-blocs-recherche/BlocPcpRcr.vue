@@ -331,7 +331,7 @@ export default class ComponentPcpRcr extends Vue {
          Logger.error(err);
       });
 
-      this.$emit('onChange'); // On notifie le composant parent
+      this.$emit('onChange', this.id); // On notifie le composant parent
    }
 }
 </script>

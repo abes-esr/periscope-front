@@ -7,7 +7,7 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-expansion-panels v-for="i in panel" :key="i.position">
+            <v-expansion-panels v-for="i in panel" :key="i.id">
                <!-- TODO: essayé de comparer i.id === PanelType.PPN               -->
                <component-ppn v-if="i.id === 0 && i.isDisplayed" @onChange="renderPanelList"></component-ppn>
                <component-issn v-if="i.id === 1 && i.isDisplayed" @onChange="renderPanelList"></component-issn>
@@ -82,7 +82,6 @@ export default class RechercheAvance extends Vue {
          Logger.error(err.message);
       });
    }
-
    computed(): void {
       this.panel = this.getPanel;
    }
@@ -91,8 +90,22 @@ export default class RechercheAvance extends Vue {
       return this.$store.state.composants._panel;
    }
 
-   renderPanelList(): void {
+   renderPanelList(id: number): void {
       this.panel = this.getPanel;
+      // on verifie que id n'est pas vide et que ce n'est pas la requete enregistree pour ne pas changer la position
+      if (id && id !== 11) {
+         this.panel.filter((panelProvider) => panelProvider.id === id)[0].position = this.panel.filter((panelProvider) => panelProvider.isDisplayed).length;
+      }
+      // On tri le tableau en fonction des nouvelles positions
+      this.panel.sort((n1, n2) => {
+         if (n1.position > n2.position) {
+            return 1;
+         }
+         if (n1.position < n2.position) {
+            return -1;
+         }
+         return 0;
+      });
       (this.$refs.listeChoix as ComponentListeDeChoix).updateList(); // On update la liste de choix
    }
 }

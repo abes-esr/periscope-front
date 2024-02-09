@@ -149,7 +149,7 @@ export default class ListeDeChoix extends Vue {
          Logger.error(err);
       });
 
-      this.$emit('onChange'); // On notifie le composant parent
+      this.$emit('onChange',id); // On notifie le composant parent
    }
 
    /**

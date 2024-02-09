@@ -538,11 +538,11 @@ export default new Vuex.Store({
          if (force || state.composants._panel.length == 0) {
             Logger.debug('Reset des panneaux de recherche');
             state.composants._panel = [
-               {id: PanelType.PPN, position: 3, isDisplayed: false, isAvailable: true, label: 'PPN'},
-               {id: PanelType.ISSN, position: 4, isDisplayed: false, isAvailable: true, label: 'ISSN'},
-               {id: PanelType.RCR, position: 5, isDisplayed: false, isAvailable: true, label: 'RCR'},
-               {id: PanelType.REGIONS, position: 2, isDisplayed: false, isAvailable: true, label: 'PCPP régionaux'},
-               {id: PanelType.METIERS, position: 1, isDisplayed: false, isAvailable: true, label: 'PCPP thématiques'},
+               {id: PanelType.PPN, position: 1, isDisplayed: false, isAvailable: true, label: 'PPN'},
+               {id: PanelType.ISSN, position: 2, isDisplayed: false, isAvailable: true, label: 'ISSN'},
+               {id: PanelType.RCR, position: 3, isDisplayed: false, isAvailable: true, label: 'RCR'},
+               {id: PanelType.REGIONS, position: 4, isDisplayed: false, isAvailable: true, label: 'PCPP régionaux'},
+               {id: PanelType.METIERS, position: 5, isDisplayed: false, isAvailable: true, label: 'PCPP thématiques'},
                {id: PanelType.WORDS, position: 6, isDisplayed: false, isAvailable: true, label: 'Mots du Titre'},
                {id: PanelType.EDITOR, position: 7, isDisplayed: false, isAvailable: true, label: 'Editeur'},
                {id: PanelType.LANG, position: 8, isDisplayed: false, isAvailable: true, label: 'Langue'},

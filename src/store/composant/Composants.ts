@@ -1,4 +1,10 @@
-import {AvailableSwitch, DisplaySwitch, Movement, PanelProvider, PanelType} from '@/store/composant/ComposantDefinition';
+import {
+   AvailableSwitch,
+   DisplaySwitch,
+   Movement,
+   PanelProvider,
+   PanelType,
+} from '@/store/composant/ComposantDefinition';
 import {ValueError} from '@/exception/ValueError';
 import {Logger} from '@/utils/Logger';
 
@@ -27,7 +33,7 @@ export class Composants {
          {id: 7, position: 8, isDisplayed: false, isAvailable: true, label: 'Langue'},
          {id: 8, position: 9, isDisplayed: false, isAvailable: true, label: 'Pays'},
          {id: 9, position: 10, isDisplayed: false, isAvailable: true, label: 'PCP & RCR (même exemplaire)'},
-         {id: 10, position: 11, isDisplayed: false, isAvailable: true, label: "Statut de l'établissement"},
+         {id: 10, position: 11, isDisplayed: false, isAvailable: true, label: 'Statut de l\'établissement'},
       ];
    }
 
@@ -56,18 +62,9 @@ export class Composants {
                while (ii > 0 && !panel[ii].isDisplayed) {
                   ii -= 1;
                }
-
-               if (ii == -1) {
-                  // On échange avec le premier
-                  const x: number = panel[0].position;
-                  panel[0].position = panel[index].position;
-                  panel[index].position = x;
-               } else {
-                  // On échange avec un autre
-                  const x: number = panel[ii].position;
-                  panel[ii].position = panel[index].position;
-                  panel[index].position = x;
-               }
+               const x: number = panel[ii].position;
+               panel[ii].position = panel[index].position;
+               panel[index].position = x;
             }
             break;
          case Movement.DOWN:
@@ -79,30 +76,19 @@ export class Composants {
                while (ii < panel.length && !panel[ii].isDisplayed) {
                   ii += 1;
                }
-
-               if (ii == panel.length + 1) {
-                  // On échange avec le dernierr
-                  const x: number = panel[panel.length - 1].position;
-                  panel[panel.length - 1].position = panel[index].position;
-                  panel[index].position = x;
-               } else {
-                  // On échange avec un autre
-                  const x: number = panel[ii].position;
-                  panel[ii].position = panel[index].position;
-                  panel[index].position = x;
-               }
+               const x: number = panel[ii].position;
+               panel[ii].position = panel[index].position;
+               panel[index].position = x;
             }
             break;
          default:
             throw new ValueError('Unable to decode panel movement ' + movement);
       }
-
       // On tri le tableau en fonction des nouvelles positions
       panel.sort((n1, n2) => {
          if (n1.position > n2.position) {
             return 1;
          }
-
          if (n1.position < n2.position) {
             return -1;
          }
