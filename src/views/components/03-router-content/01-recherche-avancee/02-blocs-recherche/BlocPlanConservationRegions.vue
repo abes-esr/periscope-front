@@ -18,7 +18,7 @@
                      <v-col xs="12" sm="4" lg="3"> Recherche par PCPP régionaux </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || getRegionsChecked.length === 0" key="0"> Selectionnez des plans de conservations Régions </span>
+                           <span v-if="open || getRegionsChecked.length === 0" key="0"></span>
                            <span v-else key="1">
                               {{ getRegionsChecked + ' | Entre Plans de conservation régions : ' + getInternalOperatorSelectedInString }}
                            </span>

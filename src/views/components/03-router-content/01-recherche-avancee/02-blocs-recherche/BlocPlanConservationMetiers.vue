@@ -18,7 +18,7 @@
                      <v-col xs="12" sm="4" lg="3"> Recherche par PCPP thématiques </v-col>
                      <v-col xs="12" sm="8" lg="9" class="text--secondary">
                         <v-fade-transition leave-absolute>
-                           <span v-if="open || getMetiersChecked.length === 0" key="0"> Selectionnez des plans de conservations Métiers </span>
+                           <span v-if="open || getMetiersChecked.length === 0" key="0"></span>
                            <span v-else key="1">
                               {{ getMetiersChecked + ' | Entre Plans de conservation métiers : ' + getInternalOperatorSelectedInString }}
                            </span>
