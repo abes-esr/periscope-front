@@ -13,7 +13,7 @@
                   <template v-slot:activator="{on}">
                      <v-btn class="btnTableau" :disabled="isSelectionEmpty" outlined small v-on="on" @click="displayLoad"><download-csv :delimiter="'\t'" :data="selected" name="periscope-export.tsv" :fields="getFieldsToExport"> Exporter </download-csv></v-btn>
                   </template>
-                  <span>Exporter la sélection au format CSV</span>
+                  <span>Exporter la sélection au format TSV</span>
                </v-tooltip>
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
