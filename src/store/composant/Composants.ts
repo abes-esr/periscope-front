@@ -22,7 +22,7 @@ export class Composants {
 
    constructor() {
       this._panel = [
-         {id: 11, position: 0, isDisplayed: false, isAvailable: true, label: 'Requête enregistrée'},
+         {id: 11, position: 0, isDisplayed: false, isAvailable: true, label: 'Requêtes personnalisées'},
          {id: 4, position: 1, isDisplayed: false, isAvailable: true, label: 'PCPP thématiques'},
          {id: 3, position: 2, isDisplayed: false, isAvailable: true, label: 'PCPP régionaux'},
          {id: 0, position: 3, isDisplayed: false, isAvailable: true, label: 'PPN'},

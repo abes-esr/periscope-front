@@ -566,7 +566,7 @@ export default new Vuex.Store({
                   position: 0,
                   isDisplayed: false,
                   isAvailable: true,
-                  label: 'Requête enregistrée',
+                  label: 'Requêtes personnalisées',
                },
             ].sort((n1, n2) => {
                if (n1.position > n2.position) {
