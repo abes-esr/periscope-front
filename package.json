@@ -1,5 +1,5 @@
 {
-   "name": "periscope-typescript",
+   "name": "periscope",
    "version": "1.4.0",
    "private": true,
    "scripts": {
@@ -30,6 +30,7 @@
       "vue-class-component": "^7.2.6",
       "vue-clipboard2": "^0.3.1",
       "vue-json-csv": "^1.2.12",
+      "vue-matomo": "^4.2.0",
       "vue-property-decorator": "^9.1.2",
       "vue-router": "^3.5.1",
       "vuetify": "^2.6.10",
