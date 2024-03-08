@@ -117,7 +117,7 @@
                <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}">
                   <v-tooltip top v-bind:key="h.value" max-width="15vw" open-delay="700">
                      <template v-slot:activator="{on}">
-                        <span v-on="on" style='color: white; font-weight: bold'>{{ h.text }}</span>
+                        <span v-on="on" style='color: black; font-weight: bold'>{{ h.text }}</span>
                      </template>
                      <span>Cliquez sur la colonne pour trier par {{ h.text }} puis cliquez sur 'Appliquer les tris'</span>
                   </v-tooltip>
@@ -128,7 +128,7 @@
                   </td>
                </template>
               <template v-slot:[`item.linkSudoc`]="{item}">
-                <a target="_blank" :href="item.linkSudoc"><img src="@/assets/logo-carre-sudoc.svg" width="30em"/></a>
+                <a target="_blank" v-if="item.linkSudoc" :href="item.linkSudoc"><img src="@/assets/logo-carre-sudoc.svg" width="30em"/></a>
               </template>
             </v-data-table>
          </v-card>
@@ -627,6 +627,6 @@ export default class TableauResultats extends Vue {
    background: #cfe3f2;
 }
 ::v-deep .theme--light.v-data-table > .v-data-table__wrapper > table > thead > tr {
-   background: #0f75bc;
+   background: #8fc2e5;
 }
 </style>
