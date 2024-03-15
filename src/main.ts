@@ -8,7 +8,9 @@ import '@mdi/font/css/materialdesignicons.css';
 import {Logger} from '@/utils/Logger';
 import VueClipboard from 'vue-clipboard2';
 import JsonCSV from 'vue-json-csv';
+import VueMatomo from 'vue-matomo';
 import {HttpRequestError} from '@/exception/HttpRequestError';
+import router from './router';
 
 Vue.config.productionTip = false;
 Vue.config.ignoredElements = ['Regions'];
@@ -17,6 +19,26 @@ Vue.config.ignoredElements = ['Regions'];
 //Vue.config.errorHandler = (error, vm, info) => Logger.error(error.message, error.constructor.name, vm, info);
 
 Vue.use(VueClipboard); // Plugin pour l'historique
+// utilisation de piwik/matomo uniquement en production
+if (process.env.VUE_APP_PERISCOPE_V2_API_URL.includes('periscope.sudoc')) {
+   Vue.use(VueMatomo, {
+      host: 'https://piwik.abes.fr/',
+      siteId: 10,
+      trackerFileName: 'matomo',
+      router: router,
+      enableLinkTracking: true,
+      requireConsent: false,
+      trackInitialView: true,
+      disableCookies: false,
+      enableHeartBeatTimer: false,
+      heartBeatTimerInterval: 15,
+      debug: true,
+      userId: undefined,
+      cookieDomain: undefined,
+      domains: undefined,
+      preInitActions: [],
+   });
+}
 Vue.component('downloadCsv', JsonCSV); // Plugin d'export au format CSV
 
 const vue = new Vue({
