@@ -17,6 +17,7 @@ const pcpRegions = [
    {key: 'PCRA', text: 'Rhône-Alpes'},
    {key: 'PCSAM', text: 'Sciences Aix-Marseille'},
    {key: 'PCSCen', text: 'Sciences Centre Val de Loire'},
+   {key: 'PCSTR', text: 'Site universitaire strasbourgeois'},
    {key: 'PCUP', text: 'Université de Poitiers'},
    {key: 'PCUR', text: 'Université de Rouen'},
 ];
