@@ -17,7 +17,7 @@ Vue.config.ignoredElements = ['Regions'];
 
 // Handle all Vue errors
 //Vue.config.errorHandler = (error, vm, info) => Logger.error(error.message, error.constructor.name, vm, info);
-
+console.log(process.env.VUE_APP_PERISCOPE_V2_API_URL);
 Vue.use(VueClipboard); // Plugin pour l'historique
 // utilisation de piwik/matomo uniquement en production
 if (process.env.VUE_APP_PERISCOPE_V2_API_URL.includes('periscope.sudoc')) {
