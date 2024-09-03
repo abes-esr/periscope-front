@@ -18,7 +18,7 @@ RUN npm install
 # Par exemple, cela permet d'injecter l'URL où se trouvent les API (back) différente
 # si on est en dev, test ou prod ou local.
 RUN echo 'Copy des fichier env'
-COPY ./docker/vuejs_env_placeholder /build/.env
+COPY ./docker/vuejs_env_placeholder /build/.env-developpement
 #COPY ./.browserslistrc              /build/.browserslistrc
 #COPY ./.eslintrc.js                 /build/.eslintrc.js
 RUN echo 'Copy des fichier js'
