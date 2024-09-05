@@ -17,13 +17,13 @@ rm -rf /usr/share/nginx/html/
 cp -rf /usr/share/nginx/html.orig/ /usr/share/nginx/html/
 sed -i \
   "s#PLACEHOLDER_VUE_APP_PERISCOPE_V2_API_URL#${PERISCOPE_FRONT_API_BASEURL}#g" \
-  /usr/share/nginx/html/assets/*
+  /usr/share/nginx/html/js/*
 sed -i \
   "s#PLACEHOLDER_VUE_APP_TIMELINE_PERISCOPE_V1#${PERISCOPE_FRONT_TIMELINE_URL}#g" \
-  /usr/share/nginx/html/assets/*
+  /usr/share/nginx/html/js/*
 sed -i \
   "s#PLACEHOLDER_VUE_APP_WS_APICOM#${PERISCOPE_FRONT_APICOM_URL}#g" \
-  /usr/share/nginx/html/assets/*
+  /usr/share/nginx/html/js/*
 
 
 # execute nginx (cf CMD dans Dockerfile)
