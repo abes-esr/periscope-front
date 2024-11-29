@@ -1,6 +1,5 @@
 import Vue from 'vue';
 import App from './App.vue';
-import index from './router';
 import store from './store/store';
 import vuetify from './plugins/vuetify';
 import 'roboto-fontface/css/roboto/roboto-fontface.css';
@@ -17,7 +16,7 @@ Vue.config.ignoredElements = ['Regions'];
 
 // Handle all Vue errors
 //Vue.config.errorHandler = (error, vm, info) => Logger.error(error.message, error.constructor.name, vm, info);
-
+//console.log(process.env.VUE_APP_PERISCOPE_V2_API_URL);
 Vue.use(VueClipboard); // Plugin pour l'historique
 // utilisation de piwik/matomo uniquement en production
 if (process.env.VUE_APP_PERISCOPE_V2_API_URL.includes('periscope.sudoc')) {
@@ -42,7 +41,7 @@ if (process.env.VUE_APP_PERISCOPE_V2_API_URL.includes('periscope.sudoc')) {
 Vue.component('downloadCsv', JsonCSV); // Plugin d'export au format CSV
 
 const vue = new Vue({
-   router: index,
+   router: router,
    store,
    vuetify,
    render: (h) => h(App),
