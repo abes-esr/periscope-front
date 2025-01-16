@@ -31,18 +31,9 @@
                <v-row justify="center">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-row justify="center">
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="regions[m - 1].value" :label="regions[m - 1].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
-                        </v-col>
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="regions[m + 4].value" :label="regions[m + 4].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
-                        </v-col>
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="regions[m + 9].value" :label="regions[m + 9].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
-                        </v-col>
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="regions[m + 14].value" :label="regions[m + 14].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                     <v-row class='mb-5'>
+                        <v-col v-for="region in regions" :key="region.id" cols="3" class="d-flex justify-start align-center pa-0">
+                           <v-checkbox @change="updateCheckboxes()" v-model="region.value" :label="region.text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                      </v-row>
                      <!--Internal BlocOperator-->
@@ -353,3 +344,10 @@ export default class ComponentPlanConservationRegions extends Vue {
    }
 }
 </script>
+<style>
+.checkbox-grid {
+   display: grid;
+   grid-template-columns: repeat(4, 1fr); /* 4 colonnes de même taille */
+   grid-gap: 10px; /* Espace entre les éléments */
+}
+</style>
