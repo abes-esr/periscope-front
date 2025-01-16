@@ -37,9 +37,9 @@
                         </template>
                         <span>Saisir une requête de recherche au format JSON puis valider avec la touche "Entrer". Vous pouvez restaurer une requête depuis l'onglet historique</span>
                      </v-tooltip>
-                     <v-chip class="ma-2" outlined pill>
+                     <v-chip href="https://documentation.abes.fr/aideperiscope/#RechercheParRequeteJson:qcY9Yf4xHXhn1gzbsr9ENg" target="_blank" class="ma-2" outlined pill>
                         <v-icon left> mdi-book-open-page-variant-outline </v-icon>
-                        L'annuaire des clés est disponible ici (lien à mettre)
+                        L'annuaire des clés est disponible ici
                      </v-chip>
                      <!--Internal BlocOperator-->
                   </v-col>
