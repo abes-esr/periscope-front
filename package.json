@@ -1,6 +1,6 @@
 {
    "name": "periscope",
-   "version": "1.4.0",
+   "version": "1.1.1",
    "private": true,
    "scripts": {
       "show-oudated:packages": "npm outdated",
@@ -93,6 +93,5 @@
       "last 2 versions",
       "not dead"
    ],
-   "_id": "periscope-typescript@0.1.0",
    "readme": "ERROR: No README data found!"
 }
