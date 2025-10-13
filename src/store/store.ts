@@ -324,7 +324,7 @@ export default new Vuex.Store({
          Logger.debug('Mutation des Langues');
          state.blocLangue._candidates = arraySent;
          state.blocLangue._selected = [];
-         arraySent.forEach((element: {index:number; value: boolean; id: string}) => (element.value ? state.blocLangue._selected.splice(element.index, 0, element.id) : ''));
+         arraySent.forEach((element: {index: number; value: boolean; id: string}) => (element.value ? state.blocLangue._selected.splice(element.index, 0, element.id) : ''));
       },
       loadCandidatesLangue(state, force?: boolean) {
          if (force || state.blocLangue._candidates.length == 0) {
@@ -391,7 +391,7 @@ export default new Vuex.Store({
                   id: element.key,
                   text: element.text,
                   value: false,
-                  index:0,
+                  index: 0,
                }),
             );
             pcpMetiers.forEach((element) =>
@@ -399,7 +399,7 @@ export default new Vuex.Store({
                   id: element.key,
                   text: element.text,
                   value: false,
-                  index:0,
+                  index: 0,
                }),
             );
          }
@@ -414,7 +414,7 @@ export default new Vuex.Store({
                      id: element.rcr,
                      text: element.rcr + ' ' + element.label,
                      value: false,
-                     index:0,
+                     index: 0,
                   });
                });
             });
@@ -1111,20 +1111,20 @@ export default new Vuex.Store({
                //Si le bloc pcpRcr à été selectionné
                const pcpsSelected = context.state.blocPcpRcr._pcp !== '' ? [context.state.blocPcpRcr._pcp] : context.state.blocPcpRegions._selected.concat(context.state.blocPcpMetiers._selected);
 
-               if(pcpsSelected.length === 0){
+               if (pcpsSelected.length === 0) {
                   context.commit('mutationTreeBlocEnParam', []);
                } else {
                   PeriscopeApiAxios.findRcrByPcps(pcpsSelected)
-                      .then((r) => {
-                         r.data.forEach((oneJsonElement: string) => {
-                            listToFill.push(oneJsonElement);
+                     .then((r) => {
+                        r.data.forEach((oneJsonElement: string) => {
+                           listToFill.push(oneJsonElement);
                         });
-                         context.commit('mutationTreeBlocEnParam', listToFill);
-                         resolve(true);
-                      })
-                      .catch((err) => {
-                         Logger.error(err);
-                      });
+                        context.commit('mutationTreeBlocEnParam', listToFill);
+                        resolve(true);
+                     })
+                     .catch((err) => {
+                        Logger.error(err);
+                     });
                }
                resolve(true);
             } catch (err: any) {
@@ -1152,7 +1152,7 @@ export default new Vuex.Store({
             }
          });
       },
-      getPcpCriteria(context): Promise<boolean> {
+      getPcpCriteria(): Promise<boolean> {
          const rcrListResults: Array<string> = [];
          return new Promise((resolve, reject) => {
             this.dispatch('callPCP2RCRApi', rcrListResults)

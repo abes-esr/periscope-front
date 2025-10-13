@@ -11,7 +11,7 @@ const pcpRegions = [
    {key: 'PCLim', text: 'Limousin'},
    {key: 'PCMP', text: 'Occitanie-Ouest'},
    {key: 'PCNPDC', text: 'Nord-Pas-de-Calais'},
-   {key: 'PCPACA', text: 'Provence-Alpes-Côte d\'Azur'},
+   {key: 'PCPACA', text: "Provence-Alpes-Côte d'Azur"},
    {key: 'PCPL', text: 'Pays de Loire'},
    {key: 'PCPic', text: 'Picardie'},
    {key: 'PCRA', text: 'Rhône-Alpes'},
