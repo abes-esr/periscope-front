@@ -31,7 +31,7 @@
                <v-row justify="center">
                   <v-col sm="10">
                      <!--Elements-->
-                     <v-row class='mb-5'>
+                     <v-row class="mb-5">
                         <v-col v-for="region in regions" :key="region.id" cols="3" class="d-flex justify-start align-center pa-0">
                            <v-checkbox @change="updateCheckboxes()" v-model="region.value" :label="region.text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
@@ -171,7 +171,7 @@ export default class ComponentPlanConservationRegions extends Vue {
       if (arrayReturned.length === 0) {
          Logger.warn('Pcp region are empty');
       }
-      return arrayReturned.sort(function comparatorF(a: CheckboxItem, b: CheckboxItem ){
+      return arrayReturned.sort(function comparatorF(a: CheckboxItem, b: CheckboxItem) {
          if (a.text > b.text) {
             return 1;
          }

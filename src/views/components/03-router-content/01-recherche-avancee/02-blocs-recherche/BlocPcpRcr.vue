@@ -102,7 +102,6 @@ import {Component, Vue} from 'vue-property-decorator';
 import {BlocOperator, ListItem} from '@/store/recherche/BlocDefinition';
 import {Logger} from '@/utils/Logger';
 import {AvailableSwitch, DisplaySwitch, PanelAvailableSwitchProvider, PanelDisplaySwitchProvider, PanelType} from '@/store/composant/ComposantDefinition';
-import {ValueError} from '@/exception/ValueError';
 
 @Component
 export default class ComponentPcpRcr extends Vue {
@@ -203,11 +202,11 @@ export default class ComponentPcpRcr extends Vue {
       ) {
          this.updateStoreRcr();
       } else {
-         this.removeItemRcr('');
+         this.removeItemRcr();
       }
    }
 
-   checkValuesAndAddPcp(item: ListItem): void {
+   checkValuesAndAddPcp(): void {
       if (
          this.pcp_liste.filter((el) => {
             return el.id === this.comboboxPcp;
@@ -215,7 +214,7 @@ export default class ComponentPcpRcr extends Vue {
       ) {
          this.updateStorePcp();
       } else {
-         this.removeItemPcp('');
+         this.removeItemPcp();
       }
    }
 
@@ -294,7 +293,7 @@ export default class ComponentPcpRcr extends Vue {
     * @param item Numéro RCR à supprimer
     * @throws ValueError si le numéro RCR n'a pas été trouvé
     */
-   removeItemRcr(item: string): void {
+   removeItemRcr(): void {
       this.comboboxRcr = '';
       this.updateStoreRcr();
    }
@@ -304,7 +303,7 @@ export default class ComponentPcpRcr extends Vue {
     * @param item pcp à supprimer
     * @throws ValueError si le numéro PCP n'a pas été trouvé
     */
-   removeItemPcp(item: string): void {
+   removeItemPcp(): void {
       this.comboboxPcp = '';
       this.updateStorePcp();
    }

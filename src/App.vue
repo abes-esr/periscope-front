@@ -1,6 +1,6 @@
 <template>
    <v-app>
-      <warning/>
+      <warning />
       <v-content>
          <component-header></component-header>
          <component-stepper></component-stepper>

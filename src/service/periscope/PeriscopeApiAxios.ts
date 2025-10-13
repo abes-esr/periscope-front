@@ -1,6 +1,5 @@
-import {JsonGlobalSearchRequest, JsonDetailNotice} from '@/service/periscope/PeriscopeJsonDefinition';
+import {JsonGlobalSearchRequest} from '@/service/periscope/PeriscopeJsonDefinition';
 import PeriscopeDataService from '@/service/periscope/PeriscopeService';
-import Pcp2RcrDataService from '@/service/periscope/Pcp2RcrService_deprecated';
 import {AxiosResponse} from 'axios';
 import {HttpRequestError} from '@/exception/HttpRequestError';
 import PcpLibProfileService from '@/service/periscope/PcpLibProfileService';

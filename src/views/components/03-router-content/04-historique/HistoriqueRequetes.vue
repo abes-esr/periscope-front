@@ -32,7 +32,7 @@
                               </v-tooltip>
                               <v-tooltip top open-delay="700">
                                  <template v-slot:activator="{on}">
-                                    <v-btn icon color="#cf4a1a"  @click="restoreToSearchForm(JSON.stringify(i))" v-on="on"><v-icon>mdi-file-restore</v-icon></v-btn>
+                                    <v-btn icon color="#cf4a1a" @click="restoreToSearchForm(JSON.stringify(i))" v-on="on"><v-icon>mdi-file-restore</v-icon></v-btn>
                                  </template>
                                  <span>Restaurer dans le formulaire de recherche</span>
                               </v-tooltip>
@@ -46,11 +46,11 @@
       </v-row>
       <v-row>
          <v-col>
-           <v-container style="justify-content: end" fluid>
-             <v-row justify="end">
-               <v-btn @click="clearHistory()" color="#cf4a1a" dark large>Vider l'historique<v-icon dark right> mdi-cancel </v-icon></v-btn>
-             </v-row>
-           </v-container>
+            <v-container style="justify-content: end" fluid>
+               <v-row justify="end">
+                  <v-btn @click="clearHistory()" color="#cf4a1a" dark large>Vider l'historique<v-icon dark right> mdi-cancel </v-icon></v-btn>
+               </v-row>
+            </v-container>
          </v-col>
       </v-row>
    </v-container>
