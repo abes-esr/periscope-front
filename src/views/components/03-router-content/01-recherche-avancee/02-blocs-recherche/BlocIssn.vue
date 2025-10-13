@@ -323,30 +323,26 @@ export default class ComponentIssn extends Vue {
                   //Logger.debug('------- BREAK --------');
                   return;
                }
-            }
-            else if (value.trim().match('^\\d{7}[x]$')) {
+            } else if (value.trim().match('^\\d{7}[x]$')) {
                if (this.addItem(value.substring(0, 4) + '-' + value.substring(4, 7) + 'X')) {
                   this.comboboxAlert = [];
                } else {
                   //Logger.debug('------- BREAK --------');
                   return;
                }
-            }
-            else if (value.trim().match('^\\d{4}-\\d{4}$') || value.trim().match('^\\d{4}-\\d\\d\\d[X]$')) {
+            } else if (value.trim().match('^\\d{4}-\\d{4}$') || value.trim().match('^\\d{4}-\\d\\d\\d[X]$')) {
                if (this.addItem(value.substring(0, 4) + '-' + value.substring(5, 9))) {
                   this.comboboxAlert = [];
                } else {
                   return;
                }
-            }
-            else if (value.trim().match('^\\d{4}-\\d\\d\\d[x]$')) {
+            } else if (value.trim().match('^\\d{4}-\\d\\d\\d[x]$')) {
                if (this.addItem(value.substring(0, 4) + '-' + value.substring(5, 8) + 'X')) {
                   this.comboboxAlert = [];
                } else {
                   return;
                }
-            }
-            else {
+            } else {
                this.currentValue = value;
                if (this.comboboxAlert.length === 0) {
                   this.comboboxAlert.push("L'ISSN doit être constitué de 4 chiffres suivis d'un - et de 4 chiffres : XXXX-XXXX");

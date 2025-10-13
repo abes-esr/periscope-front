@@ -55,8 +55,8 @@
          </v-row>
       </v-container>
       <v-container fluid>
-         <v-row >
-            <v-col class='d-flex justify-end'>
+         <v-row>
+            <v-col class="d-flex justify-end">
                <v-tooltip top open-delay="700">
                   <template v-slot:activator="{on}">
                      <v-btn class="outlined-app btnTableau" outlined small @click="goToBottomOfPage" v-on="on"><v-icon>mdi-arrow-down</v-icon></v-btn>
@@ -82,7 +82,8 @@
             </v-expansion-panels>
          </v-navigation-drawer>
          <v-card class="d-flex flex-grow-1 flex-shrink-1" v-bind:class="[displayDrawer ? 'tabResultatSmallWidth' : 'tabResultatFullWidth']">
-            <v-data-table style='width: 100%'
+            <v-data-table
+               style="width: 100%"
                :custom-sort="customSort"
                :sort-by="orderLabels"
                :sort-desc="orderBooleans"
@@ -117,7 +118,7 @@
                <template v-for="h in headers" v-slot:[`header.${h.value}`]="{headers}">
                   <v-tooltip top v-bind:key="h.value" max-width="15vw" open-delay="700">
                      <template v-slot:activator="{on}">
-                        <span v-on="on" style='color: black; font-weight: bold'>{{ h.text }}</span>
+                        <span v-on="on" style="color: black; font-weight: bold">{{ h.text }}</span>
                      </template>
                      <span>Cliquez sur la colonne pour trier par {{ h.text }} puis cliquez sur 'Appliquer les tris'</span>
                   </v-tooltip>
@@ -127,9 +128,11 @@
                      <div class="v-data-table_line">Liste des établissements : {{ item.rcrList }}<br /></div>
                   </td>
                </template>
-              <template v-slot:[`item.linkSudoc`]="{item}">
-                <a target="_blank" v-if="item.linkSudoc" :href="item.linkSudoc"><img src="@/assets/logo-carre-sudoc.svg" width="30em"/></a>
-              </template>
+               <template v-slot:[`item.linkSudoc`]="{item}">
+                  <a target="_blank" v-if="item.linkSudoc" :href="item.linkSudoc">
+                     <img src="@/assets/logo-carre-sudoc.svg" width="30em" />
+                  </a>
+               </template>
             </v-data-table>
          </v-card>
          <v-container fluid>
@@ -152,7 +155,7 @@
                      <span>Aller à la page suivante</span>
                   </v-tooltip>
                </v-col>
-               <v-col class='d-flex justify-end'>
+               <v-col class="d-flex justify-end">
                   <v-tooltip top open-delay="700">
                      <template v-slot:activator="{on}">
                         <v-btn class="outlined-app" style="margin-bottom: -1em" outlined small @click="goToTopOfPage" v-on="on"><v-icon>mdi-arrow-up</v-icon></v-btn>
@@ -383,7 +386,7 @@ export default class TableauResultats extends Vue {
    /******************** Events ***************************/
 
    dblClickOnRow(event: Event, item: any): void {
-      const value: Notice = item.item
+      const value: Notice = item.item;
       this.$store.dispatch('changeStepAction', 3).catch((err) => {
          Logger.error(err);
       });
