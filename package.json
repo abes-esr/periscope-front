@@ -18,7 +18,7 @@
       "core-js": "^3.9.0",
       "cosmiconfig": "^7.0.0",
       "js-cookie": "^2.2.1",
-      "lodash": "^4.17.21",
+      "lodash": "^4.17.23",
       "ngx-jira-issue-collector": "^10.0.1",
       "postscribe": "^2.0.8",
       "reinstall": "^2.0.0",
