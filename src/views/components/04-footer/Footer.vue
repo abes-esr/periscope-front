@@ -11,7 +11,7 @@
             <v-col style="text-align: end; padding-left: 2em">
                <div><a href="http://www.sudoc.abes.fr/" target="_blank" style="color: white">Sudoc</a></div>
                <div><a href="https://documentation.abes.fr/aideperiscope/" target="_blank" style="color: white">Documentation</a></div>
-               <div><a href="https://stp.abes.fr/node/3?origine=periscope-pcp" target="_blank" style="color: white">ABESstp</a></div>
+               <div><a href="https://assistance.stp.abes.fr" target="_blank" style="color: white">Guichet d’assistance</a></div>
             </v-col>
             <v-col style="padding-right: 2em">
                <span style="padding-right: 1em">
