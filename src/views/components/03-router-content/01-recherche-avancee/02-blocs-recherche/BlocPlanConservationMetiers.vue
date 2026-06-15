@@ -32,17 +32,8 @@
                   <v-col sm="10">
                      <!--Elements-->
                      <v-row justify="center">
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="metiers[m - 1].value" :label="metiers[m - 1].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
-                        </v-col>
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 4" :key="m" v-model="metiers[m + 4].value" :label="metiers[m + 4].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
-                        </v-col>
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 4" :key="m" v-model="metiers[m + 8].value" :label="metiers[m + 8].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
-                        </v-col>
-                        <v-col xs="6" sm="3" class="margin-v-col-accueil">
-                           <v-checkbox @change="updateCheckboxes()" v-for="m in 5" :key="m" v-model="metiers[m + 12].value" :label="metiers[m + 12].text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
+                        <v-col v-for="(metiersColumn, columnIndex) in metiersColumns" :key="columnIndex" xs="6" sm="3" class="margin-v-col-accueil">
+                           <v-checkbox @change="updateCheckboxes()" v-for="metier in metiersColumn" :key="metier.key" v-model="metier.value" :label="metier.text" hide-details class="margin-v-checkbox-accueil"></v-checkbox>
                         </v-col>
                      </v-row>
                      <!--Internal BlocOperator-->
@@ -177,15 +168,7 @@ export default class ComponentPlanConservationMetiers extends Vue {
       if (arrayReturned.length === 0) {
          Logger.warn('Pcp region are empty');
       }
-      return arrayReturned.sort(function comparatorF(a: CheckboxItem, b: CheckboxItem) {
-         if (a.text > b.text) {
-            return 1;
-         }
-         if (a.text < b.text) {
-            return -1;
-         }
-         return 0;
-      });
+      return arrayReturned.sort((a: CheckboxItem, b: CheckboxItem) => a.text.localeCompare(b.text, 'fr', {sensitivity: 'base'}));
    }
    /**
     * Retourne les PCPP thématiques sélectionnées
@@ -194,6 +177,15 @@ export default class ComponentPlanConservationMetiers extends Vue {
    get getMetiersChecked(): Array<CheckboxItem> {
       return this.$store.getters.getCurrentArrayPcpMetiersElementsChecked;
    }
+
+   get metiersColumns(): Array<Array<CheckboxItem>> {
+      const columnsCount = 4;
+      const chunkSize = Math.ceil(this.metiers.length / columnsCount);
+      return Array.from({length: columnsCount}, (_unused, columnIndex) => {
+         return this.metiers.slice(columnIndex * chunkSize, (columnIndex + 1) * chunkSize);
+      });
+   }
+
    /**
     * Vérifie si le bloc est le premier a être affiché
     * @return Vrai si le bloc est le premier a être affiché, Faux sinon
