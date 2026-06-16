@@ -7,7 +7,7 @@
       </v-row>
       <v-row>
          <v-col>
-            <v-expansion-panels v-for="i in panel" :key="i.id">
+            <v-expansion-panels v-for="i in panel" :key="i.id" :value="getOpenedPanelValue(i.id)" @change="updateOpenedPanel(i.id, $event)">
                <!-- TODO: essayé de comparer i.id === PanelType.PPN               -->
                <component-ppn v-if="i.id === 0 && i.isDisplayed" @onChange="renderPanelList"></component-ppn>
                <component-issn v-if="i.id === 1 && i.isDisplayed" @onChange="renderPanelList"></component-issn>
@@ -71,10 +71,12 @@ import {Logger} from '@/utils/Logger';
 })
 export default class RechercheAvance extends Vue {
    panel: Array<PanelProvider>;
+   openedPanels: {[key: number]: number | undefined};
 
    constructor() {
       super();
       this.panel = this.getPanel;
+      this.openedPanels = {};
    }
 
    mounted() {
@@ -92,6 +94,7 @@ export default class RechercheAvance extends Vue {
 
    renderPanelList(id: number): void {
       this.panel = this.getPanel;
+      this.closeHiddenPanels();
       // on verifie que id n'est pas vide et que ce n'est pas la requete enregistree pour ne pas changer la position
       let displayPanel = this.panel.filter((panelProvider) => panelProvider.isDisplayed);
       if (id != undefined && id != 11) {
@@ -111,7 +114,43 @@ export default class RechercheAvance extends Vue {
          // reatribution de la position selon l'ordre
          this.panel.filter((panelProvider) => panelProvider.isDisplayed)[i].position = i;
       }
+      this.openDisplayedPanel(id);
       (this.$refs.listeChoix as ComponentListeDeChoix).updateList(); // On update la liste de choix
+   }
+
+   getOpenedPanelValue(id: number): number | undefined {
+      return this.openedPanels[id];
+   }
+
+   updateOpenedPanel(id: number, value?: number): void {
+      if (value === undefined || value === null) {
+         this.$delete(this.openedPanels, id);
+         return;
+      }
+      this.$set(this.openedPanels, id, value);
+   }
+
+   openDisplayedPanel(id: number): void {
+      if (id === undefined || id === null) {
+         return;
+      }
+
+      const selectedPanel = this.panel.find((panelProvider) => panelProvider.id === id);
+      if (selectedPanel && selectedPanel.isDisplayed) {
+         this.$set(this.openedPanels, id, 0);
+      } else {
+         this.$delete(this.openedPanels, id);
+      }
+   }
+
+   closeHiddenPanels(): void {
+      Object.keys(this.openedPanels).forEach((key) => {
+         const panelId = Number(key);
+         const selectedPanel = this.panel.find((panelProvider) => panelProvider.id === panelId);
+         if (!selectedPanel || !selectedPanel.isDisplayed) {
+            this.$delete(this.openedPanels, panelId);
+         }
+      });
    }
 }
 </script>
